@@ -335,89 +335,19 @@ const FIGHT_TYPES = {
   FortRevenge: 109
 }
 
-const GT_REWARDS: Record<number, string> = {
-  1: 'hellevator_point',
-  2: 'hellevator_ticket',
-  3: 'mushroom',
-  4: 'gold',
-  5: 'lucky_coin',
-  6: 'wood',
-  7: 'stone',
-  8: 'arcane',
-  9: 'metal',
-  10: 'souls',
-  11: 'fruit1',
-  12: 'fruit2',
-  13: 'fruit3',
-  14: 'fruit4',
-  15: 'fruit5',
-  16: 'gem_legendary',
-  17: 'shadow_gold',
-  18: 'shadow_silver',
-  19: 'shadow_bronze',
-  20: 'gem_small',
-  21: 'gem_medium',
-  22: 'gem_large',
-  23: 'fruit_mixed',
-  24: 'experience',
-  25: 'pet_egg',
-  26: 'hourglass',
-  27: 'honor',
-  28: 'beer'
-}
-
 const FIGHT_EQUIPMENT_TYPE_MAPPING: Record<number, number> = {
   [-51]: 1
-}
-
-const HAR_ROUND_VERSION_2 = 2
-
-const GROUP_SORTERS: Record<GroupSort, (group: FightGroup) => number> = {
-  default: (group) => group.index,
-  fight_count: (group) => group.fights.length,
-  fighter_b_level: (group) => group.fighterB.Level
 }
 
 const PALADIN_STANCE_STATES: number[] = [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE]
 
 const CHANCE_TYPES = ['first_strike', 'critical', 'skip', 'chain', 'revive', 'swoop', 'stance_change', 'song_1', 'song_2', 'song_3', 'summon', 'minion_1', 'minion_2', 'minion_3', 'minion_revive', 'tincture', 'dagger', 'scythe'] as const
 
-const SONG_CHANCE_TYPES: ChanceType[] = ['song_1', 'song_2', 'song_3']
-
-const MINION_CHANCE_TYPES: ChanceType[] = ['minion_1', 'minion_2', 'minion_3']
-
-const CHANCE_Z = 1.96
-
-const CONTINUITY_CORRECTION = 0.5
-
-const CRITICAL_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ...ATTACK_TYPES_TINCTURE, ...ATTACK_TYPES_DAGGER, ...ATTACK_TYPES_SCYTHE]
-
-const SKIPPABLE_ATTACK_TYPES: number[] = [
-  ATTACK_TYPE_NORMAL,
-  ATTACK_TYPE_CRITICAL,
-  ATTACK_TYPE_NORMAL_SECONDARY,
-  ATTACK_TYPE_CRITICAL_SECONDARY,
-  ATTACK_TYPE_SWOOP,
-  ATTACK_TYPE_SWOOP_CRITICAL,
-  ATTACK_TYPE_MINION,
-  ATTACK_TYPE_MINION_CRITICAL,
-  ATTACK_TYPE_TINCTURE_THROW,
-  ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
-  ...ATTACK_TYPES_DAGGER,
-  ...ATTACK_TYPES_SCYTHE
-]
-
 const SKIP_DEFENSE_TYPES: number[] = [DEFENSE_TYPE_BLOCK, DEFENSE_TYPE_EVADE, DEFENSE_TYPE_BLOCK_HEAL]
-
-const SWOOP_ATTACK_TYPES: number[] = [ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL]
 
 const TINCTURE_THROW_ATTACK_TYPES: number[] = [ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL]
 
 const TINCTURE_POISON_ATTACK_TYPES: number[] = [ATTACK_TYPE_TINCTURE, ATTACK_TYPE_TINCTURE_CRITICAL]
-
-const FIGHTER_WHITELIST = ['ID', 'Name', 'Level', 'TotalHealth', 'Health', 'Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck', 'Class', 'Items'] as const
-
-const ROUND_WHITELIST = ['attackerId', 'targetId', 'attackerState', 'targetState', 'attackType', 'defenseType', 'attackerHealth', 'targetHealth', 'attackerEffects', 'targetEffects', 'attackDamage', 'attackRage', 'attackTypeSecondary', 'attackTypeCritical', 'attackTypeSpecial'] as const
 
 export class FighterModel implements Fighter {
   ID: number
@@ -566,6 +496,37 @@ function computePlayerHash(player: HashSource, damage = true) {
   ]
 
   return sha1(JSON.stringify(json))
+}
+
+const GT_REWARDS: Record<number, string> = {
+  1: 'hellevator_point',
+  2: 'hellevator_ticket',
+  3: 'mushroom',
+  4: 'gold',
+  5: 'lucky_coin',
+  6: 'wood',
+  7: 'stone',
+  8: 'arcane',
+  9: 'metal',
+  10: 'souls',
+  11: 'fruit1',
+  12: 'fruit2',
+  13: 'fruit3',
+  14: 'fruit4',
+  15: 'fruit5',
+  16: 'gem_legendary',
+  17: 'shadow_gold',
+  18: 'shadow_silver',
+  19: 'shadow_bronze',
+  20: 'gem_small',
+  21: 'gem_medium',
+  22: 'gem_large',
+  23: 'fruit_mixed',
+  24: 'experience',
+  25: 'pet_egg',
+  26: 'hourglass',
+  27: 'honor',
+  28: 'beer'
 }
 
 function getRewards(response: PlayaData) {
@@ -793,6 +754,8 @@ function digestFight(r: PlayaData, suffix: string | number): DigestedFight | nul
   }
 }
 
+const HAR_ROUND_VERSION_2 = 2
+
 // Extract individual fights from raw data array
 export function importHar(json: unknown) {
   const digestedFights: DigestedFight[] = []
@@ -908,6 +871,12 @@ function injectComputedData(fighter: Fighter) {
 
     fighter.Armor = fighter.Level * config.MaximumDamageReduction
   }
+}
+
+const GROUP_SORTERS: Record<GroupSort, (group: FightGroup) => number> = {
+  default: (group) => group.index,
+  fight_count: (group) => group.fights.length,
+  fighter_b_level: (group) => group.fighterB.Level
 }
 
 export function groupFights(fights: Fight[], allPlayers: AnalyzerPlayer[], sort: GroupSort) {
@@ -1248,6 +1217,10 @@ function countChance(counters: ChanceCounters, type: ChanceType, chance: number,
   }
 }
 
+const CHANCE_Z = 1.96
+
+const CONTINUITY_CORRECTION = 0.5
+
 function finishChances(counters: ChanceCounters): ChanceCheck[] {
   return CHANCE_TYPES.flatMap((type): ChanceCheck[] => {
     const counter = counters[type]
@@ -1287,6 +1260,23 @@ function findFirstMover(turns: FightRound[][]) {
 
   return round.attackerState === FIGHTER_STATE_BERSERKER_RAGE ? round.target.ID : round.attacker.ID
 }
+
+const CRITICAL_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ...ATTACK_TYPES_TINCTURE, ...ATTACK_TYPES_DAGGER, ...ATTACK_TYPES_SCYTHE]
+
+const SKIPPABLE_ATTACK_TYPES: number[] = [
+  ATTACK_TYPE_NORMAL,
+  ATTACK_TYPE_CRITICAL,
+  ATTACK_TYPE_NORMAL_SECONDARY,
+  ATTACK_TYPE_CRITICAL_SECONDARY,
+  ATTACK_TYPE_SWOOP,
+  ATTACK_TYPE_SWOOP_CRITICAL,
+  ATTACK_TYPE_MINION,
+  ATTACK_TYPE_MINION_CRITICAL,
+  ATTACK_TYPE_TINCTURE_THROW,
+  ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
+  ...ATTACK_TYPES_DAGGER,
+  ...ATTACK_TYPES_SCYTHE
+]
 
 function countRoundChances(counters: ChanceCounters, rounds: FightRound[], fighter: Fighter, model: SimulatorModel, isSpecialBlocked: boolean) {
   const { ReviveChance = 0, ReviveChanceDecay = 0, ReviveMax = 0 } = model.Config
@@ -1335,6 +1325,8 @@ function countChains(counters: ChanceCounters, turns: FightRound[][], fighter: F
   }
 }
 
+const SWOOP_ATTACK_TYPES: number[] = [ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL]
+
 function countSwoops(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
   const { SwoopChance = 0, SwoopChanceMin = 0, SwoopChanceMax = 0, SwoopChanceDecay = 0 } = model.Config
 
@@ -1367,6 +1359,8 @@ function countStanceChanges(counters: ChanceCounters, turns: FightRound[][], mod
   }
 }
 
+const SONG_CHANCE_TYPES: ChanceType[] = ['song_1', 'song_2', 'song_3']
+
 function countSongs(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel) {
   const { EffectBaseDuration = [], EffectBaseChance = [] } = model.Config
 
@@ -1380,6 +1374,8 @@ function countSongs(counters: ChanceCounters, turns: FightRound[][], model: Simu
     }
   }
 }
+
+const MINION_CHANCE_TYPES: ChanceType[] = ['minion_1', 'minion_2', 'minion_3']
 
 function countSummons(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
   const { SummonChance = 0, Summons = [] } = model.Config
@@ -1632,6 +1628,10 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
 function cleanCopy<TObject, TKey extends keyof TObject>(object: TObject, whitelist: readonly TKey[]) {
   return Object.fromEntries(whitelist.map((field) => [field, object[field]]))
 }
+
+const FIGHTER_WHITELIST = ['ID', 'Name', 'Level', 'TotalHealth', 'Health', 'Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck', 'Class', 'Items'] as const
+
+const ROUND_WHITELIST = ['attackerId', 'targetId', 'attackerState', 'targetState', 'attackType', 'defenseType', 'attackerHealth', 'targetHealth', 'attackerEffects', 'targetEffects', 'attackDamage', 'attackRage', 'attackTypeSecondary', 'attackTypeCritical', 'attackTypeSpecial'] as const
 
 export function exportFights(fights: Pick<Fight, 'fighterA' | 'fighterB' | 'rounds'>[]) {
   // Collect all players and fights

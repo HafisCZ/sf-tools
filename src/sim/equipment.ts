@@ -77,19 +77,6 @@ export function createCharacterState(character: PlayerModel): CharacterState {
   }
 }
 
-const SLOT_TYPES: Record<AnyEquipmentSlot, number> = {
-  Head: 6,
-  Body: 3,
-  Hand: 5,
-  Feet: 4,
-  Neck: 8,
-  Belt: 7,
-  Ring: 9,
-  Misc: 10,
-  Wpn1: 1,
-  Wpn2: 2
-}
-
 const LIST_POOLS: Record<'backpack' | 'shop', (inventory: PlayerInventory) => ItemModel[]> = {
   backpack: (inventory) => [...inventory.Backpack, ...inventory.Chest],
   shop: (inventory) => inventory.Shop
@@ -118,6 +105,19 @@ export function listEquipmentCandidates(source: PlayerModel, slot: AnyEquipmentS
   }
 
   return candidates
+}
+
+const SLOT_TYPES: Record<AnyEquipmentSlot, number> = {
+  Head: 6,
+  Body: 3,
+  Hand: 5,
+  Feet: 4,
+  Neck: 8,
+  Belt: 7,
+  Ring: 9,
+  Misc: 10,
+  Wpn1: 1,
+  Wpn2: 2
 }
 
 // The item class a character wears can't be derived from its class, so it is read off the item already in the slot

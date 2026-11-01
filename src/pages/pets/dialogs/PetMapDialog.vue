@@ -64,8 +64,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const GLADIATOR_COLUMNS = 16
-
 const localize = useLocalize('pets')
 
 const selected = ref(0)
@@ -89,6 +87,8 @@ const { submit: save, isSubmitting: saving } = useSubmit(async () => {
 })
 
 const mapOptions = computed(() => props.maps.map((map, index) => ({ value: index, label: map.name })))
+
+const GLADIATOR_COLUMNS = 16
 
 // The worker leaves holes in the arrays, flatMap skips them
 const table = computed(() => {

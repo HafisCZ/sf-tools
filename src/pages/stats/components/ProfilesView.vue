@@ -65,12 +65,6 @@ defineExpose({
   show
 })
 
-const MODE_SYMBOLS: Record<string, string> = {
-  above: '>',
-  below: '<',
-  equals: '='
-}
-
 const localize = useLocalize('stats.profiles')
 
 const profiles = shallowRef<[string, DatabaseProfile][]>([])
@@ -83,6 +77,12 @@ function show() {
 
 function highlight(value: string, config: ExpressionConfig) {
   return Highlighter.expression(value, undefined, config).text
+}
+
+const MODE_SYMBOLS: Record<string, string> = {
+  above: '>',
+  below: '<',
+  equals: '='
 }
 
 function describeRule(rule: ProfileRule | null | undefined) {

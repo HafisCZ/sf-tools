@@ -17,9 +17,6 @@ export type Cheats = {
   class: CharacterClass | 0
 }
 
-// Index + 1 is the potion type
-const POTIONS = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'] as const
-
 function forEachModel(player: PlayerModel, callback: (model: PlayerModel) => void) {
   const models = [player]
 
@@ -56,6 +53,9 @@ export function changePlayerClass(player: PlayerModel, newClass: CharacterClass)
 
   player.Class = newClass
 }
+
+// Index + 1 is the potion type
+const POTIONS = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'] as const
 
 export function applyCheats(player: PlayerModel, cheats: Cheats) {
   if (cheats.pets) {

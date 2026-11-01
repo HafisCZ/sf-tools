@@ -146,15 +146,11 @@ export const COLOR_MAP = new Map(
   })
 )
 
-const PARSE_COLOR_CACHE = new Map<string | undefined, string>()
-const COLOR_FROM_NAME_CACHE = new Map<unknown, string>()
-const CSS_COLOR_CACHE = new Map<unknown, string>()
-const CSS_BACKGROUND_CACHE = new Map<unknown, string>()
-const CSS_COLOR_FROM_BACKGROUND_CACHE = new Map<string, string>()
-
 export function rgbaToHex(rgba: string[]) {
   return `#${rgba.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
 }
+
+const PARSE_COLOR_CACHE = new Map<string | undefined, string>()
 
 export function parseColor(name: string | undefined) {
   const cached = PARSE_COLOR_CACHE.get(name)
@@ -276,6 +272,8 @@ function computeCSSColor(color: unknown) {
   }
 }
 
+const CSS_COLOR_CACHE = new Map<unknown, string>()
+
 export function getCSSColor(name: unknown) {
   const cached = CSS_COLOR_CACHE.get(name)
   if (cached !== undefined) return cached
@@ -309,6 +307,8 @@ function computeColorFromName(name: unknown) {
     return String(name)
   }
 }
+
+const COLOR_FROM_NAME_CACHE = new Map<unknown, string>()
 
 export function getColorFromName(name: unknown) {
   const cached = COLOR_FROM_NAME_CACHE.get(name)
@@ -379,6 +379,8 @@ function computeCSSBackground(color: unknown) {
   }
 }
 
+const CSS_BACKGROUND_CACHE = new Map<unknown, string>()
+
 export function getCSSBackground(name: unknown) {
   const cached = CSS_BACKGROUND_CACHE.get(name)
   if (cached !== undefined) return cached
@@ -389,6 +391,8 @@ export function getCSSBackground(name: unknown) {
 
   return color
 }
+
+const CSS_COLOR_FROM_BACKGROUND_CACHE = new Map<string, string>()
 
 export function getCSSColorFromBackground(name: string) {
   const cached = CSS_COLOR_FROM_BACKGROUND_CACHE.get(name)

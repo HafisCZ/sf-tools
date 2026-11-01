@@ -63,8 +63,6 @@ const emit = defineEmits<{
   close: [exported: boolean]
 }>()
 
-const FORMATS = ['json', 'code', 'code_reusable']
-
 const localize = useLocalize('stats.share')
 
 const fileKeys = typeof props.files === 'function' ? [] : Object.keys(props.files)
@@ -77,6 +75,8 @@ const code = ref<string | null>(null)
 const isValid = useComponentValidation(useTemplateRef('file-ref'), useTemplateRef('format-ref'), useTemplateRef('public-ref'))
 
 const fileOptions = computed<SelectOption[]>(() => fileKeys.map((value) => ({ value, label: localize(`files.${value}`) })))
+
+const FORMATS = ['json', 'code', 'code_reusable']
 
 const formatOptions = computed<SelectOption[]>(() => FORMATS.map((value) => ({ value, label: localize(`formats.${value}`) })))
 

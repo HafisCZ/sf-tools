@@ -364,8 +364,222 @@ type BuildingTableData = {
 
 type CellGenerator = (level: number, ...values: number[]) => string | number
 
-// Seconds, before the quarters reduction
-const BUILD_TIMES = [900, 1895, 3960, 8460, 18000, 28800, 41100, 66420, 144000, 313200, 691200, 1152000, 1728000, 2221200, 2880000, 3801600, 4147200, 4492800, 4838400, 5184000]
+const localize = useLocalize('attributes')
+
+const tab = ref<TabName>('gold_experience')
+
+// Tabs are built on first open, the gold table alone has 3156 rows
+const visited = ref(new Set<TabName>([tab.value]))
+
+const goldTableRows = shallowRef<string[][]>([])
+
+const fortressLevel = ref<number | null>(null)
+const quartersLevel = ref<number | null>(null)
+
+const goldLevel = ref<number | null>(null)
+const goldGuild = ref<number | null>(null)
+const goldTower = ref<number | null>(null)
+const goldMine = ref<number | null>(null)
+const goldPit = ref<number | null>(null)
+const goldRunes = ref<number | null>(null)
+
+const experienceLevel = ref<number | null>(null)
+const experienceHydra = ref<number | null>(null)
+const experienceAcademy = ref<number | null>(null)
+
+const expeditionLevel = ref<number | null>(null)
+const expeditionMount = ref(0)
+const expeditionBook = ref<number | null>(null)
+const expeditionGuildExperience = ref<number | null>(null)
+const expeditionExperienceRune = ref<number | null>(null)
+const expeditionExperienceScroll = ref(0)
+const expeditionStars = ref<number | null>(null)
+const expeditionTower = ref<number | null>(null)
+const expeditionGuildGold = ref<number | null>(null)
+const expeditionGoldRune = ref<number | null>(null)
+const expeditionGoldScroll = ref(0)
+
+const questLevel = ref<number | null>(null)
+const questBook = ref<number | null>(null)
+const questGuildExperience = ref<number | null>(null)
+const questExperienceRune = ref<number | null>(null)
+const questExperienceScroll = ref(0)
+const questTower = ref<number | null>(null)
+const questGuildGold = ref<number | null>(null)
+const questGoldRune = ref<number | null>(null)
+const questGoldScroll = ref(0)
+
+const miscLevel = ref<number | null>(null)
+const miscGate = ref<number | null>(null)
+const miscTorture = ref<number | null>(null)
+
+const priceAtAttribute = ref<number | null>(null)
+const priceFrom = ref<number | null>(null)
+const priceTo = ref<number | null>(null)
+
+const tabOptions = computed<SelectOption<TabName>[]>(() => [
+  { value: 'gold_experience', label: localize('tabs.gold_exp') },
+  { value: 'fortress', label: localize('tabs.fortress') },
+  { value: 'underworld', label: localize('tabs.underworld') },
+  { value: 'gold_table', label: localize('tabs.gold_table') }
+])
+
+const yesNoOptions = computed<SelectOption<number>[]>(() => [
+  { value: 0, label: localize.global('general.no') },
+  { value: 1, label: localize.global('general.yes') }
+])
+
+const mountOptions = computed<SelectOption<number>[]>(() => [
+  { value: 0, label: localize('expeditions.mount.none') },
+  { value: 1, label: localize('expeditions.mount.pig') },
+  { value: 2, label: localize('expeditions.mount.wolf') },
+  { value: 3, label: localize('expeditions.mount.raptor') },
+  { value: 4, label: localize('expeditions.mount.griffin') }
+])
+
+const goldTableColumns = computed(() => [localize('gold_table.level'), localize('gold_table.price'), localize('gold_table.curve'), localize('gold_table.mount'), localize('gold_table.guard')])
+
+const characterLevel = computed(() => clamp(fortressLevel.value ?? 0, 1, 999))
+const quarters = computed(() => clamp(quartersLevel.value ?? 0, 0, 15))
+
+const goldTouched = useTouched([goldLevel, goldGuild, goldTower, goldMine, goldPit, goldRunes])
+const experienceTouched = useTouched([experienceLevel, experienceHydra, experienceAcademy])
+const expeditionTouched = useTouched([expeditionLevel, expeditionMount, expeditionBook, expeditionGuildExperience, expeditionExperienceRune, expeditionExperienceScroll, expeditionStars, expeditionTower, expeditionGuildGold, expeditionGoldRune, expeditionGoldScroll])
+const questTouched = useTouched([questLevel, questBook, questGuildExperience, questExperienceRune, questExperienceScroll, questTower, questGuildGold, questGoldRune, questGoldScroll])
+const miscTouched = useTouched([miscLevel, miscGate, miscTorture])
+const priceAtTouched = useTouched([priceAtAttribute])
+const priceBetweenTouched = useTouched([priceFrom, priceTo])
+
+const gold = computed(() => {
+  const level = clamp(goldLevel.value ?? 0, 1, 999)
+  const guild = clamp(goldGuild.value ?? 0, 0, 200)
+  const tower = clamp(goldTower.value ?? 0, 0, 100)
+  // The gem value multiplier stops rising at gem mine 14, higher levels are worth the same
+  const mine = Math.min(clamp(goldMine.value ?? 0, 1, 100), 14)
+  const runes = clamp(goldRunes.value ?? 0, 0, 5)
+  const pit = clamp(goldPit.value ?? 0, 1, 100)
+
+  const [capacity, hourly, time] = getGoldPitValues(level, pit)
+
+  return blankUnless(goldTouched.value, {
+    reward: formatValue(Calculations.goldEnvironmentalReward(level)),
+    guard: formatValue(Calculations.goldGuardDuty(level, tower, guild)),
+    scroll: formatValue(Calculations.goldWitchScroll(level)),
+    witchPotion: formatValue(Calculations.goldWitchPotion(level)),
+    reroll: formatValue(Calculations.goldFortressReroll(level)),
+    arena: formatValue(Calculations.goldArena(level)),
+    towerEnemy: formatValue(Calculations.goldTowerEnemy(level)),
+    twisterEnemy: formatValue(Calculations.goldTwisterEnemy(level)),
+    dice1: formatValue(Calculations.goldDice(level, 0)),
+    dice2: formatValue(Calculations.goldDice(level, 1)),
+    dice3: formatValue(Calculations.goldDice(level, 2)),
+    gem1: formatValue(Calculations.goldGem(level, mine, 0)),
+    gem2: formatValue(Calculations.goldGem(level, mine, 1)),
+    gem3: formatValue(Calculations.goldGem(level, mine, 2)),
+    potion10: formatValue(Calculations.goldPotionCost(level, runes, 0)),
+    potion15: formatValue(Calculations.goldPotionCost(level, runes, 1)),
+    potion25: formatValue(Calculations.goldPotionCost(level, runes, 2)),
+    lifePotion: formatValue(Calculations.goldLifePotionCost(level, runes)),
+    lifePotionGold: formatValue(Calculations.goldLifePotionShroomlessCost(level, runes)),
+    hourglass1: formatValue(Calculations.goldHourglassCost(level, runes)),
+    hourglass10: formatValue(Calculations.goldHourglassPackCost(level, runes)),
+    bar1: formatValue(Calculations.goldCalendarBar(level)),
+    bar3: formatValue(Calculations.goldCalendarBars(level)),
+    capacity: formatSpacedNumber(capacity),
+    hourly: formatValue(hourly),
+    time: formatFancyTime(time)
+  })
+})
+
+const experience = computed(() => {
+  const level = clamp(experienceLevel.value ?? 0, 1, 999)
+  const hydra = clamp(experienceHydra.value ?? 0, 0, 20)
+  const academy = clamp(experienceAcademy.value ?? 0, 1, 20)
+
+  const [hourly, capacity, time] = getAcademyValues(level, academy)
+
+  const calendar3 = Calculations.experienceCalendar(level, 2)
+
+  return blankUnless(experienceTouched.value, {
+    next: formatSpacedNumber(Calculations.experienceNextLevel(level)),
+    daily: formatSpacedNumber(Calculations.experienceSecretMission(level, hydra)),
+    arena: formatSpacedNumber(Calculations.experienceArena(level)),
+    hourly: formatSpacedNumber(hourly),
+    capacity: formatSpacedNumber(capacity),
+    time: formatFancyTime(time),
+    wheel1: formatSpacedNumber(Calculations.experienceWheelBook(level)),
+    wheel2: formatSpacedNumber(Calculations.experienceWheelBooks(level)),
+    calendar1: formatSpacedNumber(Calculations.experienceCalendar(level, 0)),
+    calendar2: formatSpacedNumber(Calculations.experienceCalendar(level, 1)),
+    calendar3: formatSpacedNumber(calendar3),
+    dungeon: formatSpacedNumber(calendar3),
+    habitat: formatSpacedNumber(Calculations.experiencePetHabitat(level)),
+    twister: formatSpacedNumber(Calculations.experienceTwisterEnemy(level))
+  })
+})
+
+const expedition = computed(() => {
+  const level = clamp(expeditionLevel.value ?? 0, 1, 999)
+  const guildExperience = clamp(expeditionGuildExperience.value ?? 0, 0, 200)
+  const guildGold = clamp(expeditionGuildGold.value ?? 0, 0, 200)
+  const book = clamp(expeditionBook.value ?? 0, 0, 100)
+  const tower = clamp(expeditionTower.value ?? 0, 0, 100)
+  const experienceRune = clamp(expeditionExperienceRune.value ?? 0, 0, 10)
+  const goldRune = clamp(expeditionGoldRune.value ?? 0, 0, 50)
+  const stars = clamp(expeditionStars.value ?? 0, 0, 3)
+  const mount = clamp(expeditionMount.value, 0, 4)
+
+  const experienceValue = Calculations.experienceExpedition(level, book, guildExperience, experienceRune, expeditionExperienceScroll.value === 1, stars, mount)
+  const goldValue = Calculations.goldExpedition(level, tower, guildGold, goldRune, expeditionGoldScroll.value === 1, mount)
+
+  return blankUnless(expeditionTouched.value, {
+    experience: formatSpacedNumber(experienceValue),
+    gold: formatValue(goldValue),
+    goldChest: formatValue(goldValue / 5),
+    goldMid: formatValue(goldValue / 10)
+  })
+})
+
+const quest = computed(() => {
+  const level = clamp(questLevel.value ?? 0, 1, 999)
+  const guildExperience = clamp(questGuildExperience.value ?? 0, 0, 200)
+  const guildGold = clamp(questGuildGold.value ?? 0, 0, 200)
+  const book = clamp(questBook.value ?? 0, 0, 100)
+  const tower = clamp(questTower.value ?? 0, 0, 100)
+  const experienceRune = clamp(questExperienceRune.value ?? 0, 0, 10)
+  const goldRune = clamp(questGoldRune.value ?? 0, 0, 50)
+
+  const experienceScroll = questExperienceScroll.value === 1 ? 1.1 : 1
+  const goldScroll = questGoldScroll.value === 1 ? 1.1 : 1
+
+  return blankUnless(questTouched.value, {
+    experienceMin: formatSpacedNumber(experienceScroll * Calculations.experienceQuestMin(level, book, guildExperience, experienceRune)),
+    experienceMax: formatSpacedNumber(experienceScroll * Calculations.experienceQuestMax(level, book, guildExperience, experienceRune)),
+    goldMin: formatValue(goldScroll * Calculations.goldQuestMin(level, tower, guildGold, goldRune)),
+    goldMax: formatValue(goldScroll * Calculations.goldQuestMax(level, tower, guildGold, goldRune))
+  })
+})
+
+const miscSouls = computed(() => {
+  const level = clamp(miscLevel.value ?? 0, 1, 999)
+  const gate = clamp(miscGate.value ?? 0, 0, 15)
+  const torture = clamp(miscTorture.value ?? 0, 0, 15)
+
+  return miscTouched.value ? formatValue(Calculations.souls(level, gate, torture)) : ''
+})
+
+const priceAt = computed(() => {
+  const attribute = clamp(priceAtAttribute.value ?? 0, 1, Infinity)
+
+  return priceAtTouched.value ? formatCost(Calculations.goldAttributeCost(attribute - 1)) : ''
+})
+
+const priceBetween = computed(() => {
+  const from = clamp(priceFrom.value ?? 0, 1, Infinity)
+  const to = clamp(priceTo.value ?? 0, from, Infinity)
+
+  return priceBetweenTouched.value ? formatCost(Calculations.goldAttributeTotalCost(to - 1) - Calculations.goldAttributeTotalCost(from - 1)) : ''
+})
 
 const HEART = [0, 616, 1650, 4220, 11000, 25080, 45930, 84150, 198000, 439550, 902850, 2043300, 4118400, 7722000, 16632000]
 
@@ -434,6 +648,149 @@ const KEEPER = [198, 739, 1980, 5065, 13200, 25080, 45930, 84150, 198000, 439550
 const GLADIATOR_TRAINER = [148, 554, 1485, 3800, 9900, 22570, 48230, 100950, 237600, 527450, 1083400, 2452000, 4942000, 9266400, 19958000]
 
 const TIME_MACHINE = [297, 1105, 2970, 5700, 11880, 22570, 41340, 75730, 178200, 395600, 812550, 1839000, 3706500, 6949800, 14968500]
+
+const underworldTables = computed<BuildingTableData[]>(() => [
+  {
+    title: localize.global('general.buildings.underworld1'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: '', width: '45%' }
+    ],
+    rows: buildRows(HEART, [(level) => (level === 1 ? 0 : formatTableNumber(level * 1000)), (level, souls) => formatTableNumber(souls), () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld2'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.lure_count'), width: '10%' },
+      { label: localize.global('general.buildings.lure_bonus'), width: '10%' },
+      { label: '', width: '25%' }
+    ],
+    rows: buildRows(GATE, [(level) => formatTableNumber(level * 500), (level, souls) => formatTableNumber(souls), (level) => Math.min(5, level), (level) => `${100 + Math.max(0, (level - 5) * 20)} %`, () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld4'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '13%' },
+      { label: localize.global('general.souls'), width: '13%' },
+      { label: localize.global('general.buildings.hourly'), width: '12%' },
+      { label: localize.global('general.buildings.capacity'), width: '12%' },
+      { label: localize.global('general.buildings.full'), width: '12%' },
+      { label: localize.global('general.buildings.storage'), width: '13%' }
+    ],
+    rows: buildRows(EXTRACTOR, [
+      (level) => formatTableNumber(level * 250),
+      (level, souls) => formatTableNumber(souls),
+      (level, souls, hourly) => formatTableNumber(hourly),
+      (level, souls, hourly, storage) => formatTableNumber(storage),
+      (level, souls, hourly, storage) => formatFancyTime((3600000 * storage) / hourly),
+      (level, souls, hourly, storage, capacity) => formatTableNumber(capacity)
+    ])
+  },
+  {
+    title: localize.global('general.buildings.underworld5'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.goblins'), width: '15%' },
+      { label: '', width: '30%' }
+    ],
+    rows: buildRows(GOBLIN_PIT, [(level) => formatTableNumber(level * 400), (level, souls) => formatTableNumber(souls), (level, souls, goblins) => goblins, () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld6'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.lure_bonus'), width: '15%' },
+      { label: '', width: '30%' }
+    ],
+    rows: buildRows(TORTURE_CHAMBER, [(level) => formatTableNumber(level * 660), (level, souls) => formatTableNumber(souls), (level) => `${100 + level * 10} %`, () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld7'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.critical_bonus'), width: '15%' },
+      { label: '', width: '30%' }
+    ],
+    rows: buildRows(GLADIATOR_TRAINER, [(level) => formatTableNumber(level * 700), (level, souls) => formatTableNumber(souls), (level) => `${100 + level * 5} %`, () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld8'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.trolls'), width: '15%' },
+      { label: '', width: '30%' }
+    ],
+    rows: buildRows(TROLL_BLOCK, [(level) => formatTableNumber(level * 990), (level, souls) => formatTableNumber(souls), (level, souls, trolls) => trolls, () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld9'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.thirst_free'), width: '15%' },
+      { label: localize.global('general.buildings.thirst_usable'), width: '15%' },
+      { label: localize.global('general.buildings.capacity'), width: '15%' }
+    ],
+    rows: buildRows(TIME_MACHINE, [(level) => formatTableNumber(level * 10000), (level, souls) => formatTableNumber(souls), (level) => getThirst(level), (level) => 4 * getThirst(level), (level) => 100 * getThirst(level)])
+  },
+  {
+    title: localize.global('general.buildings.underworld10'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: '', width: '45%' }
+    ],
+    rows: buildRows(KEEPER, [(level) => formatTableNumber(level * 1500), (level, souls) => formatTableNumber(souls), () => ''])
+  },
+  {
+    title: localize.global('general.buildings.underworld3'),
+    columns: [
+      { label: localize.global('general.level'), width: '10%' },
+      { label: localize.global('general.buildings.time'), width: '15%' },
+      { label: localize.global('general.gold'), width: '15%' },
+      { label: localize.global('general.souls'), width: '15%' },
+      { label: localize.global('general.buildings.capacity'), width: '15%' },
+      { label: localize.global('general.buildings.hourly'), width: '15%' },
+      { label: localize.global('general.buildings.full'), width: '15%' }
+    ],
+    rows: buildRows(
+      GOLD_PIT,
+      [
+        (level) => formatTableNumber(level > 15 ? 10e6 : level * 1000),
+        (level, souls) => formatTableNumber(souls),
+        (level) => formatSpacedNumber(getGoldPitValues(characterLevel.value, level)[0]),
+        (level) => formatSpacedNumber(getGoldPitValues(characterLevel.value, level)[1]),
+        (level) => formatFancyTime(getGoldPitValues(characterLevel.value, level)[2])
+      ],
+      { underworld: true }
+    )
+  }
+])
 
 const FORTRESS = [
   [0, 0, 900, 300],
@@ -713,366 +1070,6 @@ const KNIGHTS = [
   [240000000, 80000000]
 ]
 
-const localize = useLocalize('attributes')
-
-const tab = ref<TabName>('gold_experience')
-
-// Tabs are built on first open, the gold table alone has 3156 rows
-const visited = ref(new Set<TabName>([tab.value]))
-
-const goldTableRows = shallowRef<string[][]>([])
-
-const fortressLevel = ref<number | null>(null)
-const quartersLevel = ref<number | null>(null)
-
-const goldLevel = ref<number | null>(null)
-const goldGuild = ref<number | null>(null)
-const goldTower = ref<number | null>(null)
-const goldMine = ref<number | null>(null)
-const goldPit = ref<number | null>(null)
-const goldRunes = ref<number | null>(null)
-
-const experienceLevel = ref<number | null>(null)
-const experienceHydra = ref<number | null>(null)
-const experienceAcademy = ref<number | null>(null)
-
-const expeditionLevel = ref<number | null>(null)
-const expeditionMount = ref(0)
-const expeditionBook = ref<number | null>(null)
-const expeditionGuildExperience = ref<number | null>(null)
-const expeditionExperienceRune = ref<number | null>(null)
-const expeditionExperienceScroll = ref(0)
-const expeditionStars = ref<number | null>(null)
-const expeditionTower = ref<number | null>(null)
-const expeditionGuildGold = ref<number | null>(null)
-const expeditionGoldRune = ref<number | null>(null)
-const expeditionGoldScroll = ref(0)
-
-const questLevel = ref<number | null>(null)
-const questBook = ref<number | null>(null)
-const questGuildExperience = ref<number | null>(null)
-const questExperienceRune = ref<number | null>(null)
-const questExperienceScroll = ref(0)
-const questTower = ref<number | null>(null)
-const questGuildGold = ref<number | null>(null)
-const questGoldRune = ref<number | null>(null)
-const questGoldScroll = ref(0)
-
-const miscLevel = ref<number | null>(null)
-const miscGate = ref<number | null>(null)
-const miscTorture = ref<number | null>(null)
-
-const priceAtAttribute = ref<number | null>(null)
-const priceFrom = ref<number | null>(null)
-const priceTo = ref<number | null>(null)
-
-const tabOptions = computed<SelectOption<TabName>[]>(() => [
-  { value: 'gold_experience', label: localize('tabs.gold_exp') },
-  { value: 'fortress', label: localize('tabs.fortress') },
-  { value: 'underworld', label: localize('tabs.underworld') },
-  { value: 'gold_table', label: localize('tabs.gold_table') }
-])
-
-const yesNoOptions = computed<SelectOption<number>[]>(() => [
-  { value: 0, label: localize.global('general.no') },
-  { value: 1, label: localize.global('general.yes') }
-])
-
-const mountOptions = computed<SelectOption<number>[]>(() => [
-  { value: 0, label: localize('expeditions.mount.none') },
-  { value: 1, label: localize('expeditions.mount.pig') },
-  { value: 2, label: localize('expeditions.mount.wolf') },
-  { value: 3, label: localize('expeditions.mount.raptor') },
-  { value: 4, label: localize('expeditions.mount.griffin') }
-])
-
-const goldTableColumns = computed(() => [localize('gold_table.level'), localize('gold_table.price'), localize('gold_table.curve'), localize('gold_table.mount'), localize('gold_table.guard')])
-
-const characterLevel = computed(() => clamp(fortressLevel.value ?? 0, 1, 999))
-const quarters = computed(() => clamp(quartersLevel.value ?? 0, 0, 15))
-
-const goldTouched = useTouched([goldLevel, goldGuild, goldTower, goldMine, goldPit, goldRunes])
-const experienceTouched = useTouched([experienceLevel, experienceHydra, experienceAcademy])
-const expeditionTouched = useTouched([expeditionLevel, expeditionMount, expeditionBook, expeditionGuildExperience, expeditionExperienceRune, expeditionExperienceScroll, expeditionStars, expeditionTower, expeditionGuildGold, expeditionGoldRune, expeditionGoldScroll])
-const questTouched = useTouched([questLevel, questBook, questGuildExperience, questExperienceRune, questExperienceScroll, questTower, questGuildGold, questGoldRune, questGoldScroll])
-const miscTouched = useTouched([miscLevel, miscGate, miscTorture])
-const priceAtTouched = useTouched([priceAtAttribute])
-const priceBetweenTouched = useTouched([priceFrom, priceTo])
-
-const gold = computed(() => {
-  const level = clamp(goldLevel.value ?? 0, 1, 999)
-  const guild = clamp(goldGuild.value ?? 0, 0, 200)
-  const tower = clamp(goldTower.value ?? 0, 0, 100)
-  // The gem value multiplier stops rising at gem mine 14, higher levels are worth the same
-  const mine = Math.min(clamp(goldMine.value ?? 0, 1, 100), 14)
-  const runes = clamp(goldRunes.value ?? 0, 0, 5)
-  const pit = clamp(goldPit.value ?? 0, 1, 100)
-
-  const [capacity, hourly, time] = getGoldPitValues(level, pit)
-
-  return blankUnless(goldTouched.value, {
-    reward: formatValue(Calculations.goldEnvironmentalReward(level)),
-    guard: formatValue(Calculations.goldGuardDuty(level, tower, guild)),
-    scroll: formatValue(Calculations.goldWitchScroll(level)),
-    witchPotion: formatValue(Calculations.goldWitchPotion(level)),
-    reroll: formatValue(Calculations.goldFortressReroll(level)),
-    arena: formatValue(Calculations.goldArena(level)),
-    towerEnemy: formatValue(Calculations.goldTowerEnemy(level)),
-    twisterEnemy: formatValue(Calculations.goldTwisterEnemy(level)),
-    dice1: formatValue(Calculations.goldDice(level, 0)),
-    dice2: formatValue(Calculations.goldDice(level, 1)),
-    dice3: formatValue(Calculations.goldDice(level, 2)),
-    gem1: formatValue(Calculations.goldGem(level, mine, 0)),
-    gem2: formatValue(Calculations.goldGem(level, mine, 1)),
-    gem3: formatValue(Calculations.goldGem(level, mine, 2)),
-    potion10: formatValue(Calculations.goldPotionCost(level, runes, 0)),
-    potion15: formatValue(Calculations.goldPotionCost(level, runes, 1)),
-    potion25: formatValue(Calculations.goldPotionCost(level, runes, 2)),
-    lifePotion: formatValue(Calculations.goldLifePotionCost(level, runes)),
-    lifePotionGold: formatValue(Calculations.goldLifePotionShroomlessCost(level, runes)),
-    hourglass1: formatValue(Calculations.goldHourglassCost(level, runes)),
-    hourglass10: formatValue(Calculations.goldHourglassPackCost(level, runes)),
-    bar1: formatValue(Calculations.goldCalendarBar(level)),
-    bar3: formatValue(Calculations.goldCalendarBars(level)),
-    capacity: formatSpacedNumber(capacity),
-    hourly: formatValue(hourly),
-    time: formatFancyTime(time)
-  })
-})
-
-const experience = computed(() => {
-  const level = clamp(experienceLevel.value ?? 0, 1, 999)
-  const hydra = clamp(experienceHydra.value ?? 0, 0, 20)
-  const academy = clamp(experienceAcademy.value ?? 0, 1, 20)
-
-  const [hourly, capacity, time] = getAcademyValues(level, academy)
-
-  const calendar3 = Calculations.experienceCalendar(level, 2)
-
-  return blankUnless(experienceTouched.value, {
-    next: formatSpacedNumber(Calculations.experienceNextLevel(level)),
-    daily: formatSpacedNumber(Calculations.experienceSecretMission(level, hydra)),
-    arena: formatSpacedNumber(Calculations.experienceArena(level)),
-    hourly: formatSpacedNumber(hourly),
-    capacity: formatSpacedNumber(capacity),
-    time: formatFancyTime(time),
-    wheel1: formatSpacedNumber(Calculations.experienceWheelBook(level)),
-    wheel2: formatSpacedNumber(Calculations.experienceWheelBooks(level)),
-    calendar1: formatSpacedNumber(Calculations.experienceCalendar(level, 0)),
-    calendar2: formatSpacedNumber(Calculations.experienceCalendar(level, 1)),
-    calendar3: formatSpacedNumber(calendar3),
-    dungeon: formatSpacedNumber(calendar3),
-    habitat: formatSpacedNumber(Calculations.experiencePetHabitat(level)),
-    twister: formatSpacedNumber(Calculations.experienceTwisterEnemy(level))
-  })
-})
-
-const expedition = computed(() => {
-  const level = clamp(expeditionLevel.value ?? 0, 1, 999)
-  const guildExperience = clamp(expeditionGuildExperience.value ?? 0, 0, 200)
-  const guildGold = clamp(expeditionGuildGold.value ?? 0, 0, 200)
-  const book = clamp(expeditionBook.value ?? 0, 0, 100)
-  const tower = clamp(expeditionTower.value ?? 0, 0, 100)
-  const experienceRune = clamp(expeditionExperienceRune.value ?? 0, 0, 10)
-  const goldRune = clamp(expeditionGoldRune.value ?? 0, 0, 50)
-  const stars = clamp(expeditionStars.value ?? 0, 0, 3)
-  const mount = clamp(expeditionMount.value, 0, 4)
-
-  const experienceValue = Calculations.experienceExpedition(level, book, guildExperience, experienceRune, expeditionExperienceScroll.value === 1, stars, mount)
-  const goldValue = Calculations.goldExpedition(level, tower, guildGold, goldRune, expeditionGoldScroll.value === 1, mount)
-
-  return blankUnless(expeditionTouched.value, {
-    experience: formatSpacedNumber(experienceValue),
-    gold: formatValue(goldValue),
-    goldChest: formatValue(goldValue / 5),
-    goldMid: formatValue(goldValue / 10)
-  })
-})
-
-const quest = computed(() => {
-  const level = clamp(questLevel.value ?? 0, 1, 999)
-  const guildExperience = clamp(questGuildExperience.value ?? 0, 0, 200)
-  const guildGold = clamp(questGuildGold.value ?? 0, 0, 200)
-  const book = clamp(questBook.value ?? 0, 0, 100)
-  const tower = clamp(questTower.value ?? 0, 0, 100)
-  const experienceRune = clamp(questExperienceRune.value ?? 0, 0, 10)
-  const goldRune = clamp(questGoldRune.value ?? 0, 0, 50)
-
-  const experienceScroll = questExperienceScroll.value === 1 ? 1.1 : 1
-  const goldScroll = questGoldScroll.value === 1 ? 1.1 : 1
-
-  return blankUnless(questTouched.value, {
-    experienceMin: formatSpacedNumber(experienceScroll * Calculations.experienceQuestMin(level, book, guildExperience, experienceRune)),
-    experienceMax: formatSpacedNumber(experienceScroll * Calculations.experienceQuestMax(level, book, guildExperience, experienceRune)),
-    goldMin: formatValue(goldScroll * Calculations.goldQuestMin(level, tower, guildGold, goldRune)),
-    goldMax: formatValue(goldScroll * Calculations.goldQuestMax(level, tower, guildGold, goldRune))
-  })
-})
-
-const miscSouls = computed(() => {
-  const level = clamp(miscLevel.value ?? 0, 1, 999)
-  const gate = clamp(miscGate.value ?? 0, 0, 15)
-  const torture = clamp(miscTorture.value ?? 0, 0, 15)
-
-  return miscTouched.value ? formatValue(Calculations.souls(level, gate, torture)) : ''
-})
-
-const priceAt = computed(() => {
-  const attribute = clamp(priceAtAttribute.value ?? 0, 1, Infinity)
-
-  return priceAtTouched.value ? formatCost(Calculations.goldAttributeCost(attribute - 1)) : ''
-})
-
-const priceBetween = computed(() => {
-  const from = clamp(priceFrom.value ?? 0, 1, Infinity)
-  const to = clamp(priceTo.value ?? 0, from, Infinity)
-
-  return priceBetweenTouched.value ? formatCost(Calculations.goldAttributeTotalCost(to - 1) - Calculations.goldAttributeTotalCost(from - 1)) : ''
-})
-
-const underworldTables = computed<BuildingTableData[]>(() => [
-  {
-    title: localize.global('general.buildings.underworld1'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: '', width: '45%' }
-    ],
-    rows: buildRows(HEART, [(level) => (level === 1 ? 0 : formatTableNumber(level * 1000)), (level, souls) => formatTableNumber(souls), () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld2'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.lure_count'), width: '10%' },
-      { label: localize.global('general.buildings.lure_bonus'), width: '10%' },
-      { label: '', width: '25%' }
-    ],
-    rows: buildRows(GATE, [(level) => formatTableNumber(level * 500), (level, souls) => formatTableNumber(souls), (level) => Math.min(5, level), (level) => `${100 + Math.max(0, (level - 5) * 20)} %`, () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld4'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '13%' },
-      { label: localize.global('general.souls'), width: '13%' },
-      { label: localize.global('general.buildings.hourly'), width: '12%' },
-      { label: localize.global('general.buildings.capacity'), width: '12%' },
-      { label: localize.global('general.buildings.full'), width: '12%' },
-      { label: localize.global('general.buildings.storage'), width: '13%' }
-    ],
-    rows: buildRows(EXTRACTOR, [
-      (level) => formatTableNumber(level * 250),
-      (level, souls) => formatTableNumber(souls),
-      (level, souls, hourly) => formatTableNumber(hourly),
-      (level, souls, hourly, storage) => formatTableNumber(storage),
-      (level, souls, hourly, storage) => formatFancyTime((3600000 * storage) / hourly),
-      (level, souls, hourly, storage, capacity) => formatTableNumber(capacity)
-    ])
-  },
-  {
-    title: localize.global('general.buildings.underworld5'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.goblins'), width: '15%' },
-      { label: '', width: '30%' }
-    ],
-    rows: buildRows(GOBLIN_PIT, [(level) => formatTableNumber(level * 400), (level, souls) => formatTableNumber(souls), (level, souls, goblins) => goblins, () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld6'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.lure_bonus'), width: '15%' },
-      { label: '', width: '30%' }
-    ],
-    rows: buildRows(TORTURE_CHAMBER, [(level) => formatTableNumber(level * 660), (level, souls) => formatTableNumber(souls), (level) => `${100 + level * 10} %`, () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld7'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.critical_bonus'), width: '15%' },
-      { label: '', width: '30%' }
-    ],
-    rows: buildRows(GLADIATOR_TRAINER, [(level) => formatTableNumber(level * 700), (level, souls) => formatTableNumber(souls), (level) => `${100 + level * 5} %`, () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld8'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.trolls'), width: '15%' },
-      { label: '', width: '30%' }
-    ],
-    rows: buildRows(TROLL_BLOCK, [(level) => formatTableNumber(level * 990), (level, souls) => formatTableNumber(souls), (level, souls, trolls) => trolls, () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld9'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.thirst_free'), width: '15%' },
-      { label: localize.global('general.buildings.thirst_usable'), width: '15%' },
-      { label: localize.global('general.buildings.capacity'), width: '15%' }
-    ],
-    rows: buildRows(TIME_MACHINE, [(level) => formatTableNumber(level * 10000), (level, souls) => formatTableNumber(souls), (level) => getThirst(level), (level) => 4 * getThirst(level), (level) => 100 * getThirst(level)])
-  },
-  {
-    title: localize.global('general.buildings.underworld10'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: '', width: '45%' }
-    ],
-    rows: buildRows(KEEPER, [(level) => formatTableNumber(level * 1500), (level, souls) => formatTableNumber(souls), () => ''])
-  },
-  {
-    title: localize.global('general.buildings.underworld3'),
-    columns: [
-      { label: localize.global('general.level'), width: '10%' },
-      { label: localize.global('general.buildings.time'), width: '15%' },
-      { label: localize.global('general.gold'), width: '15%' },
-      { label: localize.global('general.souls'), width: '15%' },
-      { label: localize.global('general.buildings.capacity'), width: '15%' },
-      { label: localize.global('general.buildings.hourly'), width: '15%' },
-      { label: localize.global('general.buildings.full'), width: '15%' }
-    ],
-    rows: buildRows(
-      GOLD_PIT,
-      [
-        (level) => formatTableNumber(level > 15 ? 10e6 : level * 1000),
-        (level, souls) => formatTableNumber(souls),
-        (level) => formatSpacedNumber(getGoldPitValues(characterLevel.value, level)[0]),
-        (level) => formatSpacedNumber(getGoldPitValues(characterLevel.value, level)[1]),
-        (level) => formatFancyTime(getGoldPitValues(characterLevel.value, level)[2])
-      ],
-      { underworld: true }
-    )
-  }
-])
-
 const fortressTables = computed<BuildingTableData[]>(() => [
   {
     title: localize.global('general.buildings.fortress1'),
@@ -1289,6 +1286,9 @@ function formatFancyTime(duration: number) {
     .slice(0, 2)
     .join(' ')
 }
+
+// Seconds, before the quarters reduction
+const BUILD_TIMES = [900, 1895, 3960, 8460, 18000, 28800, 41100, 66420, 144000, 313200, 691200, 1152000, 1728000, 2221200, 2880000, 3801600, 4147200, 4492800, 4838400, 5184000]
 
 function buildTime(level: number, underworld = false) {
   const multiplier = 1 - 0.05 * quarters.value

@@ -5,7 +5,11 @@
         <SFIcon name="gear" />
         {{ localize.global('analyzer.topbar.options') }}
       </SFButton>
-      <a :href="WIKI_URL" target="_blank" class="inline-flex min-h-9.5 items-center gap-2 rounded-md px-4 py-2 leading-5 font-bold text-white/90 transition hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+      <a
+        href="https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator"
+        target="_blank"
+        class="inline-flex min-h-9.5 items-center gap-2 rounded-md px-4 py-2 leading-5 font-bold text-white/90 transition hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
         <SFIcon name="book" />
         Wiki - How to use
       </a>
@@ -163,25 +167,13 @@ type SimulatorLog = {
   config: SimulatorConfig | null
 }
 
-const WIKI_URL = 'https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator'
-
-const FIGHTER_NAME_KEYS = ['dungeons.player', 'general.companion1', 'general.companion2', 'general.companion3']
-
 const COMPANION_CLASSES: CharacterClass[] = [1, 2, 3]
 
 const SHARED_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Potions.Life']
 
-const REBUILD_PATHS = SHARED_PATHS.filter((path) => path !== 'Potions.Life')
-
 const SHADOW_COLOR = '#dec0ff'
 
-const RUNE_LETTERS = ['F', 'C', 'L']
-
 const HEALTH_CAP = 500
-
-const DUNGEONS = Object.values(DUNGEON_DATA)
-  .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
-  .sort((a, b) => a.pos - b.pos)
 
 const localize = useLocalize('dungeons')
 
@@ -215,6 +207,8 @@ const isEditorValid = useComponentValidation(editor)
 
 const isSettingsValid = useComponentValidation(settings, useTemplateRef('dungeon-ref'), useTemplateRef('boss-ref'), useTemplateRef('open-ref'))
 
+const FIGHTER_NAME_KEYS = ['dungeons.player', 'general.companion1', 'general.companion2', 'general.companion3']
+
 const fighterNames = computed(() => FIGHTER_NAME_KEYS.map((key) => localize.global(key)))
 
 const selectedDungeon = computed(() => DUNGEON_DATA[dungeonId.value])
@@ -235,6 +229,10 @@ const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: 
 })
 
 const isRunning = computed(() => isSimulating.value || isSimulatingRemaining.value || isSimulatingAll.value || isSimulatingNext.value || isLogging.value)
+
+const DUNGEONS = Object.values(DUNGEON_DATA)
+  .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
+  .sort((a, b) => a.pos - b.pos)
 
 const dungeonOptions = computed<SelectOption[]>(() => DUNGEONS.map((dungeon) => ({ value: String(dungeon.id), label: getDungeonName(dungeon), color: dungeon.companions ? SHADOW_COLOR : undefined })))
 
@@ -274,6 +272,8 @@ function getFirstBossId(id: string) {
 function getMainPlayer() {
   return players.value[0] ?? new PlayerModel()
 }
+
+const RUNE_LETTERS = ['F', 'C', 'L']
 
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''
@@ -455,6 +455,8 @@ function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
 
   return { ...state, potions: state.potions.map((potion, index) => (index === free ? { type: LIFE_POTION_TYPE, size } : potion)) }
 }
+
+const REBUILD_PATHS = SHARED_PATHS.filter((path) => path !== 'Potions.Life')
 
 function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
   const player = source.value

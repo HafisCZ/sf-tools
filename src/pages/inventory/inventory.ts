@@ -72,10 +72,6 @@ type StatKey = Exclude<keyof CharacterStats, 'level' | 'runes'>
 
 const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
 
-const STAT_ATTRIBUTES = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck'] as const
-
-const PET_HABITATS = ['Water', 'Light', 'Earth', 'Shadow', 'Fire'] as const
-
 const STAT_LABEL_KEYS: Record<StatKey, string> = {
   strength: 'general.attribute1',
   dexterity: 'general.attribute2',
@@ -93,35 +89,6 @@ const STAT_LABEL_KEYS: Record<StatKey, string> = {
   damageMax: 'inventory.stat.damage_max',
   damageAverage: 'inventory.stat.damage_average'
 }
-
-const COMPARISON_GROUPS: StatKey[][] = [
-  ['strength', 'dexterity', 'intelligence', 'constitution', 'luck'],
-  ['health', 'armor', 'reduction'],
-  ['rangeMin', 'rangeMax', 'rangeAverage', 'critical'],
-  ['damageMin', 'damageMax', 'damageAverage']
-]
-
-const RUNE_GROUPS: [field: string, type: number][][] = [
-  [
-    ['Gold', 1],
-    ['XP', 4],
-    ['Health', 5]
-  ],
-  [
-    ['Chance', 2],
-    ['Quality', 3]
-  ],
-  [
-    ['ResistanceFire', 6],
-    ['ResistanceCold', 7],
-    ['ResistanceLightning', 8]
-  ],
-  [
-    ['DamageFire', 10],
-    ['DamageCold', 11],
-    ['DamageLightning', 12]
-  ]
-]
 
 export function getItemName(item: ItemModel) {
   return Loca.name(item.Type, item.Index, item.Class)
@@ -282,6 +249,10 @@ function getRealGemValue(character: PlayerModel, item: ItemModel, type: number) 
   }
 }
 
+const STAT_ATTRIBUTES = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck'] as const
+
+const PET_HABITATS = ['Water', 'Light', 'Earth', 'Shadow', 'Fire'] as const
+
 function getComparedStats(stats: CharacterStats, player: PlayerModel, index: CharacterIndex, base: ItemModel, compared: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
   const item = ModelUtils.morphItemForCharacter(player.Class, index, compared)
   const character = getCharacter(player, index)
@@ -425,11 +396,40 @@ function getCompareSocketLine(base: ItemModel, item: ItemModel): ComparisonLine[
   }
 }
 
+const COMPARISON_GROUPS: StatKey[][] = [
+  ['strength', 'dexterity', 'intelligence', 'constitution', 'luck'],
+  ['health', 'armor', 'reduction'],
+  ['rangeMin', 'rangeMax', 'rangeAverage', 'critical'],
+  ['damageMin', 'damageMax', 'damageAverage']
+]
+
 export function getComparisonGroups(stats: CharacterStats, player: PlayerModel, index: CharacterIndex, base: ItemModel, item: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
   const { reference, result } = getComparedStats(stats, player, index, base, item, ignoreGems, ignoreUpgrades)
 
   return [...COMPARISON_GROUPS.map((keys) => keys.flatMap((key) => getCompareLine(result[key], reference[key], globalLocalize(STAT_LABEL_KEYS[key])))), [...getCompareRuneLine(base, item), ...getCompareSocketLine(base, item)]].filter((lines) => lines.length > 0)
 }
+
+const RUNE_GROUPS: [field: string, type: number][][] = [
+  [
+    ['Gold', 1],
+    ['XP', 4],
+    ['Health', 5]
+  ],
+  [
+    ['Chance', 2],
+    ['Quality', 3]
+  ],
+  [
+    ['ResistanceFire', 6],
+    ['ResistanceCold', 7],
+    ['ResistanceLightning', 8]
+  ],
+  [
+    ['DamageFire', 10],
+    ['DamageCold', 11],
+    ['DamageLightning', 12]
+  ]
+]
 
 export function getStatsGroups(stats: CharacterStats): StatsLine[][] {
   const line = (key: StatKey, warn?: boolean): StatsLine => ({ value: stats[key], label: globalLocalize(STAT_LABEL_KEYS[key]), warn })

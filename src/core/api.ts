@@ -1,7 +1,5 @@
 import { Logger } from './logger'
 
-const BASE_URL = 'https://api.sftools.mar21.eu/api/'
-
 async function request<TResponse>(method: string, url: string, init?: RequestInit) {
   Logger.log('APICALL', `${method} ${url}`)
 
@@ -21,6 +19,8 @@ async function request<TResponse>(method: string, url: string, init?: RequestIni
 
   return data as TResponse
 }
+
+const BASE_URL = 'https://api.sftools.mar21.eu/api/'
 
 export class SiteAPI {
   static post<TResponse = unknown>(endpoint: string, data: unknown) {

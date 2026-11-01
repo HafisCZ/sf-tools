@@ -44,16 +44,16 @@ defineOptions({
   name: 'CalendarPage'
 })
 
+const localize = useLocalize('pets.calendar')
+
+const player = shallowRef<PlayerModel | null>(null)
+const ownedPets = ref(PetData.map(() => false))
+
 // Sort offsets that put collected pets last, then locked ones
 const COLLECTED_ORDER = 3156000000000
 const LOCKED_ORDER = 315600000000
 
 const NOW = Date.now()
-
-const localize = useLocalize('pets.calendar')
-
-const player = shallowRef<PlayerModel | null>(null)
-const ownedPets = ref(PetData.map(() => false))
 
 const pets = computed(() => {
   const entries = PetData.map((pet, index) => {

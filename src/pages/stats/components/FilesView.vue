@@ -138,8 +138,6 @@ const loader = useLoader()
 const filtersTitleId = useId()
 const ioTitleId = useId()
 
-const EXPRESSION_CONFIG = createAccessorConfig(['timestamp', 'players', 'groups', 'version', 'tags'])
-
 const advanced = ref(Site.options.advanced)
 const showHidden = ref(Site.options.hidden)
 const exportPublicOnly = ref(Site.options.export_public_only)
@@ -280,6 +278,8 @@ function show(params: StatsShowParams = {}) {
     }
   }
 }
+
+const EXPRESSION_CONFIG = createAccessorConfig(['timestamp', 'players', 'groups', 'version', 'tags'])
 
 function highlightExpression(value: string) {
   return { html: Highlighter.expression(value, undefined, EXPRESSION_CONFIG).text }

@@ -102,10 +102,6 @@ const NAV_BUTTONS: Record<StatsView, StatsView> = {
 
 const CLICKABLE_VIEWS: StatsView[] = ['players_grid', 'groups_grid', 'players', 'scripts', 'files', 'settings', 'profiles']
 
-const HISTORY_VIEWS: StatsView[] = ['players_grid', 'player', 'groups_grid', 'group', 'players', 'groups']
-
-const BACKUP_REMINDER_INTERVALS = [0, 2592000000, 604800000]
-
 const params = new URLSearchParams(window.location.search)
 
 const temporary = params.has('temp')
@@ -140,6 +136,8 @@ const pageWidth = computed(() => (current.value === 'files' ? '85vw' : current.v
 
 const activeButton = computed(() => (current.value ? NAV_BUTTONS[current.value] : null))
 
+const HISTORY_VIEWS: StatsView[] = ['players_grid', 'player', 'groups_grid', 'group', 'players', 'groups']
+
 const historyButton = computed(() => (current.value === 'scripts' && previous.value && HISTORY_VIEWS.includes(previous.value) ? NAV_BUTTONS[previous.value] : null))
 
 provide(STATS_NAVIGATION_KEY, {
@@ -163,6 +161,8 @@ onMounted(() => {
 function getView(view: StatsView): StatsViewInstance | null {
   return views[view].value as StatsViewInstance | null
 }
+
+const BACKUP_REMINDER_INTERVALS = [0, 2592000000, 604800000]
 
 async function initialize() {
   let profile: DatabaseProfile = ProfileManager.getProfile(params.get('profile'))

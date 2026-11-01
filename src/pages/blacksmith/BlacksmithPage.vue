@@ -83,8 +83,6 @@ const ATTRIBUTE_TYPES: Record<string, number[]> = {
   epic_5: [6, 0, 0]
 }
 
-const MAX_UPGRADES = 20
-
 const localize = useLocalize('blacksmith')
 
 const type = ref('normal_1')
@@ -110,6 +108,8 @@ function subtractResources(a: BlacksmithResources, b: BlacksmithResources): Blac
     Crystal: a.Crystal - b.Crystal
   }
 }
+
+const MAX_UPGRADES = 20
 
 function listUpgrades(itemType: string, attribute: number, mageOrScoutWeapon: boolean) {
   const item = ItemModel.empty()

@@ -107,10 +107,6 @@ defineExpose({
   show
 })
 
-const TERMS_VERSION = 2
-
-const TABS = ['players_grid', 'groups_grid', 'players', 'scripts', 'files']
-
 const localize = useLocalize('stats.settings')
 
 const loader = useLoader()
@@ -137,6 +133,8 @@ const highlight = highlightScript(ScriptType.Action)
 
 const changed = computed(() => content.value !== savedContent.value)
 
+const TABS = ['players_grid', 'groups_grid', 'players', 'scripts', 'files']
+
 const tabOptions = computed<SelectOption[]>(() => TABS.map((value) => ({ value, label: localize.global(`stats.topbar.${value}`) })))
 
 const backupOptions = computed<SelectOption[]>(() => ['0', '1', '2'].map((value) => ({ value, label: localize(`backup_reminder_frequency_values.${value}`) })))
@@ -160,6 +158,8 @@ watch(skipGrid, (value) => {
 watch(unsafeDelete, (value) => {
   Site.options.unsafe_delete = value
 })
+
+const TERMS_VERSION = 2
 
 watch(termsAccepted, (value) => {
   // The terms dialog saves its version number, which must not be replaced with true

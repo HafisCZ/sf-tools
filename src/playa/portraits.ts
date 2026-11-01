@@ -46,8 +46,6 @@ type PortraitData = {
 
 const DATA = PORTRAITS as unknown as PortraitData
 
-const IMAGES = new Map<string, Promise<HTMLImageElement | null>>()
-
 export const PORTRAIT_SIZE = DATA.size
 
 // The game has no body for the newer classes, they borrow the body of the class with the same main attribute
@@ -147,6 +145,8 @@ function toLayer(folder: string, name: string, box: PortraitBox | null | undefin
 
   return { url: `/res/portraits/${folder}/${name}.webp`, left: center + (box[0] - center) * scale, top: center + (box[1] - center) * scale, width: box[2] * scale, height: box[3] * scale }
 }
+
+const IMAGES = new Map<string, Promise<HTMLImageElement | null>>()
 
 function loadImage(url: string) {
   let image = IMAGES.get(url)

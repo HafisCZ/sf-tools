@@ -99,7 +99,7 @@
               <SFTableCell v-if="showRange" align="center">{{ formatChance(entry.score?.min) }}</SFTableCell>
               <SFTableCell v-if="showRange" align="center">{{ formatChance(entry.score?.max) }}</SFTableCell>
               <SFTableCell v-if="isSingleTarget && !screenshot" align="center">
-                <SFButton v-if="entry.index !== yourselfIndex" variant="ghost" size="sm" icon :aria-label="YOURSELF_LABEL" class="hover:text-green-400 focus-visible:text-green-400" @click="yourselfIndex = entry.index">
+                <SFButton v-if="entry.index !== yourselfIndex" variant="ghost" size="sm" icon :aria-label="localize('fight_as_player')" class="hover:text-green-400 focus-visible:text-green-400" @click="yourselfIndex = entry.index">
                   <SFIcon name="circle-user" />
                 </SFButton>
               </SFTableCell>
@@ -173,17 +173,6 @@ const MODE_KEY = 'player_sim/mode'
 
 const MODES: SimulatorMode[] = ['all', 'attack', 'defend', 'tournament']
 
-const YOURSELF_LABEL = 'Fight as this player'
-
-const COMPARATORS: Record<string, (a: PlayerScore, b: PlayerScore) => number> = {
-  class: (a, b) => a.player.Class - b.player.Class,
-  level: (a, b) => a.player.Level - b.player.Level,
-  name: (a, b) => a.player.Name.localeCompare(b.player.Name),
-  avg: (a, b) => (a.score?.avg ?? 0) - (b.score?.avg ?? 0),
-  min: (a, b) => (a.score?.min ?? 0) - (b.score?.min ?? 0),
-  max: (a, b) => (a.score?.max ?? 0) - (b.score?.max ?? 0)
-}
-
 const localize = useLocalize('simulator')
 
 const mode = ref(readMode())
@@ -214,6 +203,15 @@ const modeOptions = computed<SelectOption<SimulatorMode>[]>(() => MODES.map((val
 const isSingleTarget = computed(() => mode.value === 'attack' || mode.value === 'defend')
 
 const showRange = computed(() => mode.value === 'all')
+
+const COMPARATORS: Record<string, (a: PlayerScore, b: PlayerScore) => number> = {
+  class: (a, b) => a.player.Class - b.player.Class,
+  level: (a, b) => a.player.Level - b.player.Level,
+  name: (a, b) => a.player.Name.localeCompare(b.player.Name),
+  avg: (a, b) => (a.score?.avg ?? 0) - (b.score?.avg ?? 0),
+  min: (a, b) => (a.score?.min ?? 0) - (b.score?.min ?? 0),
+  max: (a, b) => (a.score?.max ?? 0) - (b.score?.max ?? 0)
+}
 
 const sortedPlayers = computed(() => {
   const sort = sorting.value

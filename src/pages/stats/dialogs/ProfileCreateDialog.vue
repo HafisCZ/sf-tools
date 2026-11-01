@@ -91,8 +91,6 @@ type RuleState = {
   secondary: string
 }
 
-const MODES = ['equals', 'above', 'below', 'between']
-
 const localize = useLocalize('dialog.profile_create')
 
 const profile = props.profileKey ? ProfileManager.getProfile(props.profileKey) : undefined
@@ -121,6 +119,8 @@ const isValid = useComponentValidation(
 )
 
 const slotOptions = computed<SelectOption[]>(() => [{ value: '', label: localize('default') }, ...[1, 2, 3, 4, 5].map((value) => ({ value: String(value), label: String(value) }))])
+
+const MODES = ['equals', 'above', 'below', 'between']
 
 const modeOptions = computed<SelectOption[]>(() => MODES.map((value) => ({ value, label: localize(value) })))
 

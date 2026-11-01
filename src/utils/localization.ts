@@ -15,12 +15,6 @@ export const LOCALES: Record<string, string> = {
   ch: 'Schwyzerdüütsch'
 }
 
-const INJECTIONS: Record<string, [string, string]> = {
-  translations_general: ['/js/playa/lang/{{locale}}/general.json', 'general'],
-  translations_monsters: ['/js/playa/lang/{{locale}}/monsters.json', 'monsters'],
-  translations_items: ['/js/playa/lang/{{locale}}/items.json', 'items']
-}
-
 type TranslationTree = {
   [key: string]: string | TranslationTree
 }
@@ -63,6 +57,12 @@ async function fetchTranslation(value: string, url: string, ...path: string[]) {
   const tree: TranslationTree = await response.json()
 
   return flatten({}, tree, ...path)
+}
+
+const INJECTIONS: Record<string, [string, string]> = {
+  translations_general: ['/js/playa/lang/{{locale}}/general.json', 'general'],
+  translations_monsters: ['/js/playa/lang/{{locale}}/monsters.json', 'monsters'],
+  translations_items: ['/js/playa/lang/{{locale}}/items.json', 'items']
 }
 
 async function fetchTranslations(value: string) {

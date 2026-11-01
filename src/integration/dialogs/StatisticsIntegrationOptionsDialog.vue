@@ -63,10 +63,6 @@ type IntegrationOptions = {
   ignored_duration: number
 }
 
-const SLOTS = [0, 1, 2, 3, 4, 5]
-
-const DURATIONS = [0, 86400000, 604800000, 2592000000, 7776000000]
-
 const localize = useLocalize('dialog.statistics_integration_options')
 
 const slot = ref(String(props.options.slot))
@@ -76,7 +72,11 @@ const ignoredIdentifiers = ref([...props.options.ignored_identifiers])
 
 const isValid = useComponentValidation(useTemplateRef('slot-ref'), useTemplateRef('limit-ref'), useTemplateRef('ignored-duration-ref'))
 
+const SLOTS = [0, 1, 2, 3, 4, 5]
+
 const slotOptions = computed<SelectOption[]>(() => SLOTS.map((value) => ({ value: String(value), label: value === 0 ? localize.global('dialog.profile_create.default') : String(value) })))
+
+const DURATIONS = [0, 86400000, 604800000, 2592000000, 7776000000]
 
 const durationOptions = computed<SelectOption[]>(() => DURATIONS.map((value) => ({ value: String(value), label: localize(`ignored_duration.${value}`) })))
 

@@ -67,15 +67,6 @@ type SummaryBlock = {
   value: BlacksmithResources
 }
 
-const SECTIONS: Section[] = [
-  { list: 'player', label: 'inventory.section.player', border: 'border-[yellow]' },
-  { list: 'bert', label: 'general.companion1', border: 'border-[lightblue]' },
-  { list: 'mark', label: 'general.companion2', border: 'border-[lightgreen]' },
-  { list: 'kunigunde', label: 'general.companion3', border: 'border-[lightyellow]' },
-  { list: 'storage', label: 'inventory.section.storage', border: 'border-[red]' },
-  { list: 'dummy', label: 'inventory.section.dummy', border: 'border-[gray]' }
-]
-
 const RESOURCES = [
   { key: 'Metal', icon: '/res/icon_metal.png' },
   { key: 'Crystal', icon: '/res/icon_crystal.png' }
@@ -97,6 +88,15 @@ const dismantledIds = ref<number[]>([])
 const entries = computed(() => createResourceEntries(props.player))
 
 const allEntries = computed(() => Object.values(entries.value).flat())
+
+const SECTIONS: Section[] = [
+  { list: 'player', label: 'inventory.section.player', border: 'border-[yellow]' },
+  { list: 'bert', label: 'general.companion1', border: 'border-[lightblue]' },
+  { list: 'mark', label: 'general.companion2', border: 'border-[lightgreen]' },
+  { list: 'kunigunde', label: 'general.companion3', border: 'border-[lightyellow]' },
+  { list: 'storage', label: 'inventory.section.storage', border: 'border-[red]' },
+  { list: 'dummy', label: 'inventory.section.dummy', border: 'border-[gray]' }
+]
 
 const sections = computed(() => SECTIONS.map((section) => ({ ...section, entries: entries.value[section.list] })).filter((section) => section.entries.length > 0))
 

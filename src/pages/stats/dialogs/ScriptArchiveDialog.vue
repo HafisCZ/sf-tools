@@ -55,8 +55,6 @@ const emit = defineEmits<{
   close: [content?: string]
 }>()
 
-const TYPES = ['create', 'overwrite', 'save', 'remove', 'discard']
-
 const TYPE_ICONS: Record<string, IconName> = {
   create: 'plus',
   overwrite: 'pen',
@@ -78,6 +76,8 @@ const localize = useLocalize('dialog.script_archive')
 const entries = ScriptArchive.all()
 
 const filter = ref('')
+
+const TYPES = ['create', 'overwrite', 'save', 'remove', 'discard']
 
 const filterOptions = computed<SelectOption[]>(() => [{ value: '', label: localize('types.all'), image: 'question' }, ...TYPES.map((type) => ({ value: type, label: localize(`types.${type}`), image: TYPE_ICONS[type] }))])
 

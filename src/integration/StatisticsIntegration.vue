@@ -13,7 +13,7 @@
               {{ group.prefix }}
             </button>
             <div v-if="isPhone && openPrefix === group.prefix" class="mb-1 flex flex-col rounded-md border border-line p-1">
-              <SFInput v-model="search" :aria-label="SEARCH_LABEL" :placeholder="SEARCH_LABEL" />
+              <SFInput v-model="search" :aria-label="localize('search')" :placeholder="localize('search')" />
               <ul class="mt-1 flex flex-col">
                 <li v-for="entry in filterGroup(group.entries)" :key="entry.LinkId">
                   <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectGroupEntry(entry)">
@@ -39,8 +39,8 @@
           </div>
         </div>
         <Teleport to="body">
-          <SFDropdownMenu v-if="!isPhone && openGroup && groupPosition" :anchor="groupPosition" float="right" position="right" :width="PANEL_WIDTH" @close="closeGroup">
-            <SFInput v-model="search" :aria-label="SEARCH_LABEL" :placeholder="SEARCH_LABEL" />
+          <SFDropdownMenu v-if="!isPhone && openGroup && groupPosition" :anchor="groupPosition" float="right" position="right" :width="300" @close="closeGroup">
+            <SFInput v-model="search" :aria-label="localize('search')" :placeholder="localize('search')" />
             <ul role="menu" class="mt-1 flex flex-col">
               <li v-for="entry in filterGroup(openGroup.entries)" :key="entry.LinkId" role="none">
                 <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectGroupEntry(entry)">
@@ -171,10 +171,6 @@ const options = new OptionsHandler<IntegrationOptions>('integration', {
   ignored_identifiers: [],
   ignored_duration: 0
 })
-
-const SEARCH_LABEL = 'Search player...'
-
-const PANEL_WIDTH = 300
 
 const panelId = useId()
 

@@ -10,8 +10,6 @@ import ChangelogDialog from './dialogs/ChangelogDialog.vue'
 import SimulatorShopDialog from './dialogs/SimulatorShopDialog.vue'
 import TermsDialog from './dialogs/TermsDialog.vue'
 
-const TERMS_VERSION = 2
-
 export async function createPage(metadata: SiteMetadata, component: Component) {
   // Site.run() replaces Site.data with this result, which keeps what the page set while mounting
   Site.ready(metadata, () => Site.data)
@@ -24,6 +22,8 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
 
   Site.run()
 }
+
+const TERMS_VERSION = 2
 
 function openStartupDialogs(metadata: SiteMetadata) {
   if (!StoreWrapper.isAvailable()) return

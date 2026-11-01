@@ -67,32 +67,6 @@ type ClassItems = {
   armor: number
 }
 
-// Class 0 holds the items every class shares
-const CLASS_KINDS: [itemClass: number, types: number[]][] = [
-  [1, [1, 2, 3, 4, 5, 6, 7]],
-  [2, [1, 3, 4, 5, 6, 7]],
-  [3, [1, 3, 4, 5, 6, 7]],
-  [0, [8, 9, 10]]
-]
-
-// Only weapons stay per class, the other legendaries count once whichever class collected them
-const LEGENDARY_KINDS: [itemClass: number, type: number][] = [
-  [1, 1],
-  [2, 1],
-  [3, 1],
-  [0, 2],
-  [0, 3],
-  [0, 4],
-  [0, 5],
-  [0, 6],
-  [0, 7],
-  [0, 8],
-  [0, 9],
-  [0, 10]
-]
-
-const COLORS = [0, 1, 2, 3, 4]
-
 type UnlockLevels = [index: number, level: number][]
 
 const NORMAL_LEVELS: UnlockLevels = [
@@ -179,22 +153,6 @@ export const MAX_UNLOCK_LEVEL = 350
 
 export const PLAYER_CLASSES: CharacterClass[] = [WARRIOR, MAGE, SCOUT, ASSASSIN, BATTLEMAGE, BERSERKER, DEMONHUNTER, DRUID, BARD, NECROMANCER, PALADIN, PLAGUEDOCTOR, BLOODWEAVER]
 
-const CLASS_ITEMS: Record<CharacterClass, ClassItems> = {
-  [WARRIOR]: { weapon: WARRIOR, shield: true, armor: WARRIOR },
-  [MAGE]: { weapon: MAGE, shield: false, armor: MAGE },
-  [SCOUT]: { weapon: SCOUT, shield: false, armor: SCOUT },
-  [ASSASSIN]: { weapon: WARRIOR, shield: false, armor: SCOUT },
-  [BATTLEMAGE]: { weapon: WARRIOR, shield: false, armor: MAGE },
-  [BERSERKER]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
-  [DEMONHUNTER]: { weapon: SCOUT, shield: false, armor: WARRIOR },
-  [DRUID]: { weapon: MAGE, shield: false, armor: SCOUT },
-  [BARD]: { weapon: MAGE, shield: false, armor: SCOUT },
-  [NECROMANCER]: { weapon: MAGE, shield: false, armor: MAGE },
-  [PALADIN]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
-  [PLAGUEDOCTOR]: { weapon: WARRIOR, shield: false, armor: MAGE },
-  [BLOODWEAVER]: { weapon: WARRIOR, shield: false, armor: WARRIOR }
-}
-
 function getUnlockLevel(type: number, itemClass: number, index: number) {
   const levels = index >= 50 ? EPIC_LEVELS : type >= 8 ? ACCESSORY_LEVELS[type] : type === 1 && itemClass === 1 ? WARRIOR_WEAPON_LEVELS : NORMAL_LEVELS
 
@@ -235,6 +193,8 @@ function createGroup(key: ScrapbookRarity, entries: ScrapbookEntry[]): Scrapbook
     total: entries.length
   }
 }
+
+const COLORS = [0, 1, 2, 3, 4]
 
 function createGroups(source: ScrapbookSource, itemClass: number, type: number): ScrapbookGroup[] {
   const indices = getPictures(type, itemClass, 0)
@@ -288,6 +248,22 @@ function createKind(source: ScrapbookSource, itemClass: number, type: number): S
   }
 }
 
+const CLASS_ITEMS: Record<CharacterClass, ClassItems> = {
+  [WARRIOR]: { weapon: WARRIOR, shield: true, armor: WARRIOR },
+  [MAGE]: { weapon: MAGE, shield: false, armor: MAGE },
+  [SCOUT]: { weapon: SCOUT, shield: false, armor: SCOUT },
+  [ASSASSIN]: { weapon: WARRIOR, shield: false, armor: SCOUT },
+  [BATTLEMAGE]: { weapon: WARRIOR, shield: false, armor: MAGE },
+  [BERSERKER]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
+  [DEMONHUNTER]: { weapon: SCOUT, shield: false, armor: WARRIOR },
+  [DRUID]: { weapon: MAGE, shield: false, armor: SCOUT },
+  [BARD]: { weapon: MAGE, shield: false, armor: SCOUT },
+  [NECROMANCER]: { weapon: MAGE, shield: false, armor: MAGE },
+  [PALADIN]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
+  [PLAGUEDOCTOR]: { weapon: WARRIOR, shield: false, armor: MAGE },
+  [BLOODWEAVER]: { weapon: WARRIOR, shield: false, armor: WARRIOR }
+}
+
 function canWear(playerClass: CharacterClass, type: number, itemClass: number) {
   const items = CLASS_ITEMS[playerClass]
 
@@ -326,6 +302,30 @@ function matchesStatus(entry: ScrapbookEntry, status: ScrapbookStatus) {
       return true
   }
 }
+
+// Class 0 holds the items every class shares
+const CLASS_KINDS: [itemClass: number, types: number[]][] = [
+  [1, [1, 2, 3, 4, 5, 6, 7]],
+  [2, [1, 3, 4, 5, 6, 7]],
+  [3, [1, 3, 4, 5, 6, 7]],
+  [0, [8, 9, 10]]
+]
+
+// Only weapons stay per class, the other legendaries count once whichever class collected them
+const LEGENDARY_KINDS: [itemClass: number, type: number][] = [
+  [1, 1],
+  [2, 1],
+  [3, 1],
+  [0, 2],
+  [0, 3],
+  [0, 4],
+  [0, 5],
+  [0, 6],
+  [0, 7],
+  [0, 8],
+  [0, 9],
+  [0, 10]
+]
 
 export function createScrapbookKinds(player: PlayerModel, book: ScrapbookBook, marked: string[]): ScrapbookKind[] {
   const source: ScrapbookSource = {

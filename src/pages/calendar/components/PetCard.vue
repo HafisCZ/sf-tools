@@ -72,13 +72,6 @@ const props = defineProps<{
 
 const ELEMENT_CLASSES = ['bg-[#a596ce]', 'bg-[#e9d067]', 'bg-[#adc35a]', 'bg-[#fda700]', 'bg-[#60cdef]']
 
-const TIME_ICONS: Record<Pet['time'], IconName | undefined> = {
-  any: undefined,
-  day: 'sun',
-  night: 'moon',
-  witch: 'stopwatch'
-}
-
 const localize = useLocalize('pets.calendar')
 
 const nameId = useId()
@@ -86,6 +79,13 @@ const nameId = useId()
 const pet = computed(() => PetData[props.index])
 
 const element = computed(() => Math.trunc(props.index / 20))
+
+const TIME_ICONS: Record<Pet['time'], IconName | undefined> = {
+  any: undefined,
+  day: 'sun',
+  night: 'moon',
+  witch: 'stopwatch'
+}
 
 const timeIcon = computed(() => TIME_ICONS[pet.value.time])
 

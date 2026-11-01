@@ -2866,8 +2866,6 @@ const RAID_DATA: Record<string, Raid> = {
   }
 }
 
-const SCALED_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution'] as const
-
 export function getRaidEnemies(raid: string) {
   if (raid.startsWith('hellevator_')) {
     const tier = Number(raid.slice(11))
@@ -2928,6 +2926,8 @@ function createRaidMonster(floor: RaidFloor, index: number) {
     }
   }
 }
+
+const SCALED_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution'] as const
 
 export function scaleRaidPlayers(raid: string, players: (PlayerModel | SimulatorData)[]) {
   if (!raid.startsWith('raid_')) {

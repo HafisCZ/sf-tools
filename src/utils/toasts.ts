@@ -2,9 +2,6 @@ import SFToast from '@library/SFToast.vue'
 import { type ToastParams } from './components'
 import { createVueApp } from './vue'
 
-const DISPLAY_TIME = 6000
-const FADE_TIME = 500
-
 const CONTAINER_ID = 'sf-toast-container'
 
 function getContainer() {
@@ -20,6 +17,9 @@ function getContainer() {
 
   return element
 }
+
+const DISPLAY_TIME = 6000
+const FADE_TIME = 500
 
 export function useToast(params: ToastParams) {
   const element = document.createElement('div')

@@ -1063,6 +1063,7 @@
     "integration": {
         "file": "File",
         "game": "Endpoint",
+        "search": "Search player...",
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
@@ -1083,6 +1084,7 @@
         "add": "Add",
         "save": "Save",
         "simulate": "Simulate",
+        "fight_as_player": "Fight as this player",
         "configure": "Configure simulator",
         "information": "Important notice!",
         "configure_copy": "Copy everyone including current configuration",

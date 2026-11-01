@@ -67,8 +67,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const GAP = 4
-
 const size = shallowRef<{ width: number; height: number }>()
 
 const containerElement = useTemplateRef('container-ref')
@@ -80,6 +78,8 @@ const resizeObserver = new ResizeObserver(() => {
     size.value = { width: rectangle.width, height: rectangle.height }
   }
 })
+
+const GAP = 4
 
 const style = computed(() => {
   const width = props.width === undefined ? undefined : `${props.width}px`

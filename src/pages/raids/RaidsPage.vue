@@ -158,12 +158,6 @@ type SimulatorLog = {
 
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
-const HELLEVATOR_TIERS = 12
-
-const RAIDS = 150
-
-const RAID_NAMES = 50
-
 const localize = useLocalize('raids')
 
 const raid = ref('hellevator_1')
@@ -199,6 +193,12 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
   await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
 })
+
+const HELLEVATOR_TIERS = 12
+
+const RAIDS = 150
+
+const RAID_NAMES = 50
 
 const raidOptions = computed<SelectOption<string>[]>(() => [
   ...sequence(HELLEVATOR_TIERS, 1).map((tier) => ({ value: `hellevator_${tier}`, label: localize(`raids.hellevator_${tier}`) })),

@@ -52,10 +52,6 @@ const emit = defineEmits<{
 
 type AutofillType = 'enemies' | 'players'
 
-const SHADOW_COLOR = '#dec0ff'
-
-const RUNE_LETTERS = ['F', 'C', 'L']
-
 const DUNGEONS = Object.values(DUNGEON_DATA)
   .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
   .sort((a, b) => a.pos - b.pos)
@@ -74,6 +70,8 @@ const typeOptions = computed<SelectOption<AutofillType>[]>(() => [
   { value: 'enemies', label: localize('enemies') },
   { value: 'players', label: localize('players'), disabled: props.players.length === 0 }
 ])
+
+const SHADOW_COLOR = '#dec0ff'
 
 const enemyOptions = computed<SelectOption<DungeonEntry | null>[]>(() =>
   ENTRIES.map((entry) => ({
@@ -100,6 +98,8 @@ const playerOptions = computed<SelectOption<AnalyzerPlayer | null>[]>(() =>
     }
   })
 )
+
+const RUNE_LETTERS = ['F', 'C', 'L']
 
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''

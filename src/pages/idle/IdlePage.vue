@@ -104,11 +104,6 @@ const UPGRADE_MODES = [
   { value: '5', label: 'BP' }
 ]
 
-const MAX_LEVEL = 25000
-
-// One value per second of a day
-const CURVE_LENGTH = 86401
-
 const localize = useLocalize('idle')
 
 const upgradeMode = ref<string | null>(null)
@@ -128,6 +123,11 @@ const numberOptions = computed(() => ['0', '1'].map((value) => ({ value, label: 
 const upgradeOptions = computed(() => ['0', '1', '2', '3', '4'].map((value) => ({ value, label: localize(`upgrades.${value}`) })))
 
 const outputClasses = computed(() => ({ 'text-accent': upgradeMode.value !== null }))
+
+const MAX_LEVEL = 25000
+
+// One value per second of a day
+const CURVE_LENGTH = 86401
 
 const results = computed(() => {
   if (!isValid.value) return null

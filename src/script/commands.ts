@@ -30,22 +30,6 @@ const ARGUMENT_MAP_ON_OFF: Record<string, number> = {
   on: 1
 }
 
-const ARGUMENT_MAP_BORDER: Record<string, number> = {
-  none: 0,
-  left: 1,
-  right: 2,
-  both: 3,
-  top: 4,
-  bottom: 5
-}
-
-const ARGUMENT_MAP_LINED: Record<string, number> = {
-  off: 0,
-  on: 1,
-  thick: 2,
-  thin: 1
-}
-
 const ARGUMENT_MAP_RULE: Record<string, RuleCondition> = {
   'above or equal': 'ae',
   'below or equal': 'be',
@@ -1120,6 +1104,13 @@ ScriptCommands.register(
   { evalOnRender: true }
 )
 
+const ARGUMENT_MAP_LINED: Record<string, number> = {
+  off: 0,
+  on: 1,
+  thick: 2,
+  thin: 1
+}
+
 ScriptCommands.register(
   'TABLE_GLOBAL_LINED',
   ScriptType.Table,
@@ -1656,6 +1647,15 @@ ScriptCommands.register(
   (root, style, value) => root.addStyle(style, value),
   (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
 )
+
+const ARGUMENT_MAP_BORDER: Record<string, number> = {
+  none: 0,
+  left: 1,
+  right: 2,
+  both: 3,
+  top: 4,
+  bottom: 5
+}
 
 ScriptCommands.register(
   'TABLE_BORDER',

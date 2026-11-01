@@ -69,9 +69,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-// Fire, cold and lightning resistance, in the order of DungeonRunes.res
-const RESISTANCE_RUNES = [6, 7, 8]
-
 const localize = useLocalize('dungeons')
 
 const activeIndex = ref(0)
@@ -93,6 +90,9 @@ const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
     Exporter.download(`dungeons_${Date.now()}.png`, blob)
   }
 })
+
+// Fire, cold and lightning resistance, in the order of DungeonRunes.res
+const RESISTANCE_RUNES = [6, 7, 8]
 
 function saveCSV() {
   const headers = [

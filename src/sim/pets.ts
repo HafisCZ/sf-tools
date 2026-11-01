@@ -119,20 +119,6 @@ const HABITAT_EARTH = 2
 const HABITAT_FIRE = 3
 const HABITAT_WATER = 4
 
-const PET_CLASS_MAP = [
-  [2, 0, 0, 1, 1, 1, 2, 2, 2, 0, 1, 1, 2, 2, 0, 0, 1, 0, 0, 2],
-  [0, 0, 1, 1, 2, 2, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 0, 1, 2],
-  [0, 0, 2, 2, 0, 2, 1, 1, 0, 0, 2, 0, 2, 2, 1, 1, 1, 0, 0, 0],
-  [2, 2, 0, 1, 1, 2, 2, 1, 0, 1, 1, 2, 2, 2, 2, 2, 1, 0, 1, 0],
-  [1, 0, 0, 0, 0, 2, 0, 2, 2, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 2]
-]
-
-const PET_FACTOR_MAP = [10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 50, 60, 70, 80, 100, 130, 160, 160]
-
-const PET_FACTOR_MAP_LUCK = [7.5, 8.5, 9.0, 9.5, 10.5, 12.0, 13.5, 15.0, 19.0, 22.5, 26.0, 30.0, 37.5, 45.0, 52.5, 60.0, 75, 97.5, 120, 120]
-
-const PET_HABITAT_MAP = [1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75]
-
 ;(SimulatorModel.prototype as PetSimulatorModel).hasAdvantage = function (this: SimulatorModel, target: SimulatorModel) {
   if (this.Player.Boss || target.Player.Boss) {
     return false
@@ -163,6 +149,20 @@ SimulatorModel.prototype.getDamageMultiplier = function (this: PetSimulatorModel
     return multiplier
   }
 }
+
+const PET_CLASS_MAP = [
+  [2, 0, 0, 1, 1, 1, 2, 2, 2, 0, 1, 1, 2, 2, 0, 0, 1, 0, 0, 2],
+  [0, 0, 1, 1, 2, 2, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 0, 1, 2],
+  [0, 0, 2, 2, 0, 2, 1, 1, 0, 0, 2, 0, 2, 2, 1, 1, 1, 0, 0, 0],
+  [2, 2, 0, 1, 1, 2, 2, 1, 0, 1, 1, 2, 2, 2, 2, 2, 1, 0, 1, 0],
+  [1, 0, 0, 0, 0, 2, 0, 2, 2, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 2]
+]
+
+const PET_FACTOR_MAP = [10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 50, 60, 70, 80, 100, 130, 160, 160]
+
+const PET_FACTOR_MAP_LUCK = [7.5, 8.5, 9.0, 9.5, 10.5, 12.0, 13.5, 15.0, 19.0, 22.5, 26.0, 30.0, 37.5, 45.0, 52.5, 60.0, 75, 97.5, 120, 120]
+
+const PET_HABITAT_MAP = [1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75]
 
 export class PetModel {
   static upgrade(model: SimulatorModel, obj: SimulatorPet) {

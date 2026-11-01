@@ -66,7 +66,15 @@ const emit = defineEmits<{
   close: []
 }>()
 
+const localize = useLocalize('dialog.fight_statistical_analysis')
+
+const config = DEFAULT_EXPRESSION_CONFIG.clone()
+
 const ACCESSORS = ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round', 'Attacker State Display', 'Target State Display']
+
+for (const name of ACCESSORS) {
+  config.register('accessor', 'none', name, (object: Record<string, unknown>) => object[name])
+}
 
 const CONSTANTS = {
   '@attack_normal': 0,
@@ -94,14 +102,6 @@ const CONSTANTS = {
   '@attack_swoop_blocked': 6,
   '@attack_swoop_evaded': 7,
   '@attack_revive': 100
-}
-
-const localize = useLocalize('dialog.fight_statistical_analysis')
-
-const config = DEFAULT_EXPRESSION_CONFIG.clone()
-
-for (const name of ACCESSORS) {
-  config.register('accessor', 'none', name, (object: Record<string, unknown>) => object[name])
 }
 
 const environment: ExpressionEnvironment = {

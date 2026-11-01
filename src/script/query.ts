@@ -152,8 +152,6 @@ type QueryFieldValue = {
 
 type QueryNode = { type: 'and' | 'or'; left: QueryNode; right: QueryNode } | { type: 'not'; node: QueryNode } | { type: 'leaf'; token: QueryToken }
 
-const FIELDS: QueryField[] = ['class', 'name', 'guild', 'server']
-const OPTIONS: QueryOptionName[] = ['sort', 'first', 'latest', 'hidden', 'own', 'recalculate', 'columns', 'template', 'others', 'all']
 const VALUE_OPTIONS: QueryOptionName[] = ['sort', 'first', 'columns', 'template']
 const LOGIC_WORDS = ['not', 'or', 'and']
 const SCRIPT_CALLS = ['eval', '@sort']
@@ -187,9 +185,13 @@ function toClassSlug(name: string) {
   return name.toLowerCase().replace(/[\s_-]/g, '')
 }
 
+const FIELDS: QueryField[] = ['class', 'name', 'guild', 'server']
+
 function isField(name: string): name is QueryField {
   return (FIELDS as string[]).includes(name)
 }
+
+const OPTIONS: QueryOptionName[] = ['sort', 'first', 'latest', 'hidden', 'own', 'recalculate', 'columns', 'template', 'others', 'all']
 
 function isOption(name: string): name is QueryOptionName {
   return (OPTIONS as string[]).includes(name)

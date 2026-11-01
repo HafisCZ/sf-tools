@@ -48,9 +48,9 @@ const props = defineProps<{
   empty?: string
 }>()
 
-const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
-
 const localize = useLocalize('editor.equipment')
+
+const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
 
 const statBadges = computed(() => {
   const item = props.item

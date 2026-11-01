@@ -86,16 +86,6 @@ type Section = {
   border: string
 }
 
-const SECTIONS: Section[] = [
-  { list: 'backpack', label: 'inventory.section.backpack', border: 'border-[red]' },
-  { list: 'player', label: 'inventory.section.player', border: 'border-[yellow]' },
-  { list: 'bert', label: 'general.companion1', border: 'border-[lightblue]' },
-  { list: 'mark', label: 'general.companion2', border: 'border-[lightgreen]' },
-  { list: 'kunigunde', label: 'general.companion3', border: 'border-[lightyellow]' },
-  { list: 'shops', label: 'inventory.section.shops', border: 'border-[orange]' },
-  { list: 'dummy', label: 'inventory.section.dummy', border: 'border-[gray]' }
-]
-
 const CHARACTERS: CharacterIndex[] = [0, 1, 2, 3]
 
 const CHARACTER_LISTS: InventoryList[] = ['player', 'bert', 'mark', 'kunigunde']
@@ -124,6 +114,16 @@ const equipped = computed(() => {
 
   return character.value === 0 ? list.filter((entry) => entry.item.SlotIndex !== 10 || props.player.Class === ASSASSIN) : list
 })
+
+const SECTIONS: Section[] = [
+  { list: 'backpack', label: 'inventory.section.backpack', border: 'border-[red]' },
+  { list: 'player', label: 'inventory.section.player', border: 'border-[yellow]' },
+  { list: 'bert', label: 'general.companion1', border: 'border-[lightblue]' },
+  { list: 'mark', label: 'general.companion2', border: 'border-[lightgreen]' },
+  { list: 'kunigunde', label: 'general.companion3', border: 'border-[lightyellow]' },
+  { list: 'shops', label: 'inventory.section.shops', border: 'border-[orange]' },
+  { list: 'dummy', label: 'inventory.section.dummy', border: 'border-[gray]' }
+]
 
 const sections = computed(() =>
   SECTIONS.filter((section) => section.list !== CHARACTER_LISTS[character.value])

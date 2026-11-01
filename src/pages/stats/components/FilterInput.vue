@@ -121,33 +121,7 @@ const emit = defineEmits<{
 
 const modelValue = defineModel<string>({ required: true })
 
-const PART_CLASSES: Record<QueryPartKind, string> = {
-  plain: '',
-  text: 'text-white/90',
-  string: 'text-[#d9d9a6]',
-  key: 'text-accent',
-  value: 'text-[#ffd9a0]',
-  tag: 'text-[#3fd0b8]',
-  header: 'text-[#f07af2]',
-  number: 'text-[#8cb4ff]',
-  operator: 'text-[#bdbdbd]',
-  logic: 'text-[#b48cff]',
-  bracket: '',
-  option: 'text-[#7ddc8b]',
-  'option-value': 'text-[#c4f0cb]',
-  error: 'text-[#ff8a8a]',
-  script: ''
-}
-
-const DEPTH_CLASSES = ['text-[#b48cff]', 'text-[#e3c46a]', 'text-[#ff8fb1]']
-
 const AUTO_CLOSE_BEFORE = /^[\s),]?$/
-
-const ISSUE_CLASSES = {
-  error: 'underline decoration-[#ff5c5c] decoration-wavy underline-offset-3 [text-decoration-skip-ink:none]',
-  warning: 'underline decoration-[#e9c46a] decoration-dotted underline-offset-3',
-  pending: 'underline decoration-white/50 decoration-dotted underline-offset-3'
-}
 
 const localize = useLocalize('stats')
 
@@ -283,6 +257,32 @@ function createCachedLanguage(source: QueryLanguage): QueryLanguage {
       return values
     }
   }
+}
+
+const PART_CLASSES: Record<QueryPartKind, string> = {
+  plain: '',
+  text: 'text-white/90',
+  string: 'text-[#d9d9a6]',
+  key: 'text-accent',
+  value: 'text-[#ffd9a0]',
+  tag: 'text-[#3fd0b8]',
+  header: 'text-[#f07af2]',
+  number: 'text-[#8cb4ff]',
+  operator: 'text-[#bdbdbd]',
+  logic: 'text-[#b48cff]',
+  bracket: '',
+  option: 'text-[#7ddc8b]',
+  'option-value': 'text-[#c4f0cb]',
+  error: 'text-[#ff8a8a]',
+  script: ''
+}
+
+const DEPTH_CLASSES = ['text-[#b48cff]', 'text-[#e3c46a]', 'text-[#ff8fb1]']
+
+const ISSUE_CLASSES = {
+  error: 'underline decoration-[#ff5c5c] decoration-wavy underline-offset-3 [text-decoration-skip-ink:none]',
+  warning: 'underline decoration-[#e9c46a] decoration-dotted underline-offset-3',
+  pending: 'underline decoration-white/50 decoration-dotted underline-offset-3'
 }
 
 function getPartClasses(part: QueryPart) {

@@ -17,9 +17,6 @@ export const isSimulatorDebug = new URLSearchParams(window.location.search).has(
 
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 
-// Copied before a page applies a custom config to CONFIG
-const DEFAULT_CONFIG = addClassMultiplierDefaults(mergeDeep({}, CONFIG) as SimulatorConfig)
-
 function addClassMultiplierDefaults(config: SimulatorConfig) {
   const classKeys = Object.keys(config).filter((key) => typeof config[key].ID === 'number')
 
@@ -32,6 +29,9 @@ function addClassMultiplierDefaults(config: SimulatorConfig) {
 
   return config
 }
+
+// Copied before a page applies a custom config to CONFIG
+const DEFAULT_CONFIG = addClassMultiplierDefaults(mergeDeep({}, CONFIG) as SimulatorConfig)
 
 export function getDefaultSimulatorConfig() {
   return mergeDeep({}, DEFAULT_CONFIG) as SimulatorConfig

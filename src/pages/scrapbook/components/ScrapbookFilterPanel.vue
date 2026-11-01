@@ -112,10 +112,6 @@ const origins = defineModel<string[]>('origins', { required: true })
 const minimumLevel = defineModel<number | null>('minimumLevel', { required: true })
 const maximumLevel = defineModel<number | null>('maximumLevel', { required: true })
 
-const STATUSES: ScrapbookStatus[] = ['missing', 'collected', 'marked', 'all']
-
-const ORIGINS: ScrapbookOrigin[] = ['regular', 'toilet', 'event', 'twister']
-
 const localize = useLocalize('scrapbook')
 
 const id = useId()
@@ -123,7 +119,12 @@ const id = useId()
 const itemClassChecks = createChecks(itemClasses, [1, 2, 3, 0])
 const kindChecks = createChecks(kinds, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 const rarityChecks = createChecks<ScrapbookRarity>(rarities, ['normal', 'epic'])
+
+const ORIGINS: ScrapbookOrigin[] = ['regular', 'toilet', 'event', 'twister']
+
 const originChecks = ORIGINS.map((origin) => createOriginCheck(origin))
+
+const STATUSES: ScrapbookStatus[] = ['missing', 'collected', 'marked', 'all']
 
 const statusOptions = computed<SelectOption<ScrapbookStatus>[]>(() => STATUSES.map((value) => ({ value, label: localize(`status.${value}`) })))
 

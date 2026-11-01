@@ -82,9 +82,6 @@ export const NEXT_DUNGEONS: Record<number, number> = {
 
 export const PREVIOUS_DUNGEONS: Record<number, number> = Object.fromEntries(Object.entries(NEXT_DUNGEONS).map(([id, next]) => [next, Number(id)]))
 
-// Dungeon ID of each index in the player's normal and shadow dungeon progress
-const PROGRESS_DUNGEONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
-
 export function getDungeonName(dungeon: Dungeon) {
   return globalLocalize(`dungeon_enemies.${dungeon.intl}.name`)
 }
@@ -116,6 +113,9 @@ function getBossAtPosition(id: number, position: number): DungeonEntry | null {
 
   return boss ? { dungeon, boss } : null
 }
+
+// Dungeon ID of each index in the player's normal and shadow dungeon progress
+const PROGRESS_DUNGEONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
 
 export function getOpenBosses(dungeons: PlayerDungeons) {
   const entries = compact([

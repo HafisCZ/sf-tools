@@ -24,8 +24,6 @@ const props = defineProps<{
   content: string
 }>()
 
-const GAP = 4
-
 const open = ref(false)
 
 const containerElement = useTemplateRef('container-ref')
@@ -33,6 +31,8 @@ const tooltipElement = useTemplateRef('tooltip-ref')
 
 // The container is display: contents and has no box of its own
 const anchor = useAnimationFramePosition(open, () => containerElement.value?.firstElementChild?.getBoundingClientRect())
+
+const GAP = 4
 
 const style = computed(() => {
   const rectangle = anchor.value

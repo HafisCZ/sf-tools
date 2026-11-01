@@ -79,18 +79,6 @@ defineExpose({
   }
 })
 
-const UNKNOWN_STATS = {
-  class: '?',
-  health: '?',
-  attribute: '?',
-  defense: '?',
-  luck: '?',
-  skip: '?',
-  damage: '?',
-  chance: '?',
-  critical: '?'
-}
-
 const localize = useLocalize('pets')
 
 const type = ref(0)
@@ -127,6 +115,18 @@ const bossOptions = computed(() => [
 ])
 
 const gladiatorOptions = computed(() => [{ value: 0, label: localize('editor.none') }, ...sequence(15, 1).map((value) => ({ value, label: `${value} (${100 * value * CONFIG.General.CritGladiatorBonus}%)` }))])
+
+const UNKNOWN_STATS = {
+  class: '?',
+  health: '?',
+  attribute: '?',
+  defense: '?',
+  luck: '?',
+  skip: '?',
+  damage: '?',
+  chance: '?',
+  critical: '?'
+}
 
 // The stats panel uses v-show, a v-model input that mounts and changes in one render keeps its first value
 const stats = computed(() => {

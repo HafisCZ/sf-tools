@@ -6,7 +6,7 @@
       </SFButton>
     </SFTooltip>
     <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :anchor="position" :width="WIDTH" float="left" position="bottom" class="scroll-pt-12" @close="close" @scroll="loadMore">
+      <SFDropdownMenu v-if="open && position" :anchor="position" :width="320" float="left" position="bottom" class="scroll-pt-12" @close="close" @scroll="loadMore">
         <div class="sticky -top-1 z-10 -mx-1 -mt-1 bg-surface p-1">
           <input
             v-model="query"
@@ -77,24 +77,18 @@ const emit = defineEmits<{
   select: [dungeon: string, boss: string]
 }>()
 
-const WIDTH = 320
-
-const PAGE_SIZE = 50
-
-const SHADOW_COLOR = '#dec0ff'
-
-const RUNE_LETTERS = ['F', 'C', 'L']
-
-const DUNGEONS = Object.values(DUNGEON_DATA)
-  .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
-  .sort((a, b) => a.pos - b.pos)
-
 const localize = useLocalize('dungeons')
 
 const query = ref('')
 
 const containerElement = useTemplateRef('container-ref')
 const listElement = useTemplateRef('list-ref')
+
+const SHADOW_COLOR = '#dec0ff'
+
+const DUNGEONS = Object.values(DUNGEON_DATA)
+  .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
+  .sort((a, b) => a.pos - b.pos)
 
 const entries = computed((): BossEntry[] =>
   DUNGEONS.flatMap((dungeon) =>
@@ -116,9 +110,13 @@ const matchingEntries = computed(() => {
   return search ? entries.value.filter((entry) => entry.label.toLowerCase().includes(search) || entry.description.toLowerCase().includes(search)) : entries.value
 })
 
+const PAGE_SIZE = 50
+
 const { renderedItems: renderedEntries, showPage, loadMore } = usePagedList(matchingEntries, PAGE_SIZE, listElement)
 
 const { open, position, toggle: toggleOpen, close } = useDropdown(containerElement, () => containerElement.value?.querySelector('button'))
+
+const RUNE_LETTERS = ['F', 'C', 'L']
 
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''

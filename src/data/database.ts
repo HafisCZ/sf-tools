@@ -33,118 +33,6 @@ export type DatabaseTransaction = {
   remove: (storeName: string, key: IDBValidKey) => void
 }
 
-const DATABASE_VERSION = 9
-
-const DATABASE_STORES: Record<string, StoreDefinition> = {
-  players: {
-    key: ['identifier', 'timestamp'],
-    indexes: {
-      own: 'own',
-      identifier: 'identifier',
-      timestamp: 'timestamp',
-      group: 'group',
-      prefix: 'prefix',
-      tag: 'tag'
-    }
-  },
-  groups: {
-    key: ['identifier', 'timestamp'],
-    indexes: {
-      own: 'own',
-      identifier: 'identifier',
-      timestamp: 'timestamp',
-      prefix: 'prefix'
-    }
-  },
-  trackers: {
-    key: 'identifier'
-  },
-  metadata: {
-    key: 'timestamp'
-  },
-  links: {
-    key: 'id'
-  }
-}
-
-const DATABASE_UPDATERS: SchemaUpdater[] = [
-  {
-    shouldApply: (version) => version < 2,
-    apply: (transaction) => {
-      transaction.objectStore('players').createIndex('profile', 'profile')
-      transaction.objectStore('groups').createIndex('profile', 'profile')
-    }
-  },
-  {
-    shouldApply: (version) => version < 3,
-    apply: (transaction) => {
-      transaction.objectStore('players').createIndex('origin', 'origin')
-      transaction.objectStore('groups').createIndex('origin', 'origin')
-    }
-  },
-  {
-    shouldApply: (version) => version < 4,
-    apply: (transaction) => {
-      transaction.objectStore('players').createIndex('tag', 'tag')
-    }
-  },
-  {
-    shouldApply: (version) => version < 5,
-    apply: (_transaction, database) => {
-      database.createObjectStore('metadata', { keyPath: 'timestamp' })
-    }
-  },
-  {
-    shouldApply: (version) => version < 7,
-    apply: (transaction) => {
-      transaction.objectStore('players').deleteIndex('origin')
-      transaction.objectStore('groups').deleteIndex('origin')
-
-      transaction.objectStore('players').deleteIndex('profile')
-      transaction.objectStore('groups').deleteIndex('profile')
-    }
-  },
-  {
-    shouldApply: (version) => version < 8,
-    apply: (_transaction, database) => {
-      database.createObjectStore('links', { keyPath: 'id' })
-    }
-  },
-  {
-    shouldApply: (version) => version < 9,
-    apply: (transaction) => {
-      transaction.objectStore('players').deleteIndex('tag')
-      transaction.objectStore('players').createIndex('tag', 'tag', { multiEntry: true })
-    }
-  }
-]
-
-const DATABASE_DATA_UPDATERS: DataUpdater[] = [
-  {
-    shouldApply: (version) => version < 6,
-    apply: async (database) => {
-      const players = await database.where<RawEntity>('players')
-      const groups = await database.where<RawEntity>('groups')
-      const entries = ([] as RawEntity[]).concat(players, groups)
-
-      const metadata = toRecord(await database.where<DatabaseMetadata>('metadata'), (entry) => [entry.timestamp, Object.assign(entry, { identifiers: [] as string[] })])
-
-      for (const { timestamp: dirtyTimestamp, identifier } of entries) {
-        const timestamp = parseInt(String(dirtyTimestamp))
-        if (!metadata[timestamp]) {
-          metadata[timestamp] = { timestamp, identifiers: [] }
-        }
-
-        metadata[timestamp].identifiers.push(identifier)
-      }
-
-      for (const data of Object.values(metadata)) {
-        await database.set('metadata', data)
-      }
-    }
-  }
-]
-
 function promisify<TResult>(request: IDBRequest<TResult>) {
   return new Promise<TResult>((resolve, reject) => {
     request.onsuccess = () => resolve(request.result)
@@ -443,6 +331,118 @@ export class TemporaryDatabaseSession {
 }
 
 export type DatabaseSession = IndexedDBWrapper | TemporaryDatabaseSession
+
+const DATABASE_VERSION = 9
+
+const DATABASE_STORES: Record<string, StoreDefinition> = {
+  players: {
+    key: ['identifier', 'timestamp'],
+    indexes: {
+      own: 'own',
+      identifier: 'identifier',
+      timestamp: 'timestamp',
+      group: 'group',
+      prefix: 'prefix',
+      tag: 'tag'
+    }
+  },
+  groups: {
+    key: ['identifier', 'timestamp'],
+    indexes: {
+      own: 'own',
+      identifier: 'identifier',
+      timestamp: 'timestamp',
+      prefix: 'prefix'
+    }
+  },
+  trackers: {
+    key: 'identifier'
+  },
+  metadata: {
+    key: 'timestamp'
+  },
+  links: {
+    key: 'id'
+  }
+}
+
+const DATABASE_UPDATERS: SchemaUpdater[] = [
+  {
+    shouldApply: (version) => version < 2,
+    apply: (transaction) => {
+      transaction.objectStore('players').createIndex('profile', 'profile')
+      transaction.objectStore('groups').createIndex('profile', 'profile')
+    }
+  },
+  {
+    shouldApply: (version) => version < 3,
+    apply: (transaction) => {
+      transaction.objectStore('players').createIndex('origin', 'origin')
+      transaction.objectStore('groups').createIndex('origin', 'origin')
+    }
+  },
+  {
+    shouldApply: (version) => version < 4,
+    apply: (transaction) => {
+      transaction.objectStore('players').createIndex('tag', 'tag')
+    }
+  },
+  {
+    shouldApply: (version) => version < 5,
+    apply: (_transaction, database) => {
+      database.createObjectStore('metadata', { keyPath: 'timestamp' })
+    }
+  },
+  {
+    shouldApply: (version) => version < 7,
+    apply: (transaction) => {
+      transaction.objectStore('players').deleteIndex('origin')
+      transaction.objectStore('groups').deleteIndex('origin')
+
+      transaction.objectStore('players').deleteIndex('profile')
+      transaction.objectStore('groups').deleteIndex('profile')
+    }
+  },
+  {
+    shouldApply: (version) => version < 8,
+    apply: (_transaction, database) => {
+      database.createObjectStore('links', { keyPath: 'id' })
+    }
+  },
+  {
+    shouldApply: (version) => version < 9,
+    apply: (transaction) => {
+      transaction.objectStore('players').deleteIndex('tag')
+      transaction.objectStore('players').createIndex('tag', 'tag', { multiEntry: true })
+    }
+  }
+]
+
+const DATABASE_DATA_UPDATERS: DataUpdater[] = [
+  {
+    shouldApply: (version) => version < 6,
+    apply: async (database) => {
+      const players = await database.where<RawEntity>('players')
+      const groups = await database.where<RawEntity>('groups')
+      const entries = ([] as RawEntity[]).concat(players, groups)
+
+      const metadata = toRecord(await database.where<DatabaseMetadata>('metadata'), (entry) => [entry.timestamp, Object.assign(entry, { identifiers: [] as string[] })])
+
+      for (const { timestamp: dirtyTimestamp, identifier } of entries) {
+        const timestamp = parseInt(String(dirtyTimestamp))
+        if (!metadata[timestamp]) {
+          metadata[timestamp] = { timestamp, identifiers: [] }
+        }
+
+        metadata[timestamp].identifiers.push(identifier)
+      }
+
+      for (const data of Object.values(metadata)) {
+        await database.set('metadata', data)
+      }
+    }
+  }
+]
 
 export class DatabaseUtils {
   static async createSession(slot: number | string | undefined) {
