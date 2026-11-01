@@ -52,9 +52,12 @@ export type SimulatorData = {
 }
 
 const CONVERT_OTHER_GROUP_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'rank', 'names', 'identifier', 'group', 'save'] as const
-const CONVERT_OTHER_PLAYER_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'identifier', 'class', 'groupname', 'units', 'fortressrank', 'group', 'version', 'equippedItems', 'potions', 'saveVersion'] as const
+const CONVERT_OTHER_PLAYER_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'identifier', 'class', 'groupname', 'units', 'fortressrank', 'group', 'version', 'equippedItems', 'potions', 'saveVersion', 'achievements', 'description'] as const
 
 const OTHER_PLAYER_SAVE_LENGTH = 261
+
+const PLAYER_SAVE_V2_PRIVATE_INDICES = new Set([0, ...Array.from({ length: 20 }, (_, index) => 45 + index), 67])
+
 const CONVERT_PLAYER_SAVE = [
   1,
   2,
@@ -378,7 +381,9 @@ export class ModelUtils {
     }
 
     if (player.saveVersion === 2) {
-      copy.save = [...player.save]
+      copy.save = player.save.map((value, index) => (PLAYER_SAVE_V2_PRIVATE_INDICES.has(index) ? 0 : value))
+
+      copy.fortress = player.fortress?.slice(0, 12)
     } else {
       copy.save = CONVERT_PLAYER_SAVE.reduce<number[]>(
         (memo, sourceIndex, targetIndex) => {
@@ -392,7 +397,7 @@ export class ModelUtils {
       )
     }
 
-    copy.fortressrank = copy.fortressrank || player.save[583]
+    copy.fortressrank = copy.fortressrank || (player.saveVersion === 2 ? player.fortress?.[17] : player.save[583])
 
     return copy as RawPlayer
   }
