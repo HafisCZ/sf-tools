@@ -442,6 +442,7 @@
         "query": {
             "clear": "Clear the filter",
             "history": "Starred and recent filters",
+            "info": "Filter syntax",
             "shortcut": "Ctrl + Space",
             "starred": "Starred",
             "recent": "Recent",

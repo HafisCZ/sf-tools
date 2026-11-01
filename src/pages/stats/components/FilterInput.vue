@@ -30,8 +30,11 @@
         <button type="button" class="flex size-7 cursor-pointer items-center justify-center rounded hover:bg-white/10 hover:text-white" :aria-label="localize('query.clear')" @click="clear">
           <SFIcon name="xmark" />
         </button>
-        <button type="button" class="flex size-7 cursor-pointer items-center justify-center rounded hover:bg-white/10 hover:text-white" :class="{ 'text-accent': historyOpen }" :aria-label="localize('query.history')" :aria-expanded="historyOpen" @click="historyOpen = !historyOpen">
+        <button type="button" class="flex size-7 cursor-pointer items-center justify-center rounded hover:bg-white/10 hover:text-white" :class="{ 'text-accent': historyOpen }" :aria-label="localize('query.history')" :aria-expanded="historyOpen" @click="toggleHistory">
           <SFIcon name="angles-down" />
+        </button>
+        <button type="button" class="flex size-7 cursor-pointer items-center justify-center rounded hover:bg-white/10 hover:text-white" :class="{ 'text-accent': infoOpen }" :aria-label="localize('query.info')" :aria-expanded="infoOpen" @click="toggleInfo">
+          <SFIcon name="circle-info" />
         </button>
       </div>
       <ul v-if="suggestionRows.length" ref="list-ref" role="listbox" class="expression-text absolute -inset-x-px top-full z-20 mt-1.5 max-h-[60vh] overflow-y-auto rounded-md border border-line bg-surface py-1 text-left shadow-xl" @mousedown.prevent>
@@ -72,6 +75,16 @@
         </div>
         <div v-if="!recentEntries.length" class="px-3.5 pt-1.5 pb-2.5 text-[12.5px] text-white/45">{{ localize('query.recent_empty') }}</div>
       </div>
+      <ul v-if="infoOpen" class="expression-text absolute -inset-x-px top-full z-20 mt-1.5 max-h-[60vh] overflow-y-auto rounded-md border border-line bg-surface py-1 text-left shadow-xl">
+        <li v-for="row in infoRows" :key="row.suggestion.insert">
+          <button type="button" class="grid w-full cursor-pointer grid-cols-[minmax(0,230px)_minmax(0,1fr)] items-center gap-3.5 px-3 py-[7px] text-left hover:bg-surface-hover" @click="insertKey(row.suggestion)">
+            <span class="overflow-hidden font-mono text-[13px] text-ellipsis whitespace-pre"
+              ><span v-for="(part, partIndex) in row.parts" :key="partIndex" :class="getPartClasses(part)">{{ part.text }}</span></span
+            >
+            <span class="truncate text-[12.5px] text-white/60">{{ row.suggestion.description ? localize(`query.keys.${row.suggestion.description}`) : '' }}</span>
+          </button>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -148,6 +161,7 @@ const menuOpen = ref(false)
 const showAll = ref(false)
 const activeIndex = ref(0)
 const historyOpen = ref(false)
+const infoOpen = ref(false)
 const history = ref<string[]>([])
 const cachedLanguage = shallowRef<QueryLanguage | null>(null)
 
@@ -216,6 +230,8 @@ const starredEntries = computed(() => starred.value.map(createEntry))
 
 const recentEntries = computed(() => history.value.map(createEntry))
 
+const infoRows = computed(() => suggestQuery('', 0, props.language, true).items.map((suggestion) => ({ suggestion, parts: getSuggestionParts(suggestion) })))
+
 watch(suggestions, (value) => {
   if (value && !value.items.length) {
     menuOpen.value = false
@@ -241,6 +257,7 @@ onClickOutsideOf(
   [rootElement],
   () => {
     historyOpen.value = false
+    infoOpen.value = false
   },
   { esc: true }
 )
@@ -345,6 +362,7 @@ function handleFocus() {
   cachedLanguage.value = createCachedLanguage(props.language)
   focused.value = true
   historyOpen.value = false
+  infoOpen.value = false
 
   updateCaret()
 }
@@ -397,6 +415,7 @@ function handleKeydown(event: KeyboardEvent) {
     menuOpen.value = true
     showAll.value = true
     activeIndex.value = 0
+    infoOpen.value = false
   } else if (event.key === 'Tab' && !event.shiftKey && editable && next === ')') {
     event.preventDefault()
 
@@ -419,14 +438,24 @@ function handleKeydown(event: KeyboardEvent) {
 function acceptSuggestion(suggestion: QuerySuggestion) {
   const range = suggestions.value
 
-  if (!range) {
-    return
+  if (range) {
+    insertSuggestion(suggestion, modelValue.value, range.start, range.end)
   }
+}
 
-  const text = modelValue.value
+function insertKey(suggestion: QuerySuggestion) {
+  const text = modelValue.value && !/\s$/.test(modelValue.value) ? `${modelValue.value} ` : modelValue.value
 
-  let value = text.slice(0, range.start) + suggestion.insert + text.slice(range.end)
-  let position = range.start + suggestion.insert.length
+  infoOpen.value = false
+
+  fieldElement.value?.focus()
+
+  insertSuggestion(suggestion, text, text.length, text.length)
+}
+
+function insertSuggestion(suggestion: QuerySuggestion, text: string, start: number, end: number) {
+  let value = text.slice(0, start) + suggestion.insert + text.slice(end)
+  let position = start + suggestion.insert.length
 
   if (suggestion.insert.endsWith('(') && AUTO_CLOSE_BEFORE.test(value[position] ?? '')) {
     value = `${value.slice(0, position)})${value.slice(position)}`
@@ -438,6 +467,17 @@ function acceptSuggestion(suggestion: QuerySuggestion) {
   editValue(value, position)
 
   menuOpen.value = suggestion.keepOpen
+}
+
+function toggleHistory() {
+  historyOpen.value = !historyOpen.value
+  infoOpen.value = false
+}
+
+function toggleInfo() {
+  infoOpen.value = !infoOpen.value
+  historyOpen.value = false
+  menuOpen.value = false
 }
 
 function pick(query: string) {
