@@ -269,6 +269,7 @@ type DigestedFight = {
   header: (number | string)[]
   rounds: number[]
   equipment?: number[]
+  equipmentDamage?: number[]
   rewards: Record<string, number>
   version?: number
 }
@@ -365,6 +366,10 @@ const GT_REWARDS: Record<number, string> = {
   28: 'beer'
 }
 
+const FIGHT_EQUIPMENT_TYPE_MAPPING: Record<number, number> = {
+  [-51]: 1
+}
+
 const HAR_ROUND_VERSION_2 = 2
 
 const GROUP_SORTERS: Record<GroupSort, (group: FightGroup) => number> = {
@@ -435,7 +440,7 @@ export class FighterModel implements Fighter {
   }
   Boss?: boolean
 
-  constructor(data: (number | string)[], equipment: number[] | undefined, fightType: number) {
+  constructor(data: (number | string)[], equipment: number[] | undefined, equipmentDamage: number[] | undefined, fightType: number) {
     const dataType = new ComplexDataType(data)
     dataType.assert(47)
 
@@ -473,8 +478,8 @@ export class FighterModel implements Fighter {
 
     this.Items = equipment
       ? {
-          Wpn1: new ItemModel(ItemModel.MODERN, [equipment[0], 0, equipment[2], equipment[1], 0, 0, 0, 0, 0, equipment[3], 0, 0, equipment[4], 0, 0, 0, 0, 0, 0], 1, 9),
-          Wpn2: new ItemModel(ItemModel.MODERN, [equipment[5], 0, equipment[7], equipment[6], 0, 0, 0, 0, 0, equipment[8], 0, 0, equipment[9], 0, 0, 0, 0, 0, 0], 1, 10)
+          Wpn1: new ItemModel(ItemModel.MODERN, [FIGHT_EQUIPMENT_TYPE_MAPPING[equipment[0]] ?? equipment[0], 0, 0, equipment[1], 0, equipmentDamage?.[0] ?? 0, equipmentDamage?.[1] ?? 0, 0, 0, equipment[3], 0, 0, equipment[4], 0, 0, 0, 0, 0, 0], 1, 9),
+          Wpn2: new ItemModel(ItemModel.MODERN, [FIGHT_EQUIPMENT_TYPE_MAPPING[equipment[5]] ?? equipment[5], 0, 0, equipment[6], 0, equipmentDamage?.[2] ?? 0, equipmentDamage?.[3] ?? 0, 0, 0, equipment[8], 0, 0, equipment[9], 0, 0, 0, 0, 0, 0], 1, 10)
         }
       : {
           Wpn1: new ItemModel(ItemModel.LEGACY, dataType.sub(12), 1, 9),
@@ -781,7 +786,8 @@ function digestFight(r: PlayaData, suffix: string | number): DigestedFight | nul
   return {
     header: header.mixed(),
     rounds: rounds.numbers(/[,/]/),
-    equipment: (r[`fightequipment${suffix}`] || r[`externaltoolequipment${suffix}`])?.numbers(/[,/]/),
+    equipment: r[`fightequipment${suffix}`]?.numbers(/[,/]/),
+    equipmentDamage: r[`externaltoolequipment${suffix}`]?.numbers(/[,/]/),
     rewards: getRewards(r),
     version: r.fightversion?.number
   }
@@ -835,14 +841,14 @@ export function importHar(json: unknown) {
 
   const fights: Fight[] = []
 
-  for (const { header, rounds, rewards, equipment, version } of digestedFights) {
+  for (const { header, rounds, rewards, equipment, equipmentDamage, version } of digestedFights) {
     const fightType = header[0]
 
     // Proceed only if type of fight is known to the system
     if (typeof fightType === 'number' && Object.values(FIGHT_TYPES).includes(fightType)) {
       // Parse fighters
-      const fighterA = new FighterModel(header.slice(5, 52), equipment?.slice(0, 10), fightType)
-      const fighterB = new FighterModel(header.slice(52, 99), equipment?.slice(10, 20), fightType)
+      const fighterA = new FighterModel(header.slice(5, 52), equipment?.slice(0, 10), equipmentDamage?.slice(0, 4), fightType)
+      const fighterB = new FighterModel(header.slice(52, 99), equipment?.slice(10, 20), equipmentDamage?.slice(4, 8), fightType)
 
       // Only version 2 of the rounds is read, version 1 is disabled for now
       if (version === HAR_ROUND_VERSION_2) {
@@ -942,7 +948,6 @@ export function groupFights(fights: Fight[], allPlayers: AnalyzerPlayer[], sort:
   for (const player of allPlayers) {
     player.model = SimulatorModel.create(null, player)
     player.hash = computePlayerHash(player)
-    // Fighters read from fightequipment carry no weapon damage
     player.hashWithoutDamage = computePlayerHash(player, false)
   }
 
