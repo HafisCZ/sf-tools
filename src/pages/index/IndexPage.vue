@@ -7,7 +7,7 @@
       <IndexCredits v-if="showCredits" />
       <template v-else>
         <div class="grid grid-cols-1 gap-7 md:grid-cols-4">
-          <ToolCard v-for="tool in TOOLS" :key="tool.key" :href="tool.href" :title="localize(`${tool.key}.title`)" :description="localize(`${tool.key}.desc`)" :badge="tool.key === 'temp' ? localize('temp.temporary') : undefined" />
+          <ToolCard v-for="tool in TOOLS" :key="tool.key" :href="tool.href" :title="localize(`${tool.key}.title`)" :description="localize(`${tool.key}.desc`)" :badge="tool.key === 'temp' ? localize('temp.temporary') : undefined" :author="tool.author" />
         </div>
         <SFHeading level="2" type="accent" class="mt-[53px] mb-[27px] text-center">{{ localize('others') }}</SFHeading>
         <div class="grid grid-cols-1 gap-7 md:grid-cols-4">
@@ -90,7 +90,8 @@ const TOOLS = [
   { key: 'underworld', href: 'underworld.html' },
   { key: 'fortress', href: 'fortress.html' },
   { key: 'raids', href: 'raids.html' },
-  { key: 'scrapbook', href: 'scrapbook.html' }
+  { key: 'scrapbook', href: 'scrapbook.html' },
+  { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro' }
 ]
 
 const COMMUNITY_TOOLS = [

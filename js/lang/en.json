@@ -223,6 +223,10 @@
             "title": "Scrapbook",
             "desc": "Find the items missing from your scrapbook"
         },
+        "dungeon_break": {
+            "title": "Dungeon Break",
+            "desc": "See progress left in your open dungeons"
+        },
         "idle": {
             "title": "Arena Manager",
             "desc": "Check the production of your Arena Manager"
@@ -837,6 +841,115 @@
             "message#": "Use <b>All</b> function to simulate all open dungeons"
         }
     },
+    "dungeon_break": {
+        "setup": "Setup",
+        "summary": "Summary",
+        "groups_label": "Dungeon groups",
+        "mushrooms": "Mushrooms to spend",
+        "mushrooms_all": "All",
+        "threshold": "Minimum chance",
+        "simulation": "Threads & Iterations",
+        "cost": {
+            "label": "Mushroom cost",
+            "average": "On average",
+            "certain": "90% sure"
+        },
+        "empty": {
+            "title": "Pick a character to plan a dungeon break",
+            "text": "The planner simulates the character's open dungeons and shows how many levels are left in them and how many mushrooms they cost."
+        },
+        "tiles": {
+            "unlocked": "Unlocked",
+            "beatable": "Beatable",
+            "detail": "#{experience} XP · Level #{level}",
+            "mushrooms": "Mushrooms needed",
+            "pending": "not simulated yet",
+            "levels": "lvl"
+        },
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm"
+        },
+        "card": {
+            "open": "#{count} dungeons open",
+            "floor": "Floor #{position} of #{total}",
+            "locked": "Locked",
+            "done": "All done",
+            "levels": "lvl",
+            "unlocked": "Unlocked",
+            "beatable": "Beatable",
+            "mushrooms": "mushrooms",
+            "for": "for #{won} out of #{total} floors",
+            "left": "#{count} floors left"
+        },
+        "table": {
+            "include": "Include #{name} in the plan",
+            "dungeon": "Dungeon",
+            "next": "Next floor",
+            "floors": "Floors",
+            "winnable": "Beatable",
+            "unlocked": "Unlocked XP",
+            "beatable": "Beatable XP",
+            "levels": "Lvl",
+            "mushrooms": "Mushrooms",
+            "boss": "##{position} #{name}",
+            "level": "lvl #{level}",
+            "progress": "#{done} done, #{won} of #{total} left beatable",
+            "progress_pending": "#{done} done, #{total} left"
+        },
+        "status": {
+            "win": "Beatable",
+            "blocked": "Below minimum chance",
+            "never": "Never won",
+            "none": "Not simulated",
+            "rest": "Not possible or not simulated",
+            "pending": "Not simulated yet"
+        },
+        "floors": {
+            "subtitle": "Floor #{position} of #{total} · #{count} floors left",
+            "include": "Include in the plan",
+            "strip": "#{won} floors beatable, #{blocked} below minimum chance, the rest not possible or not simulated",
+            "winnable": "#{from}-#{to} beatable (#{count} floors)",
+            "blocked": "#{from}-#{to} below minimum chance",
+            "rest": "#{from}-#{total} not possible or not simulated",
+            "beatable": "Beatable XP of #{unlocked}",
+            "levels": "levels",
+            "mushrooms": "mushrooms (#{paid} if every first fight were paid)",
+            "rule": "A win with more than 90% HP left makes the next floor's first fight free. Clean wins is the share of simulated wins that ended above 90% HP, First fight is the chance the floor starts for free.",
+            "floor": "Floor",
+            "enemy": "Enemy",
+            "chance": "Win chance",
+            "clean": "Clean wins",
+            "first": "First fight",
+            "experience": "XP",
+            "mushrooms_column": "Mushrooms",
+            "paid": "paid",
+            "free": "#{share}% free",
+            "pending": "Shows up when the simulation finishes."
+        },
+        "chart": {
+            "title": "Levels per mushroom",
+            "levels": "levels gained",
+            "mushrooms": "mushrooms spent",
+            "marker": "#{mushrooms} mushrooms · +#{levels} lvl",
+            "description": "Levels gained against mushrooms spent, #{levels} levels for all #{mushrooms} mushrooms",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance."
+        },
+        "order": {
+            "title": "Fight order",
+            "subtitle": "#{count} fights, cheapest levels first",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance.",
+            "missing": "Fights #{from}-#{to} need #{missing} more mushrooms",
+            "number": "#",
+            "floor": "Floor",
+            "spent": "Mushrooms spent"
+        }
+    },
     "underworld": {
         "goblin_pit": "Goblin Pit",
         "goblin_upgrades": "Goblin Upgrades",
@@ -1064,6 +1177,13 @@
         "file": "File",
         "game": "Endpoint",
         "search": "Search player...",
+        "selector": {
+            "pick": "Select a character",
+            "level": "Level #{level} · #{xp} / #{next} XP",
+            "row": "#{world} · Level #{level} #{class}",
+            "none_title": "No saved characters yet",
+            "none_text": "Log in through Endpoint or import a HAR file to add yours."
+        },
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"

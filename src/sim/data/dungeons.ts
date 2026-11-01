@@ -1,8 +1,9 @@
 import { globalLocalize, hasTranslation } from '@utils/localization'
-import { compact } from '@utils/utils'
+import { compact, getValueAtPath, setValueAtPath } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type PlayerDungeons } from '~/data/dungeon-helper'
 import { Calculations } from '~/playa/calculations'
+import type { DungeonFight } from '~/sim/dungeons'
 import { CONFIG, WARRIOR } from '~/sim/workers/base'
 
 export type DungeonRunes = {
@@ -244,6 +245,29 @@ export function createDungeonPlayers(dungeon: Dungeon, player: PlayerModel, comp
   bert.Health = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * portalBonus) * potionBonus * runeBonus * 1.22)
 
   return [bert, mark, kunigunde, structuredClone(player)]
+}
+
+export const DUNGEON_COMPANION_CLASSES: CharacterClass[] = [1, 2, 3]
+
+export const DUNGEON_SHARED_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Potions.Life']
+
+export function copyDungeonSharedValues(target: PlayerModel, source: PlayerModel, paths = DUNGEON_SHARED_PATHS) {
+  for (const path of paths) {
+    setValueAtPath(target, path, getValueAtPath(source, path))
+  }
+}
+
+export function createDungeonFight(entry: DungeonEntry, fighters: (PlayerModel | null)[]): DungeonFight | null {
+  const [player, ...companions] = fighters
+  const ready = compact(companions)
+
+  if (!player || (entry.dungeon.companions && ready.length < companions.length)) return null
+
+  return {
+    entry,
+    players: createDungeonPlayers(entry.dungeon, player, ready),
+    boss: createBoss(entry, player)
+  }
 }
 
 /**

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center gap-1.5">
     <div class="flex items-center gap-2">
-      <input :id="id" ref="input-ref" v-model="modelValue" type="checkbox" class="size-4 cursor-pointer accent-accent" :aria-describedby="descriptionId" />
+      <input :id="id" ref="input-ref" v-model="modelValue" type="checkbox" class="size-4 cursor-pointer accent-accent" :aria-label="props.ariaLabel" :aria-describedby="descriptionId" />
       <label v-if="props.label || slots.default" :for="id" class="flex flex-1 cursor-pointer items-center">
         <slot>{{ props.label }}</slot>
       </label>
@@ -31,6 +31,10 @@ const props = defineProps<{
    * Shows the mixed state
    */
   indeterminate?: boolean
+  /**
+   * Accessible name of the checkbox when it has no label
+   */
+  ariaLabel?: string
 }>()
 
 const slots = defineSlots<{

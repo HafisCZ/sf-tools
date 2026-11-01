@@ -9,10 +9,10 @@
       </ul>
       <SFParagraph v-else class="text-center">{{ props.emptyMessage }}</SFParagraph>
       <div class="flex gap-2">
-        <SFButton variant="outline" block @click="importEndpoint">
+        <SFButton variant="outline" block @click="importInlineSelectorEndpoint">
           {{ localize('game') }}
         </SFButton>
-        <SFButton variant="outline" block @click="importFiles">
+        <SFButton variant="outline" block @click="importInlineSelectorFiles">
           {{ localize('file') }}
         </SFButton>
       </div>
@@ -25,18 +25,11 @@ import { onMounted, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFParagraph from '@library/SFParagraph.vue'
-import { useDialog, useFilePicker } from '@utils/dialogs'
 import { formatWorldName } from '@utils/formatting'
-import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
-import { useErrorToast } from '@utils/toasts'
-import { getErrorMessage } from '@utils/utils'
 import CharacterTile from '~/components/CharacterTile.vue'
-import { Logger } from '~/core/logger'
 import { type PlayerModel } from '~/core/models/player'
-import { DatabaseManager } from '~/data/database-manager'
-import EndpointDialog from '~/dialogs/EndpointDialog.vue'
-import { inlineSelectorPlayers, loadInlineSelectorPlayers, reloadInlineSelectorPlayers } from './inline-selector'
+import { importInlineSelectorEndpoint, importInlineSelectorFiles, inlineSelectorPlayers, loadInlineSelectorPlayers } from './inline-selector'
 
 defineOptions({
   name: 'InlineSelector'
@@ -62,54 +55,9 @@ const emit = defineEmits<{
 
 const localize = useLocalize('integration')
 
-const loader = useLoader()
-
 const titleId = useId()
 
 onMounted(() => {
   void loadInlineSelectorPlayers()
 })
-
-function importFiles() {
-  useFilePicker({
-    accept: '.har,.json',
-    multiple: true,
-    callback: (files) => void readFiles(files)
-  })
-}
-
-async function readFiles(files: File[]) {
-  loader.start({ progress: true })
-
-  let filesDone = 0
-
-  await Promise.all(
-    files.map(async (file) => {
-      try {
-        await DatabaseManager.import(await file.text(), file.lastModified)
-      } catch (e) {
-        useErrorToast(localize.global('database.import_error'), getErrorMessage(e))
-        Logger.error(e, 'Error occured while trying to import a file!')
-      }
-
-      loader.progress(++filesDone / files.length)
-    })
-  )
-
-  await reloadInlineSelectorPlayers()
-}
-
-function importEndpoint() {
-  useDialog(
-    EndpointDialog,
-    { allowTemporary: true },
-    {
-      callback: (imported) => {
-        if (imported) {
-          void reloadInlineSelectorPlayers()
-        }
-      }
-    }
-  )
-}
 </script>

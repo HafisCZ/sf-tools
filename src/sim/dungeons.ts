@@ -121,5 +121,37 @@ export function useDungeonSimulator() {
     return { results: compact(results), duration }
   }
 
-  return { simulateBoss, simulateBosses, simulateNext }
+  async function simulateUntilNotPossible(fights: DungeonFight[], { instances, iterations }: SimulatorRun) {
+    const results: DungeonResult[] = []
+
+    const batch = new WorkerBatch<DungeonsResponse, DungeonsMessage & { id: number }>('dungeons')
+
+    fights.forEach(({ entry, players, boss }, index) => {
+      batch.add(
+        (data) => {
+          results[index] = { ...entry, ...data.results }
+
+          if (data.results.score === 0) {
+            batch.skip(({ id }) => id === entry.dungeon.id || id === NEXT_DUNGEONS[entry.dungeon.id])
+          }
+        },
+        {
+          players,
+          boss,
+          iterations,
+          hpcap: HEALTH_CAP,
+          config: simulatorConfig.value,
+          id: entry.dungeon.id
+        }
+      )
+    })
+
+    const duration = await batch.run(instances, ({ id }, { id: running }) => id !== running && PREVIOUS_DUNGEONS[id] !== running)
+
+    if (duration === null) return null
+
+    return { results: compact(results), duration }
+  }
+
+  return { simulateBoss, simulateBosses, simulateNext, simulateUntilNotPossible }
 }
