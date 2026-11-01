@@ -116,7 +116,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, formatDuration, getClassImageUrl, sequence, sortDescending, sum, useSubmit } from '@utils/utils'
+import { compact, copyJson, formatDuration, getClassImageUrl, sortDescending, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
 import { type PlayerModel } from '~/core/models/player'
@@ -131,8 +131,8 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
+import { handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { useGuildSimulator } from '~/sim/guilds'
 
 defineOptions({
   name: 'GuildsPage'
@@ -144,17 +144,13 @@ type ListPlayer = {
   index: number
 }
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
 const INACTIVE_SUFFIXES = ['', ' (Inactive)', ' (Inactive 14+ days)']
 
 const localize = useLocalize('guilds')
+
+const guildSimulator = useGuildSimulator()
 
 const pasteMode = ref(false)
 const gladiatorMode = ref(Store.shared.get<string>(GLADIATOR_MODE_KEY, 'false', true) === 'true')
@@ -186,7 +182,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 50, target)
 })
 
 const players = computed(() => guilds.value[currentGuild.value])
@@ -334,45 +330,15 @@ function copyAll() {
   void copyJson(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   if (!canSimulate.value) return
 
-  const scores: number[] = []
+  const result = await guildSimulator.simulate(guilds.value[0], guilds.value[1], gladiatorMode.value, { instances, iterations }, log)
 
-  let logs: unknown[] = []
+  if (!result) return
 
-  const batch = new WorkerBatch<{ results: { score: number }; logs: unknown[] }>('guilds')
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
-  sequence(instances).forEach(() => {
-    batch.add(
-      (data) => {
-        scores.push(data.results.score)
-
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        flags: { Gladiator15: gladiatorMode.value },
-        guildA: guilds.value[0],
-        guildB: guilds.value[1],
-        iterations,
-        config: simulatorConfig.value,
-        log: !!onLogs
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
-
-  score.value = (100 * sum(scores)) / (instances * iterations)
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: guilds.value.flatMap((list) => list.map(({ player }) => player)), config: simulatorConfig.value })
-  }
+  score.value = result.score
 }
 </script>

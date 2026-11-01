@@ -122,7 +122,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sortDescending, sum, useSubmit } from '@utils/utils'
+import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sortDescending, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
 import { type PlayerModel } from '~/core/models/player'
@@ -137,9 +137,8 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { getRaidEnemies, scaleRaidPlayers } from '~/sim/data/raids'
-import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
+import { copySimulatorData, handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { useRaidSimulator } from '~/sim/raids'
 
 defineOptions({
   name: 'RaidsPage'
@@ -150,15 +149,11 @@ type ListPlayer = {
   index: number
 }
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
 const localize = useLocalize('raids')
+
+const raidSimulator = useRaidSimulator()
 
 const raid = ref('hellevator_1')
 
@@ -191,7 +186,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 50, target)
 })
 
 const HELLEVATOR_TIERS = 12
@@ -334,52 +329,21 @@ function copyWithConfig() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   if (!canSimulate.value) return
 
-  const enemies = getRaidEnemies(raid.value).map((player) => ({ player }))
-
-  const scaledPlayers = scaleRaidPlayers(
+  const result = await raidSimulator.simulate(
     raid.value,
-    players.value.map(({ player }) => player)
-  ).map((player) => ({ player }))
+    players.value.map(({ player }) => player),
+    gladiatorMode.value,
+    { instances, iterations },
+    log
+  )
 
-  const scores: number[] = []
+  if (!result) return
 
-  let logs: unknown[] = []
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
-  const batch = new WorkerBatch<{ results: { score: number }; logs: unknown[] }>('raids')
-
-  sequence(instances).forEach(() => {
-    batch.add(
-      (data) => {
-        scores.push(data.results.score)
-
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        flags: { Gladiator15: gladiatorMode.value },
-        players: scaledPlayers,
-        enemies,
-        iterations,
-        config: simulatorConfig.value,
-        log: !!onLogs
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
-
-  score.value = (100 * sum(scores)) / (instances * iterations)
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: players.value.map(({ player }) => player), config: simulatorConfig.value })
-  }
+  score.value = result.score
 }
 </script>

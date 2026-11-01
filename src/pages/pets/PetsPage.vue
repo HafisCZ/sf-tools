@@ -56,7 +56,7 @@ import { type DropdownItem } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { sequence, sortDescending, sum, useSubmit } from '@utils/utils'
+import { sequence, sortDescending, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type PetHabitat, type PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
@@ -68,9 +68,9 @@ import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
-import { CONFIG, SimulatorModel } from '~/sim/workers/base'
+import { simulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { usePetSimulator } from '~/sim/pets'
+import { CONFIG, type SimulatorModel } from '~/sim/workers/base'
 import { PetModel, type SimulatorPet } from '~/sim/workers/pets'
 import PetEditor from './components/PetEditor.vue'
 import PetMapDialog from './dialogs/PetMapDialog.vue'
@@ -80,29 +80,14 @@ defineOptions({
   name: 'PetsPage'
 })
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
-type PetMap = {
-  name: string
-  data: (number[] | undefined)[]
-}
-
-type PetResult = {
-  chance: number
-  pet: SimulatorPet
-  boss: SimulatorPet
-}
-
 const MAP_ITERATIONS_KEY = 'pet_sim/map_iterations'
 
 // Index is the pet type
 const HABITATS: PetHabitat[] = ['Shadow', 'Light', 'Earth', 'Fire', 'Water']
 
 const localize = useLocalize('pets')
+
+const petSimulator = usePetSimulator()
 
 const mapIterations = ref(readMapIterations())
 
@@ -139,7 +124,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 50, target)
 })
 
 const { submit: generate, isSubmitting: isGenerating } = useSubmit(generateMaps)
@@ -236,48 +221,17 @@ function getPetName(pet: SimulatorPet) {
   return `${localize(`types.${pet.Type}`)} ${pet.Pet + 1} - ${localize.global(`monsters.${800 + 20 * pet.Type + pet.Pet}`)}`
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   const a = petA.value
   const b = petB.value
 
   if (!a || !b) return
 
-  const chances: number[] = []
+  const fight = await petSimulator.simulateFight(a, b, { instances, iterations }, log)
 
-  let logs: unknown[] = []
+  if (!fight) return
 
-  const batch = new WorkerBatch<{ results: number; logs: unknown[] }>('pets')
-
-  for (let index = 0; index < instances; index++) {
-    batch.add(
-      (data) => {
-        chances.push(data.results)
-
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        mode: 'pet',
-        players: [a, b],
-        iterations,
-        config: simulatorConfig.value,
-        log: !!onLogs
-      }
-    )
-  }
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  const chance = sum(chances) / instances
-
-  result.value = `${chance.toFixed(chance < 0.01 ? 5 : 2)}%`
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: [a, b].map((pet) => SimulatorModel.normalize(PetModel.getPlayer(pet))), config: simulatorConfig.value })
-  }
+  result.value = `${fight.chance.toFixed(fight.chance < 0.01 ? 5 : 2)}%`
 }
 
 async function generateMaps(count: number) {
@@ -289,31 +243,11 @@ async function generateMaps(count: number) {
   const instances = Math.max(1, settings.value.threads || 4)
   const iterations = Math.max(1, mapIterations.value || 1e5)
 
-  const maps: PetMap[] = []
+  const generated = await petSimulator.generateMaps(a, b, count, { instances, iterations })
 
-  const batch = new WorkerBatch<{ results: PetMap['data'] }>('pets')
+  if (!generated) return
 
-  for (let bossPet = b.Pet; bossPet < Math.min(20, b.Pet + count); bossPet++) {
-    const boss = { ...b, Pet: bossPet }
-
-    batch.add(
-      (data) => {
-        maps[bossPet - b.Pet] = { data: data.results, name: `${getPetName(a)} (${a.Pack}, ${a.At100}, ${a.At150}, ${a.At200}) vs ${getPetName(boss)}` }
-      },
-      {
-        mode: 'map',
-        players: [a, boss],
-        iterations,
-        config: simulatorConfig.value
-      }
-    )
-  }
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useDialog(PetMapDialog, { maps })
+  useDialog(PetMapDialog, { maps: generated.maps.map(({ boss, data }) => ({ data, name: `${getPetName(a)} (${a.Pack}, ${a.At100}, ${a.At150}, ${a.At200}) vs ${getPetName(boss)}` })) })
 }
 
 async function runDungeonSimulation() {
@@ -330,30 +264,12 @@ async function runDungeonSimulation() {
     return pet && boss ? [{ pet, boss }] : []
   })
 
-  const results: PetResult[] = []
-
-  const batch = new WorkerBatch<{ results: number }>('pets')
-
-  for (const { pet, boss } of matches) {
-    batch.add(
-      (data) => {
-        results.push({ chance: data.results, pet, boss })
-      },
-      {
-        mode: 'pet',
-        players: [pet, boss],
-        iterations,
-        config: simulatorConfig.value
-      }
-    )
-  }
-
   useToast({ title: localize('bulk.toast.title'), message: `${localize('bulk.toast.matches')} ${matches.length}` })
 
-  const duration = await batch.run(instances)
+  const dungeons = await petSimulator.simulateDungeons(matches, { instances, iterations })
 
-  if (duration === null) return
+  if (!dungeons) return
 
-  useDialog(PetResultsDialog, { results: sortDescending(results, (item) => item.chance) })
+  useDialog(PetResultsDialog, { results: sortDescending(dungeons.results, (item) => item.chance) })
 }
 </script>

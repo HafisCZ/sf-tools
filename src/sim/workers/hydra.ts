@@ -1,13 +1,28 @@
 import { type SimulatorPlayerInput } from '~/sim/types'
 import { FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type HydraPet = SimulatorPlayerInput & { Attacks: number }
+export type HydraPet = SimulatorPlayerInput & { Attacks: number }
 
-type HydraMessage = {
+export type HydraBoss = SimulatorPlayerInput & { Health: number }
+
+export type HydraMessage = {
   flags?: Record<string, unknown> | null
   iterations: number
-  hydra: SimulatorPlayerInput
+  hydra: HydraBoss
   pet: HydraPet
+}
+
+export type HydraResult = {
+  pet: HydraPet
+  hydra: HydraBoss
+  iterations: number
+  score: number
+  avg_health: number
+  avg_fights: number
+}
+
+export type HydraResponse = {
+  results: HydraResult
 }
 
 // Override some methods
@@ -29,7 +44,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
     self.postMessage({
       results: new HydraSimulator().simulate(pet, hydra, iterations)
-    })
+    } satisfies HydraResponse)
   })
 }
 
@@ -39,7 +54,7 @@ class HydraSimulator extends SimulatorBase {
   declare la: SimulatorModel[]
   declare lb: SimulatorModel[]
 
-  simulate(pet: HydraPet, hydra: SimulatorPlayerInput, iterations: number) {
+  simulate(pet: HydraPet, hydra: HydraBoss, iterations: number) {
     this.cache(pet, hydra)
 
     let score = 0

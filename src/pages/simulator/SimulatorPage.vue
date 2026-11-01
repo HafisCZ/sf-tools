@@ -148,8 +148,8 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { copySimulatorData, handleSimulatorPaste, preparePlayerData, receiveSimulatorBroadcast, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
+import { copySimulatorData, handleSimulatorPaste, preparePlayerData, receiveSimulatorBroadcast, type SimulatorLogTarget } from '~/sim/debug'
+import { usePlayerSimulator } from '~/sim/players'
 
 defineOptions({
   name: 'SimulatorPage'
@@ -163,17 +163,13 @@ type PlayerScore = {
   index: number
 }
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const MODE_KEY = 'player_sim/mode'
 
 const MODES: SimulatorMode[] = ['all', 'attack', 'defend', 'tournament']
 
 const localize = useLocalize('simulator')
+
+const playerSimulator = usePlayerSimulator()
 
 const mode = ref(readMode())
 
@@ -235,7 +231,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 500, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 500, target)
 })
 
 // Plain colours while saving, html2canvas can't read Tailwind's oklch() colours
@@ -417,58 +413,29 @@ function copyWithConfig() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   if (!canSimulate.value) return
 
-  const entries = players.value.map((entry) => ({ ...entry, score: null }))
+  const entries = players.value.map((entry): PlayerScore => ({ ...entry, score: null }))
 
   players.value = entries
 
   const yourself = entries.find((entry) => entry.index === yourselfIndex.value)
 
-  const collected: PlayerScore[] = []
+  const flags = {
+    Gladiator15: gladiatorMode.value,
+    NoGladiatorReduction: ihofMode.value,
+    NoAttributeReduction: noAttributeReductionMode.value
+  }
 
-  let logs: unknown[] = []
+  const result = await playerSimulator.simulate(mode.value, entries, yourself, flags, { instances, iterations }, log)
 
-  const batch = new WorkerBatch<{ results: PlayerScore; logs: unknown[] }>('players')
+  if (!result) return
 
-  entries.forEach((entry, index) => {
-    batch.add(
-      (data) => {
-        collected[index] = data.results
+  useToast({ title: localize('toast.title'), message: localize('toast.message', { duration: formatDuration(result.duration) }) })
 
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        player: isSingleTarget.value ? yourself : entry,
-        target: isSingleTarget.value ? entry : entries,
-        flags: {
-          Gladiator15: gladiatorMode.value,
-          NoGladiatorReduction: ihofMode.value,
-          NoAttributeReduction: noAttributeReductionMode.value
-        },
-        config: simulatorConfig.value,
-        mode: mode.value,
-        log: !!onLogs,
-        iterations
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useToast({ title: localize('toast.title'), message: localize('toast.message', { duration: formatDuration(duration) }) })
-
-  players.value = collected
+  players.value = result.entries
 
   sorting.value = { column: 'avg', direction: 'desc' }
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: players.value.map(({ player }) => player), config: simulatorConfig.value })
-  }
 }
 </script>

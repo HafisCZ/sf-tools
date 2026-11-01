@@ -1,11 +1,16 @@
 import { type SimulatorPlayerInput } from '~/sim/types'
 import { FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type FortressMessage = {
+export type FortressMessage = {
   flags?: Record<string, unknown> | null
   iterations: number
   player: SimulatorPlayerInput[]
   target: SimulatorPlayerInput[]
+  index: number
+}
+
+export type FortressResponse = {
+  score: number
   index: number
 }
 
@@ -18,7 +23,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     self.postMessage({
       score: new FortressSimulator().simulate(player, target, iterations),
       index
-    })
+    } satisfies FortressResponse)
   })
 }
 

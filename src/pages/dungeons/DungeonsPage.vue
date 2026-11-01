@@ -98,7 +98,7 @@ import { type SelectOption } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sum, useSubmit } from '@utils/utils'
+import { compact, copyJson, getClassImageUrl, getValueAtPath, setValueAtPath, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
@@ -115,10 +115,10 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, NEXT_DUNGEONS, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
-import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
+import { copySimulatorData, handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { useDungeonSimulator, type DungeonFight } from '~/sim/dungeons'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
-import { WorkerBatch } from '~/sim/workers'
 import { RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/workers/base'
 import DungeonBossFinder from './components/DungeonBossFinder.vue'
 import DungeonChart from './components/DungeonChart.vue'
@@ -139,43 +139,15 @@ type DungeonsOptions = {
   decimals: number
 }
 
-type DungeonFight = {
-  players: PlayerModel[]
-  boss: ReturnType<typeof createBoss>
-}
-
-type DungeonWorkerParams = DungeonFight & {
-  iterations: number
-  config: SimulatorConfig | null
-  hpcap?: number
-  log?: boolean
-}
-
-type DungeonWorkerResult = {
-  results: {
-    score: number
-    iterations: number
-    enemyHealths: number[]
-    playersHealths: number[]
-  }
-  logs: unknown[]
-}
-
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const COMPANION_CLASSES: CharacterClass[] = [1, 2, 3]
 
 const SHARED_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Potions.Life']
 
 const SHADOW_COLOR = '#dec0ff'
 
-const HEALTH_CAP = 500
-
 const localize = useLocalize('dungeons')
+
+const dungeonSimulator = useDungeonSimulator()
 
 const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2 })
 
@@ -225,7 +197,7 @@ const { submit: simulateAll, isSubmitting: isSimulatingAll } = useSubmit(runAll)
 const { submit: simulateNext, isSubmitting: isSimulatingNext } = useSubmit(runNext)
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runBoss(1, 50, (log) => saveSimulatorLog(target, log))
+  await runBoss(1, 50, target)
 })
 
 const isRunning = computed(() => isSimulating.value || isSimulatingRemaining.value || isSimulatingAll.value || isSimulatingNext.value || isLogging.value)
@@ -508,9 +480,14 @@ function prepareFight(entry: DungeonEntry): DungeonFight | null {
   if (!player || (entry.dungeon.companions && ready.length < companions.length)) return null
 
   return {
+    entry,
     players: createDungeonPlayers(entry.dungeon, player, ready),
     boss: createBoss(entry, player)
   }
+}
+
+function prepareFights(entries: DungeonEntry[]) {
+  return compact(entries.map((entry) => prepareFight(entry)))
 }
 
 function readSettings() {
@@ -518,10 +495,6 @@ function readSettings() {
     instances: Math.max(1, settings.value?.threads || 4),
     iterations: Math.max(1, settings.value?.iterations || 5000)
   }
-}
-
-function averageHealths(healths: number[][]) {
-  return (healths.at(0) ?? []).map((_, index) => sum(healths.map((values) => values[index])) / healths.length).sort((a, b) => a - b)
 }
 
 function sortByDungeonOrder(results: DungeonResult[]) {
@@ -565,81 +538,24 @@ function showResults(results: DungeonResult[]) {
   })
 }
 
-async function runBoss(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
-  const entry = selectedEntry.value
-  const fight = prepareFight(entry)
+async function runBoss(instances: number, iterations: number, log?: SimulatorLogTarget) {
+  const fight = prepareFight(selectedEntry.value)
 
   if (!canSimulateSelected.value || !fight) return
 
-  const enemyHealths: number[][] = []
-  const playersHealths: number[][] = []
+  const boss = await dungeonSimulator.simulateBoss(fight, { instances, iterations }, log)
 
-  let score = 0
-  let logs: unknown[] = []
+  if (!boss) return
 
-  const batch = new WorkerBatch<DungeonWorkerResult, DungeonWorkerParams>('dungeons')
-
-  sequence(instances).forEach(() => {
-    batch.add(
-      (data) => {
-        enemyHealths.push(data.results.enemyHealths)
-        playersHealths.push(data.results.playersHealths)
-
-        score += data.results.score
-        logs = logs.concat(data.logs)
-      },
-      {
-        ...fight,
-        config: simulatorConfig.value,
-        log: !!onLogs,
-        iterations
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  chartResult.value = { ...entry, score, iterations: instances * iterations, enemyHealths: averageHealths(enemyHealths), playersHealths: averageHealths(playersHealths) }
+  chartResult.value = boss.result
 
   isChartOutdated.value = false
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: [...fight.players, fight.boss], config: simulatorConfig.value })
-  }
 }
 
 async function runBosses(entries: DungeonEntry[]) {
-  const { instances, iterations } = readSettings()
+  const bosses = await dungeonSimulator.simulateBosses(prepareFights(entries), readSettings())
 
-  const results: DungeonResult[] = []
-
-  const batch = new WorkerBatch<DungeonWorkerResult, DungeonWorkerParams>('dungeons')
-
-  entries.forEach((entry, index) => {
-    const fight = prepareFight(entry)
-
-    if (!fight) return
-
-    batch.add(
-      (data) => {
-        results[index] = { ...entry, ...data.results }
-      },
-      {
-        ...fight,
-        iterations,
-        hpcap: HEALTH_CAP,
-        config: simulatorConfig.value
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return null
-
-  return compact(results)
+  return bosses ? bosses.results : null
 }
 
 function getLimitedRemainingBosses(entry: DungeonEntry) {
@@ -687,41 +603,11 @@ async function runNext() {
 
   const entries = openBosses.value.filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm)).flatMap(getLimitedRemainingBosses)
 
-  const results: DungeonResult[] = []
+  const next = await dungeonSimulator.simulateNext(prepareFights(entries), { min: thresholdMin, max: thresholdMax }, { instances, iterations })
 
-  const batch = new WorkerBatch<DungeonWorkerResult, DungeonWorkerParams & { id: number }>('dungeons')
+  if (!next) return
 
-  entries.forEach((entry, index) => {
-    const fight = prepareFight(entry)
-
-    if (!fight) return
-
-    batch.add(
-      (data) => {
-        const score = data.results.score
-
-        if (score < (thresholdMin * iterations) / 100 || score > (thresholdMax * iterations) / 100) {
-          batch.skip(({ id }) => id === entry.dungeon.id || id === NEXT_DUNGEONS[entry.dungeon.id])
-        } else {
-          results[index] = { ...entry, ...data.results }
-        }
-      },
-      {
-        ...fight,
-        iterations,
-        hpcap: HEALTH_CAP,
-        config: simulatorConfig.value,
-        id: entry.dungeon.id
-      }
-    )
-  })
-
-  // Execute instance only if there is none running with the same dungeon id
-  const duration = await batch.run(instances, ({ id }, { id: running }) => id !== running && PREVIOUS_DUNGEONS[id] !== running)
-
-  if (duration === null) return
-
-  const found = compact(results)
+  const found = next.results
 
   if (found.length > 0) {
     showResults(sortByDungeonOrder(found))

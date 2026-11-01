@@ -1,18 +1,23 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type UnderworldPlayerEntry = {
+export type UnderworldPlayerEntry = {
   player: SimulatorPlayerInput
-  score?: number
+  score?: number | null
 }
 
-type UnderworldMessage = {
+export type UnderworldMessage = {
   log?: boolean
   config?: Record<string, unknown> | null
   flags?: Record<string, unknown> | null
   units: SimulatorPlayerInput[]
   player: UnderworldPlayerEntry
   iterations: number
+}
+
+export type UnderworldResponse<T extends UnderworldPlayerEntry = UnderworldPlayerEntry> = {
+  results: T
+  logs: FightLog[]
 }
 
 // WebWorker hooks
@@ -28,7 +33,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     self.postMessage({
       results: new UnderworldSimulator().simulate(units, player, iterations),
       logs: FIGHT_LOG.dump()
-    })
+    } satisfies UnderworldResponse)
   })
 }
 

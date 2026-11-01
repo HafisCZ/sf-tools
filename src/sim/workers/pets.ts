@@ -1,3 +1,4 @@
+import { type FightLog } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, MAGE, resetState, SimulatorBase, SimulatorModel } from './base'
 
 export type SimulatorPet = {
@@ -14,12 +15,21 @@ export type SimulatorPet = {
   Gladiator: number
 }
 
-type PetsMessage = {
+export type PetsMessage = {
   config?: Record<string, unknown> | null
   players: [SimulatorPet, SimulatorPet]
   mode: string
   iterations: number
   log?: boolean
+}
+
+export type PetFightResponse = {
+  results: number
+  logs: FightLog[]
+}
+
+export type PetMapResponse = {
+  results: number[][]
 }
 
 type PetSimulatorModel = SimulatorModel & { hasAdvantage(target: SimulatorModel): boolean }
@@ -44,7 +54,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       self.postMessage({
         results: simulator.simulate(p1, p2, iterations),
         logs: FIGHT_LOG.dump()
-      })
+      } satisfies PetFightResponse)
     } else if (mode == 'map') {
       const simulator = new PetSimulator()
 
@@ -108,7 +118,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
       self.postMessage({
         results: r
-      })
+      } satisfies PetMapResponse)
     }
   })
 }

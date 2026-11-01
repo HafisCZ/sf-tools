@@ -84,25 +84,13 @@ import Page from '~/pages/Page.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { HYDRA_MAP } from '~/sim/data/hydra'
-import { WorkerBatch } from '~/sim/workers'
+import { useHydraSimulator } from '~/sim/hydra'
 import { CONFIG } from '~/sim/workers/base'
+import type { HydraResult } from '~/sim/workers/hydra'
 
 defineOptions({
   name: 'HydraPage'
 })
-
-type HydraResult = {
-  pet: {
-    Class: CharacterClass
-  }
-  hydra: {
-    Health: number
-  }
-  iterations: number
-  score: number
-  avg_health: number
-  avg_fights: number
-}
 
 type EditorValues = {
   hydra: number
@@ -119,6 +107,8 @@ type EditorValues = {
 const ATTRIBUTE_MAP = CONFIG.classes().map((data) => PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[data.Attribute])
 
 const localize = useLocalize('hydra')
+
+const hydraSimulator = useHydraSimulator()
 
 const playerCount = ref<number | null>(null)
 const level = ref<number | null>(null)
@@ -176,14 +166,14 @@ function getHydraData() {
 }
 
 function getMainOrSideAttribute(attribute: MainAttribute, classId: CharacterClass) {
-  return [main.value, side1.value, side2.value][ATTRIBUTE_MAP[classId - 1].indexOf(attribute)]
+  return [main.value, side1.value, side2.value][ATTRIBUTE_MAP[classId - 1].indexOf(attribute)] ?? 0
 }
 
 function getPlayerData(classId: CharacterClass) {
   const playerLevel = level.value ?? 0
 
   return {
-    Level: level.value,
+    Level: playerLevel,
     Class: classId,
     Armor: playerLevel * CONFIG.fromID(classId).MaximumDamageReduction,
     Strength: {
@@ -196,12 +186,12 @@ function getPlayerData(classId: CharacterClass) {
       Total: getMainOrSideAttribute('Intelligence', classId)
     },
     Constitution: {
-      Total: constitution.value
+      Total: constitution.value ?? 0
     },
     Luck: {
-      Total: luck.value
+      Total: luck.value ?? 0
     },
-    Attacks: playerCount.value
+    Attacks: playerCount.value ?? 0
   }
 }
 
@@ -265,28 +255,12 @@ async function runSimulation() {
   const hydraData = getHydraData()
   const pets = ([1, 2, 3] as const).map((classId) => getPlayerData(classId))
 
-  const collected: HydraResult[] = []
-  const batch = new WorkerBatch<{ results: HydraResult }>('hydra')
+  const result = await hydraSimulator.simulate(hydraData, pets, { instances, iterations })
 
-  pets.forEach((pet, index) => {
-    batch.add(
-      (data) => {
-        collected[index] = data.results
-      },
-      {
-        iterations,
-        hydra: hydraData,
-        pet
-      }
-    )
-  })
+  if (!result) return
 
-  const duration = await batch.run(instances)
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
-
-  results.value = collected
+  results.value = result.results
 }
 </script>

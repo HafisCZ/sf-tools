@@ -139,9 +139,9 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createUnderworldUnits, type UnderworldValues } from '~/sim/data/underworld'
-import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
+import { type UnderworldValues } from '~/sim/data/underworld'
+import { copySimulatorData, handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { useUnderworldSimulator } from '~/sim/underworld'
 
 defineOptions({
   name: 'UnderworldPage'
@@ -154,15 +154,11 @@ type PlayerScore = {
   index: number
 }
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const GLADIATOR_MODE_KEY = 'underworld_sim/gladiator'
 
 const localize = useLocalize('underworld')
+
+const underworldSimulator = useUnderworldSimulator()
 
 const goblin = ref<number | null>(null)
 const goblinUpgrades = ref<number | null>(null)
@@ -201,7 +197,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 50, target)
 })
 
 function listPlayers() {
@@ -331,51 +327,19 @@ function copyWithConfig() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   if (!canSimulate.value) return
 
-  const units = createUnderworldUnits(readUnderworldValues(), shieldMode.value)
-
-  const entries = players.value.map((entry) => ({ ...entry, score: null }))
+  const entries = players.value.map((entry): PlayerScore => ({ ...entry, score: null }))
 
   players.value = entries
 
-  const collected: PlayerScore[] = []
+  const result = await underworldSimulator.simulate(entries, readUnderworldValues(), shieldMode.value, gladiatorMode.value, { instances, iterations }, log)
 
-  let logs: unknown[] = []
+  if (!result) return
 
-  const batch = new WorkerBatch<{ results: PlayerScore; logs: unknown[] }>('underworld')
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
-  entries.forEach((entry, index) => {
-    batch.add(
-      (data) => {
-        collected[index] = data.results
-
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        units,
-        player: entry,
-        iterations,
-        flags: { Gladiator15: gladiatorMode.value },
-        config: simulatorConfig.value,
-        log: !!onLogs
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
-
-  players.value = sortDescending(collected, (entry) => entry.player.Level + 1000 * (entry.score ?? 0))
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: players.value.map(({ player }) => player), config: simulatorConfig.value })
-  }
+  players.value = sortDescending(result.entries, (entry) => entry.player.Level + 1000 * (entry.score ?? 0))
 }
 </script>

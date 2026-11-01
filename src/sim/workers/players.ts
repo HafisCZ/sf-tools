@@ -1,13 +1,13 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type PlayerEntry = {
+export type PlayerEntry = {
   index: number
   player: SimulatorPlayerInput
-  score?: { avg: number; min?: number; max?: number }
+  score?: { avg: number; min?: number; max?: number } | null
 }
 
-type PlayersMessage = {
+export type PlayersMessage = {
   flags?: Record<string, unknown> | null
   config?: Record<string, unknown> | null
   player: PlayerEntry
@@ -15,6 +15,11 @@ type PlayersMessage = {
   mode: string
   iterations: number
   log?: boolean
+}
+
+export type PlayersResponse<T extends PlayerEntry = PlayerEntry> = {
+  results: T
+  logs: FightLog[]
 }
 
 // WebWorker hooks
@@ -32,22 +37,22 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       self.postMessage({
         results: new FightSimulator().simulateMultiple(player, target as PlayerEntry[], iterations),
         logs: FIGHT_LOG.dump()
-      })
+      } satisfies PlayersResponse)
     } else if (mode == 'attack') {
       self.postMessage({
         results: new FightSimulator().simulateSingle(player, target as PlayerEntry, iterations, false),
         logs: FIGHT_LOG.dump()
-      })
+      } satisfies PlayersResponse)
     } else if (mode == 'defend') {
       self.postMessage({
         results: new FightSimulator().simulateSingle(player, target as PlayerEntry, iterations, true),
         logs: FIGHT_LOG.dump()
-      })
+      } satisfies PlayersResponse)
     } else if (mode == 'tournament') {
       self.postMessage({
         results: new FightSimulator().simulateTournament(player, target as PlayerEntry[], iterations),
         logs: FIGHT_LOG.dump()
-      })
+      } satisfies PlayersResponse)
     }
   })
 }

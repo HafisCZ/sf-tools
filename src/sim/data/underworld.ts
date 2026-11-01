@@ -1,5 +1,6 @@
 import { sequence } from '@utils/utils'
 import { NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
+import { type SimulatorPlayerInput } from '~/sim/types'
 import { WARRIOR } from '~/sim/workers/base'
 
 export type UnderworldValues = {
@@ -48,7 +49,7 @@ function getUnitAttribute(level: number, multiplier: number) {
   return Math.round(base * multiplier)
 }
 
-function createUnits(index: number, building: number, upgrades: number, counts: number[], attributeMultiplier: number, shieldMode: boolean) {
+function createUnits(index: number, building: number, upgrades: number, counts: number[], attributeMultiplier: number, shieldMode: boolean): SimulatorPlayerInput[] {
   const count = getUnitCount(building, counts)
   const level = getUnitLevel(building, upgrades)
 

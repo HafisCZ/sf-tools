@@ -1,7 +1,7 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type DungeonsMessage = {
+export type DungeonsMessage = {
   flags?: Record<string, unknown> | null
   config?: Record<string, unknown> | null
   players: SimulatorPlayerInput[]
@@ -10,6 +10,17 @@ type DungeonsMessage = {
   hpcap?: number
   iterations?: number
   log?: boolean
+}
+
+export type DungeonsResponse = {
+  results: {
+    iterations: number
+    score: number
+    enemyHealths: number[]
+    playersHealths: number[]
+  }
+  logs: FightLog[]
+  index?: number
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -25,7 +36,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       results: new DungeonSimulator().simulate(players, boss, iterations || 100000, hpcap || 5000),
       logs: FIGHT_LOG.dump(),
       index
-    })
+    } satisfies DungeonsResponse)
   })
 }
 

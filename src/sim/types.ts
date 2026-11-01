@@ -241,3 +241,8 @@ export type FightLog = {
   fighterB: FightLogFighter
   rounds: FightLogRound[]
 }
+
+export type SimulatorRun = {
+  instances: number
+  iterations: number
+}

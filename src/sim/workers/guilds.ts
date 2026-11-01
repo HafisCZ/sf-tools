@@ -1,18 +1,27 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type GuildMember = {
+export type GuildMember = {
   player: SimulatorPlayerInput
   inactive?: number
 }
 
-type GuildsMessage = {
+export type GuildsMessage = {
   config?: Record<string, unknown> | null
   flags?: Record<string, unknown> | null
   guildA: GuildMember[]
   guildB: GuildMember[]
   iterations: number
   log?: boolean
+}
+
+export type GuildsResponse = {
+  results: {
+    score: number
+    left1: number
+    left2: number
+  }
+  logs: FightLog[]
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -30,7 +39,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     self.postMessage({
       results: new GuildSimulator().simulate(guildA, guildB, iterations),
       logs: FIGHT_LOG.dump()
-    })
+    } satisfies GuildsResponse)
   })
 }
 

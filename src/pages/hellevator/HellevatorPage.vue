@@ -90,8 +90,8 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
-import { preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
-import { WorkerBatch } from '~/sim/workers'
+import { preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { useHellevatorSimulator } from '~/sim/hellevator'
 import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
@@ -113,15 +113,11 @@ type ResultRow =
       score: number
     }
 
-type SimulatorLog = {
-  fights: unknown[]
-  players: unknown[]
-  config: SimulatorConfig | null
-}
-
 const ELEMENT_KEYS = ['fire', 'cold', 'lightning']
 
 const localize = useLocalize('hellevator')
+
+const hellevatorSimulator = useHellevatorSimulator()
 
 const rangeStart = ref<number | null>(1)
 const rangeEnd = ref<number | null>(600)
@@ -144,7 +140,7 @@ const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
 })
 
 const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
-  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+  await runSimulation(1, 50, target)
 })
 
 const resultRows = computed(() => {
@@ -254,7 +250,7 @@ function fillFromPaste(value: unknown) {
   }
 }
 
-async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
+async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
   if (!isValid.value || !editor.value) return
 
   enemies.value = []
@@ -270,42 +266,14 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   const end = rangeEnd.value ?? 0
 
   const floorEnemies = getHellevatorEnemies(start, Math.max(start, end))
-  const floorScores: number[] = []
 
-  let logs: unknown[] = []
+  const result = await hellevatorSimulator.simulate(player, floorEnemies, { instances, iterations }, log)
 
-  const batch = new WorkerBatch<{ score: number; logs: unknown[] }>('hellevator')
+  if (!result) return
 
-  floorEnemies.forEach((enemy, index) => {
-    batch.add(
-      (data) => {
-        floorScores[index] = data.score
-
-        if (onLogs) {
-          logs = logs.concat(data.logs)
-        }
-      },
-      {
-        player,
-        iterations,
-        enemy,
-        log: !!onLogs,
-        config: simulatorConfig.value
-      }
-    )
-  })
-
-  const duration = await batch.run(instances)
-
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
   enemies.value = floorEnemies
-  scores.value = floorScores
-
-  if (onLogs && logs.length > 0) {
-    onLogs({ fights: logs, players: [player, ...floorEnemies], config: simulatorConfig.value })
-  }
+  scores.value = result.scores
 }
 </script>

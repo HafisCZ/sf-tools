@@ -1,12 +1,17 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
-type HellevatorMessage = {
+export type HellevatorMessage = {
   config?: Record<string, unknown> | null
   player: SimulatorPlayerInput
   enemy: SimulatorPlayerInput
   iterations: number
   log?: boolean
+}
+
+export type HellevatorResponse = {
+  score: number
+  logs: FightLog[]
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -20,7 +25,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     self.postMessage({
       score: new HellevatorSimulator().simulate(player, enemy, iterations),
       logs: FIGHT_LOG.dump()
-    })
+    } satisfies HellevatorResponse)
   })
 }
 

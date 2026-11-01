@@ -98,8 +98,8 @@ import { useComponentValidation } from '@utils/validations'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createFortressBattle, FORTRESS_ARCHER_MAP, FORTRESS_MAGE_MAP, FORTRESS_WALL_MAP, FORTRESS_WARRIOR_MAP, type FortressUnit, type FortressValues } from '~/sim/data/fortress'
-import { WorkerBatch } from '~/sim/workers'
+import { FORTRESS_ARCHER_MAP, FORTRESS_MAGE_MAP, FORTRESS_WALL_MAP, FORTRESS_WARRIOR_MAP, type FortressUnit, type FortressValues } from '~/sim/data/fortress'
+import { useFortressSimulator } from '~/sim/fortress'
 
 defineOptions({
   name: 'FortressPage'
@@ -117,6 +117,8 @@ const ARCHER_LEVEL_OPTIONS = toLevelOptions(FORTRESS_ARCHER_MAP)
 const MAGE_LEVEL_OPTIONS = toLevelOptions(FORTRESS_MAGE_MAP)
 
 const localize = useLocalize('fortress')
+
+const fortressSimulator = useFortressSimulator()
 
 const warriorCount = ref<number | null>(null)
 const warriorLevel = ref('0')
@@ -224,29 +226,13 @@ async function runSimulation() {
   const instances = Math.max(1, settings.value.threads || 4)
   const iterations = Math.max(1, settings.value.iterations || 2500)
 
-  const collected: { score: number; index: number }[] = []
-  const batch = new WorkerBatch<{ score: number; index: number }>('fortress')
+  const result = await fortressSimulator.simulate(setups.value, { instances, iterations })
 
-  for (const { values, index } of setups.value) {
-    batch.add(
-      (data) => {
-        collected.push(data)
-      },
-      {
-        index,
-        iterations,
-        ...createFortressBattle(values)
-      }
-    )
-  }
+  if (!result) return
 
-  const duration = await batch.run(instances)
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
 
-  if (duration === null) return
-
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
-
-  for (const { score, index } of collected) {
+  for (const { score, index } of result.scores) {
     const setup = setups.value.find((item) => item.index === index)
 
     if (setup) {

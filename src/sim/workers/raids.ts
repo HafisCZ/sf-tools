@@ -1,17 +1,24 @@
-import { type SimulatorPlayerInput } from '~/sim/types'
+import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 
 type RaidEntity = {
   player: SimulatorPlayerInput
 }
 
-type RaidsMessage = {
+export type RaidsMessage = {
   config?: Record<string, unknown> | null
   flags?: Record<string, unknown> | null
   players: RaidEntity[]
   enemies: RaidEntity[]
   iterations: number
   log?: boolean
+}
+
+export type RaidsResponse = {
+  results: {
+    score: number
+  }
+  logs: FightLog[]
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -30,7 +37,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     self.postMessage({
       results: new RaidSimulator().simulate(players, enemies, iterations),
       logs: FIGHT_LOG.dump()
-    })
+    } satisfies RaidsResponse)
   })
 }
 
