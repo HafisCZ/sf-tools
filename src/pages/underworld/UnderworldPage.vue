@@ -5,7 +5,7 @@
     </template>
 
     <StatisticsIntegration type="players" :profile="FIGHT_SIMULATOR_PROFILE" :scope="listPlayers" cheats grouped @select="insertPlayer" />
-    <SimulatorPasteTarget @paste="handlePaste" />
+    <SimulatorPasteTarget use-drag-drop @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
       <div class="flex flex-col gap-2">

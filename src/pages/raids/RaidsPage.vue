@@ -5,7 +5,7 @@
     </template>
 
     <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
-    <SimulatorPasteTarget @paste="handlePaste" />
+    <SimulatorPasteTarget use-drag-drop @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
       <PlayerEditor ref="editor-ref" snacks @copy="copyPlayer" />
