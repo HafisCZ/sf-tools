@@ -1,6 +1,13 @@
 <template>
   <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
     <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between gap-2">
+        <SFHeading level="6">{{ localize('equipment') }}</SFHeading>
+        <SFButton v-if="mannequinSlots.length" variant="ghost" size="sm" class="-my-[5px]" @click="swapMannequin">
+          <SFIcon name="arrow-right-arrow-left" />
+          {{ localize('swap_mannequin') }}
+        </SFButton>
+      </div>
       <div v-for="slot in slots" :key="slot" class="rounded-md border border-line bg-page">
         <div class="flex items-center">
           <button
@@ -194,6 +201,8 @@ const slots = computed(() => EQUIPMENT_SLOTS.filter((slot) => character.value.It
 
 const candidates = computed(() => Object.fromEntries(slots.value.map((slot) => [slot, listEquipmentCandidates(props.source, slot, character.value)])) as Record<AnyEquipmentSlot, ReturnType<typeof listEquipmentCandidates>>)
 
+const mannequinSlots = computed(() => (props.index === 0 ? slots.value.filter((slot) => candidates.value[slot].some((candidate) => candidate.id === `dummy:${slot}`)) : []))
+
 const menuSwap = computed(() => (openSlot.value ? props.swaps[openSlot.value]?.id : undefined))
 
 const menuCurrent = computed(() => (openSlot.value ? (character.value.Items[openSlot.value] ?? EMPTY_ITEM) : EMPTY_ITEM))
@@ -353,6 +362,21 @@ function resetSlot(slot: AnyEquipmentSlot) {
   const next = { ...props.swaps }
 
   delete next[slot]
+
+  change(next)
+}
+
+function swapMannequin() {
+  const wearsMannequin = mannequinSlots.value.every((slot) => props.swaps[slot]?.id === `dummy:${slot}`)
+  const next = { ...props.swaps }
+
+  for (const slot of mannequinSlots.value) {
+    if (wearsMannequin) {
+      delete next[slot]
+    } else {
+      next[slot] = { id: `dummy:${slot}` }
+    }
+  }
 
   change(next)
 }

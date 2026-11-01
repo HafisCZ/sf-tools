@@ -1145,6 +1145,8 @@
         "copy": "Copy",
         "none": "None",
         "equipment": {
+            "equipment": "Equipment",
+            "swap_mannequin": "Swap with Mannequin",
             "empty": "Empty",
             "none": "None",
             "reset_to": "Change back to #{item}",
