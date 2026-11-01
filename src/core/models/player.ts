@@ -114,7 +114,7 @@ export type PlayerFortress = {
   AcademyMax?: number
   MaxWood?: number
   MaxStone?: number
-  RaidHonor: number
+  RaidHonor?: number
   Wall?: number
   Warriors?: number
   Mages?: number
@@ -1745,7 +1745,7 @@ export class PlayerModel {
       Upgrades: 0,
       Honor: 0,
       Knights: 0
-    } as PlayerFortress
+    }
   }
 
   hasGuild() {
@@ -2105,20 +2105,22 @@ export class PlayerModel {
     this.BookPercentage = this.Book / PlayerModel.SCRAPBOOK_COUNT
 
     this.Fortress.RaidHonor =
-      Number(this.Fortress.Honor) -
-      10 *
-        (this.Fortress.Fortress +
-          this.Fortress.LaborerQuarters +
-          this.Fortress.WoodcutterGuild +
-          this.Fortress.Quarry +
-          this.Fortress.GemMine +
-          this.Fortress.Academy +
-          this.Fortress.ArcheryGuild +
-          this.Fortress.Barracks +
-          this.Fortress.MageTower +
-          this.Fortress.Treasury +
-          this.Fortress.Smithy +
-          this.Fortress.Fortifications)
+      this.Fortress.Honor === undefined
+        ? undefined
+        : this.Fortress.Honor -
+          10 *
+            (this.Fortress.Fortress +
+              this.Fortress.LaborerQuarters +
+              this.Fortress.WoodcutterGuild +
+              this.Fortress.Quarry +
+              this.Fortress.GemMine +
+              this.Fortress.Academy +
+              this.Fortress.ArcheryGuild +
+              this.Fortress.Barracks +
+              this.Fortress.MageTower +
+              this.Fortress.Treasury +
+              this.Fortress.Smithy +
+              this.Fortress.Fortifications)
 
     if (this.Data.units) {
       this.Fortress.Wall = this.Data.units[0]

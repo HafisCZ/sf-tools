@@ -216,10 +216,10 @@ function createThirdPanel(): Section[] {
   const sections: Section[] = [
     {
       title: localize('fortress.title'),
-      rows: [
-        { label: localize('fortress.upgrades'), value: [String(fortress.Upgrades), diff(fortress.Upgrades, other.Upgrades)] },
+      rows: compact([
+        fortress.Upgrades !== undefined && { label: localize('fortress.upgrades'), value: [String(fortress.Upgrades), diff(fortress.Upgrades, other.Upgrades)] },
         { label: localize('fortress.rank'), value: [String(fortress.Rank), diff(fortress.Rank, other.Rank)] },
-        { label: localize('fortress.honor'), value: [String(fortress.Honor), diff(fortress.Honor, other.Honor)] },
+        fortress.Honor !== undefined && { label: localize('fortress.honor'), value: [String(fortress.Honor), diff(fortress.Honor, other.Honor)] },
         { ...building(1, 'Fortress'), spaced: true },
         building(2, 'LaborerQuarters'),
         building(3, 'WoodcutterGuild'),
@@ -232,7 +232,7 @@ function createThirdPanel(): Section[] {
         building(10, 'Treasury'),
         building(11, 'Smithy'),
         { label: localize('fortress.building12'), value: [String(fortress.Fortifications), diff(fortress.Fortifications, other.Fortifications), ` (${fortress.Wall}`, diff(fortress.Wall, other.Wall), ')'] }
-      ]
+      ])
     }
   ]
 
