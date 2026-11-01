@@ -13,7 +13,7 @@ export type EquipmentCandidate = {
 
 export type ItemEdit = {
   id?: string
-  takeOver?: boolean
+  extras?: string
   upgrades?: number
   rune?: { type: number; value: number }
   gem?: { type: number; value: number }
@@ -65,6 +65,8 @@ export const RUNE_LIMITS: Record<number, number> = {
 }
 
 export const GEM_TYPES = [1, 2, 3, 4, 5, 6, 7]
+
+export const EQUIPPED_EXTRAS = 'equipped'
 
 export function createCharacterState(character: PlayerModel): CharacterState {
   const potions = (character.Potions ?? []).filter((potion) => potion.Type > 0).map((potion) => ({ type: potion.Type, size: potion.Size }))
@@ -209,7 +211,7 @@ function editItem(item: ItemModel, edit: ItemEdit) {
     item.upgradeTo(edit.upgrades)
   }
 
-  if (edit.rune) {
+  if (edit.rune && (edit.rune.type > 0 || item.HasRune)) {
     const value = Math.min(edit.rune.value, RUNE_LIMITS[edit.rune.type] ?? 0)
 
     item.AttributeTypes[2] = edit.rune.type > 0 ? edit.rune.type : 0
@@ -237,8 +239,12 @@ export function buildEditedItem(source: PlayerModel, playerClass: CharacterClass
 
   if (edit.id && !candidate) return undefined
 
-  const morphed = candidate ? ModelUtils.morphItemForCharacter(playerClass, index, candidate.clone()) : current.clone()
-  const item = candidate && edit.takeOver ? takeOverItem(morphed, current) : morphed
+  const item = candidate ? ModelUtils.morphItemForCharacter(playerClass, index, candidate.clone()) : current.clone()
+  const extras = edit.extras === EQUIPPED_EXTRAS ? current : edit.extras ? findEquipmentCandidate(source, edit.extras) : undefined
+
+  if (extras) {
+    copyExtras(item, extras)
+  }
 
   editItem(item, edit)
 
@@ -261,24 +267,28 @@ function getArmorValue(item: ItemModel) {
   return item.Type > 1 && item.Type < 8 ? item.Armor : 0
 }
 
-function takeOverItem(item: ItemModel, current: ItemModel) {
-  item.upgradeTo(current.Upgrades)
+function copyExtras(item: ItemModel, source: ItemModel) {
+  item.upgradeTo(source.Upgrades)
 
-  item.GemType = current.GemType
-  item.GemValue = current.GemValue
-  item.HasGem = current.HasGem
-  item.HasSocket = current.HasSocket
+  item.GemType = source.GemType
+  item.GemValue = source.GemValue
+  item.HasGem = source.HasGem
+  item.HasSocket = source.HasSocket
 
-  item.Enchantment = current.Enchantment
-  item.HasEnchantment = current.HasEnchantment
+  item.Enchantment = source.Enchantment
+  item.HasEnchantment = source.HasEnchantment
 
-  item.AttributeTypes[2] = current.AttributeTypes[2]
-  item.Attributes[2] = current.Attributes[2]
-  item.HasRune = current.HasRune
-  item.RuneType = current.RuneType
-  item.RuneValue = current.RuneValue
+  if (source.HasRune) {
+    item.AttributeTypes[2] = source.AttributeTypes[2]
+    item.Attributes[2] = source.Attributes[2]
+  } else if (item.HasRune) {
+    item.AttributeTypes[2] = 0
+    item.Attributes[2] = 0
+  }
 
-  return item
+  item.HasRune = item.AttributeTypes[2] > 30
+  item.RuneType = Math.max(0, item.AttributeTypes[2] - 30)
+  item.RuneValue = item.HasRune ? item.Attributes[2] : 0
 }
 
 function readAttributeTotals(character: PlayerModel) {

@@ -115,6 +115,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faWallet } from '@fortawesome/free-solid-svg-icons/faWallet'
+import { faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons/faWandMagicSparkles'
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
@@ -235,6 +236,7 @@ export const ICONS = {
   'user-lock': faUserLock,
   users: faUsers,
   wallet: faWallet,
+  'wand-magic-sparkles': faWandMagicSparkles,
   wrench: faWrench,
   xmark: faXmark
 }

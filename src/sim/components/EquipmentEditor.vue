@@ -5,26 +5,21 @@
         <div class="flex items-center">
           <button
             type="button"
-            class="flex min-w-0 flex-auto cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left leading-5 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover"
+            class="flex min-w-0 flex-auto cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-left leading-5 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover"
             :aria-label="localize(`slot.${slot}`)"
             :aria-expanded="openSlot === slot"
             aria-haspopup="menu"
             @click="toggleSlot(slot, $event)"
           >
-            <img v-if="hasItem(slot)" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
+            <img v-if="hasItem(slot)" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-11 shrink-0 object-contain" />
             <span class="flex min-w-0 flex-auto flex-col">
               <span class="flex min-w-0 gap-2">
                 <span class="shrink-0 font-bold">{{ localize(`slot.${slot}`) }}</span>
                 <span class="truncate">{{ hasItem(slot) ? getItem(slot).Name : localize('empty') }}</span>
               </span>
-              <span class="truncate text-xs text-white/50">{{ describeItem(getItem(slot)) }}</span>
+              <EquipmentItemBadges v-if="hasItem(slot)" :item="getItem(slot)" stats class="mt-1 min-h-11" />
             </span>
           </button>
-          <SFTooltip v-if="props.swaps[slot]?.id" :content="localize('take_over', { item: getOriginalName(slot) })">
-            <SFButton variant="ghost" icon size="sm" :aria-label="localize('take_over', { item: getOriginalName(slot) })" :aria-pressed="props.swaps[slot]?.takeOver === true" @click="changeEdit(slot, { takeOver: !props.swaps[slot]?.takeOver })">
-              <SFIcon name="clone" :class="{ 'text-accent': props.swaps[slot]?.takeOver }" />
-            </SFButton>
-          </SFTooltip>
           <SFTooltip v-if="props.swaps[slot]" :content="localize('reset_to', { item: getOriginalName(slot) })">
             <SFButton variant="ghost" icon size="sm" :aria-label="localize('reset_to', { item: getOriginalName(slot) })" @click="resetSlot(slot)">
               <SFIcon name="rotate-left" />
@@ -36,6 +31,21 @@
         </div>
 
         <div v-if="expandedSlot === slot && hasItem(slot)" class="grid grid-cols-2 gap-2 border-t border-line p-2">
+          <SFSelect :model-value="props.swaps[slot]?.extras ?? ''" :label="localize('extras_from')" :description="localize('extras_from_description')" :options="extrasOptions" class="col-span-2" @update:model-value="(value) => changeEdit(slot, { extras: value || undefined })">
+            <template #value="{ option }">
+              <span class="flex min-w-0 items-center gap-2">
+                <img :src="option.image" alt="" class="size-5 shrink-0 object-contain" />
+                <span class="truncate">{{ option.label }}</span>
+              </span>
+            </template>
+            <template #option="{ option }">
+              <img :src="option.image" alt="" class="mr-1 size-11 shrink-0 object-contain" />
+              <span class="flex min-w-0 flex-1 flex-col gap-1">
+                <span>{{ option.label }}</span>
+                <EquipmentItemBadges :item="getExtrasItem(option.value)" :empty="localize('no_extras')" />
+              </span>
+            </template>
+          </SFSelect>
           <SFSelect :model-value="String(getRune(slot).type)" :label="localize('rune')" :options="runeOptions" @update:model-value="(value) => changeRune(slot, Number(value), getRune(slot).value)" />
           <SFNumber :model-value="getRune(slot).value" :label="localize('rune_value')" :min="0" :max="getRuneLimit(getRune(slot).type)" :step="1" :readonly="getRune(slot).type === 0" centered @update:model-value="(value) => changeRune(slot, getRune(slot).type, value ?? 0)" />
           <SFSelect :model-value="String(getGem(slot).type)" :label="localize('gem')" :options="gemOptions" @update:model-value="(value) => changeGem(slot, Number(value), getGem(slot).value)" />
@@ -62,11 +72,11 @@
       <SFDropdownMenu v-if="openSlot && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="closeSlot">
         <ul role="menu" class="flex flex-col">
           <li role="none">
-            <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none" :class="menuSwap ? 'hover:bg-surface-hover focus-visible:bg-surface-hover' : 'bg-accent/15'" @click="selectItem('')">
-              <img v-if="menuCurrent.Type > 0" :src="`/${menuCurrent.ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
+            <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-4 rounded px-3 py-2 text-left outline-none" :class="menuSwap ? 'hover:bg-surface-hover focus-visible:bg-surface-hover' : 'bg-accent/15'" @click="selectItem('')">
+              <img v-if="menuCurrent.Type > 0" :src="`/${menuCurrent.ImageUrl}`" alt="" class="size-11 shrink-0 object-contain" />
               <span class="flex min-w-0 flex-1 flex-col">
                 <span>{{ menuCurrent.Type > 0 ? menuCurrent.Name : localize('empty') }}</span>
-                <span class="text-xs text-white/50">{{ describeItem(menuCurrent) }}</span>
+                <EquipmentItemBadges v-if="menuCurrent.Type > 0" :item="menuCurrent" stats class="mt-1 min-h-11" />
               </span>
             </button>
           </li>
@@ -75,11 +85,11 @@
               {{ localize(`pool.${entry.pool}`) }}
             </li>
             <li role="none">
-              <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none" :class="menuSwap === entry.id ? 'bg-accent/15' : 'hover:bg-surface-hover focus-visible:bg-surface-hover'" @click="selectItem(entry.id)">
-                <img :src="`/${entry.item.ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
+              <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-4 rounded px-3 py-2 text-left outline-none" :class="menuSwap === entry.id ? 'bg-accent/15' : 'hover:bg-surface-hover focus-visible:bg-surface-hover'" @click="selectItem(entry.id)">
+                <img :src="`/${entry.item.ImageUrl}`" alt="" class="size-11 shrink-0 object-contain" />
                 <span class="flex min-w-0 flex-1 flex-col">
                   <span>{{ entry.item.Name }}</span>
-                  <span class="text-xs text-white/50">{{ describeItem(entry.item) }}</span>
+                  <EquipmentItemBadges :item="entry.item" stats class="mt-1 min-h-11" />
                 </span>
               </button>
             </li>
@@ -105,11 +115,37 @@ import { useLocalize } from '@utils/localization'
 import { useAnimationFramePosition } from '@utils/position'
 import { ItemModel } from '~/core/models/item'
 import { type AnyEquipmentSlot, type PetHabitat, type PlayerModel } from '~/core/models/player'
-import { buildEditedItem, EQUIPMENT_SLOTS, GEM_TYPES, LIFE_POTION_SIZE, LIFE_POTION_TYPE, listEquipmentCandidates, listEquipmentCharacters, MAXIMUM_UPGRADES, PET_HABITATS, POTION_SIZES, POTION_TYPES, RUNE_LIMITS, type CharacterPotion, type CharacterState, type EquipmentSwaps, type ItemEdit } from '~/sim/equipment'
+import {
+  buildEditedItem,
+  EQUIPMENT_SLOTS,
+  EQUIPPED_EXTRAS,
+  GEM_TYPES,
+  LIFE_POTION_SIZE,
+  LIFE_POTION_TYPE,
+  listEquipmentCandidates,
+  listEquipmentCharacters,
+  MAXIMUM_UPGRADES,
+  PET_HABITATS,
+  POTION_SIZES,
+  POTION_TYPES,
+  RUNE_LIMITS,
+  type CharacterPotion,
+  type CharacterState,
+  type EquipmentPool,
+  type EquipmentSwaps,
+  type ItemEdit
+} from '~/sim/equipment'
+import EquipmentItemBadges from './EquipmentItemBadges.vue'
 
 defineOptions({
   name: 'EquipmentEditor'
 })
+
+type ExtrasSource = {
+  id: string
+  pool: EquipmentPool | 'own' | 'equipped'
+  item: ItemModel
+}
 
 const props = defineProps<{
   /**
@@ -136,8 +172,6 @@ const emit = defineEmits<{
    */
   change: [swaps: EquipmentSwaps, character: CharacterState]
 }>()
-
-const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
 
 const EMPTY_ITEM = ItemModel.empty()
 
@@ -169,6 +203,41 @@ const menuEntries = computed(() => {
 
   return list.map((candidate, index) => ({ ...candidate, header: candidate.pool !== list[index - 1]?.pool }))
 })
+
+const extrasSources = computed<ExtrasSource[]>(() => {
+  const slot = expandedSlot.value
+
+  if (!slot) return []
+
+  const original = character.value.Items[slot] ?? EMPTY_ITEM
+  const swap = props.swaps[slot]?.id
+  const list = candidates.value[slot] ?? []
+  const own = swap ? (list.find((candidate) => candidate.id === swap)?.item ?? original) : original
+
+  const sources: ExtrasSource[] = [{ id: '', pool: 'own', item: own }]
+
+  if (swap && original.Type > 0) {
+    sources.push({ id: EQUIPPED_EXTRAS, pool: 'equipped', item: original })
+  }
+
+  return [...sources, ...list.filter((candidate) => candidate.id !== swap)]
+})
+
+const extrasOptions = computed(() => {
+  const options: SelectOption[] = []
+
+  extrasSources.value.forEach((source, index) => {
+    if (source.pool !== 'own' && source.pool !== extrasSources.value[index - 1]?.pool) {
+      options.push({ type: 'header', label: localize(`pool.${source.pool}`) })
+    }
+
+    options.push({ value: source.id, label: source.pool === 'own' ? localize('own_extras') : source.item.Name, image: `/${source.item.ImageUrl}` as const })
+  })
+
+  return options
+})
+
+const extrasItems = computed(() => new Map(extrasSources.value.map((source) => [source.id, source.item])))
 
 const runeOptions = computed<SelectOption[]>(() => [{ value: '0', label: localize('none') }, ...Object.keys(RUNE_LIMITS).map((type) => ({ value: type, label: localize.global(`general.rune${Number(type) - 30}`) }))])
 
@@ -237,28 +306,8 @@ function getRuneLimit(type: number) {
   return RUNE_LIMITS[type] ?? 0
 }
 
-function describeItem(item: ItemModel) {
-  const parts: string[] = []
-
-  if (item.Type === 1) {
-    parts.push(`${item.DamageMin} - ${item.DamageMax}`)
-  } else if (item.Type > 1 && item.Type < 8) {
-    parts.push(`${item.Armor} ${localize.global('editor.armor')}`)
-  }
-
-  for (const name of ITEM_ATTRIBUTES) {
-    const attribute = item[name]
-
-    if (attribute.Value > 0) {
-      parts.push(`${attribute.Value} ${localize.global(`general.attribute${attribute.Type}`)}`)
-    }
-  }
-
-  if (item.Upgrades > 0) {
-    parts.push(`+${item.Upgrades}`)
-  }
-
-  return parts.join(' · ')
+function getExtrasItem(id: string) {
+  return extrasItems.value.get(id) ?? EMPTY_ITEM
 }
 
 function getOriginalName(slot: AnyEquipmentSlot) {

@@ -1144,7 +1144,6 @@
             "empty": "Vide",
             "none": "Aucun",
             "reset_to": "Revenir à #{item}",
-            "take_over": "Reprendre les améliorations, les gemmes, les runes et les enchantements de #{item}",
             "details": "Rune, gemme et enchantement",
             "rune": "Rune",
             "gem": "Gemme",

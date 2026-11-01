@@ -1144,7 +1144,6 @@
             "empty": "Empty",
             "none": "None",
             "reset_to": "Change back to #{item}",
-            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
             "details": "Rune, gem and enchantment",
             "rune": "Rune",
             "gem": "Gem",

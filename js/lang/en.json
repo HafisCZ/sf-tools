@@ -1148,8 +1148,13 @@
             "empty": "Empty",
             "none": "None",
             "reset_to": "Change back to #{item}",
-            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
             "details": "Rune, gem and enchantment",
+            "extras_from": "Extras from",
+            "extras_from_description": "Copies its upgrades, gem, rune and enchantment. Fields you change below win over it.",
+            "own_extras": "Its own extras",
+            "no_extras": "No upgrades, gem, rune or enchantment",
+            "enchanted": "Enchanted",
+            "all_attributes": "All attributes",
             "rune": "Rune",
             "gem": "Gem",
             "enchantment": "Enchantment",
@@ -1171,6 +1176,7 @@
                 "Wpn2": "Off-hand"
             },
             "pool": {
+                "equipped": "Equipped",
                 "backpack": "Backpack",
                 "shop": "Weapon & Magic shop",
                 "dummy": "Mannequin"
