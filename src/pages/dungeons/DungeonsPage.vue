@@ -28,7 +28,7 @@
 
       <div>
         <div class="grid grid-cols-16 items-center gap-[14px]">
-          <SimulatorSettings ref="settings-ref" storage-key="dungeon_sim" :default-threads="4" :default-iterations="5000" class="col-span-16 sm:col-span-6" />
+          <SimulatorSettings ref="settings-ref" storage-key="dungeon_sim" :default-threads="4" :default-iterations="50000" class="col-span-16 sm:col-span-6" />
           <div class="col-span-16 flex gap-1 sm:col-span-10">
             <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : isRunning || !canSimulateSelected" @click="simulate">
               {{ localize('simulate_one') }}
@@ -98,7 +98,7 @@ import { type SelectOption } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, getClassImageUrl, getValueAtPath, setValueAtPath, sum, useSubmit } from '@utils/utils'
+import { compact, copyJson, getClassImageUrl, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
@@ -115,9 +115,28 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
+import {
+  copyDungeonSharedValues,
+  createDungeonFight,
+  createSimulatorBoss,
+  DUNGEON_COMPANION_CLASSES,
+  DUNGEON_DATA,
+  DUNGEON_SHARED_PATHS,
+  getBossName,
+  getDungeonExperience,
+  getDungeonName,
+  getOpenBosses,
+  getRemainingBosses,
+  PREVIOUS_DUNGEONS,
+  SANDSTORM,
+  TWISTER,
+  type Dungeon,
+  type DungeonEntry,
+  type DungeonResult,
+  type DungeonRunes
+} from '~/sim/data/dungeons'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
-import { useDungeonSimulator, type DungeonFight } from '~/sim/dungeons'
+import { useDungeonSimulator } from '~/sim/dungeons'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 import { RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/workers/base'
 import DungeonBossFinder from './components/DungeonBossFinder.vue'
@@ -138,10 +157,6 @@ type DungeonsOptions = {
   sandstorm_floors: number
   decimals: number
 }
-
-const COMPANION_CLASSES: CharacterClass[] = [1, 2, 3]
-
-const SHARED_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Potions.Life']
 
 const SHADOW_COLOR = '#dec0ff'
 
@@ -273,12 +288,6 @@ function hasFighters(dungeons: Dungeon[]) {
   return player !== null && (dungeons.every((dungeon) => !dungeon.companions) || companions.every((companion) => companion !== null))
 }
 
-function copySharedValues(target: PlayerModel, source: PlayerModel, paths = SHARED_PATHS) {
-  for (const path of paths) {
-    setValueAtPath(target, path, getValueAtPath(source, path))
-  }
-}
-
 function updatePlayers(list: (PlayerModel | null)[]) {
   const [player] = list
 
@@ -287,10 +296,10 @@ function updatePlayers(list: (PlayerModel | null)[]) {
       entry.Name = fighterNames.value[index]
 
       if (index > 0) {
-        entry.Class = COMPANION_CLASSES[index - 1]
+        entry.Class = DUNGEON_COMPANION_CLASSES[index - 1]
 
         if (player) {
-          copySharedValues(entry, player)
+          copyDungeonSharedValues(entry, player)
         }
       }
     }
@@ -308,10 +317,10 @@ function fillEditor() {
   const data = structuredClone(players.value[index]) ?? new PlayerModel()
 
   if (index > 0) {
-    data.Class = COMPANION_CLASSES[index - 1]
+    data.Class = DUNGEON_COMPANION_CLASSES[index - 1]
 
     if (player) {
-      copySharedValues(data, player)
+      copyDungeonSharedValues(data, player)
     }
   }
 
@@ -428,7 +437,7 @@ function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
   return { ...state, potions: state.potions.map((potion, index) => (index === free ? { type: LIFE_POTION_TYPE, size } : potion)) }
 }
 
-const REBUILD_PATHS = SHARED_PATHS.filter((path) => path !== 'Potions.Life')
+const REBUILD_PATHS = DUNGEON_SHARED_PATHS.filter((path) => path !== 'Potions.Life')
 
 function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
   const player = source.value
@@ -447,7 +456,7 @@ function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
   const current = players.value[index]
 
   if (current) {
-    copySharedValues(fighter, current, REBUILD_PATHS)
+    copyDungeonSharedValues(fighter, current, REBUILD_PATHS)
   }
 
   updatePlayers(players.value.map((entry, position) => (position === index ? fighter : entry)))
@@ -473,21 +482,8 @@ function copyAll() {
   copySimulatorData(players.value.map((player) => ModelUtils.toSimulatorData(player ?? new PlayerModel())))
 }
 
-function prepareFight(entry: DungeonEntry): DungeonFight | null {
-  const [player, ...companions] = players.value
-  const ready = compact(companions)
-
-  if (!player || (entry.dungeon.companions && ready.length < companions.length)) return null
-
-  return {
-    entry,
-    players: createDungeonPlayers(entry.dungeon, player, ready),
-    boss: createBoss(entry, player)
-  }
-}
-
 function prepareFights(entries: DungeonEntry[]) {
-  return compact(entries.map((entry) => prepareFight(entry)))
+  return compact(entries.map((entry) => createDungeonFight(entry, players.value)))
 }
 
 function readSettings() {
@@ -539,7 +535,7 @@ function showResults(results: DungeonResult[]) {
 }
 
 async function runBoss(instances: number, iterations: number, log?: SimulatorLogTarget) {
-  const fight = prepareFight(selectedEntry.value)
+  const fight = createDungeonFight(selectedEntry.value, players.value)
 
   if (!canSimulateSelected.value || !fight) return
 

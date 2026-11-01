@@ -3,21 +3,24 @@
     <label v-if="props.label || slots.label" :for="id" class="font-bold text-white">
       <slot name="label">{{ props.label }}</slot>
     </label>
-    <input
-      :id="id"
-      v-model="text"
-      v-bind="$attrs"
-      type="text"
-      :inputmode="allowsDecimals ? 'decimal' : 'numeric'"
-      :placeholder="props.placeholder"
-      class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none read-only:text-white/60 read-only:caret-transparent placeholder:text-white/40"
-      :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], { 'text-center': props.centered }]"
-      :aria-invalid="validationResult?.[0] === 'error'"
-      :aria-describedby="descriptionId"
-      @change="clampValue"
-      @keydown="handleKeydown"
-      @paste="handlePaste"
-    />
+    <span class="relative flex">
+      <input
+        :id="id"
+        v-model="text"
+        v-bind="$attrs"
+        type="text"
+        :inputmode="allowsDecimals ? 'decimal' : 'numeric'"
+        :placeholder="props.placeholder"
+        class="w-full rounded-md border bg-surface py-2 leading-5 text-white/90 outline-none read-only:text-white/60 read-only:caret-transparent placeholder:text-white/40"
+        :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.suffix ? 'pr-8 pl-3' : 'px-3', { 'text-center': props.centered }]"
+        :aria-invalid="validationResult?.[0] === 'error'"
+        :aria-describedby="descriptionId"
+        @change="clampValue"
+        @keydown="handleKeydown"
+        @paste="handlePaste"
+      />
+      <span v-if="props.suffix" aria-hidden="true" class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-white/60">{{ props.suffix }}</span>
+    </span>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
   </div>
@@ -68,6 +71,10 @@ const props = defineProps<
      * Centers the text in the field
      */
     centered?: boolean
+    /**
+     * Text shown inside the field on the right, like a unit
+     */
+    suffix?: string
   }
 >()
 
