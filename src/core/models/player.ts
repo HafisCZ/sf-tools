@@ -693,7 +693,7 @@ export class PlayerModel {
       Rank: data.fortressrank,
       Honor: undefined,
       Upgrade: {
-        Building: 0,
+        Building: -1,
         Finish: -1,
         Start: -1
       }
