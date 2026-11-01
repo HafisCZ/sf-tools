@@ -1,15 +1,18 @@
 <template>
   <SFDialog :title="localize('results')" size="sm" height="80vh" column gap="14px" close-via-button @close="emit('close')">
-    <div class="flex shrink-0 items-center gap-2">
-      <span class="flex-1 text-center font-bold text-[lightgray]">
-        <template v-if="props.experience > 0">{{ localize('experience', { experience: formatSpacedNumber(props.experience) }) }}</template>
-      </span>
+    <template #actions>
       <SFTooltip :content="localize.global('stats.copy.image')">
-        <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" :disabled="isSaving && 'loading'" @click="save">
-          <SFIcon name="download" />
+        <SFButton variant="ghost" icon :aria-label="localize.global('stats.copy.image')" :disabled="isSaving && 'loading'" @click="save">
+          <SFIcon name="file-image" />
         </SFButton>
       </SFTooltip>
-    </div>
+      <SFTooltip :content="localize.global('stats.copy.csv')">
+        <SFButton variant="ghost" icon :aria-label="localize.global('stats.copy.csv')" @click="saveCSV">
+          <SFIcon name="file-excel" />
+        </SFButton>
+      </SFTooltip>
+    </template>
+    <div v-if="props.experience > 0" class="shrink-0 text-center font-bold text-[lightgray]">{{ localize('experience', { experience: formatSpacedNumber(props.experience) }) }}</div>
     <DungeonChart :result="activeResult" :decimals="props.decimals" class="h-[14em] shrink-0 border-b border-line pb-2" />
     <div :class="{ 'min-h-0 overflow-y-auto': !isSaving }">
       <div ref="image-ref" :class="isSaving ? 'text-black' : 'text-white/90'">
@@ -36,7 +39,7 @@ import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl, useSubmit } from '@utils/utils'
 import { Exporter } from '~/core/exporter'
-import { getBossName, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
+import { getBossName, getDungeonExperience, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
 import DungeonChart from '../components/DungeonChart.vue'
 
 defineOptions({
@@ -66,6 +69,9 @@ const emit = defineEmits<{
   close: []
 }>()
 
+// Fire, cold and lightning resistance, in the order of DungeonRunes.res
+const RESISTANCE_RUNES = [6, 7, 8]
+
 const localize = useLocalize('dungeons')
 
 const activeIndex = ref(0)
@@ -87,4 +93,46 @@ const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
     Exporter.download(`dungeons_${Date.now()}.png`, blob)
   }
 })
+
+function saveCSV() {
+  const headers = [
+    localize('csv.dungeon'),
+    localize('csv.position'),
+    localize('csv.enemy'),
+    localize('csv.level'),
+    localize('csv.class'),
+    localize('csv.companions'),
+    localize('csv.damage_rune'),
+    localize('csv.damage_rune_value'),
+    ...RESISTANCE_RUNES.map((type) => localize.global(`general.rune${type}`)),
+    localize('csv.win_rate'),
+    localize('csv.wins'),
+    localize('csv.tries'),
+    localize('csv.experience')
+  ]
+
+  const rows = props.results.map((result) => {
+    const { dungeon, boss, score, iterations } = result
+    const runes = boss.runes
+    const experience = getDungeonExperience(result)
+
+    return [
+      getDungeonName(dungeon),
+      boss.pos,
+      getBossName(result),
+      boss.level,
+      localize.global(`general.class${boss.class ?? props.playerClass}`),
+      localize.global(dungeon.companions ? 'general.yes' : 'general.no'),
+      runes ? localize.global(`general.rune${runes.type - 30}`) : '',
+      runes ? runes.damage : '',
+      ...RESISTANCE_RUNES.map((_, index) => runes?.res?.[index] || ''),
+      ((100 * score) / iterations).toFixed(props.decimals),
+      score,
+      iterations,
+      experience > 0 ? Math.trunc(experience) : ''
+    ]
+  })
+
+  Exporter.csv([headers, ...rows].map((row) => JSON.stringify(row).slice(1, -1)).join('\n'), `dungeons_${Date.now()}`)
+}
 </script>

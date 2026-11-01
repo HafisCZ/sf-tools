@@ -3,6 +3,9 @@
     <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1" class="flex max-h-full w-full flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl outline-none" :class="SIZE_CLASSES[props.size]">
       <div class="flex items-center gap-3">
         <SFHeading :id="titleId" level="5" class="flex-1">{{ props.title }}</SFHeading>
+        <div v-if="slots.actions" class="-my-2 flex gap-3">
+          <slot name="actions" />
+        </div>
         <SFButton v-if="props.closeViaButton" variant="ghost" icon class="-my-2 -mr-2" :aria-label="localize('close')" @click="emit('close')">
           <SFIcon name="xmark" />
         </SFButton>
@@ -70,6 +73,10 @@ const emit = defineEmits<{
 
 const slots = defineSlots<{
   default(): unknown
+  /**
+   * Extra buttons in the title bar, before the close button
+   */
+  actions?(): unknown
   buttons?(): unknown
 }>()
 
