@@ -132,6 +132,22 @@ export function getOpenBosses(dungeons: PlayerDungeons) {
   return entries.sort((a, b) => a.dungeon.pos - b.dungeon.pos)
 }
 
+export function getDungeonProgress(dungeons: PlayerDungeons) {
+  const progress = new Map<number, number>([
+    [TOWER, dungeons.Normal.Total < 90 ? -1 : dungeons.Tower],
+    [TWISTER, dungeons.Twister],
+    [YOUTUBE, dungeons.Youtube],
+    [SANDSTORM, dungeons.Sandstorm]
+  ])
+
+  for (const [index, id] of PROGRESS_DUNGEONS.entries()) {
+    progress.set(id, dungeons.Normal[index])
+    progress.set(id + 100, dungeons.Shadow[index])
+  }
+
+  return progress
+}
+
 export function getRemainingBosses({ dungeon, boss }: DungeonEntry): DungeonEntry[] {
   const floors = Object.values(dungeon.floors)
   const start = floors.findIndex((floor) => floor.pos === boss.pos)

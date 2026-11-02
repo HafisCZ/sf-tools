@@ -225,7 +225,7 @@
         },
         "dungeon_break": {
             "title": "Dungeon Break",
-            "desc": "See progress left in your open dungeons"
+            "desc": "See progress left in your dungeons"
         },
         "idle": {
             "title": "Arena Manager",
@@ -849,6 +849,14 @@
         "mushrooms_all": "All",
         "threshold": "Minimum chance",
         "simulation": "Threads & Iterations",
+        "simulate": "Simulate",
+        "steps": {
+            "character": "Character",
+            "fighters": "Fighters",
+            "plan": "Mushrooms and chances",
+            "simulate": "Simulate"
+        },
+        "editor_empty": "Pick a character to load its player and companions here.",
         "cost": {
             "label": "Mushroom cost",
             "average": "On average",
@@ -856,15 +864,14 @@
         },
         "empty": {
             "title": "Pick a character to plan a dungeon break",
-            "text": "The planner simulates the character's open dungeons and shows how many levels are left in them and how many mushrooms they cost."
+            "text": "The planner simulates the character's remaining dungeons, including the ones that open on the way, and shows how many levels are left in them and how many mushrooms they cost."
         },
         "tiles": {
-            "unlocked": "Unlocked",
-            "beatable": "Beatable",
-            "detail": "#{experience} XP · Level #{level}",
-            "mushrooms": "Mushrooms needed",
-            "pending": "not simulated yet",
-            "levels": "lvl"
+            "remaining": "Remaining levels",
+            "remaining_xp": "Remaining XP",
+            "beatable": "Beatable levels",
+            "beatable_xp": "Beatable XP",
+            "mushrooms": "Mushrooms needed"
         },
         "groups": {
             "light": "Light World",
@@ -875,11 +882,11 @@
         },
         "card": {
             "open": "#{count} dungeons open",
+            "open_locked": "#{count} open · #{locked} locked",
             "floor": "Floor #{position} of #{total}",
-            "locked": "Locked",
             "done": "All done",
             "levels": "lvl",
-            "unlocked": "Unlocked",
+            "remaining": "Remaining",
             "beatable": "Beatable",
             "mushrooms": "mushrooms",
             "for": "for #{won} out of #{total} floors",
@@ -890,8 +897,7 @@
             "dungeon": "Dungeon",
             "next": "Next floor",
             "floors": "Floors",
-            "winnable": "Beatable",
-            "unlocked": "Unlocked XP",
+            "remaining": "Remaining XP",
             "beatable": "Beatable XP",
             "levels": "Lvl",
             "mushrooms": "Mushrooms",
@@ -905,30 +911,25 @@
             "blocked": "Below minimum chance",
             "never": "Never won",
             "none": "Not simulated",
+            "locked": "Locked",
             "rest": "Not possible or not simulated",
             "pending": "Not simulated yet"
         },
+        "unlock": {
+            "level": "Level #{level}",
+            "after": "After #{name}",
+            "after_range": "After dungeons #{from}-#{to}",
+            "floors": "#{count} floors of #{name}",
+            "open": "#{name} open",
+            "level_after": "Level #{level}, after #{name}",
+            "level_open": "Level #{level}, #{name} open"
+        },
         "floors": {
-            "subtitle": "Floor #{position} of #{total} · #{count} floors left",
             "include": "Include in the plan",
-            "strip": "#{won} floors beatable, #{blocked} below minimum chance, the rest not possible or not simulated",
-            "winnable": "#{from}-#{to} beatable (#{count} floors)",
-            "blocked": "#{from}-#{to} below minimum chance",
-            "rest": "#{from}-#{total} not possible or not simulated",
-            "beatable": "Beatable XP of #{unlocked}",
-            "levels": "levels",
-            "mushrooms": "mushrooms (#{paid} if every first fight were paid)",
-            "rule": "A win with more than 90% HP left makes the next floor's first fight free. Clean wins is the share of simulated wins that ended above 90% HP, First fight is the chance the floor starts for free.",
             "floor": "Floor",
-            "enemy": "Enemy",
+            "level": "Level",
             "chance": "Win chance",
-            "clean": "Clean wins",
-            "first": "First fight",
-            "experience": "XP",
-            "mushrooms_column": "Mushrooms",
-            "paid": "paid",
-            "free": "#{share}% free",
-            "pending": "Shows up when the simulation finishes."
+            "experience": "XP"
         },
         "chart": {
             "title": "Levels per mushroom",
