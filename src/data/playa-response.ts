@@ -13,6 +13,14 @@ type HarFile = {
 
 type PlayaResponses = Record<string, PlayaResponse | undefined>
 
+function getParams(url?: string) {
+  try {
+    return url ? (new URL(url).searchParams.get('params') ?? undefined) : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export class PlayaResponse {
   static PLAYA_RESPONSE_CHARACTER_ENCODING = Object.entries({
     d: '$',
@@ -39,7 +47,7 @@ export class PlayaResponse {
         yield {
           text,
           url: entry.request?.url,
-          params: entry.request?.url ? (URL.parse(entry.request.url)?.searchParams.get('params') ?? undefined) : undefined,
+          params: getParams(entry.request?.url),
           date: new Date(entry.startedDateTime)
         }
       }
