@@ -1,10 +1,11 @@
 <template>
   <Page>
     <template #nav-left>
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listOwnPlayers" cheats @select="fillPlayer" />
+      <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug logs @log="runLogged" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listOwnPlayers" cheats @select="fillPlayer" />
     <SimulatorPasteTarget @paste="fillFromPaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -90,7 +91,7 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
-import { preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { isSimulatorDebug, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
 import { useHellevatorSimulator } from '~/sim/hellevator'
 import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 

@@ -1,111 +1,116 @@
 <template>
-  <div class="max-md:relative max-md:mb-[14px] max-md:h-9.5">
-    <div class="absolute top-[70px] left-7 z-[2] flex w-[300px] flex-col rounded-md bg-surface/60 shadow-xl backdrop-blur-md max-md:inset-x-0 max-md:top-0 max-md:w-auto">
-      <SFButton variant="ghost" block :aria-expanded="open" :aria-controls="panelId" @click="toggle">
-        <SFIcon name="rotate" />
-        {{ localize(`poll.${props.type}`) }}
-        <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
-      </SFButton>
-      <div v-if="open" :id="panelId" class="flex flex-col border-t border-line p-1">
-        <div v-if="props.grouped" class="flex max-h-96 flex-col overflow-y-auto">
-          <template v-for="group in groups" :key="group.prefix">
-            <button type="button" class="w-full cursor-pointer rounded px-3 py-2 text-center outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :aria-expanded="openPrefix === group.prefix" @click="toggleGroup(group.prefix, $event)">
-              {{ group.prefix }}
-            </button>
-            <div v-if="isPhone && openPrefix === group.prefix" class="mb-1 flex flex-col rounded-md border border-line p-1">
-              <SFInput v-model="search" :aria-label="localize('search')" :placeholder="localize('search')" />
-              <ul class="mt-1 flex flex-col">
-                <li v-for="entry in filterGroup(group.entries)" :key="entry.LinkId">
-                  <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectGroupEntry(entry)">
-                    <img :src="getClassImageUrl(entry.Class)" alt="" class="size-5 object-contain" />
-                    {{ entry.Level }} - {{ entry.Name }}
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </template>
-        </div>
-        <div v-else-if="entries.length > 0" class="flex max-h-96 flex-col overflow-y-auto">
-          <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
-            <button type="button" class="w-full cursor-pointer truncate rounded px-3 py-2 text-left group-hover:pr-10 group-has-[:focus-visible]:pr-10 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
-              <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
-              <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
-            </button>
-            <span class="absolute top-1/2 right-1 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100">
-              <SFButton variant="ghost" size="sm" icon @click="hideEntry(entry)">
-                <SFIcon name="eye-slash" />
-              </SFButton>
-            </span>
-          </div>
-        </div>
-        <Teleport to="body">
-          <SFDropdownMenu v-if="!isPhone && openGroup && groupPosition" :anchor="groupPosition" float="right" position="right" :width="300" @close="closeGroup">
-            <SFInput v-model="search" :aria-label="localize('search')" :placeholder="localize('search')" />
-            <ul role="menu" class="mt-1 flex flex-col">
-              <li v-for="entry in filterGroup(openGroup.entries)" :key="entry.LinkId" role="none">
-                <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectGroupEntry(entry)">
-                  <img :src="getClassImageUrl(entry.Class)" alt="" class="size-5 object-contain" />
-                  {{ entry.Level }} - {{ entry.Name }}
-                </button>
-              </li>
-            </ul>
-          </SFDropdownMenu>
-        </Teleport>
-        <div v-if="entries.length > 0" class="my-1 border-t border-line" />
-        <div class="flex items-center">
-          <SFButton variant="ghost" size="sm" class="flex-1" @click="importEndpoint">
-            {{ localize('game') }}
-          </SFButton>
-          <SFButton variant="ghost" size="sm" class="flex-1" @click="importFiles">
-            {{ localize('file') }}
-          </SFButton>
-          <SFButton v-if="props.cheats" variant="ghost" icon :title="localize('tooltip.cheats')" :aria-label="localize('tooltip.cheats')" :aria-pressed="!!cheats" @click="toggleCheats">
-            <SFIcon name="fire-flame-curved" :class="{ 'text-accent': cheats }" />
-          </SFButton>
-          <SFButton v-if="!props.grouped" variant="ghost" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
-            <SFIcon name="gear" />
-          </SFButton>
-        </div>
-        <div v-if="cheats" class="mt-1 flex flex-col gap-3 border-t border-line p-2">
-          <div class="flex flex-col gap-2">
-            <SFHeading level="6">{{ localize.global('dungeons.cheats.general') }}</SFHeading>
-            <SFCheckbox v-model="cheats.enchantments" :label="localize.global('dungeons.cheats.enchantments')" />
-            <SFCheckbox v-model="cheats.runes" :label="localize.global('dungeons.cheats.runes')" />
-            <SFCheckbox v-model="cheats.pets" :label="localize.global('dungeons.cheats.pets')" />
-          </div>
-          <div class="flex flex-col gap-2">
-            <SFHeading level="6">{{ localize.global('dungeons.cheats.potions') }}</SFHeading>
-            <div class="grid grid-cols-2 gap-2">
-              <SFCheckbox v-model="cheats.strength" :label="localize.global('general.attribute1')" />
-              <SFCheckbox v-model="cheats.dexterity" :label="localize.global('general.attribute2')" />
-              <SFCheckbox v-model="cheats.intelligence" :label="localize.global('general.attribute3')" />
-              <SFCheckbox v-model="cheats.constitution" :label="localize.global('general.attribute4')" />
-              <SFCheckbox v-model="cheats.luck" :label="localize.global('general.attribute5')" />
-              <SFCheckbox v-model="cheats.life" :label="localize.global('general.life_potion')" />
-            </div>
-          </div>
-          <SFSelect v-model="cheats.class" :label="localize.global('dungeons.cheats.class')" :options="cheatClassOptions" />
+  <SFButton ref="trigger-ref" variant="ghost" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
+    <img src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+    {{ title }}
+  </SFButton>
+  <Teleport to="body">
+    <section
+      v-if="open && position"
+      ref="panel-ref"
+      role="dialog"
+      :aria-label="title"
+      class="fixed z-20 flex max-h-[calc(100dvh-70px)] w-[min(340px,calc(100vw-32px))] flex-col overflow-y-auto rounded-lg border border-line bg-surface text-white/90 shadow-xl"
+      :style="{ top: `${position.bottom + 14}px`, left: `${getPanelLeft(position)}px` }"
+    >
+      <div class="relative shrink-0">
+        <img src="/res/backgrounds/classselect.webp" alt="" class="absolute inset-0 size-full object-cover object-[center_35%]" />
+        <div class="absolute inset-0 bg-linear-to-b from-page/50 to-surface" />
+        <div class="relative grid grid-cols-2 gap-2 p-3">
+          <button type="button" class="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-line bg-black/50 text-[13px] font-bold text-white/90 outline-none hover:border-accent focus-visible:border-accent" @click="importEndpoint">
+            <img src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+            {{ localize('login') }}
+          </button>
+          <button type="button" class="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-line bg-black/50 text-[13px] font-bold text-white/90 outline-none hover:border-accent focus-visible:border-accent" @click="importFiles">
+            <SFIcon name="upload" class="text-lg" />
+            {{ localize('import') }}
+          </button>
         </div>
       </div>
-    </div>
-  </div>
+
+      <div v-if="props.grouped" class="flex max-h-[420px] shrink-0 flex-col overflow-y-auto px-1.5 pb-1.5">
+        <template v-for="world in worlds" :key="world.value">
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover"
+            :class="{ 'bg-surface-hover': openWorld === world.value }"
+            :aria-expanded="openWorld === world.value"
+            @click="toggleWorld(world.value, $event)"
+          >
+            <span class="font-bold text-white">{{ world.label }}</span>
+            <span class="ml-auto text-xs text-white/55">{{ world.entries.length }}</span>
+            <SFIcon name="chevron-down" class="text-xs text-white/40" :class="isPhone ? { 'rotate-180': openWorld === world.value } : '-rotate-90'" />
+          </button>
+          <StatisticsIntegrationWorld v-if="isPhone && openWorld === world.value" :entries="world.entries" :search-label="localize('search_world', { world: world.label })" class="mb-1 rounded-md border border-line p-1" @select="selectWorldEntry" />
+        </template>
+        <SFParagraph v-if="worlds.length === 0" type="muted" size="sm" class="px-3 py-4 text-center">{{ localize('empty') }}</SFParagraph>
+      </div>
+
+      <template v-else>
+        <div class="shrink-0 px-3 pb-2">
+          <SFInput v-model="query" type="search" :aria-label="searchLabel" :placeholder="searchLabel" />
+        </div>
+        <div ref="scroller-ref" class="flex max-h-[420px] shrink-0 flex-col overflow-y-auto px-1.5 pb-1.5" @scroll="loadMore">
+          <ul v-if="matchingEntries.length > 0" ref="list-ref" class="flex flex-col">
+            <StatisticsIntegrationEntry v-for="entry in renderedEntries" :key="entry.LinkId" :entry="entry" :guild="props.type === 'guilds'" hideable @select="selectEntry(entry)" @hide="hideEntry(entry)" />
+          </ul>
+          <SFParagraph v-else type="muted" size="sm" class="px-3 py-4 text-center">{{ localize(entries.length > 0 ? 'no_match' : 'empty') }}</SFParagraph>
+        </div>
+      </template>
+
+      <div class="flex shrink-0 items-center justify-end gap-1.5 border-t border-white/10 px-3 py-2">
+        <SFButton v-if="props.cheats" variant="ghost" size="sm" :title="localize('tooltip.cheats')" :aria-pressed="!!cheats" @click="toggleCheats">
+          <SFIcon name="fire-flame-curved" :class="{ 'text-accent': cheats }" />
+          {{ localize('modify') }}
+        </SFButton>
+        <SFButton v-if="!props.grouped" variant="ghost" size="sm" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
+          <SFIcon name="gear" />
+        </SFButton>
+      </div>
+
+      <div v-if="cheats" class="flex shrink-0 flex-col gap-3 border-t border-white/10 px-3.5 pt-3 pb-3.5">
+        <span class="font-bold text-white">{{ localize('modify_title') }}</span>
+        <div class="flex flex-col gap-2">
+          <SFHeading level="6" type="muted">{{ localize.global('dungeons.cheats.general') }}</SFHeading>
+          <SFCheckbox v-model="cheats.enchantments" :label="localize.global('dungeons.cheats.enchantments')" />
+          <SFCheckbox v-model="cheats.runes" :label="localize.global('dungeons.cheats.runes')" />
+          <SFCheckbox v-model="cheats.pets" :label="localize.global('dungeons.cheats.pets')" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <SFHeading level="6" type="muted">{{ localize.global('dungeons.cheats.potions') }}</SFHeading>
+          <div class="grid grid-cols-2 gap-2">
+            <SFCheckbox v-model="cheats.strength" :label="localize.global('general.attribute1')" />
+            <SFCheckbox v-model="cheats.dexterity" :label="localize.global('general.attribute2')" />
+            <SFCheckbox v-model="cheats.intelligence" :label="localize.global('general.attribute3')" />
+            <SFCheckbox v-model="cheats.constitution" :label="localize.global('general.attribute4')" />
+            <SFCheckbox v-model="cheats.luck" :label="localize.global('general.attribute5')" />
+            <SFCheckbox v-model="cheats.life" :label="localize.global('general.life_potion')" />
+          </div>
+        </div>
+        <SFSelect v-model="cheats.class" :label="localize.global('dungeons.cheats.class')" :options="cheatClassOptions" />
+      </div>
+    </section>
+    <SFDropdownMenu v-if="!isPhone && openedWorld && worldPosition" :anchor="worldPosition" float="right" position="right" :width="PANEL_WIDTH" @close="closeWorld">
+      <StatisticsIntegrationWorld :key="openedWorld.value" :entries="openedWorld.entries" :search-label="localize('search_world', { world: openedWorld.label })" menu @select="selectWorldEntry" />
+    </SFDropdownMenu>
+  </Teleport>
 </template>
 
 <script setup lang="ts" generic="TEntry extends PlayerModel | GroupModel">
-import { computed, onScopeDispose, ref, shallowRef, useId } from 'vue'
+import { computed, onScopeDispose, ref, shallowRef, useTemplateRef, watch } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
-import SFHeading from '@library/SFHeading.vue'
 import SFDropdownMenu from '@library/SFDropdownMenu.vue'
+import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
+import SFParagraph from '@library/SFParagraph.vue'
 import SFSelect from '@library/SFSelect.vue'
-import { type SelectOption } from '@utils/components'
+import { usePagedList, type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker, useSimpleDialog } from '@utils/dialogs'
-import { formatDate } from '@utils/formatting'
+import { formatWorldName } from '@utils/formatting'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
-import { useAnimationFramePosition } from '@utils/position'
+import { useAnimationFramePosition, type Rectangle } from '@utils/position'
 import { useErrorToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage } from '@utils/utils'
 import { Logger } from '~/core/logger'
@@ -119,6 +124,8 @@ import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import { CONFIG } from '~/sim/workers/base'
 import { applyCheats, type Cheats } from './cheats'
 import StatisticsIntegrationOptionsDialog from './dialogs/StatisticsIntegrationOptionsDialog.vue'
+import StatisticsIntegrationEntry from './StatisticsIntegrationEntry.vue'
+import StatisticsIntegrationWorld from './StatisticsIntegrationWorld.vue'
 
 defineOptions({
   name: 'StatisticsIntegration'
@@ -142,7 +149,7 @@ const props = defineProps<{
    */
   cheats?: boolean
   /**
-   * Lists the players by server and hides the options
+   * Lists everyone with world filters and hides the options
    */
   grouped?: boolean
 }>()
@@ -172,15 +179,20 @@ const options = new OptionsHandler<IntegrationOptions>('integration', {
   ignored_duration: 0
 })
 
-const panelId = useId()
+const triggerRef = useTemplateRef('trigger-ref')
+const panelElement = useTemplateRef('panel-ref')
+const scrollerElement = useTemplateRef('scroller-ref')
+const listElement = useTemplateRef('list-ref')
 
 const open = ref(false)
 const entries = shallowRef<TEntry[]>([])
 
-const openPrefix = ref<string | null>(null)
-const search = ref('')
+const query = ref('')
 
-let groupElement: HTMLElement | null = null
+const openWorld = ref<string | null>(null)
+
+let worldElement: HTMLElement | null = null
+let closedWorld: string | null = null
 
 const cheats = ref<Cheats | null>(null)
 
@@ -188,32 +200,108 @@ const phoneQuery = window.matchMedia('(width < 48rem)')
 
 const isPhone = ref(phoneQuery.matches)
 
-const groups = computed(() => {
-  const map = new Map<string, PlayerModel[]>()
+const position = useAnimationFramePosition(open, () => (triggerRef.value?.$el as HTMLElement | undefined)?.getBoundingClientRect())
+
+const title = computed(() => localize(`load.${props.type === 'guilds' ? 'guild' : props.grouped ? 'player' : 'character'}`))
+
+const searchLabel = computed(() => localize(props.type === 'guilds' ? 'search_guild' : 'search'))
+
+const worlds = computed(() => {
+  const map = new Map<string, { label: string; entries: PlayerModel[] }>()
 
   for (const entry of entries.value as PlayerModel[]) {
-    map.set(entry.Prefix, [...(map.get(entry.Prefix) ?? []), entry])
+    const current = map.get(entry.Prefix)
+
+    if (current) {
+      current.entries.push(entry)
+    } else {
+      map.set(entry.Prefix, { label: formatWorldName(entry.Data.prefix).toUpperCase(), entries: [entry] })
+    }
   }
 
-  return Array.from(map, ([prefix, list]) => ({ prefix, entries: list.sort((a, b) => Number(b.Own) - Number(a.Own) || b.Timestamp - a.Timestamp) }))
+  return Array.from(map, ([value, { label, entries }]) => ({ value, label, entries: entries.sort((a, b) => Number(b.Own) - Number(a.Own)) })).sort((a, b) => b.entries.length - a.entries.length)
 })
 
-const openGroup = computed(() => groups.value.find((group) => group.prefix === openPrefix.value))
+const openedWorld = computed(() => worlds.value.find((world) => world.value === openWorld.value))
 
-const groupPosition = useAnimationFramePosition(
-  computed(() => openPrefix.value !== null && !isPhone.value),
-  () => groupElement?.getBoundingClientRect()
+const worldPosition = useAnimationFramePosition(
+  computed(() => openWorld.value !== null && !isPhone.value),
+  () => {
+    const row = worldElement?.getBoundingClientRect()
+    const panel = panelElement.value?.getBoundingClientRect()
+
+    // Opens beside the card, level with the clicked world
+    return row && panel ? { top: row.top, bottom: row.bottom, left: panel.left, right: panel.right + 4 } : undefined
+  }
 )
+
+const matchingEntries = computed(() => {
+  const search = query.value.trim().toLowerCase()
+
+  return search ? entries.value.filter((entry) => entry.Name.toLowerCase().includes(search)) : entries.value
+})
+
+const PAGE_SIZE = 25
+
+const { renderedItems: renderedEntries, showPage, loadMore } = usePagedList(matchingEntries, PAGE_SIZE, listElement)
 
 const cheatClassOptions = computed<SelectOption<Cheats['class']>[]>(() => [{ value: 0, label: localize.global('dungeons.cheats.keep_original') }, ...CONFIG.ids().map((id) => ({ value: id, label: localize.global(`general.class${id}`), image: getClassImageUrl(id) }))])
 
-phoneQuery.addEventListener('change', updatePhone)
+watch(query, () => {
+  showPage(0)
+  scrollerElement.value?.scrollTo({ top: 0 })
+})
 
-onScopeDispose(() => phoneQuery.removeEventListener('change', updatePhone))
+watch(
+  panelElement,
+  (element) => {
+    // Phones would open their keyboard over the list
+    if (element && window.matchMedia('(pointer: fine)').matches) {
+      element.querySelector<HTMLInputElement>('input[type="search"]')?.focus()
+    }
+  },
+  { flush: 'post' }
+)
+
+const PANEL_WIDTH = 340
+
+const PANEL_EDGE = 16
+
+function getPanelLeft({ left, right }: Rectangle) {
+  const width = Math.min(PANEL_WIDTH, window.innerWidth - 2 * PANEL_EDGE)
+
+  return Math.max(PANEL_EDGE, Math.min((left + right - width) / 2, window.innerWidth - width - PANEL_EDGE))
+}
+
+function toggleWorld(value: string, event: MouseEvent) {
+  // The world's menu closes on any click outside it, the click on its own world must not open it again
+  if (closedWorld === value) return
+
+  worldElement = event.currentTarget as HTMLElement
+
+  openWorld.value = openWorld.value === value ? null : value
+}
+
+function closeWorld() {
+  closedWorld = openWorld.value
+  openWorld.value = null
+
+  setTimeout(() => {
+    closedWorld = null
+  })
+}
+
+function selectWorldEntry(entry: PlayerModel) {
+  selectEntry(entry as TEntry)
+}
 
 function updatePhone(event: MediaQueryListEvent) {
   isPhone.value = event.matches
 }
+
+phoneQuery.addEventListener('change', updatePhone)
+
+onScopeDispose(() => phoneQuery.removeEventListener('change', updatePhone))
 
 function toggle() {
   if (open.value) {
@@ -225,7 +313,28 @@ function toggle() {
 
 function close() {
   open.value = false
+  openWorld.value = null
 }
+
+function handleKeydown(event: KeyboardEvent) {
+  // A dialog or drop-down on top hides the page and gets this Esc instead
+  if (event.key !== 'Escape' || !open.value || document.querySelector('main')?.getAttribute('aria-hidden') === 'true') return
+
+  if (openWorld.value) {
+    closeWorld()
+    return
+  }
+
+  if (panelElement.value?.contains(document.activeElement)) {
+    ;(triggerRef.value?.$el as HTMLElement | undefined)?.focus()
+  }
+
+  close()
+}
+
+window.addEventListener('keydown', handleKeydown, true)
+
+onScopeDispose(() => window.removeEventListener('keydown', handleKeydown, true))
 
 async function poll() {
   loader.start()
@@ -262,42 +371,8 @@ function listEntries() {
   }
 
   entries.value = scope
-}
 
-function toggleGroup(prefix: string, event: MouseEvent) {
-  if (event.currentTarget instanceof HTMLElement) {
-    groupElement = event.currentTarget
-  }
-
-  openPrefix.value = openPrefix.value === prefix ? null : prefix
-
-  search.value = ''
-}
-
-function closeGroup() {
-  openPrefix.value = null
-
-  search.value = ''
-}
-
-function selectGroupEntry(entry: PlayerModel) {
-  selectEntry(entry as TEntry)
-}
-
-function filterGroup(list: PlayerModel[]) {
-  const query = search.value.trim().toLowerCase()
-
-  return query ? list.filter((entry) => `${entry.Level} - ${entry.Name}`.toLowerCase().includes(query)) : list
-}
-
-function describeEntry(entry: TEntry) {
-  if (props.type === 'players') {
-    const player = entry as PlayerModel
-
-    return `${localize.global('editor.level')} ${player.Level} ${localize.global(`general.class${player.Class}`)}`
-  } else {
-    return formatDate(entry.Timestamp)
-  }
+  showPage(0)
 }
 
 function selectEntry(entry: TEntry) {

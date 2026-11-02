@@ -1,6 +1,8 @@
 <template>
   <Page>
     <template #nav-left>
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
+      <span class="mx-1.5 h-5 w-px bg-white/12" />
       <SFButton variant="ghost" @click="openOptions">
         <SFIcon name="gear" />
         {{ localize.global('analyzer.topbar.options') }}
@@ -16,7 +18,6 @@
       <SimulatorDebug logs copy @log="runLogged" @copy="copyAll" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">

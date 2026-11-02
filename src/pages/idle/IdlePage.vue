@@ -1,6 +1,8 @@
 <template>
   <Page>
-    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listIdlePlayers" @select="load" />
+    <template #nav-left>
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listIdlePlayers" @select="load" />
+    </template>
 
     <div class="grid grid-cols-16 items-center gap-[14px]">
       <SFToggleGroup ref="upgrade-mode-ref" v-model="upgradeMode" :options="UPGRADE_MODES" class="col-span-5" />

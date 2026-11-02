@@ -1,10 +1,10 @@
 <template>
   <Page>
     <template #nav-left>
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" @select="fillFromPlayer" />
+      <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug logs @log="runLogged" />
     </template>
-
-    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" @select="fillFromPlayer" />
 
     <div class="grid grid-cols-16 items-center gap-[14px]">
       <div class="col-span-4 flex items-center gap-[5px]">
@@ -68,7 +68,7 @@ import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { simulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { isSimulatorDebug, simulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { usePetSimulator } from '~/sim/pets'
 import { CONFIG, type SimulatorModel } from '~/sim/workers/base'
 import { PetModel, type SimulatorPet } from '~/sim/workers/pets'
