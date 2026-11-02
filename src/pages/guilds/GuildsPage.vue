@@ -1,10 +1,11 @@
 <template>
   <Page>
     <template #nav-left>
+      <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
+      <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug logs @log="runLogged" />
     </template>
 
-    <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
     <SimulatorPasteTarget use-drag-drop @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -131,7 +132,7 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { handleSimulatorPaste, isSimulatorDebug, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
 import { useGuildSimulator } from '~/sim/guilds'
 
 defineOptions({

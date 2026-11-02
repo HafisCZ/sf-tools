@@ -1172,18 +1172,28 @@
         "file": "File",
         "game": "Endpoint",
         "search": "Search player...",
+        "search_guild": "Search guild...",
+        "search_world": "Search in #{world}...",
         "choose": "Choose your character",
         "login": "Log in to the game",
         "import": "Import a file",
-        "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+        "load": {
+            "character": "Load character",
+            "player": "Load player",
+            "guild": "Load guild"
         },
+        "member": "#{count} member",
+        "members": "#{count} members",
+        "empty": "Nothing imported yet. Log in to the game or import a file to add some.",
+        "no_match": "Nothing matches your search.",
+        "modify": "Modify",
+        "modify_title": "Modify what you load",
         "tooltip": {
             "cheats": "Apply modifications to characters",
             "options": "Configure integration"
         },
         "hide": {
+            "label": "Hide from this list",
             "title": "Are you sure you want to hide this character?",
             "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }

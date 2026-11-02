@@ -1,13 +1,13 @@
 <template>
   <Page>
     <template #nav-left>
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE_WITH_GROUP" :scope="listPlayersWithPets" @select="selectPlayer" />
+      <span class="mx-1.5 h-5 w-px bg-white/12" />
       <SFButton variant="ghost" @click="clear">
         <SFIcon name="recycle" />
         {{ localize.global('analyzer.topbar.clear') }}
       </SFButton>
     </template>
-
-    <StatisticsIntegration type="players" :profile="SELF_PROFILE_WITH_GROUP" :scope="listPlayersWithPets" @select="selectPlayer" />
 
     <div class="grid grid-cols-2 gap-7 md:grid-cols-3 min-[62rem]:grid-cols-5">
       <PetCard v-for="entry in pets" :key="entry.index" :index="entry.index" :owned="entry.owned" :locked="entry.locked" :available="entry.available" :wait-time="entry.waitTime" @click="togglePet(entry.index)" />

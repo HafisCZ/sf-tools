@@ -1,6 +1,9 @@
 <template>
   <Page>
-    <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="fillFromGroup" />
+    <template #nav-left>
+      <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="fillFromGroup" />
+    </template>
+
     <SimulatorPasteTarget @paste="fillFromPaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
