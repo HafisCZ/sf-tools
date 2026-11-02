@@ -851,20 +851,14 @@
         "simulation": "Threads & Iterations",
         "simulate": "Simulate",
         "steps": {
-            "character": "Character",
             "fighters": "Fighters",
             "plan": "Mushrooms and chances",
             "simulate": "Simulate"
         },
-        "editor_empty": "Pick a character to load its player and companions here.",
         "cost": {
             "label": "Mushroom cost",
             "average": "On average",
             "certain": "90% sure"
-        },
-        "empty": {
-            "title": "Pick a character to plan a dungeon break",
-            "text": "The planner simulates the character's remaining dungeons, including the ones that open on the way, and shows how many levels are left in them and how many mushrooms they cost."
         },
         "tiles": {
             "remaining": "Remaining levels",
@@ -1178,13 +1172,9 @@
         "file": "File",
         "game": "Endpoint",
         "search": "Search player...",
-        "selector": {
-            "pick": "Select a character",
-            "level": "Level #{level} · #{xp} / #{next} XP",
-            "row": "#{world} · Level #{level} #{class}",
-            "none_title": "No saved characters yet",
-            "none_text": "Log in through Endpoint or import a HAR file to add yours."
-        },
+        "choose": "Choose your character",
+        "login": "Log in to the game",
+        "import": "Import a file",
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
@@ -2232,14 +2222,9 @@
         "number_max": "Value has to be at most #{max}"
     },
     "inventory": {
-        "back": "Back",
         "tab": {
             "inventory": "Inventory",
             "resources": "Resources"
-        },
-        "picker": {
-            "title": "Inventory Manager",
-            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
         "section": {
             "equipped": "Equipped items",
@@ -2307,14 +2292,9 @@
         }
     },
     "scrapbook": {
-        "back": "Back",
         "tab": {
             "items": "Items",
             "legendaries": "Legendaries"
-        },
-        "picker": {
-            "title": "Scrapbook",
-            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
         "unlock_level": "Unlock level",
         "shared": "Shared",

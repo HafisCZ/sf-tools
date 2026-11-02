@@ -1,28 +1,23 @@
 <template>
   <Page>
-    <div class="flex flex-col gap-5">
-      <section :aria-labelledby="characterTitleId" class="flex flex-col gap-2.5">
-        <SFHeading :id="characterTitleId" level="6" type="muted" class="text-[11px] tracking-[0.08em] uppercase">{{ localize('steps.character') }}</SFHeading>
-        <IntegrationSelector :model-value="character" @update:model-value="selectCharacter" />
-      </section>
+    <template v-if="character" #nav-left>
+      <CharacterSwitcher :player="character" @select="selectCharacter" />
+    </template>
 
+    <div v-if="character" class="flex flex-col gap-5">
       <section :aria-label="localize('setup')" class="grid items-start gap-7 md:grid-cols-2">
-        <DungeonBreakEditor v-if="character" ref="editor-ref" :key="character.LinkId" v-model:fighters="fighters" :character="character" :index="selectedFighter" />
-        <div v-else class="flex min-h-40 items-center justify-center rounded-md border border-dashed border-white/20 p-8 text-center md:min-h-[618px]">
-          <span class="max-w-[36ch] text-white/60">{{ localize('editor_empty') }}</span>
-        </div>
+        <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" :character="character" :index="selectedFighter" />
 
-        <div class="flex flex-col gap-5.5 self-stretch" :class="{ 'md:pt-10': character }">
+        <div class="flex flex-col gap-5.5 self-stretch md:pt-10">
           <section :aria-label="localize('steps.fighters')">
-            <div class="flex flex-col gap-0.5" :class="{ 'opacity-35': !character }">
+            <div class="flex flex-col gap-0.5">
               <button
                 v-for="row in fighterRows"
                 :key="row.index"
                 type="button"
-                class="flex h-13 cursor-pointer items-center gap-3 rounded-md px-3 text-left outline-none disabled:cursor-default"
-                :class="character && row.index === selectedFighter ? 'bg-white/10' : 'enabled:hover:bg-white/5 enabled:focus-visible:bg-white/5'"
-                :aria-pressed="!!character && row.index === selectedFighter"
-                :disabled="!character"
+                class="flex h-13 cursor-pointer items-center gap-3 rounded-md px-3 text-left outline-none"
+                :class="row.index === selectedFighter ? 'bg-white/10' : 'hover:bg-white/5 focus-visible:bg-white/5'"
+                :aria-pressed="row.index === selectedFighter"
                 @click="selectedFighter = row.index"
               >
                 <img :src="`/res/portrait${row.index || ''}.png`" alt="" class="size-10 rounded opacity-85" />
@@ -52,12 +47,7 @@
         </div>
       </section>
 
-      <section v-if="!character" class="flex flex-col items-center gap-1.5 rounded-md border border-line bg-surface px-6 py-12 text-center">
-        <SFHeading level="4">{{ localize('empty.title') }}</SFHeading>
-        <SFParagraph type="muted" class="max-w-[60ch]">{{ localize('empty.text') }}</SFParagraph>
-      </section>
-
-      <section v-if="character" :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
+      <section :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
         <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
           <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
             <span class="text-[11px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ tile.label }}</span>
@@ -83,7 +73,6 @@
           :title="localize(`groups.${card.group}`)"
           :subtitle="card.subtitle"
           :selected="card.selected"
-          :dimmed="!character"
           :disabled="card.dungeons.length === 0"
           :included="card.included"
           @select="selectGroup(card.group)"
@@ -120,9 +109,9 @@
         </DungeonBreakCard>
       </section>
 
-      <DungeonBreakTable v-if="character && selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" @toggle="toggleDungeon" />
+      <DungeonBreakTable v-if="selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" @toggle="toggleDungeon" />
 
-      <section v-if="character" :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
+      <section :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
         <div class="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5 border-b border-line px-4 py-3">
           <SFHeading :id="orderTitleId" level="6" class="tracking-[0.08em] uppercase">{{ localize('order.title') }}</SFHeading>
           <span v-if="order.length > 0" class="text-xs text-white/60">{{ localize('order.subtitle', { count: order.length }) }}</span>
@@ -155,6 +144,7 @@
         <SFParagraph v-else type="muted" class="flex min-h-40 items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'order.nothing' : 'order.empty') }}</SFParagraph>
       </section>
     </div>
+    <InlineSelector v-else @select="selectCharacter" />
 
     <template #footer-right>
       <PageFooterLinks tool="dungeon_break" />
@@ -179,7 +169,9 @@ import { compact, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type PlayerModel } from '~/core/models/player'
 import { OptionsHandler } from '~/core/options'
-import IntegrationSelector from '~/integration/IntegrationSelector.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import CharacterSwitcher from '~/integration/CharacterSwitcher.vue'
+import InlineSelector from '~/integration/InlineSelector.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
@@ -220,8 +212,8 @@ const plannedInputs = ref('')
 const excluded = shallowRef(new Set<number>())
 const selectedGroup = ref<BreakGroup | null>(null)
 const selectedFighter = ref(0)
+const selectionCount = ref(0)
 
-const characterTitleId = useId()
 const runTitleId = useId()
 const simulationId = useId()
 const chartTitleId = useId()
@@ -380,13 +372,17 @@ watch(cost, (value) => {
   options.cost = value
 })
 
-function selectCharacter(entry: PlayerModel | null) {
-  character.value = entry
-  fighters.value = entry ? createBreakFighters(entry) : []
+function selectCharacter(entry: PlayerModel) {
+  // The database lists lazy proxies, which can't be cloned into a worker
+  const player = DatabaseManager.getPlayer(entry.LinkId, entry.Timestamp) ?? entry
+
+  character.value = player
+  fighters.value = createBreakFighters(player)
   selectedFighter.value = 0
   results.value = null
   excluded.value = new Set()
   selectedGroup.value = null
+  selectionCount.value++
 }
 
 function selectGroup(group: BreakGroup) {

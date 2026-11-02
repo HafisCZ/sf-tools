@@ -1,28 +1,25 @@
 <template>
   <Page :width="player ? 'calc(100% - 140px)' : undefined">
     <template v-if="player" #nav-left>
-      <SFButton variant="ghost" @click="showPlayers">
-        <SFIcon name="arrow-left" />
-        {{ localize('back') }}
-      </SFButton>
+      <CharacterSwitcher :player="player" @select="selectPlayer" />
+      <span class="mx-1.5 h-5 w-px bg-white/12" />
       <SFTabs v-model="tab" :options="tabOptions" />
     </template>
 
     <InventoryView v-if="player && tab === 'inventory'" :player="player" />
     <ResourcesView v-else-if="player" :player="player" />
-    <InlineSelector v-else :title="localize('picker.title')" :empty-message="localize('picker.empty')" @select="selectPlayer" />
+    <InlineSelector v-else @select="selectPlayer" />
   </Page>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef } from 'vue'
-import SFButton from '@library/SFButton.vue'
-import SFIcon from '@library/SFIcon.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { type PlayerModel } from '~/core/models/player'
 import { DatabaseManager } from '~/data/database-manager'
+import CharacterSwitcher from '~/integration/CharacterSwitcher.vue'
 import { loadInlineSelectorPlayers } from '~/integration/inline-selector'
 import InlineSelector from '~/integration/InlineSelector.vue'
 import InventoryView from '~/pages/inventory/components/InventoryView.vue'
@@ -63,9 +60,5 @@ async function initialize() {
 function selectPlayer(entry: PlayerModel) {
   player.value = DatabaseManager.Players[entry.LinkId].Latest
   tab.value = 'inventory'
-}
-
-function showPlayers() {
-  player.value = null
 }
 </script>
