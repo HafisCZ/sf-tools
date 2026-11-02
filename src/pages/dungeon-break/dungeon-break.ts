@@ -1,22 +1,22 @@
 import { formatSpacedNumber } from '@utils/formatting'
+import { globalLocalize } from '@utils/localization'
 import { sum } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
-import { type PlayerDungeons } from '~/data/dungeon-helper'
 import { Calculations } from '~/playa/calculations'
-import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_DATA, getDungeonExperience, getOpenBosses, NEXT_DUNGEONS, SANDSTORM, TWISTER, YOUTUBE, type Dungeon, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
+import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_DATA, getDungeonExperience, getDungeonName, PREVIOUS_DUNGEONS, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
 import { preparePlayerData } from '~/sim/debug'
 
 export type BreakGroup = 'light' | 'shadow' | 'idols' | 'twister' | 'sandstorm'
 
-export type BreakStatus = 'win' | 'blocked' | 'never' | 'none'
+export type BreakStatus = 'win' | 'blocked' | 'never' | 'none' | 'locked'
 
 export type MushroomCost = 'average' | 'certain'
 
-export type OpenDungeon = {
+export type RemainingDungeon = {
   dungeon: Dungeon
-  previous: Dungeon | null
   done: number
+  open: boolean
   entries: DungeonEntry[]
 }
 
@@ -30,9 +30,10 @@ export type BreakBoss = {
   status: BreakStatus
 }
 
-export type BreakDungeon = OpenDungeon & {
+export type BreakDungeon = RemainingDungeon & {
   group: BreakGroup
   bosses: BreakBoss[]
+  reachable: boolean
   included: boolean
   potential: number
   current: number
@@ -44,6 +45,97 @@ export type BreakDungeon = OpenDungeon & {
 export type BreakFight = {
   dungeon: BreakDungeon
   boss: BreakBoss
+}
+
+export type BreakOptions = {
+  threshold: number
+  excluded: Set<number>
+  cost: MushroomCost
+  level: number
+  xp: number
+  progress: Map<number, number>
+}
+
+export const FIGHTER_NAME_KEYS = ['dungeons.player', 'general.companion1', 'general.companion2', 'general.companion3']
+
+type DungeonUnlock = {
+  level?: number
+  after?: number[]
+  floors?: [id: number, count: number]
+  open?: number
+}
+
+const DUNGEON_UNLOCKS: Record<number, DungeonUnlock> = {
+  1: { level: 10 },
+  2: { level: 20 },
+  3: { level: 30 },
+  4: { level: 40 },
+  5: { level: 50 },
+  6: { level: 70 },
+  7: { level: 80 },
+  8: { level: 95 },
+  9: { level: 110 },
+  10: { after: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+  11: { after: [10] },
+  12: { after: [11] },
+  22: { level: 210 },
+  23: { level: 240 },
+  13: { after: [12] },
+  24: { level: 280 },
+  16: { level: 200 },
+  17: { floors: [11, 5] },
+  14: { open: 11 },
+  25: { level: 340 },
+  21: { level: 270 },
+  27: { after: [14] },
+  28: { after: [16] },
+  19: { level: 180 },
+  29: { after: [17] },
+  30: { after: [13] },
+  20: { level: 200 },
+  26: { level: 480 },
+  31: { level: 500 },
+  32: { level: 520 },
+  33: { level: 540 },
+  34: { level: 560 },
+  35: { level: 580 },
+  [TOWER]: { level: 125, after: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+  [TWISTER]: { level: 130, open: TOWER },
+  [YOUTUBE]: { level: 222, open: TOWER },
+  [SANDSTORM]: { level: 500, after: [26] },
+  101: { level: 140, open: TOWER },
+  102: { floors: [101, 5] },
+  103: { floors: [102, 5] },
+  104: { floors: [103, 5] },
+  105: { floors: [104, 5] },
+  106: { floors: [105, 5] },
+  107: { floors: [106, 5] },
+  108: { floors: [107, 5] },
+  109: { floors: [108, 5] },
+  110: { floors: [109, 5] },
+  111: { floors: [110, 5] },
+  112: { floors: [111, 5] },
+  122: { level: 320 },
+  123: { level: 350 },
+  113: { floors: [112, 5] },
+  124: { level: 370 },
+  116: { level: 350 },
+  117: { floors: [112, 5] },
+  114: { floors: [113, 5] },
+  125: { level: 500 },
+  121: { level: 350 },
+  127: { after: [114] },
+  128: { after: [116] },
+  119: { level: 280 },
+  129: { after: [117] },
+  130: { after: [113] },
+  120: { level: 300 },
+  126: { level: 600 },
+  131: { level: 620 },
+  132: { level: 640 },
+  133: { level: 660 },
+  134: { level: 680 },
+  135: { level: 700 }
 }
 
 export function formatExperience(value: number) {
@@ -63,13 +155,6 @@ export function formatChance(chance: number) {
   return chance >= 0.99995 ? '100%' : `${(chance * 100).toFixed(2)}%`
 }
 
-export function getChanceClass(chance: number) {
-  if (chance >= 0.75) return 'bg-[#6fcf7c]'
-  if (chance >= 0.35) return 'bg-[#f2c14e]'
-
-  return 'bg-[#ef6b5f]'
-}
-
 export function getBreakGroup({ id }: Dungeon): BreakGroup {
   if (id === YOUTUBE) return 'idols'
   if (id === TWISTER) return 'twister'
@@ -82,10 +167,29 @@ export function getFightKey({ dungeon, boss }: DungeonEntry) {
   return `${dungeon.id}:${boss.pos}`
 }
 
+function getUnlockName(id: number) {
+  const name = getDungeonName(DUNGEON_DATA[id])
+
+  return id > 100 && id < TOWER ? `${globalLocalize('dungeon_enemies.shadow')} ${name}` : name
+}
+
+export function getUnlockText(id: number) {
+  const { level, after = [], floors, open } = DUNGEON_UNLOCKS[id] ?? {}
+
+  if (floors) return globalLocalize('dungeon_break.unlock.floors', { count: floors[1], name: getUnlockName(floors[0]) })
+  if (after.length > 1) return globalLocalize('dungeon_break.unlock.after_range', { from: DUNGEON_DATA[after[0]].pos, to: DUNGEON_DATA[after[after.length - 1]].pos })
+  if (after.length === 1) return level ? globalLocalize('dungeon_break.unlock.level_after', { level, name: getUnlockName(after[0]) }) : globalLocalize('dungeon_break.unlock.after', { name: getUnlockName(after[0]) })
+  if (open !== undefined) return level ? globalLocalize('dungeon_break.unlock.level_open', { level, name: getUnlockName(open) }) : globalLocalize('dungeon_break.unlock.open', { name: getUnlockName(open) })
+
+  return level ? globalLocalize('dungeon_break.unlock.level', { level }) : ''
+}
+
 export function createBreakFighters(character: PlayerModel): (PlayerModel | null)[] {
   const data = ModelUtils.toSimulatorData(character, true)
 
-  if (!Array.isArray(data)) return [preparePlayerData(data), null, null, null]
+  if (!Array.isArray(data)) {
+    return [preparePlayerData(data), null, null, null]
+  }
 
   const [player, ...companions] = data.map((item) => preparePlayerData(item))
 
@@ -98,25 +202,50 @@ export function createBreakFighters(character: PlayerModel): (PlayerModel | null
   return [player, ...companions]
 }
 
-export function listOpenDungeons(progress: PlayerDungeons) {
-  const dungeons: OpenDungeon[] = []
+export function setFightersLevel(fighters: (PlayerModel | null)[], level: number) {
+  return fighters.map((fighter) => fighter && Object.assign(structuredClone(fighter), { Level: level }))
+}
 
-  for (const entry of getOpenBosses(progress)) {
-    if (getDungeonExperience(entry) === 0) continue
+export function listRemainingDungeons(progress: Map<number, number>) {
+  const dungeons: RemainingDungeon[] = []
 
-    const floors = Object.values(entry.dungeon.floors)
-    const done = floors.indexOf(entry.boss)
+  for (const dungeon of Object.values(DUNGEON_DATA).sort((a, b) => a.pos - b.pos)) {
+    const floors = Object.values(dungeon.floors)
+    const value = progress.get(dungeon.id) ?? -1
+    const done = Math.max(0, value)
 
-    dungeons.push({ dungeon: entry.dungeon, previous: null, done, entries: floors.slice(done).map((boss) => ({ dungeon: entry.dungeon, boss })) })
+    if (done >= floors.length || getDungeonExperience({ dungeon, boss: floors[0] }) === 0) continue
 
-    const next = entry.dungeon.id in NEXT_DUNGEONS ? DUNGEON_DATA[NEXT_DUNGEONS[entry.dungeon.id]] : undefined
-
-    if (next) {
-      dungeons.push({ dungeon: next, previous: entry.dungeon, done: 0, entries: Object.values(next.floors).map((boss) => ({ dungeon: next, boss })) })
-    }
+    dungeons.push({ dungeon, done, open: value >= 0, entries: floors.slice(done).map((boss) => ({ dungeon, boss })) })
   }
 
   return dungeons
+}
+
+type UnlockState = {
+  level: number
+  progress: Map<number, number>
+  done: Map<number, number>
+}
+
+function getSavedFloors(progress: Map<number, number>) {
+  return new Map([...progress].map(([id, value]) => [id, Math.max(0, value)]))
+}
+
+function isCleared(id: number, done: Map<number, number>) {
+  return (done.get(id) ?? 0) >= Object.keys(DUNGEON_DATA[id].floors).length
+}
+
+function isUnlocked(id: number, state: UnlockState): boolean {
+  if ((state.progress.get(id) ?? -1) >= 0) return true
+
+  const unlock = DUNGEON_UNLOCKS[id]
+
+  if (!unlock) return false
+
+  const { level = 0, after = [], floors, open } = unlock
+
+  return state.level >= level && after.every((other) => isCleared(other, state.done)) && (!floors || (state.done.get(floors[0]) ?? 0) >= floors[1]) && (open === undefined || isUnlocked(open, state))
 }
 
 const CLEAN_HEALTH = 0.9
@@ -138,16 +267,20 @@ function getTries(chance: number, cost: MushroomCost) {
   return Math.max(1, Math.ceil(Math.log(1 - CERTAINTY) / Math.log(1 - chance)))
 }
 
-function planDungeon(source: OpenDungeon, results: Map<string, DungeonResult>, threshold: number, blocked: boolean, cost: MushroomCost) {
+function planDungeon(source: RemainingDungeon, results: Map<string, DungeonResult>, threshold: number, locked: boolean, cost: MushroomCost) {
   const hasFreeFights = source.dungeon.id === TWISTER || source.dungeon.id === SANDSTORM
 
-  let stopped = blocked
+  let stopped = false
   let previousClean = 0
 
   return source.entries.map((entry): BreakBoss => {
     const result = results.get(getFightKey(entry))
     const chance = result ? result.score / result.iterations : null
     const experience = getDungeonExperience(entry)
+
+    if (locked) {
+      return { entry, experience, chance, clean: 0, free: null, cost: 0, status: 'locked' }
+    }
 
     if (stopped || !result || chance === null || chance === 0 || chance < threshold) {
       stopped = true
@@ -171,24 +304,47 @@ function planDungeon(source: OpenDungeon, results: Map<string, DungeonResult>, t
   })
 }
 
-export function planBreak(dungeons: OpenDungeon[], results: Map<string, DungeonResult>, threshold: number, excluded: Set<number>, cost: MushroomCost) {
-  const complete = new Set<number>()
+export function planBreak(dungeons: RemainingDungeon[], results: Map<string, DungeonResult>, { threshold, excluded, cost, level, xp, progress }: BreakOptions) {
+  const plans = new Map<number, BreakBoss[]>()
+  const done = getSavedFloors(progress)
+
+  let experience = 0
+  let opened = true
+
+  while (opened) {
+    opened = false
+
+    const state = { level: getLevelAfter(level, xp, experience), progress, done }
+
+    for (const source of dungeons) {
+      const { id } = source.dungeon
+
+      if (plans.has(id) || !isUnlocked(id, state)) continue
+
+      const bosses = planDungeon(source, results, threshold, false, cost)
+
+      plans.set(id, bosses)
+      opened = true
+
+      if (excluded.has(id)) continue
+
+      const won = bosses.filter((boss) => boss.status === 'win')
+
+      experience += sum(won.map((boss) => boss.experience))
+      done.set(id, source.done + won.length)
+    }
+  }
 
   return dungeons.map((source): BreakDungeon => {
-    const blocked = source.previous !== null && !complete.has(source.previous.id)
-    const bosses = planDungeon(source, results, threshold, blocked, cost)
+    const bosses = plans.get(source.dungeon.id) ?? planDungeon(source, results, threshold, true, cost)
     const counted = bosses.filter((boss) => boss.status === 'win')
-    const included = !excluded.has(source.dungeon.id)
-
-    if (included && counted.length === bosses.length) {
-      complete.add(source.dungeon.id)
-    }
 
     return {
       ...source,
       group: getBreakGroup(source.dungeon),
       bosses,
-      included,
+      reachable: plans.has(source.dungeon.id),
+      included: !excluded.has(source.dungeon.id),
       potential: sum(bosses.map((boss) => boss.experience)),
       current: sum(counted.map((boss) => boss.experience)),
       mushrooms: sum(counted.map((boss) => boss.cost)),
@@ -198,13 +354,13 @@ export function planBreak(dungeons: OpenDungeon[], results: Map<string, DungeonR
   })
 }
 
-export function orderFights(dungeons: BreakDungeon[]) {
+export function orderFights(dungeons: BreakDungeon[], progress: Map<number, number>, level: number, xp: number) {
   const chains = new Map<number, BreakFight[]>()
 
   for (const dungeon of dungeons) {
     if (!dungeon.included) continue
 
-    const chain = (dungeon.previous && chains.get(dungeon.previous.id)) || []
+    const chain = chains.get(PREVIOUS_DUNGEONS[dungeon.dungeon.id]) || []
 
     for (const boss of dungeon.bosses) {
       if (boss.status === 'win') {
@@ -216,20 +372,27 @@ export function orderFights(dungeons: BreakDungeon[]) {
   }
 
   const pending = [...new Set(chains.values())].filter((chain) => chain.length > 0)
+  const done = getSavedFloors(progress)
   const order: BreakFight[] = []
 
-  while (pending.some((chain) => chain.length > 0)) {
-    let best = { chain: 0, length: 0, ratio: -1 }
+  let experience = 0
+
+  while (pending.length > 0) {
+    const state = { level: getLevelAfter(level, xp, experience), progress, done }
+
+    let best = { chain: -1, length: 0, ratio: -1 }
 
     for (const [index, chain] of pending.entries()) {
-      let experience = 0
+      if (!isUnlocked(chain[0].dungeon.dungeon.id, state)) continue
+
+      let chainExperience = 0
       let cost = 0
 
       for (const [length, fight] of chain.entries()) {
-        experience += fight.boss.experience
+        chainExperience += fight.boss.experience
         cost += fight.boss.cost
 
-        const ratio = experience / cost
+        const ratio = chainExperience / cost
 
         if (ratio > best.ratio) {
           best = { chain: index, length: length + 1, ratio }
@@ -237,7 +400,19 @@ export function orderFights(dungeons: BreakDungeon[]) {
       }
     }
 
-    order.push(...pending[best.chain].splice(0, best.length))
+    if (best.chain === -1) break
+
+    for (const fight of pending[best.chain].splice(0, best.length)) {
+      const { id } = fight.dungeon.dungeon
+
+      experience += fight.boss.experience
+      done.set(id, (done.get(id) ?? 0) + 1)
+      order.push(fight)
+    }
+
+    if (pending[best.chain].length === 0) {
+      pending.splice(best.chain, 1)
+    }
   }
 
   return order

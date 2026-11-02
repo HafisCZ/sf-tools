@@ -1,20 +1,54 @@
 <template>
   <Page>
     <div class="flex flex-col gap-5">
-      <section :aria-label="localize('setup')" class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3.5">
-        <IntegrationSelector :model-value="character" class="flex-[1_1_380px]" @update:model-value="selectCharacter" />
-        <div class="flex flex-wrap items-end gap-x-4 gap-y-3.5">
-          <div class="w-[150px]">
-            <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
-          </div>
-          <SFSelect ref="cost-ref" v-model="cost" :label="localize('cost.label')" :options="costOptions" class="w-[140px]" />
-          <div class="w-[120px]">
-            <SFNumber ref="threshold-ref" v-model="threshold" :label="localize('threshold')" :min="0" :max="100" :step="1" suffix="%" />
-          </div>
-          <div role="group" :aria-labelledby="simulationId" class="flex w-44 flex-col gap-1.5">
-            <span :id="simulationId" class="font-bold text-white">{{ localize('simulation') }}</span>
-            <SimulatorSettings ref="settings-ref" storage-key="dungeon_break_sim" :default-threads="4" :default-iterations="50000" />
-          </div>
+      <section :aria-labelledby="characterTitleId" class="flex flex-col gap-2.5">
+        <SFHeading :id="characterTitleId" level="6" type="muted" class="text-[11px] tracking-[0.08em] uppercase">{{ localize('steps.character') }}</SFHeading>
+        <IntegrationSelector :model-value="character" @update:model-value="selectCharacter" />
+      </section>
+
+      <section :aria-label="localize('setup')" class="grid items-start gap-7 md:grid-cols-2">
+        <DungeonBreakEditor v-if="character" ref="editor-ref" :key="character.LinkId" v-model:fighters="fighters" :character="character" :index="selectedFighter" />
+        <div v-else class="flex min-h-40 items-center justify-center rounded-md border border-dashed border-white/20 p-8 text-center md:min-h-[618px]">
+          <span class="max-w-[36ch] text-white/60">{{ localize('editor_empty') }}</span>
+        </div>
+
+        <div class="flex flex-col gap-5.5 self-stretch" :class="{ 'md:pt-10': character }">
+          <section :aria-label="localize('steps.fighters')">
+            <div class="flex flex-col gap-0.5" :class="{ 'opacity-35': !character }">
+              <button
+                v-for="row in fighterRows"
+                :key="row.index"
+                type="button"
+                class="flex h-13 cursor-pointer items-center gap-3 rounded-md px-3 text-left outline-none disabled:cursor-default"
+                :class="character && row.index === selectedFighter ? 'bg-white/10' : 'enabled:hover:bg-white/5 enabled:focus-visible:bg-white/5'"
+                :aria-pressed="!!character && row.index === selectedFighter"
+                :disabled="!character"
+                @click="selectedFighter = row.index"
+              >
+                <img :src="`/res/portrait${row.index || ''}.png`" alt="" class="size-10 rounded opacity-85" />
+                <span class="font-bold">{{ row.name }}</span>
+              </button>
+            </div>
+          </section>
+
+          <section :aria-label="localize('steps.plan')" class="mt-auto">
+            <div class="grid grid-cols-2 gap-3.5">
+              <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
+              <SFSelect ref="cost-ref" v-model="cost" :label="localize('cost.label')" :options="costOptions" />
+              <SFNumber ref="threshold-ref" v-model="threshold" :label="localize('threshold')" :min="0" :max="100" :step="1" suffix="%" />
+              <div role="group" :aria-labelledby="simulationId" class="flex flex-col gap-1.5">
+                <span :id="simulationId" class="font-bold text-white">{{ localize('simulation') }}</span>
+                <SimulatorSettings ref="settings-ref" storage-key="dungeon_break_sim" :default-threads="4" :default-iterations="50000" />
+              </div>
+            </div>
+          </section>
+
+          <section :aria-labelledby="runTitleId" class="flex flex-col gap-2.5">
+            <SFHeading :id="runTitleId" level="6" type="muted" class="text-[11px] tracking-[0.08em] uppercase">{{ localize('steps.simulate') }}</SFHeading>
+            <SFButton variant="primary" block :disabled="isPlanning ? 'loading' : !canPlan || (isPlanned && runInputs === plannedInputs)" @click="plan">
+              {{ localize('simulate') }}
+            </SFButton>
+          </section>
         </div>
       </section>
 
@@ -23,15 +57,11 @@
         <SFParagraph type="muted" class="max-w-[60ch]">{{ localize('empty.text') }}</SFParagraph>
       </section>
 
-      <section v-else :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
-        <div class="flex flex-[1_1_220px] flex-col gap-px">
-          <div v-for="tile in tiles" :key="tile.key" class="flex flex-1 flex-col justify-center gap-0.5 bg-surface px-4.5 py-3">
+      <section v-if="character" :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
+        <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
+          <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
             <span class="text-[11px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ tile.label }}</span>
-            <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">
-              {{ tile.value }}
-              <small v-if="tile.unit" class="text-sm font-bold text-white/60">{{ tile.unit }}</small>
-            </span>
-            <span v-if="tile.detail" class="text-xs text-white/60">{{ tile.detail }}</span>
+            <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">{{ tile.value }}</span>
           </div>
         </div>
         <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-[999_1_560px] flex-col bg-surface">
@@ -53,19 +83,18 @@
           :title="localize(`groups.${card.group}`)"
           :subtitle="card.subtitle"
           :selected="card.selected"
-          :locked="card.locked"
           :dimmed="!character"
           :disabled="card.dungeons.length === 0"
           :included="card.included"
-          @select="selectedGroup = card.group"
+          @select="selectGroup(card.group)"
           @include="includeGroup(card.group, $event)"
         >
           <template v-if="card.dungeons.length > 0" #default>
             <span class="grid grid-cols-2 gap-2">
               <span class="flex min-w-0 flex-col">
-                <span class="text-[10.5px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ localize('card.unlocked') }}</span>
+                <span class="text-[10.5px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ localize('card.remaining') }}</span>
                 <span class="flex items-baseline gap-1">
-                  <span class="text-xl leading-tight font-bold text-white">{{ card.unlocked }}</span>
+                  <span class="text-xl leading-tight font-bold text-white">{{ card.remaining }}</span>
                   <span class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
                 </span>
               </span>
@@ -91,10 +120,7 @@
         </DungeonBreakCard>
       </section>
 
-      <template v-if="character && selectedDungeons.length > 0">
-        <DungeonBreakFloors v-if="selectedGroup === 'twister' || selectedGroup === 'sandstorm'" :dungeon="selectedDungeons[0]" :planned="isPlanned" :level="character.Level" :xp="character.XP" />
-        <DungeonBreakTable v-else :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="character.Level" :xp="character.XP" @toggle="toggleDungeon" />
-      </template>
+      <DungeonBreakTable v-if="character && selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" @toggle="toggleDungeon" />
 
       <section v-if="character" :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
         <div class="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5 border-b border-line px-4 py-3">
@@ -114,7 +140,7 @@
                   <SFTableHeader align="right">{{ localize('order.spent') }}</SFTableHeader>
                 </SFTableRow>
               </template>
-              <SFTableRow v-for="fight in fights" :key="fight.key" class="whitespace-nowrap" :class="{ 'opacity-45': !fight.bought }">
+              <SFTableRow v-for="fight in fights" :key="fight.key" class="h-12 whitespace-nowrap" :class="{ 'opacity-45': !fight.bought }">
                 <SFTableCell class="text-white/60">{{ fight.number }}</SFTableCell>
                 <SFTableCell>{{ fight.dungeon }}</SFTableCell>
                 <SFTableCell>{{ fight.boss }}</SFTableCell>
@@ -137,7 +163,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { computed, ref, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import SFButton from '@library/SFButton.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
@@ -156,13 +183,13 @@ import IntegrationSelector from '~/integration/IntegrationSelector.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createDungeonFight, getBossName, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
+import { createDungeonFight, getBossName, getDungeonName, getDungeonProgress, type DungeonResult } from '~/sim/data/dungeons'
 import { useDungeonSimulator } from '~/sim/dungeons'
 import DungeonBreakCard from './components/DungeonBreakCard.vue'
 import DungeonBreakChart from './components/DungeonBreakChart.vue'
-import DungeonBreakFloors from './components/DungeonBreakFloors.vue'
+import DungeonBreakEditor from './components/DungeonBreakEditor.vue'
 import DungeonBreakTable from './components/DungeonBreakTable.vue'
-import { createBreakFighters, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, listOpenDungeons, orderFights, planBreak, spendMushrooms, type BreakDungeon, type BreakGroup, type MushroomCost } from './dungeon-break'
+import { createBreakFighters, FIGHTER_NAME_KEYS, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type MushroomCost } from './dungeon-break'
 
 defineOptions({
   name: 'DungeonBreakPage'
@@ -187,19 +214,24 @@ const threshold = ref<number | null>(options.threshold)
 const cost = ref<MushroomCost>(options.cost)
 
 const character = shallowRef<PlayerModel | null>(null)
+const fighters = shallowRef<(PlayerModel | null)[]>([])
 const results = shallowRef<Map<string, DungeonResult> | null>(null)
+const plannedInputs = ref('')
 const excluded = shallowRef(new Set<number>())
-const selectedGroup = ref<BreakGroup>('light')
+const selectedGroup = ref<BreakGroup | null>(null)
+const selectedFighter = ref(0)
 
+const characterTitleId = useId()
+const runTitleId = useId()
 const simulationId = useId()
 const chartTitleId = useId()
 const orderTitleId = useId()
 
 const settings = useTemplateRef('settings-ref')
 
-const isValid = useComponentValidation(settings, useTemplateRef('mushrooms-ref'), useTemplateRef('cost-ref'), useTemplateRef('threshold-ref'))
+const isValid = useComponentValidation(settings, useTemplateRef('mushrooms-ref'), useTemplateRef('cost-ref'), useTemplateRef('threshold-ref'), useTemplateRef('editor-ref'))
 
-const { submit: plan } = useSubmit(runPlan)
+const { submit: plan, isSubmitting: isPlanning } = useSubmit(runPlan)
 
 const costOptions = computed<SelectOption<MushroomCost>[]>(() => [
   { value: 'average', label: localize('cost.average') },
@@ -208,31 +240,44 @@ const costOptions = computed<SelectOption<MushroomCost>[]>(() => [
 
 const isPlanned = computed(() => results.value !== null)
 
-const level = computed(() => character.value?.Level ?? 1)
+const level = computed(() => fighters.value[0]?.Level ?? character.value?.Level ?? 1)
 
-const xp = computed(() => character.value?.XP ?? 0)
+const xp = computed(() => (character.value && level.value === character.value.Level ? character.value.XP : 0))
 
 const startLevel = computed(() => getLevelAfter(level.value, xp.value, 0))
 
-const openDungeons = computed(() => (character.value?.Dungeons ? listOpenDungeons(character.value.Dungeons) : []))
+const progress = computed(() => (character.value?.Dungeons ? getDungeonProgress(character.value.Dungeons) : new Map<number, number>()))
 
-const fighters = computed(() => (character.value ? createBreakFighters(character.value) : []))
+const remainingDungeons = computed(() => (character.value?.Dungeons ? listRemainingDungeons(progress.value) : []))
+
+const fighterRows = computed(() => FIGHTER_NAME_KEYS.flatMap((key, index) => (character.value && !fighters.value[index] ? [] : [{ index, name: localize.global(key) }])))
 
 const canPlan = computed(() => {
-  if (!character.value || !isValid.value || openDungeons.value.length === 0) return false
+  if (!character.value || !isValid.value || remainingDungeons.value.length === 0) return false
 
-  const needsCompanions = openDungeons.value.some(({ dungeon }) => dungeon.companions)
+  const needsCompanions = remainingDungeons.value.some(({ dungeon, open }) => open && dungeon.companions)
 
   return !needsCompanions || fighters.value.every((fighter) => fighter !== null)
 })
 
-const dungeons = computed(() => planBreak(openDungeons.value, results.value ?? new Map(), (threshold.value ?? 0) / 100, excluded.value, cost.value))
+const runInputs = computed(() => JSON.stringify([threshold.value, [...excluded.value].sort((a, b) => a - b), fighters.value, settings.value?.threads, settings.value?.iterations]))
+
+const planOptions = computed(() => ({
+  threshold: (threshold.value ?? 0) / 100,
+  excluded: excluded.value,
+  cost: cost.value,
+  level: level.value,
+  xp: xp.value,
+  progress: progress.value
+}))
+
+const dungeons = computed(() => planBreak(remainingDungeons.value, results.value ?? new Map(), planOptions.value))
 
 const includedDungeons = computed(() => dungeons.value.filter((dungeon) => dungeon.included))
 
 const selectedDungeons = computed(() => dungeons.value.filter((dungeon) => dungeon.group === selectedGroup.value))
 
-const order = computed(() => (isPlanned.value ? orderFights(dungeons.value) : []))
+const order = computed(() => (isPlanned.value ? orderFights(dungeons.value, progress.value, level.value, xp.value) : []))
 
 const bought = computed(() => (mushrooms.value === null ? null : spendMushrooms(order.value, mushrooms.value)))
 
@@ -245,12 +290,13 @@ const totals = computed(() => ({
 const tiles = computed(() => {
   const { potential, current } = totals.value
   const planned = isPlanned.value
-  const unit = localize('tiles.levels')
 
   return [
-    { key: 'unlocked', label: localize('tiles.unlocked'), value: formatLevels(potential), unit, detail: localize('tiles.detail', { experience: formatExperience(potential), level: formatEndLevel(potential) }), accent: false, pending: false },
-    { key: 'beatable', label: localize('tiles.beatable'), value: planned ? formatLevels(current) : '-', unit: planned ? unit : '', detail: planned ? localize('tiles.detail', { experience: formatExperience(current), level: formatEndLevel(current) }) : localize('tiles.pending'), accent: planned, pending: !planned },
-    { key: 'mushrooms', label: localize('tiles.mushrooms'), value: planned ? formatMushrooms(totals.value.mushrooms) : '-', unit: '', detail: '', accent: false, pending: !planned }
+    { key: 'remaining', label: localize('tiles.remaining'), value: formatLevels(potential), accent: false, pending: false },
+    { key: 'remaining_xp', label: localize('tiles.remaining_xp'), value: formatExperience(potential), accent: false, pending: false },
+    { key: 'beatable', label: localize('tiles.beatable'), value: planned ? formatLevels(current) : '-', accent: planned, pending: !planned },
+    { key: 'beatable_xp', label: localize('tiles.beatable_xp'), value: planned ? formatExperience(current) : '-', accent: false, pending: !planned },
+    { key: 'mushrooms', label: localize('tiles.mushrooms'), value: planned ? formatMushrooms(totals.value.mushrooms) : '-', accent: false, pending: !planned }
   ]
 })
 
@@ -270,9 +316,8 @@ const cards = computed(() =>
       group,
       dungeons: list,
       selected: list.length > 0 && group === selectedGroup.value,
-      locked: list.length === 0 && isGroupLocked(group),
       subtitle: getGroupSubtitle(group, list),
-      unlocked: formatLevels(sum(counted.map((dungeon) => dungeon.potential))),
+      remaining: formatLevels(sum(counted.map((dungeon) => dungeon.potential))),
       beatable: formatLevels(sum(counted.map((dungeon) => dungeon.current))),
       mushrooms: formatMushrooms(sum(counted.map((dungeon) => dungeon.mushrooms))),
       won: sum(counted.map((dungeon) => dungeon.winnable)),
@@ -335,29 +380,17 @@ watch(cost, (value) => {
   options.cost = value
 })
 
-watch(character, () => {
-  void plan()
-})
-
-const SETTINGS_DELAY = 500
-
-let settingsTimer: ReturnType<typeof setTimeout> | undefined
-
-watch([() => settings.value?.threads, () => settings.value?.iterations], () => {
-  clearTimeout(settingsTimer)
-
-  settingsTimer = setTimeout(() => void plan(), SETTINGS_DELAY)
-})
-
-onBeforeUnmount(() => {
-  clearTimeout(settingsTimer)
-})
-
 function selectCharacter(entry: PlayerModel | null) {
   character.value = entry
+  fighters.value = entry ? createBreakFighters(entry) : []
+  selectedFighter.value = 0
   results.value = null
   excluded.value = new Set()
-  selectedGroup.value = GROUPS.find((group) => dungeons.value.some((dungeon) => dungeon.group === group)) ?? 'light'
+  selectedGroup.value = null
+}
+
+function selectGroup(group: BreakGroup) {
+  selectedGroup.value = selectedGroup.value === group ? null : group
 }
 
 function toggleDungeon(id: number) {
@@ -390,36 +423,17 @@ function formatLevels(experience: number) {
   return (getLevelAfter(level.value, xp.value, experience) - startLevel.value).toFixed(2)
 }
 
-function formatEndLevel(experience: number) {
-  return getLevelAfter(level.value, xp.value, experience).toFixed(2)
-}
-
-function isGroupLocked(group: BreakGroup) {
-  const progress = character.value?.Dungeons
-
-  if (!progress) return false
-
-  switch (group) {
-    case 'light':
-      return progress.Normal.Unlocked === 0
-    case 'shadow':
-      return progress.Shadow.Unlocked === 0
-    case 'idols':
-      return progress.Youtube < 0
-    case 'twister':
-      return progress.Twister < 0
-    case 'sandstorm':
-      return progress.Sandstorm < 0
-  }
-}
-
 function getGroupSubtitle(group: BreakGroup, list: BreakDungeon[]) {
   if (!character.value) return ''
 
   const [first] = list
 
-  if (!first) return localize(isGroupLocked(group) ? 'card.locked' : 'card.done')
-  if (group === 'light' || group === 'shadow') return localize('card.open', { count: list.length })
+  if (!first) return localize('card.done')
+
+  const open = list.filter((dungeon) => dungeon.open).length
+
+  if (open === 0) return getUnlockText(first.dungeon.id)
+  if (group === 'light' || group === 'shadow') return localize(open < list.length ? 'card.open_locked' : 'card.open', { count: open, locked: list.length - open })
 
   return localize('card.floor', { position: first.done + 1, total: first.done + first.bosses.length })
 }
@@ -427,15 +441,38 @@ function getGroupSubtitle(group: BreakGroup, list: BreakDungeon[]) {
 async function runPlan() {
   if (!canPlan.value) return
 
-  const entries = openDungeons.value.flatMap((dungeon) => dungeon.entries)
-
-  const simulation = await dungeonSimulator.simulateUntilNotPossible(compact(entries.map((entry) => createDungeonFight(entry, fighters.value))), {
+  const run = {
     instances: Math.max(1, settings.value?.threads || 4),
     iterations: Math.max(1, settings.value?.iterations || 5000)
-  })
+  }
 
-  if (!simulation) return
+  const collected = new Map<string, DungeonResult>()
+  const simulated = new Set<number>()
+  const roundOptions = planOptions.value
+  const inputs = runInputs.value
 
-  results.value = new Map(simulation.results.map((result) => [getFightKey(result), result]))
+  for (;;) {
+    const plan = planBreak(remainingDungeons.value, collected, roundOptions)
+    const round = plan.filter(({ dungeon, reachable }) => reachable && !simulated.has(dungeon.id))
+
+    if (round.length === 0) break
+
+    const experience = sum(plan.filter(({ included }) => included).map(({ current }) => current))
+    const roundFighters = setFightersLevel(fighters.value, Math.floor(getLevelAfter(level.value, xp.value, experience)))
+    const simulation = await dungeonSimulator.simulateUntilNotPossible(compact(round.flatMap(({ entries }) => entries).map((entry) => createDungeonFight(entry, roundFighters))), run)
+
+    if (!simulation) return
+
+    for (const result of simulation.results) {
+      collected.set(getFightKey(result), result)
+    }
+
+    for (const { dungeon } of round) {
+      simulated.add(dungeon.id)
+    }
+  }
+
+  results.value = collected
+  plannedInputs.value = inputs
 }
 </script>
