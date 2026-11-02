@@ -4,6 +4,7 @@
       <EquipmentEditor v-if="source" :source="source" :index="props.index" :swaps="swaps[props.index]" :character="characterState" @change="applySwaps" />
     </template>
   </PlayerEditor>
+  <SimulatorPasteTarget @paste="insertFighters" />
 </template>
 
 <script setup lang="ts">
@@ -15,8 +16,9 @@ import { ModelUtils } from '~/core/models/utils'
 import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
 import { FIGHTER_NAME_KEYS } from '~/pages/dungeon-break/dungeon-break'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
+import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_SHARED_PATHS } from '~/sim/data/dungeons'
-import { preparePlayerData } from '~/sim/debug'
+import { handleSimulatorPaste, preparePlayerData } from '~/sim/debug'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 
 defineOptions({
@@ -182,6 +184,38 @@ function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
   }
 
   fillEditor(updateFighters(fighters.value.map((entry, position) => (position === index ? fighter : entry))))
+}
+
+function hasClass(value: unknown) {
+  return typeof value === 'object' && value !== null && 'Class' in value && Boolean(value.Class)
+}
+
+function insertFighters(value: unknown) {
+  try {
+    const data = handleSimulatorPaste(value)
+
+    let list: (PlayerModel | null)[]
+
+    if (Array.isArray(data)) {
+      const pasted = data.map((item: unknown) => preparePlayerData(item))
+
+      list = fighters.value.map((fighter, index) => (fighter ? (pasted.at(index) ?? fighter) : null))
+    } else if (hasClass(data)) {
+      const player = preparePlayerData(data)
+
+      list = fighters.value.map((fighter, index) => (index === props.index ? player : fighter))
+    } else {
+      return
+    }
+
+    source.value = null
+    swaps.value = [{}, {}, {}, {}]
+    isItemView.value = false
+
+    fillEditor(updateFighters(list))
+  } catch (e) {
+    console.info(e)
+  }
 }
 
 function copyPlayer(player: PlayerModel) {
