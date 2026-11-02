@@ -1256,7 +1256,9 @@ export class TableController extends SignalSource<TableControllerEvents> {
 
     for (const element of icons) {
       const style = getComputedStyle(element, '::before')
-      const match = style.maskImage.match(/^url\("data:image\/svg\+xml,(.*)"\)$/)
+
+      const maskImage = style.getPropertyValue('mask-image') || style.getPropertyValue('-webkit-mask-image')
+      const match = maskImage.match(/^url\("data:image\/svg\+xml,(.*)"\)$/)
 
       if (match) {
         const svg = decodeURIComponent(match[1]).replace('<path ', `<path fill='${style.backgroundColor}' `)
