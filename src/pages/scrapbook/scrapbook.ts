@@ -21,6 +21,7 @@ export type ScrapbookEntry = {
   rarity: ScrapbookRarity
   origin: ScrapbookOrigin
   unlockLevel?: number
+  endLevel?: number
   color: number
   collected: boolean
   marked: boolean
@@ -159,6 +160,14 @@ function getUnlockLevel(type: number, itemClass: number, index: number) {
   return levels.filter(([start]) => start <= index).at(-1)?.[1] ?? 1
 }
 
+const NORMAL_END_LEVELS = [9, 14, 19, 24, 29, 34, 39]
+
+function getEndLevel(type: number, itemClass: number, index: number) {
+  if (index >= 50 || type >= 8) return undefined
+
+  return NORMAL_END_LEVELS[(type === 1 && itemClass === 1 ? Math.ceil(index / 3) : index) - 1]
+}
+
 function getPictures(type: number, itemClass: number, color: number) {
   return __ITEM_PICTURES__[`${type}_${color + 1}_${itemClass || 1}`] ?? []
 }
@@ -178,6 +187,7 @@ function createEntry(source: ScrapbookSource, positions: number[], type: number,
     rarity: index >= 100 ? 'legendary' : index >= 50 ? 'epic' : 'normal',
     origin: note ? (NOTE_ORIGINS[note] ?? 'event') : 'regular',
     unlockLevel: index < 100 ? getUnlockLevel(type, itemClass, index) : undefined,
+    endLevel: getEndLevel(type, itemClass, index),
     color,
     collected,
     marked: !collected && source.marked.has(key),

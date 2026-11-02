@@ -4,7 +4,7 @@
   </div>
   <Teleport to="body">
     <div v-if="open" ref="tooltip-ref" role="tooltip" class="pointer-events-none fixed z-[1002] max-w-[380px] rounded-md border border-line bg-surface px-3 py-2 text-white/90 shadow-xl" :class="{ invisible: !style }" :style="style">
-      {{ props.content }}
+      <slot name="content">{{ props.content }}</slot>
     </div>
   </Teleport>
 </template>
@@ -21,7 +21,15 @@ const props = defineProps<{
   /**
    * Text shown in the tooltip
    */
-  content: string
+  content?: string
+}>()
+
+defineSlots<{
+  default(): unknown
+  /**
+   * Replaces the tooltip text
+   */
+  content?(): unknown
 }>()
 
 const open = ref(false)

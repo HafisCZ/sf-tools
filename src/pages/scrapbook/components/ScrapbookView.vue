@@ -12,7 +12,7 @@
           <span class="text-white/50">{{ group.collected }} / {{ group.total }}</span>
         </span>
         <div class="flex flex-wrap gap-2">
-          <SFTooltip v-for="item in group.entries" :key="item.key" :content="getTooltip(item)">
+          <SFTooltip v-for="item in group.entries" :key="item.key">
             <button
               type="button"
               class="relative size-24 rounded-md border outline-none focus-visible:outline-2 focus-visible:outline-accent enabled:cursor-pointer"
@@ -24,6 +24,10 @@
               <img :src="item.picture" :alt="item.name" loading="lazy" class="size-full" :class="{ 'opacity-50': !item.collected && !item.marked }" />
               <span v-if="group.key === 'normal' && kind.type !== 10" class="absolute right-1.5 bottom-0.5 text-xs text-white/70">{{ item.color + 1 }}</span>
             </button>
+            <template #content>
+              <div>{{ item.name }}</div>
+              <div v-for="line in getRequirements(item)" :key="line" class="text-white/50">{{ line }}</div>
+            </template>
           </SFTooltip>
         </div>
       </div>
@@ -58,7 +62,14 @@ const emit = defineEmits<{
 
 const localize = useLocalize('scrapbook')
 
-function getTooltip(item: ScrapbookEntry) {
-  return item.note ? `${item.name} (${localize(`note.${item.note}`)})` : item.name
+function getRequirements(item: ScrapbookEntry) {
+  if (item.unlockLevel === undefined) return []
+
+  const level = item.endLevel ? `${item.unlockLevel}-${item.endLevel}` : `${item.unlockLevel}+`
+  const lines = [`${localize.global('general.level')} ${level}`]
+
+  if (item.note) lines.push(localize(`note.${item.note}`))
+
+  return lines
 }
 </script>
