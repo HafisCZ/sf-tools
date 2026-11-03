@@ -1810,7 +1810,6 @@
                 "CriticalSongBug": "Copies a game bug: a critical hit during a song adds the critical and song bonuses together instead of multiplying them.",
                 "SummonChance": "Chance to summon a minion when none is out.",
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
-                "SkeletonReviveBug": "Copies a game bug: the Skeleton comes back at most once, whatever its revive count.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
