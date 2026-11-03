@@ -107,6 +107,14 @@
                 </span>
               </template>
             </SFInput>
+            <SFInput v-if="fighter.longestChain" :model-value="String(fighter.longestChain.length)" readonly class="text-center">
+              <template #label>
+                <span class="flex">
+                  <span>{{ localize('sidebar.longest_chain') }}</span>
+                  <span v-if="fighter.longestChain.fight" class="ml-auto">({{ localize('sidebar.longest_chain_fight', { index: fighter.longestChain.fight }) }})</span>
+                </span>
+              </template>
+            </SFInput>
           </div>
         </div>
       </template>
