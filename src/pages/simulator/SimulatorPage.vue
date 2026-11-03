@@ -2,7 +2,11 @@
   <Page>
     <template #nav-left>
       <StatisticsIntegration type="players" :profile="FIGHT_SIMULATOR_PROFILE" :scope="listPlayers" cheats grouped @select="insertPlayer" />
-      <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
+      <span class="mx-1.5 h-5 w-px bg-white/12" />
+      <SFButton variant="ghost" @click="openOptions">
+        <SFIcon name="gear" />
+        {{ localize.global('analyzer.topbar.options') }}
+      </SFButton>
       <SimulatorDebug logs copy presets @log="runLogged" @copy="copyWithConfig" @insert="handlePaste" />
     </template>
 
@@ -132,6 +136,7 @@ import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { type SelectOption, type TableSorting } from '@utils/components'
+import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { copyJson, formatDuration, getClassImageUrl, useSubmit } from '@utils/utils'
@@ -139,6 +144,7 @@ import { useComponentValidation } from '@utils/validations'
 import { Exporter } from '~/core/exporter'
 import { type PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
+import { OptionsHandler } from '~/core/options'
 import { FIGHT_SIMULATOR_PROFILE } from '~/core/profiles'
 import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
@@ -149,8 +155,9 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { copySimulatorData, handleSimulatorPaste, isSimulatorDebug, preparePlayerData, receiveSimulatorBroadcast, type SimulatorLogTarget } from '~/sim/debug'
+import { copySimulatorData, handleSimulatorPaste, preparePlayerData, receiveSimulatorBroadcast, type SimulatorLogTarget } from '~/sim/debug'
 import { usePlayerSimulator } from '~/sim/players'
+import SimulatorOptionsDialog from './dialogs/SimulatorOptionsDialog.vue'
 
 defineOptions({
   name: 'SimulatorPage'
@@ -164,6 +171,10 @@ type PlayerScore = {
   index: number
 }
 
+type SimulatorOptions = {
+  decimals: number
+}
+
 const MODE_KEY = 'player_sim/mode'
 
 const MODES: SimulatorMode[] = ['all', 'attack', 'defend', 'tournament']
@@ -172,12 +183,16 @@ const localize = useLocalize('simulator')
 
 const playerSimulator = usePlayerSimulator()
 
+const options = new OptionsHandler<SimulatorOptions>('simulator', { decimals: 2 })
+
 const mode = ref(readMode())
 
 const pasteMode = ref(false)
 const gladiatorMode = useStoredToggle('player_sim/gladiator')
 const ihofMode = useStoredToggle('player_sim/ihof')
 const noAttributeReductionMode = ref(false)
+
+const decimals = ref(options.decimals)
 
 const players = shallowRef<PlayerScore[]>([])
 const selectedIndex = ref(-1)
@@ -290,7 +305,7 @@ function useStoredToggle(key: string) {
 }
 
 function formatChance(value: number | undefined) {
-  return value === undefined ? '' : `${value.toFixed(2)}%`
+  return value === undefined ? '' : `${value.toFixed(decimals.value)}%`
 }
 
 function listPlayers() {
@@ -438,5 +453,23 @@ async function runSimulation(instances: number, iterations: number, log?: Simula
   players.value = result.entries
 
   sorting.value = { column: 'avg', direction: 'desc' }
+}
+
+function openOptions() {
+  useDialog(
+    SimulatorOptionsDialog,
+    {
+      decimals: options.decimals
+    },
+    {
+      callback: (values) => {
+        if (values) {
+          options.decimals = values.decimals
+
+          decimals.value = values.decimals
+        }
+      }
+    }
+  )
 }
 </script>
