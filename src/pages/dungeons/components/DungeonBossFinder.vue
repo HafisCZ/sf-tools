@@ -45,8 +45,7 @@ import { usePagedList } from '@utils/components'
 import { useDropdown } from '@utils/interactions'
 import { useLocalize } from '@utils/localization'
 import { compact, getClassImageUrl } from '@utils/utils'
-import { DUNGEON_DATA, getBossName, getDungeonName, type DungeonRunes } from '~/sim/data/dungeons'
-import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
+import { DUNGEON_DATA, formatRunes, getBossName, getDungeonName } from '~/sim/data/dungeons'
 
 defineOptions({
   name: 'DungeonBossFinder'
@@ -115,17 +114,6 @@ const PAGE_SIZE = 50
 const { renderedItems: renderedEntries, showPage, loadMore } = usePagedList(matchingEntries, PAGE_SIZE, listElement)
 
 const { open, position, toggle: toggleOpen, close } = useDropdown(containerElement, () => containerElement.value?.querySelector('button'))
-
-const RUNE_LETTERS = ['F', 'C', 'L']
-
-function formatRunes(runes: DungeonRunes | undefined) {
-  if (!runes) return ''
-
-  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - RUNE_FIRE_DAMAGE]}`
-  const resistances = RUNE_LETTERS.flatMap((letter, index) => (runes.res?.[index] ? [`${runes.res[index]} ${letter}`] : [])).join(' ')
-
-  return resistances ? `${damage} / ${resistances}` : damage
-}
 
 function isSelected(entry: BossEntry) {
   return entry.dungeon === props.dungeonId && entry.boss === props.bossId
