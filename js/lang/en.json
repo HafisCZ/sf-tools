@@ -1072,7 +1072,9 @@
                 "tincture": "Tincture throw chance",
                 "dagger": "Ritual Dagger chance",
                 "scythe": "Blood Scythe chance"
-            }
+            },
+            "longest_chain": "Longest chain",
+            "longest_chain_fight": "Fight #{index}"
         }
     },
     "players": {

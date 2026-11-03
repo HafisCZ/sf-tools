@@ -151,6 +151,11 @@ export type ChanceCheck = {
   err: boolean
 }
 
+export type LongestChain = {
+  length: number
+  fight?: number
+}
+
 export type Fighter = {
   ID: number
   Name: string
@@ -174,6 +179,7 @@ export type Fighter = {
   editor?: FighterEditorData
   damages?: FighterDamages
   chances?: ChanceCheck[]
+  longestChain?: LongestChain
 }
 
 export type FightEffect = {
@@ -1325,6 +1331,29 @@ function countChains(counters: ChanceCounters, turns: FightRound[][], fighter: F
   }
 }
 
+function findLongestChain(fights: GroupFight[], fighter: Fighter): LongestChain {
+  const longest: LongestChain = { length: 0 }
+
+  fights.forEach(({ rounds }, index) => {
+    let chain = 0
+
+    for (const [round] of splitTurns(rounds)) {
+      if (round.attacker.ID === fighter.ID && round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
+        chain++
+
+        if (chain > longest.length) {
+          longest.length = chain
+          longest.fight = index + 1
+        }
+      } else {
+        chain = 0
+      }
+    }
+  })
+
+  return longest
+}
+
 const SWOOP_ATTACK_TYPES: number[] = [ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL]
 
 function countSwoops(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
@@ -1623,6 +1652,9 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
 
   fighterA.chances = analyzeChances(group.fights, fighterA, model1, fighterB, model2)
   fighterB.chances = analyzeChances(group.fights, fighterB, model2, fighterA, model1)
+
+  fighterA.longestChain = fighterA.Class === BERSERKER ? findLongestChain(group.fights, fighterA) : undefined
+  fighterB.longestChain = fighterB.Class === BERSERKER ? findLongestChain(group.fights, fighterB) : undefined
 }
 
 function cleanCopy<TObject, TKey extends keyof TObject>(object: TObject, whitelist: readonly TKey[]) {
