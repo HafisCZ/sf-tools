@@ -123,6 +123,7 @@ import {
   DUNGEON_COMPANION_CLASSES,
   DUNGEON_DATA,
   DUNGEON_SHARED_PATHS,
+  formatRunes,
   getBossName,
   getDungeonExperience,
   getDungeonName,
@@ -133,13 +134,12 @@ import {
   TWISTER,
   type Dungeon,
   type DungeonEntry,
-  type DungeonResult,
-  type DungeonRunes
+  type DungeonResult
 } from '~/sim/data/dungeons'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
 import { useDungeonSimulator } from '~/sim/dungeons'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
-import { RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/workers/base'
+import { WARRIOR } from '~/sim/workers/base'
 import DungeonBossFinder from './components/DungeonBossFinder.vue'
 import DungeonChart from './components/DungeonChart.vue'
 import DungeonOptionsDialog from './dialogs/DungeonOptionsDialog.vue'
@@ -259,17 +259,6 @@ function getFirstBossId(id: string) {
 
 function getMainPlayer() {
   return players.value[0] ?? new PlayerModel()
-}
-
-const RUNE_LETTERS = ['F', 'C', 'L']
-
-function formatRunes(runes: DungeonRunes | undefined) {
-  if (!runes) return ''
-
-  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - RUNE_FIRE_DAMAGE]}`
-  const resistances = RUNE_LETTERS.flatMap((letter, index) => (runes.res?.[index] ? [`${runes.res[index]} ${letter}`] : [])).join(' ')
-
-  return resistances ? `${damage} / ${resistances}` : damage
 }
 
 function createBossOption(value: string, entry: DungeonEntry, description: string): SelectOption {

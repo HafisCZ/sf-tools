@@ -19,7 +19,9 @@
         <div v-for="(result, index) in props.results" :key="index" :tabindex="isSaving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !isSaving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
           <img :src="getClassImageUrl(result.boss.class ?? props.playerClass)" alt="" class="size-[2.5em]" />
           <div class="min-w-0 flex-1" :class="{ [isSaving ? 'text-[purple]' : 'text-[#dec0ff]']: result.dungeon.companions }">
-            <div class="text-[80%]">{{ getDungeonName(result.dungeon) }}</div>
+            <div class="text-[80%]">
+              {{ getDungeonName(result.dungeon) }}<span v-if="result.boss.runes" :class="isSaving ? 'text-[gray]' : 'text-white/50'"> · {{ formatRunes(result.boss.runes) }}</span>
+            </div>
             <div>#{{ result.boss.pos }} - {{ getBossName(result) }}</div>
           </div>
           <div class="w-[31.25%] text-center">{{ result.score === 0 ? localize.global('pets.bulk.not_possible') : `${((100 * result.score) / result.iterations).toFixed(props.decimals)}%` }}</div>
@@ -39,7 +41,7 @@ import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl, useSubmit } from '@utils/utils'
 import { Exporter } from '~/core/exporter'
-import { getBossName, getDungeonExperience, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
+import { formatRunes, getBossName, getDungeonExperience, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
 import DungeonChart from '../components/DungeonChart.vue'
 
 defineOptions({

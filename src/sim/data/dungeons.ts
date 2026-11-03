@@ -4,7 +4,7 @@ import { type PlayerModel } from '~/core/models/player'
 import { type PlayerDungeons } from '~/data/dungeon-helper'
 import { Calculations } from '~/playa/calculations'
 import type { DungeonFight } from '~/sim/dungeons'
-import { CONFIG, WARRIOR } from '~/sim/workers/base'
+import { CONFIG, RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/workers/base'
 
 export type DungeonRunes = {
   type: number
@@ -91,6 +91,17 @@ export function getBossName({ dungeon, boss }: DungeonEntry) {
   const key = `monsters.${boss.id}`
 
   return boss.id !== undefined && hasTranslation(key) ? globalLocalize(key) : globalLocalize(`dungeon_enemies.${dungeon.intl}.${boss.pos}`)
+}
+
+const RUNE_LETTERS = ['F', 'C', 'L']
+
+export function formatRunes(runes: DungeonRunes | undefined) {
+  if (!runes) return ''
+
+  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - RUNE_FIRE_DAMAGE]}`
+  const resistances = RUNE_LETTERS.flatMap((letter, index) => (runes.res?.[index] ? [`${runes.res[index]} ${letter}`] : [])).join(' ')
+
+  return resistances ? `${damage} / ${resistances}` : damage
 }
 
 export function getDungeonExperience({ dungeon, boss }: DungeonEntry) {
