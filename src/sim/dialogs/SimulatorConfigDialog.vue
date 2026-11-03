@@ -217,7 +217,7 @@ const STAT_KEYS = new Set(['Attribute', 'HealthMultiplier', 'WeaponMultiplier', 
 
 const SKIP_KEYS = new Set(['SkipChance', 'SkipLimit', 'SkipType', 'SkipVariant', 'UseBlockChance'])
 
-const BUG_KEYS = new Set(['CriticalSwoopBug', 'CriticalSongBug', 'SkeletonReviveBug'])
+const BUG_KEYS = new Set(['CriticalSwoopBug', 'CriticalSongBug'])
 
 const PERCENT_KEYS = new Set([
   'SkipChance',

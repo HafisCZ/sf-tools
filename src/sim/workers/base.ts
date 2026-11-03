@@ -437,7 +437,6 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
 
       SummonChance: 0.5,
       SummonImmediateAttack: true,
-      SkeletonReviveBug: true,
       Summons: [
         {
           Duration: 3,
@@ -446,7 +445,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
           CriticalBonus: 0,
           CriticalChance: 0.5,
           CriticalChanceBonus: 0,
-          ReviveCount: 2,
+          ReviveCount: 1, //should be 2; sfgame is bugged, for some reason the skeleton only revives once
           ReviveDuration: 1,
           ReviveChance: 0.5
         },
@@ -1543,7 +1542,7 @@ class PaladinModel extends SimulatorModel {
 }
 
 class NecromancerModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SummonChance' | 'SummonImmediateAttack' | 'SkeletonReviveBug' | 'Summons'>>
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SummonChance' | 'SummonImmediateAttack' | 'Summons'>>
   declare Data: SimulatorState & { Minions: ConfiguredState[] }
   declare Minion: ConfiguredState | null
   declare MinionType: number
@@ -1583,9 +1582,7 @@ class NecromancerModel extends SimulatorModel {
     this.Minion = minion
     this.MinionType = type + 1
     this.MinionDuration = minion.Config.Duration as number
-
-    const reviveCount = minion.Config.ReviveCount ?? 0
-    this.MinionRevives = this.Config.SkeletonReviveBug ? Math.min(1, reviveCount) : reviveCount
+    this.MinionRevives = minion.Config.ReviveCount as number
 
     if (FIGHT_LOG_ENABLED) {
       FIGHT_LOG.logRound(this, target, 0, ATTACK_TYPE_MINION_SUMMON, DEFENSE_TYPE_NONE)

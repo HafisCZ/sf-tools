@@ -121,7 +121,6 @@ export type ClassConfig = {
   CriticalSongBug?: boolean
   SummonChance?: number
   SummonImmediateAttack?: boolean
-  SkeletonReviveBug?: boolean
   Summons?: StateConfig[]
   StanceInitial?: number
   Stances?: StateConfig[]

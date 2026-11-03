@@ -1406,7 +1406,7 @@ function countSongs(counters: ChanceCounters, turns: FightRound[][], model: Simu
 const MINION_CHANCE_TYPES: ChanceType[] = ['minion_1', 'minion_2', 'minion_3']
 
 function countSummons(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
-  const { SummonChance = 0, Summons = [], SkeletonReviveBug = false } = model.Config
+  const { SummonChance = 0, Summons = [] } = model.Config
 
   let minion: StateConfig | undefined
   let duration = 0
@@ -1444,7 +1444,7 @@ function countSummons(counters: ChanceCounters, turns: FightRound[][], model: Si
 
         minion = Summons.at(tier - 1)
         duration = minion?.Duration ?? 0
-        revives = SkeletonReviveBug ? Math.min(1, minion?.ReviveCount ?? 0) : (minion?.ReviveCount ?? 0)
+        revives = minion?.ReviveCount ?? 0
       }
     }
 
