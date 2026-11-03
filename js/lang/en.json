@@ -1802,12 +1802,15 @@
                 "SwoopChanceMax": "Highest swoop chance.",
                 "SwoopChanceDecay": "Swoop chance lost after each swoop. A negative value raises it.",
                 "SwoopBonus": "Added to the damage multiplier for a swoop.",
+                "CriticalSwoopBug": "Copies a game bug: a critical swoop adds the critical and swoop bonuses together instead of multiplying them.",
                 "EffectRounds": "Turns between songs. The first song plays on the first turn.",
                 "EffectBaseDuration": "Attacks a song lasts, for song levels 1 to 3.",
                 "EffectBaseChance": "How often each song level is picked, as weights for levels 1 to 3.",
                 "EffectValues": "Damage bonus of a song, for song levels 1 to 3.",
+                "CriticalSongBug": "Copies a game bug: a critical hit during a song adds the critical and song bonuses together instead of multiplying them.",
                 "SummonChance": "Chance to summon a minion when none is out.",
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
+                "SkeletonReviveBug": "Copies a game bug: the Skeleton comes back at most once, whatever its revive count.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
@@ -1857,6 +1860,7 @@
                 "stats": "Stats",
                 "skip": "Skip",
                 "ability": "Ability",
+                "bugs": "Bugs",
                 "opponents": "Against classes"
             },
             "state_fields": {

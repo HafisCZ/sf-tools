@@ -7,13 +7,13 @@ import { Exporter } from '~/core/exporter'
 import { ItemModel } from '~/core/models/item'
 import { PlayerModel } from '~/core/models/player'
 import { type RawPlayer } from '~/data/types'
-import { ASSASSIN, CONFIG, WARRIOR } from './workers/base'
+import { ASSASSIN, CONFIG, isSimulatorDebug, WARRIOR } from './workers/base'
 
 export type SimulatorConfig = Record<string, Record<string, unknown>>
 
 export type SimulatorLogTarget = 'file' | 'broadcast'
 
-export const isSimulatorDebug = new URLSearchParams(window.location.search).has('debug')
+export { isSimulatorDebug }
 
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 

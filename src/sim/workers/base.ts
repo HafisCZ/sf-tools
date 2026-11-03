@@ -219,6 +219,8 @@ export const EFFECT_TYPE_MINION = 2
 export const EFFECT_TYPE_TINCTURE = 3
 export const EFFECT_TYPE_BLOOD_PACT = 4
 
+export const isSimulatorDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug')
+
 // Configuration
 export const CONFIG = Object.defineProperties<ClassConfigData>(
   {
@@ -381,6 +383,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       SwoopChanceMax: 0.5,
       SwoopChanceDecay: -0.05,
       SwoopBonus: 0.8,
+      CriticalSwoopBug: true,
 
       Rage: {
         SkipChance: 0,
@@ -409,6 +412,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       EffectBaseDuration: [3, 3, 4],
       EffectBaseChance: [25, 50, 25],
       EffectValues: [0.2, 0.4, 0.6],
+      CriticalSongBug: true,
 
       PlagueDoctorDamageBonus: 0,
       PlagueDoctorDamageMultiplier: 1.05
@@ -433,6 +437,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
 
       SummonChance: 0.5,
       SummonImmediateAttack: true,
+      SkeletonReviveBug: true,
       Summons: [
         {
           Duration: 3,
@@ -441,7 +446,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
           CriticalBonus: 0,
           CriticalChance: 0.5,
           CriticalChanceBonus: 0,
-          ReviveCount: 1, //should be 2; sfgame is bugged, for some reason the skeleton only revives once
+          ReviveCount: 2,
           ReviveDuration: 1,
           ReviveChance: 0.5
         },
@@ -657,7 +662,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
     },
     classes: {
       value: function (this: ClassConfigData) {
-        return Object.values(this).filter((klassLike) => 'ID' in klassLike && !klassLike.Disabled)
+        return Object.values(this).filter((klassLike) => 'ID' in klassLike && (!klassLike.Disabled || isSimulatorDebug))
       }
     }
   }
@@ -1284,7 +1289,7 @@ class DemonHunterModel extends SimulatorModel {
 }
 
 class DruidModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SwoopChance' | 'SwoopChanceMin' | 'SwoopChanceMax' | 'SwoopChanceDecay' | 'SwoopBonus' | 'Rage'>>
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SwoopChance' | 'SwoopChanceMin' | 'SwoopChanceMax' | 'SwoopChanceDecay' | 'SwoopBonus' | 'CriticalSwoopBug' | 'Rage'>>
   declare Data: SimulatorState & { RageState: SimulatorState }
   declare SwoopMultiplier: number
   declare SwoopChance: number
@@ -1347,8 +1352,7 @@ class DruidModel extends SimulatorModel {
       const wasSkipped = target.skip(SKIP_TYPE_DEFAULT)
       const wasCritical = getRandom(this.State.CriticalChance)
 
-      // BUG?
-      const multiplier = wasCritical ? (this.State.CriticalMultiplier + this.SwoopMultiplier - 1) / this.State.CriticalMultiplier : this.SwoopMultiplier
+      const multiplier = wasCritical && this.Config.CriticalSwoopBug ? (this.State.CriticalMultiplier + this.SwoopMultiplier - 1) / this.State.CriticalMultiplier : this.SwoopMultiplier
 
       return this.attack(instance, damage * multiplier, target, wasSkipped, wasCritical, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL)
     } else {
@@ -1366,7 +1370,7 @@ class DruidModel extends SimulatorModel {
 }
 
 class BardModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'EffectRounds' | 'EffectBaseDuration' | 'EffectBaseChance' | 'EffectValues'>>
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'EffectRounds' | 'EffectBaseDuration' | 'EffectBaseChance' | 'EffectValues' | 'CriticalSongBug'>>
   declare Data: SimulatorState & { Songs: SimulatorState[] }
   declare Bracket0: number
   declare Bracket1: number
@@ -1406,8 +1410,7 @@ class BardModel extends SimulatorModel {
 
       return {
         SkipChance: this.Data.SkipChance,
-        // BUG?
-        CriticalMultiplier: (this.Data.CriticalMultiplier + multiplier) / multiplier,
+        CriticalMultiplier: this.Config.CriticalSongBug ? (this.Data.CriticalMultiplier + multiplier) / multiplier : this.Data.CriticalMultiplier,
         CriticalChance: this.Data.CriticalChance,
         ReceivedDamageMultiplier: 1,
         SkipVariant: this.Config.SkipVariant,
@@ -1540,7 +1543,7 @@ class PaladinModel extends SimulatorModel {
 }
 
 class NecromancerModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SummonChance' | 'SummonImmediateAttack' | 'Summons'>>
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'SummonChance' | 'SummonImmediateAttack' | 'SkeletonReviveBug' | 'Summons'>>
   declare Data: SimulatorState & { Minions: ConfiguredState[] }
   declare Minion: ConfiguredState | null
   declare MinionType: number
@@ -1580,7 +1583,9 @@ class NecromancerModel extends SimulatorModel {
     this.Minion = minion
     this.MinionType = type + 1
     this.MinionDuration = minion.Config.Duration as number
-    this.MinionRevives = minion.Config.ReviveCount as number
+
+    const reviveCount = minion.Config.ReviveCount ?? 0
+    this.MinionRevives = this.Config.SkeletonReviveBug ? Math.min(1, reviveCount) : reviveCount
 
     if (FIGHT_LOG_ENABLED) {
       FIGHT_LOG.logRound(this, target, 0, ATTACK_TYPE_MINION_SUMMON, DEFENSE_TYPE_NONE)
