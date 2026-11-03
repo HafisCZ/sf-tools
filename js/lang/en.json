@@ -902,6 +902,7 @@
         },
         "status": {
             "win": "Beatable",
+            "budget": "Over budget",
             "blocked": "Below minimum chance",
             "never": "Never won",
             "none": "Not simulated",
@@ -939,7 +940,6 @@
             "subtitle": "#{count} fights, cheapest levels first",
             "empty": "Shows up when the simulation finishes.",
             "nothing": "No floor reaches the minimum chance.",
-            "missing": "Fights #{from}-#{to} need #{missing} more mushrooms",
             "number": "#",
             "floor": "Floor",
             "spent": "Mushrooms spent"

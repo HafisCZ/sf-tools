@@ -30,7 +30,7 @@
             <div class="grid grid-cols-2 gap-3.5">
               <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
               <SFSelect ref="cost-ref" v-model="cost" :label="localize('cost.label')" :options="costOptions" />
-              <SFNumber ref="threshold-ref" v-model="threshold" :label="localize('threshold')" :min="0" :max="100" :step="1" suffix="%" />
+              <SFNumber ref="threshold-ref" v-model="threshold" :label="localize('threshold')" :min="0" :max="100" suffix="%" />
               <div role="group" :aria-labelledby="simulationId" class="flex flex-col gap-1.5">
                 <span :id="simulationId" class="font-bold text-white">{{ localize('simulation') }}</span>
                 <SimulatorSettings ref="settings-ref" storage-key="dungeon_break_sim" :default-threads="4" :default-iterations="50000" />
@@ -38,8 +38,7 @@
             </div>
           </section>
 
-          <section :aria-labelledby="runTitleId" class="flex flex-col gap-2.5">
-            <SFHeading :id="runTitleId" level="6" type="muted" class="text-[11px] tracking-[0.08em] uppercase">{{ localize('steps.simulate') }}</SFHeading>
+          <section :aria-label="localize('steps.simulate')">
             <SFButton variant="primary" block :disabled="isPlanning ? 'loading' : !canPlan || (isPlanned && runInputs === plannedInputs)" @click="plan">
               {{ localize('simulate') }}
             </SFButton>
@@ -50,13 +49,13 @@
       <section :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
         <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
           <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
-            <span class="text-[11px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ tile.label }}</span>
+            <span class="text-sm font-bold text-white/60">{{ tile.label }}</span>
             <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">{{ tile.value }}</span>
           </div>
         </div>
         <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-[999_1_560px] flex-col bg-surface">
           <div class="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 px-4.5 pt-3">
-            <SFHeading :id="chartTitleId" level="6" type="muted" class="text-[11px] tracking-[0.08em] uppercase">{{ localize('chart.title') }}</SFHeading>
+            <SFHeading :id="chartTitleId" level="6" type="muted">{{ localize('chart.title') }}</SFHeading>
           </div>
           <div class="relative px-4.5 pt-2 pb-3.5">
             <DungeonBreakChart :curve="curve" :mushrooms="order.length > 0 ? mushrooms : null" :class="{ invisible: order.length === 0 }" />
@@ -81,14 +80,14 @@
           <template v-if="card.dungeons.length > 0" #default>
             <span class="grid grid-cols-2 gap-2">
               <span class="flex min-w-0 flex-col">
-                <span class="text-[10.5px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ localize('card.remaining') }}</span>
+                <span class="text-xs font-bold text-white/60">{{ localize('card.remaining') }}</span>
                 <span class="flex items-baseline gap-1">
                   <span class="text-xl leading-tight font-bold text-white">{{ card.remaining }}</span>
                   <span class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
                 </span>
               </span>
               <span class="flex min-w-0 flex-col">
-                <span class="text-[10.5px] font-bold tracking-[0.08em] text-white/60 uppercase">{{ localize('card.beatable') }}</span>
+                <span class="text-xs font-bold text-white/60">{{ localize('card.beatable') }}</span>
                 <span class="flex items-baseline gap-1">
                   <span class="text-xl leading-tight font-bold" :class="isPlanned ? 'text-white' : 'text-white/35'">{{ isPlanned ? card.beatable : '-' }}</span>
                   <span v-if="isPlanned" class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
@@ -109,11 +108,11 @@
         </DungeonBreakCard>
       </section>
 
-      <DungeonBreakTable v-if="selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" @toggle="toggleDungeon" />
+      <DungeonBreakTable v-if="selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" :bought="boughtKeys" @toggle="toggleDungeon" />
 
       <section :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
         <div class="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5 border-b border-line px-4 py-3">
-          <SFHeading :id="orderTitleId" level="6" class="tracking-[0.08em] uppercase">{{ localize('order.title') }}</SFHeading>
+          <SFHeading :id="orderTitleId" level="6">{{ localize('order.title') }}</SFHeading>
           <span v-if="order.length > 0" class="text-xs text-white/60">{{ localize('order.subtitle', { count: order.length }) }}</span>
         </div>
         <template v-if="order.length > 0">
@@ -126,7 +125,7 @@
                   <SFTableHeader>{{ localize('order.floor') }}</SFTableHeader>
                   <SFTableHeader align="right">{{ localize('floors.chance') }}</SFTableHeader>
                   <SFTableHeader align="right">{{ localize('floors.experience') }}</SFTableHeader>
-                  <SFTableHeader align="right">{{ localize('order.spent') }}</SFTableHeader>
+                  <SFTableHeader align="right" class="pr-4">{{ localize('order.spent') }}</SFTableHeader>
                 </SFTableRow>
               </template>
               <SFTableRow v-for="fight in fights" :key="fight.key" class="h-12 whitespace-nowrap" :class="{ 'opacity-45': !fight.bought }">
@@ -135,11 +134,10 @@
                 <SFTableCell>{{ fight.boss }}</SFTableCell>
                 <SFTableCell align="right">{{ fight.chance }}</SFTableCell>
                 <SFTableCell align="right">{{ fight.experience }}</SFTableCell>
-                <SFTableCell align="right" class="font-bold">{{ fight.spent }}</SFTableCell>
+                <SFTableCell align="right" class="pr-4 font-bold">{{ fight.spent }}</SFTableCell>
               </SFTableRow>
             </SFTable>
           </div>
-          <SFParagraph v-if="missingFights" size="sm" class="px-4 pt-2 pb-3.5 text-[#f2c14e]">{{ missingFights }}</SFParagraph>
         </template>
         <SFParagraph v-else type="muted" class="flex min-h-40 items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'order.nothing' : 'order.empty') }}</SFParagraph>
       </section>
@@ -214,7 +212,6 @@ const selectedGroup = ref<BreakGroup | null>(null)
 const selectedFighter = ref(0)
 const selectionCount = ref(0)
 
-const runTitleId = useId()
 const simulationId = useId()
 const chartTitleId = useId()
 const orderTitleId = useId()
@@ -279,16 +276,23 @@ const totals = computed(() => ({
   mushrooms: sum(includedDungeons.value.map((dungeon) => dungeon.mushrooms))
 }))
 
+const boughtFights = computed(() => (bought.value === null ? null : order.value.slice(0, bought.value.fights)))
+
+const boughtKeys = computed(() => (boughtFights.value ? new Set(boughtFights.value.map(({ boss }) => getFightKey(boss.entry))) : null))
+
 const tiles = computed(() => {
-  const { potential, current } = totals.value
+  const { potential } = totals.value
   const planned = isPlanned.value
+  const fights = boughtFights.value
+  const current = fights ? sum(fights.map(({ boss }) => boss.experience)) : totals.value.current
+  const needed = fights ? sum(fights.map(({ boss }) => boss.cost)) : totals.value.mushrooms
 
   return [
     { key: 'remaining', label: localize('tiles.remaining'), value: formatLevels(potential), accent: false, pending: false },
     { key: 'remaining_xp', label: localize('tiles.remaining_xp'), value: formatExperience(potential), accent: false, pending: false },
     { key: 'beatable', label: localize('tiles.beatable'), value: planned ? formatLevels(current) : '-', accent: planned, pending: !planned },
     { key: 'beatable_xp', label: localize('tiles.beatable_xp'), value: planned ? formatExperience(current) : '-', accent: false, pending: !planned },
-    { key: 'mushrooms', label: localize('tiles.mushrooms'), value: planned ? formatMushrooms(totals.value.mushrooms) : '-', accent: false, pending: !planned }
+    { key: 'mushrooms', label: localize('tiles.mushrooms'), value: planned ? formatMushrooms(needed) : '-', accent: false, pending: !planned }
   ]
 })
 
@@ -296,6 +300,7 @@ const cards = computed(() =>
   GROUPS.map((group) => {
     const list = dungeons.value.filter((dungeon) => dungeon.group === group)
     const counted = list.filter((dungeon) => dungeon.included)
+    const fights = boughtFights.value?.filter((fight) => fight.dungeon.group === group)
 
     let included: boolean | 'mixed' | undefined
 
@@ -310,9 +315,9 @@ const cards = computed(() =>
       selected: list.length > 0 && group === selectedGroup.value,
       subtitle: getGroupSubtitle(group, list),
       remaining: formatLevels(sum(counted.map((dungeon) => dungeon.potential))),
-      beatable: formatLevels(sum(counted.map((dungeon) => dungeon.current))),
-      mushrooms: formatMushrooms(sum(counted.map((dungeon) => dungeon.mushrooms))),
-      won: sum(counted.map((dungeon) => dungeon.winnable)),
+      beatable: formatLevels(fights ? sum(fights.map(({ boss }) => boss.experience)) : sum(counted.map((dungeon) => dungeon.current))),
+      mushrooms: formatMushrooms(fights ? sum(fights.map(({ boss }) => boss.cost)) : sum(counted.map((dungeon) => dungeon.mushrooms))),
+      won: fights ? fights.length : sum(counted.map((dungeon) => dungeon.winnable)),
       total: sum(list.map((dungeon) => dungeon.bosses.length))
     }
   })
@@ -352,12 +357,6 @@ const fights = computed(() => {
       bought: bought.value === null || index < bought.value.fights
     }
   })
-})
-
-const missingFights = computed(() => {
-  if (bought.value === null || mushrooms.value === null || bought.value.fights === order.value.length) return ''
-
-  return localize('order.missing', { from: bought.value.fights + 1, to: order.value.length, missing: formatMushrooms(totals.value.mushrooms - mushrooms.value) })
 })
 
 watch(mushrooms, (value) => {
