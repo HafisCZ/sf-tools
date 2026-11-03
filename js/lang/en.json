@@ -1474,6 +1474,10 @@
             },
             "precision": "Decimal places shown for the win chance"
         },
+        "simulator_options": {
+            "title": "Simulator options",
+            "precision": "Decimal places shown for the win chance"
+        },
         "analyzer_autofill": {
             "title": "Available data",
             "enemies": "Enemies",
