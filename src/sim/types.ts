@@ -112,13 +112,16 @@ export type ClassConfig = {
   SwoopChanceMax?: number
   SwoopChanceDecay?: number
   SwoopBonus?: number
+  CriticalSwoopBug?: boolean
   Rage?: StateConfig
   EffectRounds?: number
   EffectBaseDuration?: number[]
   EffectBaseChance?: number[]
   EffectValues?: number[]
+  CriticalSongBug?: boolean
   SummonChance?: number
   SummonImmediateAttack?: boolean
+  SkeletonReviveBug?: boolean
   Summons?: StateConfig[]
   StanceInitial?: number
   Stances?: StateConfig[]

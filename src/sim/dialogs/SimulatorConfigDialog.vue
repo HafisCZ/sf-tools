@@ -205,17 +205,19 @@ type ConfigGroup = {
   inputs: ConfigInput[]
 }
 
-type FieldCategory = 'general' | 'stats' | 'skip' | 'ability' | 'opponents'
+type FieldCategory = 'general' | 'stats' | 'skip' | 'ability' | 'bugs' | 'opponents'
 
-const FIELD_CATEGORIES: FieldCategory[] = ['general', 'stats', 'skip', 'ability']
+const FIELD_CATEGORIES: FieldCategory[] = ['general', 'stats', 'skip', 'ability', 'bugs']
 
 const OPPONENT_COLUMNS = ['multiplier', 'bonus'] as const
 
-const HIDDEN_KEYS = new Set(['ID', 'Name'])
+const HIDDEN_KEYS = new Set(['ID', 'Name', 'Disabled'])
 
 const STAT_KEYS = new Set(['Attribute', 'HealthMultiplier', 'WeaponMultiplier', 'DamageMultiplier', 'MaximumDamageReduction', 'MaximumDamageReductionMultiplier'])
 
 const SKIP_KEYS = new Set(['SkipChance', 'SkipLimit', 'SkipType', 'SkipVariant', 'UseBlockChance'])
+
+const BUG_KEYS = new Set(['CriticalSwoopBug', 'CriticalSongBug', 'SkeletonReviveBug'])
 
 const PERCENT_KEYS = new Set([
   'SkipChance',
@@ -425,6 +427,8 @@ function getCategory(key: string, group: Record<string, unknown>): FieldCategory
     return 'stats'
   } else if (SKIP_KEYS.has(key)) {
     return 'skip'
+  } else if (BUG_KEYS.has(key)) {
+    return 'bugs'
   } else if (opponentKeyPattern.test(key)) {
     return 'opponents'
   } else {
