@@ -603,6 +603,46 @@
             "instructor": "Instructor",
             "pet": "Pet",
             "knights": "Hall of Knights",
+            "level": "Level #{level}",
+            "xp": "#{xp} / #{next} XP",
+            "potion": "#{name} Potion",
+            "rank": "Rank",
+            "honor": "Honor",
+            "hall_of_fame": "Hall of Fame",
+            "underworld": "Underworld",
+            "guild_rank": "Guild Rank",
+            "tabs": {
+                "overview": "Overview",
+                "attributes": "Attributes",
+                "items": "Items"
+            },
+            "columns": {
+                "attribute": "Attribute",
+                "total": "Total",
+                "base": "Base",
+                "items": "Items",
+                "upgrades": "Upgrades",
+                "gems": "Gems",
+                "class": "Class",
+                "potion": "Potion",
+                "pets": "Pets"
+            },
+            "items": {
+                "empty": "Empty",
+                "empty_socket": "Empty Socket",
+                "enchanted": "Enchanted",
+                "block_chance": "Block Chance",
+                "all_attributes": "All Attributes",
+                "upgrades": "Upgrades",
+                "gem": "#{name} Gem"
+            },
+            "pets": {
+                "title": "Pets",
+                "collected": "Collected",
+                "total_level": "Total Level",
+                "rank": "Pet Rank",
+                "honor": "Pet Honor"
+            },
             "extras": {
                 "title": "Extras",
                 "registered": "Registered",
