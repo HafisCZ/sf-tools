@@ -15,6 +15,7 @@ export type TableSorting = {
 
 export type TableOptions = {
   dense: boolean
+  plain: boolean
   sort: {
     isSortedBy: (column: string) => 'asc' | 'desc' | false
     sortBy: (column: string, first?: 'asc' | 'desc') => void
@@ -25,6 +26,7 @@ export const TABLE_OPTIONS_KEY: InjectionKey<TableOptions> = Symbol('SFTable')
 
 export const DEFAULT_TABLE_OPTIONS: TableOptions = {
   dense: false,
+  plain: false,
   sort: {
     isSortedBy: () => false,
     sortBy: () => {}

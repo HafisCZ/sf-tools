@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-auto rounded-[4px] bg-surface">
+  <div class="overflow-x-auto" :class="{ 'rounded-[4px] bg-surface': !props.plain }">
     <table class="w-full border-separate border-spacing-0" :class="{ 'table-fixed': props.fixed }">
       <thead v-if="slots.header">
         <slot name="header" />
@@ -28,6 +28,10 @@ const props = defineProps<{
    * Uses smaller padding in the headers and cells
    */
   dense?: boolean
+  /**
+   * Drops the background, only the lines between the rows stay
+   */
+  plain?: boolean
 }>()
 
 const slots = defineSlots<{
@@ -43,6 +47,9 @@ const sorting = defineModel<TableSorting | undefined>('sorting')
 provide(TABLE_OPTIONS_KEY, {
   get dense() {
     return props.dense
+  },
+  get plain() {
+    return props.plain
   },
   sort: {
     isSortedBy: (column) => (sorting.value?.column === column ? sorting.value.direction : false),

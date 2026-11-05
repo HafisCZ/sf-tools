@@ -1,5 +1,5 @@
 <template>
-  <th class="border-b border-white/10 bg-black/15 py-[13px] font-bold" :class="[ALIGN_CLASSES[props.align ?? 'left'], table.dense ? 'px-[8.4px]' : 'px-[11px]']">
+  <th class="border-b border-white/10 py-[13px] font-bold" :class="[ALIGN_CLASSES[props.align ?? 'left'], table.dense ? 'px-[8.4px]' : 'px-[11px]', { 'bg-black/15': !table.plain }]">
     <button v-if="props.column" type="button" class="flex w-full cursor-pointer items-center gap-1.5 outline-none" :class="JUSTIFY_CLASSES[props.align ?? 'left']" @click="table.sort.sortBy(props.column, props.descending ? 'desc' : 'asc')">
       <slot />
       <SFIcon v-if="sortIcon" :name="sortIcon" class="text-[0.6em] text-white/60" />
