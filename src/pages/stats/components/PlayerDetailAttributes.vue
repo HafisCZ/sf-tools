@@ -9,7 +9,7 @@
     <SFTableRow v-for="(name, index) in PlayerModel.ATTRIBUTES" :key="name">
       <SFTableCell class="font-bold">{{ localize.global(`general.attribute${index + 1}`) }}</SFTableCell>
       <SFTableCell v-for="column in columns" :key="column.key" align="right">
-        <PlayerDetailValue v-if="column.tracked" :value="formatSpacedNumber(column.read(props.player[name]))" :current="column.read(props.player[name])" :previous="column.read(props.compare[name])" />
+        <PlayerDetailValue v-if="column.tracked" :value="formatSpacedNumber(column.read(props.player[name]))" :read="(player) => column.read(player[name])" :title="localize('chart_title', { name: localize.global(`general.attribute${index + 1}`), column: localize(`columns.${column.key}`) })" />
         <template v-else>{{ formatBonus(column.read(props.player[name])) }}</template>
       </SFTableCell>
     </SFTableRow>

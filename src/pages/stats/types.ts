@@ -1,8 +1,15 @@
+import type { PlayerModel } from '~/core/models/player'
+
 export type PlayerDetailRow = {
   label: string
   value: string
   icon?: `/${string}`
-  current?: number
-  previous?: number
+  read?: (player: PlayerModel) => number | undefined
   placeholder?: string
+}
+
+export type PlayerDetailContext = {
+  readonly player: PlayerModel
+  readonly compare: PlayerModel
+  getHistory: () => PlayerModel[]
 }

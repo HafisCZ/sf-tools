@@ -54,6 +54,8 @@ type ItemLine = {
   value: string
 }
 
+const localize = useLocalize('stats.player')
+
 const SLOTS: ItemSlot[] = [
   { key: 'Head', type: 6, emptyImage: '/res/player/slot-head.webp' },
   { key: 'Body', type: 3, emptyImage: '/res/player/slot-body.webp' },
@@ -65,8 +67,6 @@ const SLOTS: ItemSlot[] = [
   { key: 'Misc', type: 10, emptyImage: '/res/player/slot-misc.webp' },
   { key: 'Wpn1', type: 1, emptyImage: '/res/player/slot-weapon.webp' }
 ]
-
-const localize = useLocalize('stats.player')
 
 const slots = computed(() => {
   const list = [...SLOTS]
