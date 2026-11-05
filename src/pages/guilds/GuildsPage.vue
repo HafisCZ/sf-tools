@@ -83,7 +83,7 @@
             <SFTableCell align="center">{{ entry.player.Level }}</SFTableCell>
             <SFTableCell>{{ entry.player.Name }}{{ INACTIVE_SUFFIXES[entry.inactive] }}</SFTableCell>
             <SFTableCell align="center">
-              <SFButton variant="ghost" size="sm" icon class="hover:text-green-400 focus-visible:text-green-400" @click="cycleInactive(entry)" @contextmenu.prevent="resetInactive(entry)">
+              <SFButton variant="ghost" size="sm" icon class="hover:text-accent focus-visible:text-accent" @click="cycleInactive(entry)" @contextmenu.prevent="resetInactive(entry)">
                 <SFIcon name="calendar-xmark" />
               </SFButton>
             </SFTableCell>

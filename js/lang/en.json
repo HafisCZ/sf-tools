@@ -1227,6 +1227,8 @@
         "min_chance": "Min %",
         "max_chance": "Max %",
         "avg_chance": "Avg %",
+        "player": "Player",
+        "player_level": "Level #{level}",
         "toast": {
             "title": "Simulation finished",
             "message": "Simulation took #{duration}"
