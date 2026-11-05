@@ -611,6 +611,7 @@
             "hall_of_fame": "Hall of Fame",
             "underworld": "Underworld",
             "guild_rank": "Guild Rank",
+            "chart_title": "#{name} #{column}",
             "tabs": {
                 "overview": "Overview",
                 "attributes": "Attributes",

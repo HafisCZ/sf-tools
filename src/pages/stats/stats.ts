@@ -17,6 +17,7 @@ import { type QueryLanguage, type QueryOptionName, type QueryTarget } from '~/sc
 import { ScriptRenderer } from '~/script/renderer'
 import { type StoredScript } from '~/script/scripts'
 import DataManageDialog from './dialogs/DataManageDialog.vue'
+import { type PlayerDetailContext } from './types'
 
 export type StatsView = 'players_grid' | 'player' | 'groups_grid' | 'group' | 'players' | 'groups' | 'scripts' | 'files' | 'settings' | 'profiles'
 
@@ -47,6 +48,8 @@ export type StatsNavigation = {
 }
 
 export const STATS_NAVIGATION_KEY: InjectionKey<StatsNavigation> = Symbol('StatsNavigation')
+
+export const PLAYER_DETAIL_KEY: InjectionKey<PlayerDetailContext> = Symbol('PlayerDetail')
 
 export type ContextMenuItem = {
   /**

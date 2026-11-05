@@ -11,7 +11,7 @@
         <span class="col-start-1 row-start-1 opacity-0 group-hover:opacity-100">{{ row.value }}</span>
         <span class="pointer-events-none col-start-1 row-start-1 text-white/60 group-hover:opacity-0">{{ row.placeholder }}</span>
       </span>
-      <PlayerDetailValue v-else :value="row.value" :current="row.current" :previous="row.previous" class="text-right" />
+      <PlayerDetailValue v-else :value="row.value" :read="row.read" :title="row.label" class="text-right" />
     </div>
     <slot />
   </div>
