@@ -68,16 +68,23 @@
         </div>
 
         <div ref="table-ref" :class="{ 'bg-white text-black [&_*]:!border-[rgba(0,0,0,0.2)] [&_*]:!bg-transparent [&_*]:!text-black [&_*]:!outline-none': screenshot }">
-          <SFTable v-model:sorting="sorting" fixed dense class="mt-[14px]">
+          <SFTable v-model:sorting="sorting" dense class="mt-[14px]">
             <template #header>
               <SFTableRow>
                 <SFTableHeader align="center" class="w-12">#</SFTableHeader>
-                <SFTableHeader column="class" align="center" class="w-20">{{ localize.global('editor.class') }}</SFTableHeader>
-                <SFTableHeader column="level" descending align="center" class="w-16">{{ localize.global('editor.level') }}</SFTableHeader>
-                <SFTableHeader column="name">{{ localize.global('editor.name') }}</SFTableHeader>
-                <SFTableHeader column="avg" descending align="center">{{ localize('win_chance') }}</SFTableHeader>
-                <SFTableHeader v-if="showRange" column="min" descending align="center">{{ localize('min_chance') }}</SFTableHeader>
-                <SFTableHeader v-if="showRange" column="max" descending align="center">{{ localize('max_chance') }}</SFTableHeader>
+                <SFTableHeader class="w-full">
+                  <SFTableSort column="name">{{ localize('player') }}</SFTableSort>
+                  <div class="text-xs font-normal text-white/60">
+                    <SFTableSort column="class" arrow-side="left">{{ localize.global('editor.class') }}</SFTableSort> · <SFTableSort column="level" descending>{{ localize.global('editor.level') }}</SFTableSort>
+                  </div>
+                </SFTableHeader>
+                <SFTableHeader align="right">
+                  <SFTableSort column="avg" descending>{{ localize('win_chance') }}</SFTableSort>
+                  <div v-if="showRange" class="text-xs font-normal text-white/60">
+                    <SFTableSort column="min" descending arrow-side="left">{{ localize.global('general.min') }}</SFTableSort> - <SFTableSort column="max" descending>{{ localize.global('general.max') }}</SFTableSort>
+                  </div>
+                  <span aria-hidden="true" class="invisible block h-0 overflow-hidden whitespace-nowrap" :class="showRange ? 'text-xs font-normal' : 'text-[15px]'">{{ widestChance }}</span>
+                </SFTableHeader>
                 <SFTableHeader v-if="isSingleTarget && !screenshot" class="w-12" />
                 <SFTableHeader v-if="!screenshot" class="w-12" />
               </SFTableRow>
@@ -92,19 +99,23 @@
               @keydown="(event: KeyboardEvent) => handleRowKeydown(event, entry)"
             >
               <SFTableCell align="center">{{ position + 1 }}</SFTableCell>
-              <SFTableCell align="center">
-                <img :src="getClassImageUrl(entry.player.Class)" :alt="localize.global(`general.class${entry.player.Class}`)" class="mx-auto size-8" />
+              <SFTableCell class="w-full max-w-0">
+                <div class="flex items-center gap-2.5">
+                  <img :src="getClassImageUrl(entry.player.Class)" :alt="localize.global(`general.class${entry.player.Class}`)" class="size-8 shrink-0" />
+                  <div class="min-w-0">
+                    <SFTooltip :content="entry.player.Name">
+                      <div class="font-bold" :class="screenshot ? 'wrap-anywhere' : 'truncate'">{{ entry.player.Name }}</div>
+                    </SFTooltip>
+                    <div class="text-xs text-white/60" :class="screenshot ? 'wrap-anywhere' : 'truncate'">{{ formatDetails(entry.player) }}</div>
+                  </div>
+                </div>
               </SFTableCell>
-              <SFTableCell align="center">{{ entry.player.Level }}</SFTableCell>
-              <SFTableCell>
-                <span class="font-bold">{{ entry.player.Name }}</span>
-                <span v-if="ihofMode && entry.player.Prefix" class="block text-white/60">{{ entry.player.Prefix }}</span>
+              <SFTableCell align="right" class="whitespace-nowrap">
+                <div class="text-[15px] leading-5 font-bold">{{ formatChance(isSingleTarget && entry.index === yourselfIndex ? undefined : entry.score?.avg) }}</div>
+                <div v-if="showRange && entry.score" class="text-xs text-white/60">{{ formatRange(entry.score.min, entry.score.max) }}</div>
               </SFTableCell>
-              <SFTableCell align="center">{{ formatChance(isSingleTarget && entry.index === yourselfIndex ? undefined : entry.score?.avg) }}</SFTableCell>
-              <SFTableCell v-if="showRange" align="center">{{ formatChance(entry.score?.min) }}</SFTableCell>
-              <SFTableCell v-if="showRange" align="center">{{ formatChance(entry.score?.max) }}</SFTableCell>
               <SFTableCell v-if="isSingleTarget && !screenshot" align="center">
-                <SFButton v-if="entry.index !== yourselfIndex" variant="ghost" size="sm" icon :aria-label="localize('fight_as_player')" class="hover:text-green-400 focus-visible:text-green-400" @click="yourselfIndex = entry.index">
+                <SFButton v-if="entry.index !== yourselfIndex" variant="ghost" size="sm" icon :aria-label="localize('fight_as_player')" class="hover:text-accent focus-visible:text-accent" @click="yourselfIndex = entry.index">
                   <SFIcon name="circle-user" />
                 </SFButton>
               </SFTableCell>
@@ -134,6 +145,7 @@ import SFTable from '@library/SFTable.vue'
 import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
+import SFTableSort from '@library/SFTableSort.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { type SelectOption, type TableSorting } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
@@ -215,6 +227,8 @@ const modeOptions = computed<SelectOption<SimulatorMode>[]>(() => MODES.map((val
 const isSingleTarget = computed(() => mode.value === 'attack' || mode.value === 'defend')
 
 const showRange = computed(() => mode.value === 'all')
+
+const widestChance = computed(() => (showRange.value ? formatRange(100, 100) : formatChance(100)))
 
 const COMPARATORS: Record<string, (a: PlayerScore, b: PlayerScore) => number> = {
   class: (a, b) => a.player.Class - b.player.Class,
@@ -306,6 +320,16 @@ function useStoredToggle(key: string) {
 
 function formatChance(value: number | undefined) {
   return value === undefined ? '' : `${value.toFixed(decimals.value)}%`
+}
+
+function formatRange(min: number | undefined, max: number | undefined) {
+  return `${formatChance(min)} - ${formatChance(max)}`
+}
+
+function formatDetails(player: PlayerModel) {
+  const level = localize('player_level', { level: player.Level })
+
+  return ihofMode.value && player.Prefix ? `${level} · ${player.Prefix}` : level
 }
 
 function listPlayers() {
