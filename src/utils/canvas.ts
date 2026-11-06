@@ -184,7 +184,7 @@ export async function createCanvas({ width, height, background, fonts = [], imag
 
   const [entries] = await Promise.all([Promise.all(loadedImages), Promise.all(fonts.map((font) => document.fonts.load(font)))])
 
-  const scale = window.devicePixelRatio
+  const scale = 2 * window.devicePixelRatio
 
   const canvas = document.createElement('canvas')
   canvas.width = Math.ceil(width * scale)
