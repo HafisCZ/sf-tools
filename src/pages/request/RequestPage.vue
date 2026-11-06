@@ -174,6 +174,7 @@ const SCOPES: Record<string, Scope> = {
       Raid: true,
       Normal: true,
       Shadow: true,
+      Class: true,
       Twister: true,
       Group: true,
       Player: true,
