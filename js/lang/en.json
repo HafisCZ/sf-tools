@@ -1527,7 +1527,12 @@
                 "twister": "Twister",
                 "sandstorm": "Sandstorm"
             },
-            "precision": "Decimal places shown for the win chance"
+            "precision": "Decimal places shown for the win chance",
+            "image_background": {
+                "label": "Results image background",
+                "dark": "Dark",
+                "white": "White"
+            }
         },
         "simulator_options": {
             "title": "Simulator options",

@@ -92,6 +92,10 @@ const props = defineProps<{
    * Shows the mushroom column when the dialog opens
    */
   showMushrooms: boolean
+  /**
+   * Background of the saved and copied image
+   */
+  imageBackground: 'dark' | 'white'
 }>()
 
 const emit = defineEmits<{
@@ -124,13 +128,14 @@ const { submit: copy, isSubmitting: isCopying } = useSubmit(async () => {
   useSuccessToast(localize('copy_image_toast.title'), localize('copy_image_toast.message'))
 })
 
-const TEXT_COLOR = 'rgba(255, 255, 255, 0.9)'
-const MUTED_COLOR = 'rgba(255, 255, 255, 0.5)'
-const MUSHROOM_URL = '/res/mushroom.png'
-const NAME_HEIGHT = 11.2 * 1.625
-const LINE_HEIGHT = 14 * 1.625
-
 async function drawResults(width: number) {
+  const colors = {
+    dark: { background: '#0b0c0c', text: 'rgba(255, 255, 255, 0.9)', muted: 'rgba(255, 255, 255, 0.5)', companions: '#dec0ff' },
+    white: { background: '#ffffff', text: 'rgba(0, 0, 0, 0.9)', muted: 'rgba(0, 0, 0, 0.5)', companions: 'purple' }
+  }[props.imageBackground]
+  const mushroomUrl = '/res/mushroom.png'
+  const nameHeight = 11.2 * 1.625
+  const lineHeight = 14 * 1.625
   const labels = [localize('win_chance'), ...(showMushrooms.value ? [localize('mushrooms')] : [])]
 
   const grid: CanvasGrid = {
@@ -139,17 +144,17 @@ async function drawResults(width: number) {
     padding: { top: 8, left: 8 },
     rows: [
       {
-        cells: [null, null, ...labels.map((text) => ({ lines: [{ height: 16, items: [{ text, font: 'bold 12px Lato', color: MUTED_COLOR }] }] }))],
+        cells: [null, null, ...labels.map((text) => ({ lines: [{ height: 16, items: [{ text, font: 'bold 12px Lato', color: colors.muted }] }] }))],
         padding: { bottom: 4 }
       },
       ...props.results.map((result): CanvasGridRow => {
-        const color = result.dungeon.companions ? '#dec0ff' : TEXT_COLOR
+        const color = result.dungeon.companions ? colors.companions : colors.text
         const name: CanvasGridItem[] = [{ text: getDungeonName(result.dungeon), font: '11.2px Lato', color }]
-        const range: CanvasGridItem = { text: result.score > 0 ? formatMushroomRange(result) : '-', font: '14px Lato', color: TEXT_COLOR }
-        const mushrooms: CanvasGridItem[] = result.score > 0 ? [{ image: MUSHROOM_URL, width: 14, height: 14 }, range] : [range]
+        const range: CanvasGridItem = { text: result.score > 0 ? formatMushroomRange(result) : '-', font: '14px Lato', color: colors.text }
+        const mushrooms: CanvasGridItem[] = result.score > 0 ? [{ image: mushroomUrl, width: 14, height: 14 }, range] : [range]
 
         if (result.boss.runes) {
-          name.push({ text: ` · ${formatRunes(result.boss.runes)}`, font: '11.2px Lato', color: MUTED_COLOR })
+          name.push({ text: ` · ${formatRunes(result.boss.runes)}`, font: '11.2px Lato', color: colors.muted })
         }
 
         return {
@@ -158,12 +163,12 @@ async function drawResults(width: number) {
             { lines: [{ height: 35, items: [{ image: getClassImageUrl(result.boss.class ?? props.playerClass), width: 35, height: 35 }] }] },
             {
               lines: [
-                { height: NAME_HEIGHT, items: name },
-                { height: LINE_HEIGHT, items: [{ text: `#${result.boss.pos} - ${getBossName(result)}`, font: '14px Lato', color }] }
+                { height: nameHeight, items: name },
+                { height: lineHeight, items: [{ text: `#${result.boss.pos} - ${getBossName(result)}`, font: '14px Lato', color }] }
               ]
             },
-            { lines: [{ height: LINE_HEIGHT, items: [{ text: formatChance(result), font: '14px Lato', color: TEXT_COLOR }] }] },
-            ...(showMushrooms.value ? [{ lines: [{ height: LINE_HEIGHT, gap: 6, items: mushrooms }] }] : [])
+            { lines: [{ height: lineHeight, items: [{ text: formatChance(result), font: '14px Lato', color: colors.text }] }] },
+            ...(showMushrooms.value ? [{ lines: [{ height: lineHeight, gap: 6, items: mushrooms }] }] : [])
           ]
         }
       })
@@ -173,9 +178,9 @@ async function drawResults(width: number) {
   const canvas = await createCanvas({
     width,
     height: getGridHeight(grid),
-    background: '#0b0c0c',
+    background: colors.background,
     fonts: ['14px Lato', 'bold 12px Lato'],
-    images: [MUSHROOM_URL, ...props.results.map(({ boss }) => getClassImageUrl(boss.class ?? props.playerClass))]
+    images: [mushroomUrl, ...props.results.map(({ boss }) => getClassImageUrl(boss.class ?? props.playerClass))]
   })
 
   canvas.drawGrid(grid)
