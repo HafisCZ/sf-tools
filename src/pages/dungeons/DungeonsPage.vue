@@ -137,6 +137,7 @@ type DungeonsOptions = {
   sandstorm_floors: number
   decimals: number
   show_mushrooms: boolean
+  image_background: 'dark' | 'white'
 }
 
 const SHADOW_COLOR = '#dec0ff'
@@ -145,7 +146,7 @@ const localize = useLocalize('dungeons')
 
 const dungeonSimulator = useDungeonSimulator()
 
-const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2, show_mushrooms: false })
+const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2, show_mushrooms: false, image_background: 'dark' })
 
 const dungeonId = ref('1')
 const bossId = ref(getFirstBossId('1'))
@@ -511,6 +512,7 @@ function showResults(results: DungeonResult[]) {
     playerClass: players.value[0]?.Class ?? WARRIOR,
     decimals: decimals.value,
     showMushrooms: options.show_mushrooms,
+    imageBackground: options.image_background,
     onToggleMushrooms: (shown) => {
       options.show_mushrooms = shown
     }
@@ -605,7 +607,8 @@ function openOptions() {
       includeSandstorm: options.include_sandstorm,
       twisterFloors: options.twister_floors,
       sandstormFloors: options.sandstorm_floors,
-      decimals: options.decimals
+      decimals: options.decimals,
+      imageBackground: options.image_background
     },
     {
       callback: (values) => {
@@ -617,6 +620,7 @@ function openOptions() {
           options.twister_floors = values.twisterFloors
           options.sandstorm_floors = values.sandstormFloors
           options.decimals = values.decimals
+          options.image_background = values.imageBackground
 
           decimals.value = values.decimals
         }

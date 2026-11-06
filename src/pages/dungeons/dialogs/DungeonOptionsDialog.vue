@@ -26,8 +26,9 @@
         <SFNumber ref="twister-floors-ref" v-model="twisterFloors" :label="localize('limits.twister')" required :min="1" :max="1000" :step="1" />
         <SFNumber ref="sandstorm-floors-ref" v-model="sandstormFloors" :label="localize('limits.sandstorm')" required :min="1" :max="1000" :step="1" />
       </div>
-      <div class="border-t border-line pt-4">
+      <div class="flex flex-col gap-[14px] border-t border-line pt-4">
         <SFSelect ref="precision-ref" v-model="decimals" :label="localize('precision')" :options="DECIMAL_OPTIONS" />
+        <SFSelect ref="image-background-ref" v-model="imageBackground" :label="localize('image_background.label')" :options="imageBackgroundOptions" />
       </div>
     </div>
 
@@ -43,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFDialog from '@library/SFDialog.vue'
@@ -69,6 +70,7 @@ type DungeonOptions = {
   twisterFloors: number
   sandstormFloors: number
   decimals: number
+  imageBackground: 'dark' | 'white'
 }
 
 const props = defineProps<{
@@ -100,6 +102,10 @@ const props = defineProps<{
    * Decimal places shown for win chances
    */
   decimals: number
+  /**
+   * Background of the saved and copied results image
+   */
+  imageBackground: 'dark' | 'white'
 }>()
 
 const emit = defineEmits<{
@@ -119,8 +125,24 @@ const includeSandstorm = ref(props.includeSandstorm)
 const twisterFloors = ref<number | null>(props.twisterFloors)
 const sandstormFloors = ref<number | null>(props.sandstormFloors)
 const decimals = ref(props.decimals)
+const imageBackground = ref(props.imageBackground)
 
-const isValid = useComponentValidation(useTemplateRef('slider-ref'), useTemplateRef('minimum-ref'), useTemplateRef('maximum-ref'), useTemplateRef('twister-ref'), useTemplateRef('sandstorm-ref'), useTemplateRef('twister-floors-ref'), useTemplateRef('sandstorm-floors-ref'), useTemplateRef('precision-ref'))
+const imageBackgroundOptions = computed((): SelectOption<'dark' | 'white'>[] => [
+  { value: 'dark', label: localize('image_background.dark') },
+  { value: 'white', label: localize('image_background.white') }
+])
+
+const isValid = useComponentValidation(
+  useTemplateRef('slider-ref'),
+  useTemplateRef('minimum-ref'),
+  useTemplateRef('maximum-ref'),
+  useTemplateRef('twister-ref'),
+  useTemplateRef('sandstorm-ref'),
+  useTemplateRef('twister-floors-ref'),
+  useTemplateRef('sandstorm-floors-ref'),
+  useTemplateRef('precision-ref'),
+  useTemplateRef('image-background-ref')
+)
 
 function save() {
   if (minimum.value === null || maximum.value === null || twisterFloors.value === null || sandstormFloors.value === null) return
@@ -132,7 +154,8 @@ function save() {
     includeSandstorm: includeSandstorm.value,
     twisterFloors: twisterFloors.value,
     sandstormFloors: sandstormFloors.value,
-    decimals: decimals.value
+    decimals: decimals.value,
+    imageBackground: imageBackground.value
   })
 }
 </script>
