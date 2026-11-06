@@ -13,7 +13,7 @@
       :style="{ top: `${position.bottom + 14}px`, left: `${getPanelLeft(position)}px` }"
     >
       <div class="relative shrink-0">
-        <img src="/res/backgrounds/classselect.webp" alt="" class="absolute inset-0 size-full object-cover object-[center_35%]" />
+        <img src="/res/backgrounds/registration.webp" alt="" class="absolute inset-0 size-full object-cover object-[center_35%]" />
         <div class="absolute inset-0 bg-linear-to-b from-page/50 to-surface" />
         <div class="relative grid grid-cols-2 gap-2 p-3">
           <button type="button" class="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-line bg-black/50 text-[13px] font-bold text-white/90 outline-none hover:border-accent focus-visible:border-accent" @click="importEndpoint">

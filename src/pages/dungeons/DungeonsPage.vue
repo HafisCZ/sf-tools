@@ -46,20 +46,16 @@
           </div>
         </div>
 
-        <div class="mt-[25px] border-b border-white/50 pb-1.5">
-          <span class="relative block">
-            {{ localize('enemy') }}
-            <DungeonBossFinder :dungeon-id="dungeonId" :boss-id="bossId" class="absolute top-1/2 right-0 -translate-y-1/2" @select="findBoss" />
-          </span>
+        <div class="mt-[18px] flex flex-col gap-[14px]">
+          <div class="relative">
+            <SFSelect ref="dungeon-ref" :model-value="dungeonId" :label="localize('enemy')" :options="dungeonOptions" search size="lg" @update:model-value="selectDungeon" />
+            <DungeonBossFinder :dungeon-id="dungeonId" :boss-id="bossId" class="absolute top-2.5 right-0 -translate-y-1/2" @select="findBoss" />
+          </div>
+          <SFSelect ref="boss-ref" :model-value="bossId" :options="bossOptions" search size="lg" @update:model-value="selectBoss" />
+          <SFSelect ref="open-ref" :model-value="openIndex" :label="localize('open')" :options="openBossOptions" search size="lg" :readonly="openBosses.length === 0" @update:model-value="selectOpenBoss" />
         </div>
 
-        <div class="mt-2 grid grid-cols-2 gap-[14px]">
-          <SFSelect ref="dungeon-ref" :model-value="dungeonId" :options="dungeonOptions" search @update:model-value="selectDungeon" />
-          <SFSelect ref="boss-ref" :model-value="bossId" :options="bossOptions" search @update:model-value="selectBoss" />
-          <SFSelect ref="open-ref" :model-value="openIndex" :label="localize('open')" :options="openBossOptions" search :readonly="openBosses.length === 0" class="col-span-2" @update:model-value="selectOpenBoss" />
-        </div>
-
-        <DungeonChart ticks :result="chartResult" :decimals="decimals" class="mt-[11px] h-[17.75em] transition-opacity" :class="{ 'opacity-50': isChartOutdated }" />
+        <DungeonChart ticks :result="chartResult" :decimals="decimals" class="mt-14 h-[17.75em] transition-opacity" :class="{ 'opacity-50': isChartOutdated }" />
         <div class="relative h-[1.5em] text-[80%] opacity-50">
           <span class="absolute left-[0.5em]">{{ localize('graph.y') }}</span>
           <span class="absolute left-[37%]">{{ localize('graph.x') }}</span>

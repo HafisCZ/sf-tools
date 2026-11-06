@@ -7,8 +7,8 @@
       :id="id"
       ref="trigger-ref"
       type="button"
-      class="flex min-h-9.5 w-full items-center gap-2 rounded-md border bg-surface px-3 py-2 text-left leading-5 outline-none"
-      :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.readonly ? 'cursor-default text-white/60' : 'cursor-pointer text-white/90']"
+      class="flex w-full items-center gap-2 rounded-md border bg-surface px-3 py-2 text-left leading-5 outline-none"
+      :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.readonly ? 'cursor-default text-white/60' : 'cursor-pointer text-white/90', props.size === 'lg' ? 'min-h-13.5' : 'min-h-9.5']"
       aria-haspopup="menu"
       :aria-expanded="open"
       :aria-disabled="props.readonly || undefined"
@@ -54,7 +54,7 @@
                 :data-selected="option.value === modelValue || undefined"
                 :disabled="option.disabled"
                 class="flex w-full items-center gap-3 rounded px-3 py-2 text-left outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-                :class="[option.value === modelValue ? 'bg-accent/15' : 'enabled:hover:bg-surface-hover focus-visible:bg-surface-hover', { 'text-accent': option.accent }]"
+                :class="[option.value === modelValue ? 'bg-accent/15' : 'enabled:hover:bg-surface-hover focus-visible:bg-surface-hover', { 'text-accent': option.accent, 'min-h-13': props.size === 'lg' }]"
                 @click="select(option.value)"
               >
                 <slot name="option" :option="option">
@@ -125,6 +125,10 @@ const props = defineProps<
      * Shows the value without letting it be changed
      */
     readonly?: boolean
+    /**
+     * Height of the field and its options, `lg` fits two lines of text
+     */
+    size?: 'md' | 'lg'
   }
 >()
 
