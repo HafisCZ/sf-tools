@@ -6,26 +6,9 @@
 
     <div v-if="character" class="flex flex-col gap-5">
       <section :aria-label="localize('setup')" class="grid items-start gap-7 md:grid-cols-2">
-        <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" :character="character" :index="selectedFighter" />
+        <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" v-model:fighter="selectedFighter" :character="character" />
 
         <div class="flex flex-col gap-5.5 self-stretch md:pt-10">
-          <section :aria-label="localize('steps.fighters')">
-            <div class="flex flex-col gap-0.5">
-              <button
-                v-for="row in fighterRows"
-                :key="row.index"
-                type="button"
-                class="flex h-13 cursor-pointer items-center gap-3 rounded-md px-3 text-left outline-none"
-                :class="row.index === selectedFighter ? 'bg-white/10' : 'hover:bg-white/5 focus-visible:bg-white/5'"
-                :aria-pressed="row.index === selectedFighter"
-                @click="selectedFighter = row.index"
-              >
-                <img :src="`/res/portrait${row.index || ''}.png`" alt="" class="size-10 rounded opacity-85" />
-                <span class="font-bold">{{ row.name }}</span>
-              </button>
-            </div>
-          </section>
-
           <section :aria-label="localize('steps.plan')" class="mt-auto">
             <div class="grid grid-cols-2 gap-3.5">
               <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
@@ -179,7 +162,7 @@ import DungeonBreakCard from './components/DungeonBreakCard.vue'
 import DungeonBreakChart from './components/DungeonBreakChart.vue'
 import DungeonBreakEditor from './components/DungeonBreakEditor.vue'
 import DungeonBreakTable from './components/DungeonBreakTable.vue'
-import { createBreakFighters, FIGHTER_NAME_KEYS, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type MushroomCost } from './dungeon-break'
+import { createBreakFighters, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type MushroomCost } from './dungeon-break'
 
 defineOptions({
   name: 'DungeonBreakPage'
@@ -238,8 +221,6 @@ const startLevel = computed(() => getLevelAfter(level.value, xp.value, 0))
 const progress = computed(() => (character.value?.Dungeons ? getDungeonProgress(character.value.Dungeons) : new Map<number, number>()))
 
 const remainingDungeons = computed(() => (character.value?.Dungeons ? listRemainingDungeons(progress.value) : []))
-
-const fighterRows = computed(() => FIGHTER_NAME_KEYS.flatMap((key, index) => (character.value && !fighters.value[index] ? [] : [{ index, name: localize.global(key) }])))
 
 const canPlan = computed(() => {
   if (!character.value || !isValid.value || remainingDungeons.value.length === 0) return false

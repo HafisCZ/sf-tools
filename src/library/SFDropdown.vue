@@ -1,6 +1,6 @@
 <template>
   <div ref="container-ref" class="flex">
-    <SFButton :variant="props.variant" icon class="min-h-9.5 min-w-9.5" :disabled="props.disabled" aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
+    <SFButton :variant="props.variant" :icon="props.size === 'md'" :size="props.size" :class="{ 'min-h-9.5 min-w-9.5': props.size === 'md' }" :disabled="props.disabled" aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
       <slot />
     </SFButton>
     <Teleport to="body">
@@ -42,10 +42,15 @@ const props = withDefaults(
      * Disables the trigger button, `'loading'` also shows a spinner over its content
      */
     disabled?: boolean | 'loading'
+    /**
+     * Size of the trigger button, `md` is a square icon button and `sm` a small button that fits an icon with text
+     */
+    size?: 'sm' | 'md'
   }>(),
   {
     float: 'right',
-    variant: 'ghost'
+    variant: 'ghost',
+    size: 'md'
   }
 )
 

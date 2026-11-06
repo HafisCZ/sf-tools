@@ -21,7 +21,7 @@
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
-      <PlayerEditor ref="editor-ref" name-readonly :companion="selectedIndex > 0" :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
+      <PlayerEditor ref="editor-ref" v-model:fighter="fighter" name-readonly :fighters="fighterTabs" :companion="selectedIndex > 0" :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
         <template #equipment>
           <EquipmentEditor v-if="source" :source="source" :index="selectedIndex" :swaps="swaps[selectedIndex]" :character="characterState" @change="applySwaps" />
         </template>
@@ -46,34 +46,17 @@
           </div>
         </div>
 
-        <div class="mt-[25px] grid grid-cols-2 border-b border-white/50 pb-1.5 text-center">
-          <span>{{ localize('player') }}</span>
-          <span class="relative">
+        <div class="mt-[25px] border-b border-white/50 pb-1.5">
+          <span class="relative block">
             {{ localize('enemy') }}
             <DungeonBossFinder :dungeon-id="dungeonId" :boss-id="bossId" class="absolute top-1/2 right-0 -translate-y-1/2" @select="findBoss" />
           </span>
         </div>
 
-        <div class="mt-2 grid grid-cols-2 gap-[28px]">
-          <div class="-mx-[14px] flex flex-col">
-            <button
-              v-for="(name, index) in fighterNames"
-              :key="index"
-              type="button"
-              class="grid h-[4em] cursor-pointer grid-cols-4 items-center text-center font-bold outline-none select-none"
-              :class="index === selectedIndex ? 'bg-white/10' : 'hover:bg-white/5 focus-visible:bg-white/5'"
-              :aria-pressed="index === selectedIndex"
-              @click="selectFighter(index)"
-            >
-              <img :src="`/res/portrait${index || ''}.png`" alt="" class="mx-auto w-[50px] opacity-75" />
-              <span class="col-span-2">{{ name }}</span>
-            </button>
-          </div>
-          <div class="flex flex-col pt-[9px]">
-            <SFSelect ref="dungeon-ref" :model-value="dungeonId" :options="dungeonOptions" search @update:model-value="selectDungeon" />
-            <SFSelect ref="boss-ref" :model-value="bossId" :options="bossOptions" search class="mt-[1.25em]" @update:model-value="selectBoss" />
-            <SFSelect ref="open-ref" :model-value="openIndex" :label="localize('open')" :options="openBossOptions" search :readonly="openBosses.length === 0" class="mt-[3.5em]" @update:model-value="selectOpenBoss" />
-          </div>
+        <div class="mt-2 grid grid-cols-2 gap-[14px]">
+          <SFSelect ref="dungeon-ref" :model-value="dungeonId" :options="dungeonOptions" search @update:model-value="selectDungeon" />
+          <SFSelect ref="boss-ref" :model-value="bossId" :options="bossOptions" search @update:model-value="selectBoss" />
+          <SFSelect ref="open-ref" :model-value="openIndex" :label="localize('open')" :options="openBossOptions" search :readonly="openBosses.length === 0" class="col-span-2" @update:model-value="selectOpenBoss" />
         </div>
 
         <DungeonChart ticks :result="chartResult" :decimals="decimals" class="mt-[11px] h-[17.75em] transition-opacity" :class="{ 'opacity-50': isChartOutdated }" />
@@ -198,6 +181,15 @@ const isSettingsValid = useComponentValidation(settings, useTemplateRef('dungeon
 const FIGHTER_NAME_KEYS = ['dungeons.player', 'general.companion1', 'general.companion2', 'general.companion3']
 
 const fighterNames = computed(() => FIGHTER_NAME_KEYS.map((key) => localize.global(key)))
+
+const fighterTabs = computed(() => fighterNames.value.map((name, index) => ({ index, name })))
+
+const fighter = computed({
+  get: () => selectedIndex.value,
+  set: (index) => {
+    void selectFighter(index)
+  }
+})
 
 const selectedDungeon = computed(() => DUNGEON_DATA[dungeonId.value])
 

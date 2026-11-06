@@ -1,71 +1,97 @@
 <template>
-  <div class="flex flex-col gap-2">
-    <SFTabs v-if="slots.equipment" v-model="mode" :options="modeOptions" class="justify-end" />
+  <div class="flex flex-col">
+    <div v-if="props.fighters?.length" role="tablist" :aria-label="localize('fighters')" class="relative z-1 -mb-px grid auto-cols-fr grid-flow-col items-end gap-1">
+      <button
+        v-for="tab in props.fighters"
+        :key="tab.index"
+        type="button"
+        role="tab"
+        :aria-selected="tab.index === fighter"
+        class="flex min-w-0 cursor-pointer items-center gap-2.5 rounded-t-md border border-t-3 border-line pr-2.5 pl-1.5 text-left font-bold outline-none focus-visible:outline-2 focus-visible:outline-accent"
+        :class="[FIGHTER_TAB_CLASSES[tab.index].stripe, tab.index === fighter ? 'border-b-surface bg-surface pt-2.5 pb-2 text-white' : [FIGHTER_TAB_CLASSES[tab.index].tint, 'py-1.5 text-white/80 hover:text-white']]"
+        @click="fighter = tab.index"
+      >
+        <img :src="`/res/portrait${tab.index || ''}.png`" alt="" class="size-7.5 shrink-0 rounded-md object-cover" />
+        <span class="truncate">{{ tab.name }}</span>
+      </button>
+    </div>
 
-    <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
-      <div v-if="!props.nameHidden" class="flex items-end gap-2">
-        <div class="min-w-0 flex-1">
-          <SFInput ref="name-ref" v-model="name" :label="localize('name')" :readonly="props.nameReadonly" />
-        </div>
-        <SFTooltip v-if="!props.companion && !isCharacterMode" :content="localize('smart_change')">
-          <SFDropdown :items="changeClassItems" :label="localize('smart_change')" variant="outline" float="left">
-            <SFIcon name="arrow-right-arrow-left" />
-          </SFDropdown>
-        </SFTooltip>
-        <SFTooltip :content="localize('copy')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('copy')" @click="emit('copy', read())">
+    <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-3" :class="{ 'rounded-t-none': props.fighters?.length }">
+      <div v-if="!props.nameHidden || slots.equipment" class="-mt-1.5 flex min-h-8 items-center gap-1 border-b border-line pb-1.5">
+        <SFTabs v-if="slots.equipment" v-model="mode" :options="modeOptions" />
+        <div v-if="!props.nameHidden" class="ml-auto flex items-center gap-1">
+          <template v-if="!props.companion">
+            <SFTooltip v-if="isCharacterMode" :content="localize('smart_change_unavailable')">
+              <SFDropdown :items="changeClassItems" :label="localize('smart_change')" size="sm" float="left" disabled>
+                <SFIcon name="arrow-right-arrow-left" />
+                {{ localize('smart_change') }}
+              </SFDropdown>
+            </SFTooltip>
+            <SFDropdown v-else :items="changeClassItems" :label="localize('smart_change')" size="sm" float="left">
+              <SFIcon name="arrow-right-arrow-left" />
+              {{ localize('smart_change') }}
+            </SFDropdown>
+          </template>
+          <SFButton variant="ghost" size="sm" @click="emit('copy', read())">
             <SFIcon name="copy" />
+            {{ localize('copy') }}
           </SFButton>
-        </SFTooltip>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-[14px]">
-        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion || isCharacterMode || props.classReadonly" />
-        <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
+
+      <SFInput v-if="!props.nameHidden" ref="name-ref" v-model="name" :label="localize('name')" :readonly="props.nameReadonly" />
+      <div class="grid grid-cols-5 gap-[14px]">
+        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion || isCharacterMode || props.classReadonly" class="col-span-3" />
+        <div :class="props.classHidden ? 'col-span-5' : 'col-span-2'">
+          <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
+        </div>
+        <template v-if="props.snacks">
+          <SFSelect v-show="!isCharacterMode" ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" class="col-span-3" />
+          <SFSelect v-show="!isCharacterMode" ref="snack-potency-ref" v-model="snackPotency" :label="localize('snack_potency')" :options="SNACK_POTENCY_OPTIONS" class="col-span-2" />
+        </template>
+        <div v-show="!isCharacterMode" class="contents">
+          <SFNumber ref="strength-ref" v-model="strength" :label="localize.global('general.attribute1')" required :min="1" :step="1" centered />
+          <SFNumber ref="dexterity-ref" v-model="dexterity" :label="localize.global('general.attribute2')" required :min="1" :step="1" centered />
+          <SFNumber ref="intelligence-ref" v-model="intelligence" :label="localize.global('general.attribute3')" required :min="1" :step="1" centered />
+          <SFNumber ref="constitution-ref" v-model="constitution" :label="localize.global('general.attribute4')" required :min="1" :step="1" centered />
+          <SFNumber ref="luck-ref" v-model="luck" :label="localize.global('general.attribute5')" :min="0" :step="1" centered />
+        </div>
       </div>
-      <div v-if="props.snacks" v-show="!isCharacterMode" class="grid grid-cols-2 gap-[14px]">
-        <SFSelect ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" />
-        <SFSelect ref="snack-potency-ref" v-model="snackPotency" :label="localize('snack_potency')" :options="SNACK_POTENCY_OPTIONS" />
+
+      <div v-if="isCharacterMode" class="border-t border-line pt-[14px]">
+        <slot name="equipment" />
       </div>
-      <div v-show="!isCharacterMode" class="grid grid-cols-5 gap-[14px]">
-        <SFNumber ref="strength-ref" v-model="strength" :label="localize.global('general.attribute1')" required :min="1" :step="1" centered />
-        <SFNumber ref="dexterity-ref" v-model="dexterity" :label="localize.global('general.attribute2')" required :min="1" :step="1" centered />
-        <SFNumber ref="intelligence-ref" v-model="intelligence" :label="localize.global('general.attribute3')" required :min="1" :step="1" centered />
-        <SFNumber ref="constitution-ref" v-model="constitution" :label="localize.global('general.attribute4')" required :min="1" :step="1" centered />
-        <SFNumber ref="luck-ref" v-model="luck" :label="localize.global('general.attribute5')" :min="0" :step="1" centered />
+
+      <div v-for="(weapon, index) in visibleWeapons" v-show="!isCharacterMode" :key="index" class="grid grid-cols-5 gap-[14px] border-t border-line pt-[14px]">
+        <SFNumber ref="weapon-refs" v-model="weapon.min" :label="localize('min')" :placeholder="localize('min_placeholder')" :min="0" :step="1" centered />
+        <SFNumber ref="weapon-refs" v-model="weapon.max" :label="localize('max')" :placeholder="localize('max_placeholder')" :min="0" :step="1" centered />
+        <SFSelect ref="weapon-refs" v-model="weapon.enchantment" :label="localize('weapon_enchant')" :options="yesNoOptions" />
+        <SFSelect ref="weapon-refs" v-model="weapon.rune" :label="localize('rune')" :options="runeOptions" />
+        <div class="self-end">
+          <SFNumber ref="weapon-refs" v-model="weapon.runeValue" :aria-label="localize('rune')" placeholder="0 - 60" :min="0" :max="60" :step="1" suffix="%" centered />
+        </div>
       </div>
-    </div>
 
-    <slot v-if="isCharacterMode" name="equipment" />
-
-    <div v-for="(weapon, index) in visibleWeapons" v-show="!isCharacterMode" :key="index" class="grid grid-cols-5 gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="weapon-refs" v-model="weapon.min" :label="localize('min')" :placeholder="localize('min_placeholder')" :min="0" :step="1" centered />
-      <SFNumber ref="weapon-refs" v-model="weapon.max" :label="localize('max')" :placeholder="localize('max_placeholder')" :min="0" :step="1" centered />
-      <SFSelect ref="weapon-refs" v-model="weapon.enchantment" :label="localize('weapon_enchant')" :options="yesNoOptions" />
-      <SFSelect ref="weapon-refs" v-model="weapon.rune" :label="localize('rune')" :options="runeOptions" />
-      <div class="flex flex-col gap-1.5">
-        <span class="font-bold" aria-hidden="true">&nbsp;</span>
-        <SFNumber ref="weapon-refs" v-model="weapon.runeValue" :aria-label="localize('rune')" placeholder="0 - 60" :min="0" :max="60" :step="1" centered />
+      <div v-show="!isCharacterMode" class="grid grid-cols-5 gap-[14px] border-t border-line pt-[14px]">
+        <div :class="{ 'col-span-2': !hasBlockChance }">
+          <SFNumber ref="armor-ref" v-model="armor" :label="localize('armor')" :placeholder="localize('armor_placeholder')" :min="0" :step="1" centered />
+        </div>
+        <SFNumber v-if="hasBlockChance" ref="block-chance-ref" v-model="blockChance" :label="localize('block')" placeholder="0 - 25" :min="0" :max="25" :step="1" centered />
+        <SFNumber ref="resistance-fire-ref" v-model="resistanceFire" :label="localize('fire')" placeholder="0 - 75" :min="0" :max="75" :step="1" suffix="%" centered />
+        <SFNumber ref="resistance-cold-ref" v-model="resistanceCold" :label="localize('cold')" placeholder="0 - 75" :min="0" :max="75" :step="1" suffix="%" centered />
+        <SFNumber ref="resistance-lightning-ref" v-model="resistanceLightning" :label="localize('lightning')" placeholder="0 - 75" :min="0" :max="75" :step="1" suffix="%" centered />
       </div>
-    </div>
 
-    <div v-show="!isCharacterMode" class="grid auto-cols-fr grid-flow-col gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="armor-ref" v-model="armor" :label="localize('armor')" :placeholder="localize('armor_placeholder')" :min="0" :step="1" centered />
-      <SFNumber v-if="hasBlockChance" ref="block-chance-ref" v-model="blockChance" :label="localize('block')" placeholder="0 - 25" :min="0" :max="25" :step="1" centered />
-      <SFNumber ref="resistance-fire-ref" v-model="resistanceFire" :label="localize('fire')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
-      <SFNumber ref="resistance-cold-ref" v-model="resistanceCold" :label="localize('cold')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
-      <SFNumber ref="resistance-lightning-ref" v-model="resistanceLightning" :label="localize('lightning')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
-    </div>
-
-    <div class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="portal-health-ref" v-model="portalHealth" :label="localize('portal_health')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
-      <SFNumber ref="portal-damage-ref" v-model="portalDamage" :label="localize('portal_damage')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
-      <SFNumber ref="gladiator-ref" v-model="gladiator" :label="localize('gladiator')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered :readonly="props.companion" />
-    </div>
-
-    <div v-show="!isCharacterMode" class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="rune-health-ref" v-model="runeHealth" :label="localize('rune_health')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered />
-      <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" :readonly="props.companion" />
-      <SFSelect ref="hand-enchantment-ref" v-model="handEnchantment" :label="localize('hand_enchant')" :options="yesNoOptions" />
+      <div class="grid grid-cols-3 gap-[14px] border-t border-line pt-[14px]">
+        <SFNumber ref="portal-health-ref" v-model="portalHealth" :label="localize('portal_health')" placeholder="0 - 50" :min="0" :max="50" :step="1" suffix="%" centered :readonly="props.companion" />
+        <SFNumber ref="portal-damage-ref" v-model="portalDamage" :label="localize('portal_damage')" placeholder="0 - 50" :min="0" :max="50" :step="1" suffix="%" centered :readonly="props.companion" />
+        <SFNumber ref="gladiator-ref" v-model="gladiator" :label="localize('gladiator')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered :readonly="props.companion" />
+        <div v-show="!isCharacterMode" class="contents">
+          <SFNumber ref="rune-health-ref" v-model="runeHealth" :label="localize('rune_health')" placeholder="0 - 15" :min="0" :max="15" :step="1" suffix="%" centered />
+          <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" :readonly="props.companion" />
+          <SFSelect ref="hand-enchantment-ref" v-model="handEnchantment" :label="localize('hand_enchant')" :options="yesNoOptions" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -122,6 +148,10 @@ const props = defineProps<{
    * Shows the button that replaces the fields with the equipment slot
    */
   equipment?: boolean
+  /**
+   * Fighters shown as tabs above the editor, index 0 is the player and 1 to 3 the companions
+   */
+  fighters?: { index: number; name: string }[]
 }>()
 
 const emit = defineEmits<{
@@ -131,6 +161,11 @@ const emit = defineEmits<{
    */
   view: [open: boolean]
 }>()
+
+/**
+ * Index of the fighter whose tab is selected
+ */
+const fighter = defineModel<number>('fighter', { default: 0 })
 
 const slots = defineSlots<{
   /**
@@ -166,6 +201,14 @@ type WeaponFields = {
 }
 
 const SNACK_POTENCY_OPTIONS: SelectOption[] = sequence(11).map((value) => ({ value: String(value * 2), label: `${value * 2} %` }))
+
+// Tab colors of the game's character screen, player first
+const FIGHTER_TAB_CLASSES = [
+  { stripe: 'border-t-[#fc9117]', tint: 'bg-[#fc9117]/12' },
+  { stripe: 'border-t-[#377ae4]', tint: 'bg-[#377ae4]/12' },
+  { stripe: 'border-t-[#40992d]', tint: 'bg-[#40992d]/12' },
+  { stripe: 'border-t-[#e8d208]', tint: 'bg-[#e8d208]/12' }
+]
 
 const localize = useLocalize('editor')
 

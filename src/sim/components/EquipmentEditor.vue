@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
+  <div class="flex flex-col gap-[14px]">
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-2">
         <SFHeading level="6">{{ localize('equipment') }}</SFHeading>
