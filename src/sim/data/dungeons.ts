@@ -112,6 +112,15 @@ export function getDungeonExperience({ dungeon, boss }: DungeonEntry) {
   return Calculations.experienceNextLevel(boss.level) / (dungeon.id === TWISTER || dungeon.id === SANDSTORM ? 50 : 5)
 }
 
+const TRIES_CERTAINTY = 0.9
+
+export function getDungeonTries(chance: number) {
+  return {
+    average: 1 / chance,
+    certain: chance >= 1 ? 1 : Math.max(1, Math.ceil(Math.log(1 - TRIES_CERTAINTY) / Math.log(1 - chance)))
+  }
+}
+
 function getBossAtIndex(id: number, index: number): DungeonEntry | null {
   const dungeon = DUNGEON_DATA[id]
   const boss = index >= 0 && dungeon ? Object.values(dungeon.floors).at(index) : undefined

@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4">
-    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1" class="flex max-h-full w-full flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl outline-none" :class="SIZE_CLASSES[props.size]">
+    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1" class="flex max-h-full w-full flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl outline-none" :class="SIZE_CLASSES[props.size]" :style="{ maxWidth: props.width }">
       <div class="flex items-center gap-3">
         <SFHeading :id="titleId" level="5" class="flex-1">{{ props.title }}</SFHeading>
         <div v-if="slots.actions" class="-my-2 flex gap-3">
@@ -13,7 +13,7 @@
       <div class="min-h-0 overflow-y-auto pr-2 leading-relaxed" :class="{ 'flex flex-col': props.column }" :style="{ maxHeight: props.height, gap: props.gap }">
         <slot />
       </div>
-      <div v-if="slots.buttons" class="flex gap-2">
+      <div v-if="slots.buttons" class="flex gap-2" :class="{ '-mx-5 -mb-5 rounded-b-[7px] bg-surface px-5 pt-4 pb-3': props.buttonsBar }">
         <slot name="buttons" />
       </div>
     </div>
@@ -42,6 +42,10 @@ const props = withDefaults(
      */
     size?: 'sm' | 'md' | 'lg' | 'xl'
     /**
+     * Maximum width as a CSS length, replaces the one from size
+     */
+    width?: string
+    /**
      * Maximum height of the content as a CSS length
      */
     height?: string
@@ -57,13 +61,18 @@ const props = withDefaults(
      * Shows an X button in the top right corner that emits close
      */
     closeViaButton?: boolean
+    /**
+     * Puts the buttons on a full-width bar with its own background, set apart from the content
+     */
+    buttonsBar?: boolean
   }>(),
   {
     size: 'md',
     height: '60vh',
     column: false,
     gap: '1rem',
-    closeViaButton: false
+    closeViaButton: false,
+    buttonsBar: false
   }
 )
 

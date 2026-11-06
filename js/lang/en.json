@@ -851,6 +851,9 @@
         },
         "results": "Results",
         "experience": "Total: #{experience} XP",
+        "win_chance": "Win chance",
+        "mushrooms": "Mushrooms",
+        "show_mushrooms": "Show estimated mushroom cost",
         "csv": {
             "dungeon": "Dungeon",
             "position": "Position",
@@ -863,7 +866,9 @@
             "win_rate": "Win rate %",
             "wins": "Wins",
             "tries": "Tries",
-            "experience": "Experience"
+            "experience": "Experience",
+            "mushrooms_average": "Mushrooms (average)",
+            "mushrooms_certain": "Mushrooms (90%)"
         },
         "cheats": {
             "title": "Cheat Menu",

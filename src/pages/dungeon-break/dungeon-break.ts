@@ -4,7 +4,7 @@ import { sum } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { Calculations } from '~/playa/calculations'
-import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_DATA, getDungeonExperience, getDungeonName, PREVIOUS_DUNGEONS, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
+import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_DATA, getDungeonExperience, getDungeonName, getDungeonTries, PREVIOUS_DUNGEONS, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
 import { preparePlayerData } from '~/sim/debug'
 
 export type BreakGroup = 'light' | 'shadow' | 'idols' | 'twister' | 'sandstorm'
@@ -258,13 +258,10 @@ export function getCleanWinShare({ score, iterations, playersHealths }: DungeonR
   return Math.min(1, clean / (score / iterations))
 }
 
-const CERTAINTY = 0.9
-
 function getTries(chance: number, cost: MushroomCost) {
-  if (cost === 'average') return 1 / chance
-  if (chance >= 1) return 1
+  const tries = getDungeonTries(chance)
 
-  return Math.max(1, Math.ceil(Math.log(1 - CERTAINTY) / Math.log(1 - chance)))
+  return cost === 'average' ? tries.average : tries.certain
 }
 
 function planDungeon(source: RemainingDungeon, results: Map<string, DungeonResult>, threshold: number, locked: boolean, cost: MushroomCost) {
