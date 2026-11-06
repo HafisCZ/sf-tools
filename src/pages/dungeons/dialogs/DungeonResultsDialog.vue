@@ -57,6 +57,7 @@ import SFCheckbox from '@library/SFCheckbox.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFTooltip from '@library/SFTooltip.vue'
+import { createCanvas, type CanvasDrawing } from '@utils/canvas'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useSuccessToast } from '@utils/toasts'
@@ -98,6 +99,13 @@ const emit = defineEmits<{
   toggleMushrooms: [shown: boolean]
 }>()
 
+const MUTED_COLOR = 'rgba(255, 255, 255, 0.5)'
+const MUSHROOM_URL = '/res/mushroom.png'
+const NAME_HEIGHT = 11.2 * 1.625
+const LINE_HEIGHT = 14 * 1.625
+const ROW_HEIGHT = 8 + NAME_HEIGHT + LINE_HEIGHT + 8
+const HEADER_TOP = 8
+
 const localize = useLocalize('dungeons')
 
 const activeIndex = ref(0)
@@ -111,128 +119,93 @@ const activeResult = computed(() => props.results.at(activeIndex.value) ?? null)
 const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
   if (!listElement.value) return
 
-  const blob = await drawResults(listElement.value.clientWidth)
-
-  if (blob) {
-    Exporter.download(`dungeons_${Date.now()}.png`, blob)
-  }
+  Exporter.download(`dungeons_${Date.now()}.png`, await drawResults(listElement.value.clientWidth))
 })
 
 const { submit: copy, isSubmitting: isCopying } = useSubmit(async () => {
   if (!listElement.value) return
 
   // Safari only allows the clipboard write if it starts within the click, so the image goes in as a promise
-  const image = drawResults(listElement.value.clientWidth).then((blob) => blob ?? Promise.reject(new Error('The image could not be created')))
-
-  await navigator.clipboard.write([new ClipboardItem({ 'image/png': image })])
+  await navigator.clipboard.write([new ClipboardItem({ 'image/png': drawResults(listElement.value.clientWidth) })])
 
   useSuccessToast(localize('copy_image_toast.title'), localize('copy_image_toast.message'))
 })
 
-const TEXT_COLOR = 'rgba(255, 255, 255, 0.9)'
-const MUTED_COLOR = 'rgba(255, 255, 255, 0.5)'
-const MUSHROOM_URL = '/res/mushroom.png'
+const ROWS_TOP = HEADER_TOP + 20
 
 async function drawResults(width: number) {
-  const urls = new Set([MUSHROOM_URL, ...props.results.map(({ boss }) => getClassImageUrl(boss.class ?? props.playerClass))])
-  const images = new Map(
-    await Promise.all(
-      Array.from(urls, (url) => {
-        const image = new Image()
-        image.src = url
+  const columns = getImageColumns(width)
 
-        return image.decode().then(
-          () => [url, image] as const,
-          () => [url, null] as const
-        )
-      })
-    )
-  )
+  const canvas = await createCanvas({
+    width,
+    height: ROWS_TOP + props.results.length * ROW_HEIGHT,
+    background: '#0b0c0c',
+    fonts: ['14px Lato', 'bold 12px Lato'],
+    images: [MUSHROOM_URL, ...props.results.map(({ boss }) => getClassImageUrl(boss.class ?? props.playerClass))]
+  })
 
-  await Promise.all([document.fonts.load('14px Lato'), document.fonts.load('bold 12px Lato')])
-
-  const paddingTop = 8
-  const nameHeight = 11.2 * 1.625
-  const lineHeight = 14 * 1.625
-  const rowHeight = 8 + nameHeight + lineHeight + 8
-  const textX = 8 + 35 + 12
-  const mushroomWidth = 0.26 * (width - 8)
-  const mushroomX = width - mushroomWidth
-  const chanceWidth = 0.22 * (width - 8)
-  const chanceX = (showMushrooms.value ? mushroomX - 12 : width) - chanceWidth
-  const height = paddingTop + 20 + props.results.length * rowHeight
-  const scale = window.devicePixelRatio
-
-  const canvas = document.createElement('canvas')
-  canvas.width = Math.ceil(width * scale)
-  canvas.height = Math.ceil(height * scale)
-
-  const context = canvas.getContext('2d')
-
-  if (!context) return null
-
-  context.scale(scale, scale)
-  context.fillStyle = '#0b0c0c'
-  context.fillRect(0, 0, width, height)
-
-  const drawText = (text: string, x: number, top: number, boxHeight: number, font: string, color: string, align: CanvasTextAlign = 'left') => {
-    context.font = font
-    context.fillStyle = color
-    context.textAlign = align
-
-    const metrics = context.measureText(text)
-    context.fillText(text, x, top + (boxHeight + metrics.fontBoundingBoxAscent - metrics.fontBoundingBoxDescent) / 2)
-
-    return metrics.width
-  }
-
-  drawText(localize('win_chance'), chanceX + chanceWidth / 2, paddingTop, 16, 'bold 12px Lato', MUTED_COLOR, 'center')
-
-  if (showMushrooms.value) {
-    drawText(localize('mushrooms'), mushroomX + mushroomWidth / 2, paddingTop, 16, 'bold 12px Lato', MUTED_COLOR, 'center')
-  }
+  drawImageHeader(canvas, columns)
 
   for (const [index, result] of props.results.entries()) {
-    const top = paddingTop + 20 + index * rowHeight
-    const lineTop = top + (rowHeight - lineHeight) / 2
-    const color = result.dungeon.companions ? '#dec0ff' : TEXT_COLOR
-
-    const icon = images.get(getClassImageUrl(result.boss.class ?? props.playerClass))
-
-    if (icon) {
-      context.drawImage(icon, 8, top + (rowHeight - 35) / 2, 35, 35)
-    }
-
-    const nameWidth = drawText(getDungeonName(result.dungeon), textX, top + 8, nameHeight, '11.2px Lato', color)
-
-    if (result.boss.runes) {
-      drawText(` · ${formatRunes(result.boss.runes)}`, textX + nameWidth, top + 8, nameHeight, '11.2px Lato', MUTED_COLOR)
-    }
-
-    drawText(`#${result.boss.pos} - ${getBossName(result)}`, textX, top + 8 + nameHeight, lineHeight, '14px Lato', color)
-    drawText(formatChance(result), chanceX + chanceWidth / 2, lineTop, lineHeight, '14px Lato', TEXT_COLOR, 'center')
-
-    if (!showMushrooms.value) continue
-
-    if (result.score > 0) {
-      const range = formatMushroomRange(result)
-
-      context.font = '14px Lato'
-
-      const left = mushroomX + (mushroomWidth - 14 - 6 - context.measureText(range).width) / 2
-      const mushroom = images.get(MUSHROOM_URL)
-
-      if (mushroom) {
-        context.drawImage(mushroom, left, lineTop + (lineHeight - 14) / 2, 14, 14)
-      }
-
-      drawText(range, left + 14 + 6, lineTop, lineHeight, '14px Lato', TEXT_COLOR)
-    } else {
-      drawText('-', mushroomX + mushroomWidth / 2, lineTop, lineHeight, '14px Lato', TEXT_COLOR, 'center')
-    }
+    drawImageRow(canvas, columns, result, ROWS_TOP + index * ROW_HEIGHT)
   }
 
-  return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
+  return canvas.toBlob()
+}
+
+function getImageColumns(width: number) {
+  const chanceWidth = 0.22 * (width - 8)
+  const mushroomWidth = 0.26 * (width - 8)
+  const chanceRight = showMushrooms.value ? width - mushroomWidth - 12 : width
+
+  return {
+    chance: { x: chanceRight - chanceWidth, width: chanceWidth },
+    mushroom: showMushrooms.value ? { x: width - mushroomWidth, width: mushroomWidth } : null
+  }
+}
+
+type ImageColumns = ReturnType<typeof getImageColumns>
+
+function drawImageHeader(canvas: CanvasDrawing, { chance, mushroom }: ImageColumns) {
+  const label = { top: HEADER_TOP, lineHeight: 16, font: 'bold 12px Lato', color: MUTED_COLOR, align: 'center' } as const
+
+  canvas.drawText(localize('win_chance'), { ...label, x: chance.x + chance.width / 2 })
+
+  if (mushroom) {
+    canvas.drawText(localize('mushrooms'), { ...label, x: mushroom.x + mushroom.width / 2 })
+  }
+}
+
+const TEXT_COLOR = 'rgba(255, 255, 255, 0.9)'
+
+function drawImageRow(canvas: CanvasDrawing, { chance, mushroom }: ImageColumns, result: DungeonResult, top: number) {
+  const textX = 8 + 35 + 12
+  const color = result.dungeon.companions ? '#dec0ff' : TEXT_COLOR
+  const name = { x: textX, top: top + 8, lineHeight: NAME_HEIGHT, font: '11.2px Lato' }
+  const line = { top: top + (ROW_HEIGHT - LINE_HEIGHT) / 2, lineHeight: LINE_HEIGHT, font: '14px Lato', color: TEXT_COLOR }
+
+  canvas.drawImage(getClassImageUrl(result.boss.class ?? props.playerClass), 8, top + (ROW_HEIGHT - 35) / 2, 35, 35)
+
+  const nameWidth = canvas.drawText(getDungeonName(result.dungeon), { ...name, color })
+
+  if (result.boss.runes) {
+    canvas.drawText(` · ${formatRunes(result.boss.runes)}`, { ...name, x: textX + nameWidth, color: MUTED_COLOR })
+  }
+
+  canvas.drawText(`#${result.boss.pos} - ${getBossName(result)}`, { x: textX, top: top + 8 + NAME_HEIGHT, lineHeight: LINE_HEIGHT, font: '14px Lato', color })
+  canvas.drawText(formatChance(result), { ...line, x: chance.x + chance.width / 2, align: 'center' })
+
+  if (!mushroom) return
+
+  if (result.score > 0) {
+    const range = formatMushroomRange(result)
+    const left = mushroom.x + (mushroom.width - 14 - 6 - canvas.measureText(range, line.font)) / 2
+
+    canvas.drawImage(MUSHROOM_URL, left, line.top + (LINE_HEIGHT - 14) / 2, 14, 14)
+    canvas.drawText(range, { ...line, x: left + 14 + 6 })
+  } else {
+    canvas.drawText('-', { ...line, x: mushroom.x + mushroom.width / 2, align: 'center' })
+  }
 }
 
 function formatChance({ score, iterations }: DungeonResult) {
