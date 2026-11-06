@@ -1,7 +1,7 @@
 <template>
-  <PlayerEditor ref="editor-ref" name-readonly :companion="props.index > 0" :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
+  <PlayerEditor ref="editor-ref" v-model:fighter="fighter" name-readonly :fighters="fighterTabs" :companion="fighter > 0" :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
     <template #equipment>
-      <EquipmentEditor v-if="source" :source="source" :index="props.index" :swaps="swaps[props.index]" :character="characterState" @change="applySwaps" />
+      <EquipmentEditor v-if="source" :source="source" :index="fighter" :swaps="swaps[fighter]" :character="characterState" @change="applySwaps" />
     </template>
   </PlayerEditor>
   <SimulatorPasteTarget @paste="insertFighters" />
@@ -30,16 +30,17 @@ const props = defineProps<{
    * Picked character, also the source of the items that can be swapped in
    */
   character: PlayerModel
-  /**
-   * Edited fighter, 0 for the player and 1 to 3 for the companions
-   */
-  index: number
 }>()
 
 /**
  * Player and the three companions, null for a companion the character does not have
  */
 const fighters = defineModel<(PlayerModel | null)[]>('fighters', { required: true })
+
+/**
+ * Edited fighter, 0 for the player and 1 to 3 for the companions
+ */
+const fighter = defineModel<number>('fighter', { required: true })
 
 const localize = useLocalize('dungeon_break')
 
@@ -61,6 +62,8 @@ defineExpose({
 
 const fighterNames = computed(() => FIGHTER_NAME_KEYS.map((key) => localize.global(key)))
 
+const fighterTabs = computed(() => fighterNames.value.flatMap((name, index) => (fighters.value[index] ? [{ index, name }] : [])))
+
 const editedPlayer = computed((): PlayerModel | null => (editor.value?.isValid ? editor.value.read() : null))
 
 watch(editedPlayer, (player) => {
@@ -72,26 +75,23 @@ watch(editedPlayer, (player) => {
 
   filledSnapshot = snapshot
 
-  updateFighters(fighters.value.map((entry, index) => (index === props.index ? player : entry)))
+  updateFighters(fighters.value.map((entry, index) => (index === fighter.value ? player : entry)))
 })
 
 // The companion prop has to reach the editor before it is filled, and the editor still holds the previous fighter until then
-watch(
-  () => props.index,
-  async (index) => {
-    isFillPending = true
+watch(fighter, async (index) => {
+  isFillPending = true
 
-    await nextTick()
+  await nextTick()
 
-    fillEditor(fighters.value)
+  fillEditor(fighters.value)
 
-    isFillPending = false
+  isFillPending = false
 
-    if (isItemView.value) {
-      applySwaps(swaps.value[index], characterState.value)
-    }
+  if (isItemView.value) {
+    applySwaps(swaps.value[index], characterState.value)
   }
-)
+})
 
 onMounted(() => {
   fillEditor(fighters.value)
@@ -124,7 +124,7 @@ function updateFighters(list: (PlayerModel | null)[]) {
 function fillEditor(list: (PlayerModel | null)[]) {
   if (!editor.value) return
 
-  const index = props.index
+  const index = fighter.value
   const [player] = list
 
   const data = structuredClone(list[index]) ?? new PlayerModel()
@@ -148,7 +148,7 @@ function changeItemView(open: boolean) {
   isItemView.value = open
 
   if (open) {
-    applySwaps(swaps.value[props.index], withLifePotion(characterState.value, fighters.value[props.index]))
+    applySwaps(swaps.value[fighter.value], withLifePotion(characterState.value, fighters.value[fighter.value]))
   }
 }
 
@@ -168,22 +168,22 @@ function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
 
   if (!player) return
 
-  const index = props.index
+  const index = fighter.value
 
   swaps.value = swaps.value.map((entry, position) => (position === index ? entries : entry))
   characterState.value = character
 
   const rebuilt = applyEquipmentSwaps(player, swaps.value, character)
   const list = ModelUtils.toSimulatorData(rebuilt, true)
-  const fighter = preparePlayerData(Array.isArray(list) ? list[index] : list)
+  const prepared = preparePlayerData(Array.isArray(list) ? list[index] : list)
 
   const current = fighters.value[index]
 
   if (current) {
-    copyDungeonSharedValues(fighter, current, REBUILD_PATHS)
+    copyDungeonSharedValues(prepared, current, REBUILD_PATHS)
   }
 
-  fillEditor(updateFighters(fighters.value.map((entry, position) => (position === index ? fighter : entry))))
+  fillEditor(updateFighters(fighters.value.map((entry, position) => (position === index ? prepared : entry))))
 }
 
 function hasClass(value: unknown) {
@@ -203,7 +203,7 @@ function insertFighters(value: unknown) {
     } else if (hasClass(data)) {
       const player = preparePlayerData(data)
 
-      list = fighters.value.map((fighter, index) => (index === props.index ? player : fighter))
+      list = fighters.value.map((entry, index) => (index === fighter.value ? player : entry))
     } else {
       return
     }

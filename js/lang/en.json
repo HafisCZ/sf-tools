@@ -1316,10 +1316,12 @@
         "cold": "Cold",
         "lightning": "Lightning",
         "auto": "Auto",
-        "gladiator": "Gladiator (0 - 15)",
+        "gladiator": "Gladiator",
         "life_potion": "Life Potion",
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
+        "smart_change_unavailable": "Not available in Character mode",
+        "fighters": "Fighters",
         "mode": {
             "raw": "Raw",
             "character": "Character"
