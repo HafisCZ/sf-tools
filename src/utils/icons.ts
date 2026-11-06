@@ -12,6 +12,7 @@ import { faSquareCheck } from '@fortawesome/free-regular-svg-icons/faSquareCheck
 import { faStar } from '@fortawesome/free-regular-svg-icons/faStar'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
 import { faAnglesDown } from '@fortawesome/free-solid-svg-icons/faAnglesDown'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft'
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowRightArrowLeft'
 import { faAt } from '@fortawesome/free-solid-svg-icons/faAt'
@@ -121,6 +122,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
 export const ICONS = {
   'angles-down': faAnglesDown,
+  'arrow-down': faArrowDown,
   'arrow-left': faArrowLeft,
   'arrow-right-arrow-left': faArrowRightArrowLeft,
   at: faAt,

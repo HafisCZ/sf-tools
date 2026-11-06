@@ -854,6 +854,11 @@
         "win_chance": "Win chance",
         "mushrooms": "Mushrooms",
         "show_mushrooms": "Show estimated mushroom cost",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
         "csv": {
             "dungeon": "Dungeon",
             "position": "Position",
