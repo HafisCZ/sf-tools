@@ -8,9 +8,9 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "vue-tsc -b",
-    "lint": "oxlint --type-aware src vite.config.ts",
-    "format": "oxfmt src vite.config.ts",
-    "format:check": "oxfmt --check src vite.config.ts"
+    "lint": "oxlint --type-aware src vite vite.config.ts",
+    "format": "oxfmt src vite vite.config.ts",
+    "format:check": "oxfmt --check src vite vite.config.ts"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",

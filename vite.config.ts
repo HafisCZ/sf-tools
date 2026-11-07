@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
+import { rustEngine } from './vite/plugins/rust-engine.ts'
 
 const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats', 'scrapbook', 'dungeon-break']
 
@@ -94,7 +95,7 @@ function legacySite(): Plugin {
 
 export default defineConfig({
   appType: 'mpa',
-  plugins: [vue(), tailwindcss(), legacySite()],
+  plugins: [vue(), tailwindcss(), legacySite(), rustEngine()],
   define: {
     __BUILD_INFO__: JSON.stringify(readBuildInfo()),
     __ITEM_PICTURES__: JSON.stringify(readItemPictures())
@@ -110,7 +111,7 @@ export default defineConfig({
     watch: {
       // WSL gets no file events under /mnt
       usePolling: process.env.WATCH_POLLING === '1',
-      ignored: ['**/res/**', '**/endpoint/**', '**/vendor/**', '**/dist/**']
+      ignored: ['**/res/**', '**/endpoint/**', '**/vendor/**', '**/dist/**', '**/engine/target/**']
     }
   },
   optimizeDeps: {

@@ -1,5 +1,5 @@
 [build]
-  command = "bun run build"
+  command = "rustup target add wasm32-unknown-unknown && bun run build"
   publish = "dist"
 
 [build.environment]

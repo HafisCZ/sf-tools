@@ -1,5 +1,7 @@
+import { type Engine, loadEngine } from '~/sim/engine/engine'
+import { runPlayers } from '~/sim/engine/players'
 import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
-import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FLAGS, resetState, SimulatorModel } from './base'
 
 export type PlayerEntry = {
   index: number
@@ -24,42 +26,68 @@ export type PlayersResponse<T extends PlayerEntry = PlayerEntry> = {
 
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-  self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }: MessageEvent<PlayersMessage>) {
-    resetState()
-
-    CONFIG.set(config)
-
-    FLAGS.log(!!log)
-    FLAGS.set(flags)
-
-    // Sim type decision
-    if (mode == 'all') {
-      self.postMessage({
-        results: new FightSimulator().simulateMultiple(player, target as PlayerEntry[], iterations),
-        logs: FIGHT_LOG.dump()
-      } satisfies PlayersResponse)
-    } else if (mode == 'attack') {
-      self.postMessage({
-        results: new FightSimulator().simulateSingle(player, target as PlayerEntry, iterations, false),
-        logs: FIGHT_LOG.dump()
-      } satisfies PlayersResponse)
-    } else if (mode == 'defend') {
-      self.postMessage({
-        results: new FightSimulator().simulateSingle(player, target as PlayerEntry, iterations, true),
-        logs: FIGHT_LOG.dump()
-      } satisfies PlayersResponse)
-    } else if (mode == 'tournament') {
-      self.postMessage({
-        results: new FightSimulator().simulateTournament(player, target as PlayerEntry[], iterations),
-        logs: FIGHT_LOG.dump()
-      } satisfies PlayersResponse)
-    }
+  self.addEventListener('message', function ({ data }: MessageEvent<PlayersMessage>) {
+    void respond(data)
   })
 }
 
-class FightSimulator extends SimulatorBase {
-  declare ca: SimulatorModel
-  declare cb: SimulatorModel
+async function respond({ flags, config, player, target, mode, iterations, log }: PlayersMessage) {
+  const engine = await loadEngine()
+
+  resetState()
+
+  CONFIG.set(config)
+
+  FLAGS.set(flags)
+
+  const simulator = new FightSimulator(engine, !!log)
+
+  // Sim type decision
+  if (mode == 'all') {
+    self.postMessage({
+      results: simulator.simulateMultiple(player, target as PlayerEntry[], iterations),
+      logs: simulator.logs
+    } satisfies PlayersResponse)
+  } else if (mode == 'attack') {
+    self.postMessage({
+      results: simulator.simulateSingle(player, target as PlayerEntry, iterations, false),
+      logs: simulator.logs
+    } satisfies PlayersResponse)
+  } else if (mode == 'defend') {
+    self.postMessage({
+      results: simulator.simulateSingle(player, target as PlayerEntry, iterations, true),
+      logs: simulator.logs
+    } satisfies PlayersResponse)
+  } else if (mode == 'tournament') {
+    self.postMessage({
+      results: simulator.simulateTournament(player, target as PlayerEntry[], iterations),
+      logs: simulator.logs
+    } satisfies PlayersResponse)
+  }
+}
+
+class FightSimulator {
+  engine: Engine
+  log: boolean
+  logs: FightLog[] = []
+
+  constructor(engine: Engine, log: boolean) {
+    this.engine = engine
+    this.log = log
+  }
+
+  fight(source: SimulatorPlayerInput, target: SimulatorPlayerInput, iterations: number) {
+    const attacker = SimulatorModel.create(0, source)
+    const defender = SimulatorModel.create(1, target)
+
+    const { score, logs } = runPlayers(this.engine, attacker, defender, { iterations, log: this.log })
+
+    for (const log of logs) {
+      this.logs.push(log)
+    }
+
+    return score
+  }
 
   // Fight 1vAl only
   simulateMultiple(player: PlayerEntry, targets: PlayerEntry[], iterations: number) {
@@ -69,12 +97,7 @@ class FightSimulator extends SimulatorBase {
 
     for (let i = 0; i < targets.length; i++) {
       if (player.index != targets[i].index) {
-        let subscore = 0
-        this.cache(player.player, targets[i].player)
-
-        for (let j = 0; j < iterations; j++) {
-          subscore += this.fight() as unknown as number
-        }
+        const subscore = this.fight(player.player, targets[i].player, iterations)
 
         score += subscore
 
@@ -106,14 +129,7 @@ class FightSimulator extends SimulatorBase {
         continue
       }
 
-      this.cache(player.player, targets[i].player)
-
-      let subscore = 0
-      for (let j = 0; j < iterations; j++) {
-        subscore += this.fight() as unknown as number
-      }
-
-      subscores.push(subscore)
+      subscores.push(this.fight(player.player, targets[i].player, iterations))
     }
 
     // Sort sub scores by score desc
@@ -140,12 +156,7 @@ class FightSimulator extends SimulatorBase {
 
   // Fight 1v1s only
   simulateSingle(player: PlayerEntry, target: PlayerEntry, iterations: number, invert: boolean) {
-    let score = 0
-    this.cache(player.player, target.player)
-
-    for (let i = 0; i < iterations; i++) {
-      score += this.fight() as unknown as number
-    }
+    let score = this.fight(player.player, target.player, iterations)
 
     if (invert) {
       score = iterations - score
@@ -156,23 +167,5 @@ class FightSimulator extends SimulatorBase {
     }
 
     return target
-  }
-
-  // Cache Players initially
-  cache(source: SimulatorPlayerInput, target: SimulatorPlayerInput) {
-    this.ca = SimulatorModel.create(0, source)
-    this.cb = SimulatorModel.create(1, target)
-
-    SimulatorModel.initializeFighters(this.ca, this.cb)
-  }
-
-  fight() {
-    this.a = this.ca
-    this.b = this.cb
-
-    this.a.resetHealth()
-    this.b.resetHealth()
-
-    return super.fight()
   }
 }

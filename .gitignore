@@ -1,2 +1,4 @@
 node_modules/
 dist/
+src/sim/engine/target/
+src/sim/engine/engine.wasm
