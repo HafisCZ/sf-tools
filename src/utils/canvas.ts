@@ -44,6 +44,7 @@ export type CanvasGridLine = {
 
 export type CanvasGridCell = {
   lines: CanvasGridLine[]
+  background?: string
 }
 
 export type CanvasGridColumn = {
@@ -127,6 +128,11 @@ export class CanvasDrawing {
         const column = layout[index]
 
         if (!cell || !column) return
+
+        if (cell.background) {
+          this.context.fillStyle = cell.background
+          this.context.fillRect(column.x, top, column.width, rowTop - top + height + (row.padding?.bottom ?? 0))
+        }
 
         let lineTop = rowTop + (height - getCellHeight(cell)) / 2
 

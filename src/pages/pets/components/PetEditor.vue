@@ -1,42 +1,29 @@
 <template>
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
-      <div class="grid grid-cols-3 gap-[14px]">
-        <SFSelect ref="type-ref" :model-value="type" :label="localize('editor.type')" :options="typeOptions" @update:model-value="changeType" />
-        <SFSelect ref="pet-ref" v-model="pet" :label="localize('editor.pet')" :options="petOptions" search />
-        <div class="grid grid-cols-2 gap-[14px]">
-          <SFSelect ref="boss-ref" v-model="boss" :label="localize('editor.habitat')" :options="bossOptions" />
-          <div :inert="isBoss" :class="{ 'opacity-45': isBoss }">
-            <SFNumber ref="level-ref" v-model="level" :label="localize.global('editor.level')" placeholder="1 - 200" required :min="1" :max="200" :step="1" centered />
-          </div>
+  <div class="flex flex-col">
+    <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-3">
+      <div class="grid grid-cols-2 gap-[14px]">
+        <SFSelect ref="boss-ref" v-model="boss" :label="localize('editor.habitat')" :options="bossOptions" />
+        <div :inert="isBoss" :class="{ 'opacity-45': isBoss }">
+          <SFNumber ref="level-ref" v-model="level" :label="localize.global('editor.level')" placeholder="1 - 200" :required="!isBoss" :min="1" :max="200" :step="1" centered />
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-[14px]" :inert="isBoss" :class="{ 'opacity-45': isBoss }">
+
+      <div class="grid grid-cols-3 gap-[14px] border-t border-line pt-[14px]" :inert="isBoss" :class="{ 'opacity-45': isBoss }">
         <SFNumber ref="at100-ref" v-model="at100" :label="localize('editor.at100.title')" :placeholder="localize('editor.at100.placeholder')" :min="0" :max="20" :step="1" centered />
         <SFNumber ref="at150-ref" v-model="at150" :label="localize('editor.at150.title')" :placeholder="localize('editor.at150.placeholder')" :min="0" :max="20" :step="1" centered />
         <SFNumber ref="at200-ref" v-model="at200" :label="localize('editor.at200.title')" :placeholder="localize('editor.at200.placeholder')" :min="0" :max="20" :step="1" centered />
-      </div>
-      <div class="grid grid-cols-3 gap-[14px]" :inert="isBoss" :class="{ 'opacity-45': isBoss }">
         <SFNumber ref="pack-ref" v-model="pack" :label="localize('editor.pack.title')" :placeholder="localize('editor.pack.placeholder')" :min="0" :max="20" :step="1" centered />
         <SFSelect ref="gladiator-ref" v-model="gladiator" :label="localize.global('editor.gladiator')" :options="gladiatorOptions" search />
       </div>
-    </div>
 
-    <div v-show="props.model" class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
-      <div class="grid grid-cols-2 gap-[14px]">
+      <div v-show="props.model" class="grid grid-cols-3 gap-[14px] border-t border-line pt-[14px]">
         <SFInput :model-value="stats.class" :label="localize.global('editor.class')" readonly class="text-center" />
         <SFInput :model-value="stats.health" :label="localize('editor.health')" readonly class="text-center" />
-      </div>
-      <div class="grid grid-cols-3 gap-[14px]">
         <SFInput :model-value="stats.attribute" :label="localize('editor.attribute')" readonly class="text-center" />
         <SFInput :model-value="stats.defense" :label="localize('editor.defense')" readonly class="text-center" />
         <SFInput :model-value="stats.luck" :label="localize.global('general.attribute5')" readonly class="text-center" />
-      </div>
-      <div class="grid grid-cols-2 gap-[14px]">
         <SFInput :model-value="stats.skip" :label="localize('editor.skip')" readonly class="text-center" />
         <SFInput :model-value="stats.chance" :label="localize('editor.crit')" readonly class="text-center" />
-      </div>
-      <div class="grid grid-cols-2 gap-[14px]">
         <SFInput :model-value="stats.damage" :label="localize('editor.damage')" readonly class="text-center" />
         <SFInput :model-value="stats.critical" :label="localize('editor.critical_bonus')" readonly class="text-center" />
       </div>
@@ -62,6 +49,10 @@ defineOptions({
 
 const props = defineProps<{
   /**
+   * Habitat and pet picked for this side
+   */
+  pet: Pick<SimulatorPet, 'Type' | 'Pet'>
+  /**
    * Simulator model whose stats are shown
    */
   model?: SimulatorModel | null
@@ -81,8 +72,6 @@ defineExpose({
 
 const localize = useLocalize('pets')
 
-const type = ref(0)
-const pet = ref(0)
 const boss = ref(0)
 const level = ref<number | null>(null)
 const at100 = ref<number | null>(null)
@@ -93,21 +82,11 @@ const gladiator = ref(0)
 
 const isBoss = computed(() => boss.value === 1)
 
-const isHabitatValid = useComponentValidation(useTemplateRef('type-ref'), useTemplateRef('pet-ref'), useTemplateRef('boss-ref'))
+const isHabitatValid = useComponentValidation(useTemplateRef('boss-ref'))
 
 const isPetValid = useComponentValidation(useTemplateRef('level-ref'), useTemplateRef('at100-ref'), useTemplateRef('at150-ref'), useTemplateRef('at200-ref'), useTemplateRef('pack-ref'), useTemplateRef('gladiator-ref'))
 
 const isValid = computed(() => isHabitatValid.value && (isBoss.value || isPetValid.value))
-
-const typeOptions = computed(() => sequence(5).map((index) => ({ value: index, label: localize(`types.${index}`) })))
-
-const petOptions = computed(() =>
-  sequence(20).map((index) => {
-    const monster = getMonsterId(type.value, index)
-
-    return { value: index, label: localize.global(`monsters.${monster}`), image: `/res/pets/monster${monster}.png` as const }
-  })
-)
 
 const bossOptions = computed(() => [
   { value: 0, label: localize.global('general.no') },
@@ -158,16 +137,10 @@ function formatChance(value: number) {
   return value > 0 ? `${(100 * value).toFixed(2)}%` : localize('editor.none')
 }
 
-// Not a watch on type, that would also reset the pet after fill()
-function changeType(value: number) {
-  type.value = value
-  pet.value = 0
-}
-
 function read(): SimulatorPet {
   return {
-    Type: type.value,
-    Pet: pet.value,
+    Type: props.pet.Type,
+    Pet: props.pet.Pet,
     Boss: boss.value,
     Level: level.value ?? 0,
     At100: at100.value ?? 0,
@@ -175,13 +148,11 @@ function read(): SimulatorPet {
     At200: at200.value ?? 0,
     Pack: pack.value ?? 0,
     Gladiator: gladiator.value,
-    Name: localize.global(`monsters.${getMonsterId(type.value, pet.value)}`)
+    Name: localize.global(`monsters.${getMonsterId(props.pet.Type, props.pet.Pet)}`)
   }
 }
 
 function fill(data: SimulatorPet | null) {
-  type.value = data?.Type ?? 0
-  pet.value = data?.Pet ?? 0
   boss.value = data?.Boss ?? 0
   level.value = data?.Level ?? null
   at100.value = data?.At100 ?? null

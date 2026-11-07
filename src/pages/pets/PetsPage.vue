@@ -17,8 +17,7 @@
         </div>
       </div>
       <SFHeading level="1" class="col-span-4 col-start-7 text-center">Pet Simulator</SFHeading>
-      <div class="col-span-3 text-center">{{ result }}</div>
-      <div class="col-span-3 flex justify-end gap-2">
+      <div class="col-span-3 col-start-14 flex justify-end gap-2">
         <SFButton variant="outline" :disabled="isSimulating ? 'loading' : isRunning || !canSimulate" @click="simulate">
           {{ localize('simulate') }}
         </SFButton>
@@ -33,9 +32,18 @@
       </div>
     </div>
 
-    <div class="mt-[23px] grid gap-7 md:grid-cols-2">
-      <PetEditor ref="editor-a-ref" :model="models[0]" :fight-stats="models[1] !== null" />
-      <PetEditor ref="editor-b-ref" :model="models[1]" :fight-stats="models[0] !== null" />
+    <div class="mt-[23px] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-7">
+      <PetPicker v-model="picks[0]" />
+      <div class="flex min-w-[120px] flex-col items-center transition-opacity" :class="{ 'opacity-50': result !== null && isResultOutdated }">
+        <span class="text-[26px] leading-8 font-bold" :class="result === null ? 'text-white/45' : 'text-white'">{{ result === null ? '-' : formatPetChance(result) }}</span>
+        <span class="text-xs font-bold text-white/60">{{ localize('win_chance') }}</span>
+      </div>
+      <PetPicker v-model="picks[1]" />
+    </div>
+
+    <div class="mt-[14px] grid gap-7 md:grid-cols-2">
+      <PetEditor ref="editor-a-ref" :pet="picks[0]" :model="models[0]" :fight-stats="models[1] !== null" />
+      <PetEditor ref="editor-b-ref" :pet="picks[1]" :model="models[1]" :fight-stats="models[0] !== null" />
     </div>
 
     <template #footer-right>
@@ -73,8 +81,10 @@ import { usePetSimulator } from '~/sim/pets'
 import { CONFIG, type SimulatorModel } from '~/sim/workers/base'
 import { PetModel, type SimulatorPet } from '~/sim/workers/pets'
 import PetEditor from './components/PetEditor.vue'
+import PetPicker from './components/PetPicker.vue'
 import PetMapDialog from './dialogs/PetMapDialog.vue'
 import PetResultsDialog from './dialogs/PetResultsDialog.vue'
+import { formatPetChance } from './pets'
 
 defineOptions({
   name: 'PetsPage'
@@ -91,7 +101,13 @@ const petSimulator = usePetSimulator()
 
 const mapIterations = ref(readMapIterations())
 
-const result = ref('')
+const picks = ref<[Pick<SimulatorPet, 'Type' | 'Pet'>, Pick<SimulatorPet, 'Type' | 'Pet'>]>([
+  { Type: 0, Pet: 0 },
+  { Type: 0, Pet: 0 }
+])
+
+const result = ref<number | null>(null)
+const isResultOutdated = ref(false)
 
 const player = shallowRef<PlayerModel | null>(null)
 
@@ -161,6 +177,8 @@ watch([petA, petB, simulatorConfig], ([a, b, config]) => {
   }
 
   models.value = [modelA, modelB]
+
+  isResultOutdated.value = true
 })
 
 function readMapIterations() {
@@ -211,14 +229,15 @@ function fillFromPlayer(entry: PlayerModel) {
 
   if (!editorA.value || !editorB.value) return
 
-  const [pet, boss] = getPetsFor(entry, editorA.value.read().Type)
+  const [pet, boss] = getPetsFor(entry, picks.value[0].Type)
+
+  picks.value = [
+    { Type: pet?.Type ?? 0, Pet: pet?.Pet ?? 0 },
+    { Type: boss?.Type ?? 0, Pet: boss?.Pet ?? 0 }
+  ]
 
   editorA.value.fill(pet)
   editorB.value.fill(boss)
-}
-
-function getPetName(pet: SimulatorPet) {
-  return `${localize(`types.${pet.Type}`)} ${pet.Pet + 1} - ${localize.global(`monsters.${800 + 20 * pet.Type + pet.Pet}`)}`
 }
 
 async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
@@ -231,7 +250,8 @@ async function runSimulation(instances: number, iterations: number, log?: Simula
 
   if (!fight) return
 
-  result.value = `${fight.chance.toFixed(fight.chance < 0.01 ? 5 : 2)}%`
+  result.value = fight.chance
+  isResultOutdated.value = false
 }
 
 async function generateMaps(count: number) {
@@ -247,7 +267,7 @@ async function generateMaps(count: number) {
 
   if (!generated) return
 
-  useDialog(PetMapDialog, { maps: generated.maps.map(({ boss, data }) => ({ data, name: `${getPetName(a)} (${a.Pack}, ${a.At100}, ${a.At150}, ${a.At200}) vs ${getPetName(boss)}` })) })
+  useDialog(PetMapDialog, { pet: a, maps: generated.maps })
 }
 
 async function runDungeonSimulation() {

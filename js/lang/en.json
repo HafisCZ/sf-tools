@@ -725,6 +725,24 @@
         "simulate": "Simulate",
         "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Results",
+        "win_chance": "Win chance",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "details": {
+            "level": "Level #{level}",
+            "boss": "Habitat boss #{position}"
+        },
+        "csv": {
+            "position": "Position",
+            "win_rate": "Win rate %"
+        },
+        "picker": {
+            "search": "Search pets",
+            "empty": "No pets found"
+        },
         "calendar": {
             "collected": "Collected",
             "available": "Available",
@@ -732,7 +750,16 @@
             "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Glad",
+            "description": "#{pet}, Level #{level}",
+            "versus": "vs",
+            "legend": {
+                "zero": "0%",
+                "low": "Under 5%",
+                "medium": "5 - 10%",
+                "high": "10 - 25%",
+                "top": "25% and more"
+            }
         },
         "types": {
             "0": "Shadow",
@@ -780,6 +807,7 @@
             "type": "Type",
             "pet": "Pet",
             "habitat": "Habitat",
+            "habitat_boss": "Habitat boss",
             "health": "Health",
             "attribute": "Attribute",
             "defense": "Defense",

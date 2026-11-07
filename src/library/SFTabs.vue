@@ -6,7 +6,7 @@
       type="button"
       role="tab"
       class="rounded-md px-3 py-1.5 font-bold outline-none transition focus-visible:outline-2 focus-visible:outline-accent enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-      :class="[option.value === modelValue ? 'text-accent' : 'text-white/90 enabled:hover:bg-surface-hover', { 'text-left': props.vertical }]"
+      :class="[option.value === modelValue ? 'text-accent' : 'text-white/90 enabled:hover:bg-surface-hover', { 'text-left': props.vertical, 'flex-1 basis-0': props.stretch }]"
       :aria-selected="option.value === modelValue"
       :disabled="option.disabled"
       @click="modelValue = option.value"
@@ -35,6 +35,10 @@ const props = defineProps<{
    * Stacks the tabs in a column
    */
   vertical?: boolean
+  /**
+   * Gives every tab the same width and fills the row
+   */
+  stretch?: boolean
 }>()
 
 const modelValue = defineModel<TValue>({ required: true })

@@ -61,6 +61,10 @@ const props = defineProps<{
    * Width in pixels
    */
   width?: number
+  /**
+   * Height in pixels the menu grows to before it scrolls, 384 when not set
+   */
+  maxHeight?: number
 }>()
 
 const emit = defineEmits<{
@@ -83,9 +87,10 @@ const GAP = 4
 
 const style = computed(() => {
   const width = props.width === undefined ? undefined : `${props.width}px`
+  const maxHeight = props.maxHeight === undefined ? undefined : `${props.maxHeight}px`
 
   if (!size.value) {
-    return { top: '0px', left: '0px', width }
+    return { top: '0px', left: '0px', width, maxHeight }
   }
 
   const anchor = props.anchor
@@ -95,14 +100,14 @@ const style = computed(() => {
     const sideLeft = pickVisibleAxisPosition(anchor.right + GAP, anchor.left - measured.width - GAP, measured.width, window.innerWidth)
     const sideTop = pickVisibleAxisPosition(anchor.top, anchor.bottom - measured.height, measured.height, window.innerHeight)
 
-    return { top: `${sideTop}px`, left: `${sideLeft}px`, width }
+    return { top: `${sideTop}px`, left: `${sideLeft}px`, width, maxHeight }
   }
 
   const left = props.float === 'right' ? pickVisibleAxisPosition(anchor.left, anchor.right - measured.width, measured.width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - measured.width, anchor.left, measured.width, window.innerWidth)
 
   const top = pickVisibleAxisPosition(anchor.bottom + GAP, anchor.top - measured.height - GAP, measured.height, window.innerHeight)
 
-  return { top: `${top}px`, left: `${left}px`, width }
+  return { top: `${top}px`, left: `${left}px`, width, maxHeight }
 })
 
 // Waits until the menu is visible, hidden elements can't take focus
