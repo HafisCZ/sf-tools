@@ -51,8 +51,8 @@ class DungeonSimulator extends SimulatorBase {
     this.cache(players, boss)
 
     let score = 0
-    let enemyHealths = []
-    let playersHealths = []
+    let enemyHealths = new Float64Array(iterations)
+    let playersHealths = new Float64Array(iterations)
 
     if (players.length === 1) {
       // Single-player battle
@@ -62,8 +62,8 @@ class DungeonSimulator extends SimulatorBase {
         let { win, enemyHealth, playersHealth } = this.battleSingle()
 
         score += win as unknown as number
-        enemyHealths.push(enemyHealth)
-        playersHealths.push(playersHealth)
+        enemyHealths[i] = enemyHealth
+        playersHealths[i] = playersHealth
       }
     } else {
       // Multi-player battle
@@ -71,8 +71,8 @@ class DungeonSimulator extends SimulatorBase {
         let { win, enemyHealth, playersHealth } = this.battleMulti()
 
         score += win as unknown as number
-        enemyHealths.push(enemyHealth)
-        playersHealths.push(playersHealth)
+        enemyHealths[i] = enemyHealth
+        playersHealths[i] = playersHealth
       }
     }
 
@@ -101,7 +101,7 @@ class DungeonSimulator extends SimulatorBase {
 
     return {
       win,
-      enemyHealth: win ? 0 : this.cache_boss.Health / this.cache_boss.getHealth(),
+      enemyHealth: win ? 0 : this.cache_boss.Health / this.cache_boss.TotalHealth,
       playersHealth: win ? this.cache_players[0].Health / this.cache_health : 0
     }
   }
@@ -134,20 +134,20 @@ class DungeonSimulator extends SimulatorBase {
     // Return result based on empty array
     return {
       win: (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0,
-      enemyHealth: Math.max(0, this.lb.length > 0 ? this.lb[0].Health / this.lb[0].getHealth() : 0),
+      enemyHealth: Math.max(0, this.lb.length > 0 ? this.lb[0].Health / this.lb[0].TotalHealth : 0),
       playersHealth: playersHealth / this.cache_health
     }
   }
 }
 
-function trimHealths(healths: number[], hpcap: number) {
+function trimHealths(healths: Float64Array, hpcap: number) {
   let healthsLength = healths.length
   let truncSteps = Math.max(1, Math.floor(healthsLength / hpcap))
   if (truncSteps > 1) {
     let truncLength = Math.ceil(healthsLength / truncSteps)
     let truncHealths = new Array<number>(truncLength)
 
-    healths.sort((a, b) => a - b)
+    healths.sort()
 
     for (let i = 0; i < truncLength; i++) {
       let sliceSum = 0
@@ -169,8 +169,8 @@ function trimHealths(healths: number[], hpcap: number) {
 
     return truncHealths
   } else {
-    healths.sort((a, b) => a - b)
+    healths.sort()
 
-    return healths
+    return Array.from(healths)
   }
 }
