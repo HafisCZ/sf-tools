@@ -171,7 +171,7 @@ impl Battle {
     /// Whether `t` skips, for the given skip type.
     #[inline(always)]
     fn skip(&mut self, t: usize, kind: u32) -> bool {
-        let chance = self.fighters[t].state().skip_chance;
+        let chance = self.fighters[t].state.skip_chance;
         let fighter = &mut self.fighters[t];
 
         if fighter.skip_type == kind && rng::roll(chance) && fighter.skip_count < fighter.skip_limit
@@ -187,7 +187,7 @@ impl Battle {
     /// Whether `t` skips an Assassin's or Berserker's attack.
     #[inline(always)]
     fn skip_uncounted(&mut self, t: usize) -> bool {
-        rng::roll(self.fighters[t].state().skip_chance)
+        rng::roll(self.fighters[t].state.skip_chance)
             && self.fighters[t].skip_type == SKIP_TYPE_DEFAULT
     }
 
@@ -261,7 +261,7 @@ impl Battle {
                 alive
             }
             DRUID => {
-                if skipped && self.fighters[t].state_index == DATA {
+                if skipped && !self.fighters[t].special_state() {
                     self.fighters[t].request_state = true;
                 }
 
@@ -292,7 +292,7 @@ impl Battle {
                         .ceil();
                     weaver.pact_stacks = 0.0;
                     weaver.seal_used = true;
-                    weaver.state_index = REVIVED_STATE;
+                    weaver.enter_state(ActiveState::RevivedState);
 
                     self.rage();
                     self.log_round(t, t, 0.0, ATTACK_TYPE_SEAL_OF_DEATH, DEFENSE_TYPE_NONE);
@@ -318,10 +318,10 @@ impl Battle {
         types: AttackTypes,
     ) -> bool {
         if critical {
-            damage *= self.fighters[a].state().critical_multiplier;
+            damage *= self.fighters[a].state.critical_multiplier;
         }
 
-        damage = (damage * self.fighters[b].state().received_damage_multiplier).trunc();
+        damage = (damage * self.fighters[b].state.received_damage_multiplier).trunc();
 
         if skipped {
             self.fighters[b].skip_count += 1.0;
@@ -331,7 +331,7 @@ impl Battle {
 
         let attack_type = if critical { types.1 } else { types.0 };
         let defense_type = if skipped {
-            self.fighters[b].state().skip_variant
+            self.fighters[b].state.skip_variant
         } else {
             DEFENSE_TYPE_NONE
         };
@@ -361,13 +361,13 @@ impl Battle {
             BARD => {
                 let alive = self.attack_default(a, b, damage, skipped, critical, types);
 
-                if self.fighters[a].state_index != DATA {
+                if self.fighters[a].special_state() {
                     let bard = &mut self.fighters[a];
 
                     bard.effect_counter += 1.0;
 
                     if bard.effect_counter >= bard.effect_reset {
-                        bard.state_index = DATA;
+                        bard.enter_state(ActiveState::Data);
                     }
                 }
 
@@ -380,26 +380,26 @@ impl Battle {
     /// A normal attack.
     #[inline(always)]
     fn control_default(&mut self, a: usize, b: usize) -> bool {
-        let state = self.fighters[a].state();
+        let state = self.fighters[a].state;
         let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
         let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
-        let critical = rng::roll(self.fighters[a].state().critical_chance);
+        let critical = rng::roll(self.fighters[a].state.critical_chance);
 
         self.attack(a, b, damage, skipped, critical, NORMAL)
     }
 
     /// Assassin's turn.
     fn control_assassin(&mut self, a: usize, b: usize) -> bool {
-        let state = self.fighters[a].state();
+        let state = self.fighters[a].state;
         let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
         let skipped = self.skip_uncounted(b);
-        let critical = rng::roll(self.fighters[a].state().critical_chance);
+        let critical = rng::roll(self.fighters[a].state.critical_chance);
 
         if self.attack(a, b, damage, skipped, critical, NORMAL) {
-            let state = self.fighters[a].state();
+            let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon2_min, state.weapon2_max);
             let skipped = self.skip_uncounted(b);
-            let critical = rng::roll(self.fighters[a].state().critical_chance);
+            let critical = rng::roll(self.fighters[a].state.critical_chance);
 
             self.attack(a, b, damage, skipped, critical, SECONDARY)
         } else {
@@ -409,10 +409,10 @@ impl Battle {
 
     /// Berserker's turn.
     fn control_berserker(&mut self, a: usize, b: usize) -> bool {
-        let state = self.fighters[a].state();
+        let state = self.fighters[a].state;
         let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
         let skipped = self.skip_uncounted(b);
-        let critical = rng::roll(self.fighters[a].state().critical_chance);
+        let critical = rng::roll(self.fighters[a].state.critical_chance);
 
         self.attack(a, b, damage, skipped, critical, NORMAL)
     }
@@ -423,7 +423,7 @@ impl Battle {
 
         if druid.health <= 0.0 {
             false
-        } else if druid.state_index == DATA
+        } else if !druid.special_state()
             && druid.swoop_chance > 0.0
             && rng::roll(druid.swoop_chance)
         {
@@ -434,13 +434,13 @@ impl Battle {
                 druid.swoop_chance_max,
             );
 
-            let state = self.fighters[a].state();
+            let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
             let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
-            let critical = rng::roll(self.fighters[a].state().critical_chance);
+            let critical = rng::roll(self.fighters[a].state.critical_chance);
 
             let druid = &self.fighters[a];
-            let state = druid.state();
+            let state = druid.state;
 
             // Game bug: a critical swoop adds the swoop bonus to the crit multiplier instead of multiplying
             let multiplier = if critical && druid.critical_swoop_bug {
@@ -462,9 +462,9 @@ impl Battle {
 
         if druid.request_state {
             druid.request_state = false;
-            druid.state_index = RAGE_STATE;
-        } else if druid.state_index != DATA {
-            druid.state_index = DATA;
+            druid.enter_state(ActiveState::RageState);
+        } else if druid.special_state() {
+            druid.enter_state(ActiveState::Data);
         }
 
         if !self.fighters[b].bypass_special && !self.attack_swoop(a, b) {
@@ -495,7 +495,7 @@ impl Battle {
                 bard.effect_reset = bard.effect_base_duration[level];
                 bard.effect_counter = 0.0;
                 bard.effect_round = 0.0;
-                bard.state_index = SONGS + level;
+                bard.enter_state(ActiveState::Song(level));
             }
         }
 
@@ -505,7 +505,7 @@ impl Battle {
     /// Paladin's turn.
     fn control_paladin(&mut self, a: usize, b: usize) -> bool {
         if !self.fighters[b].bypass_special
-            && rng::roll(self.fighters[a].state().stance_change_chance)
+            && rng::roll(self.fighters[a].state.stance_change_chance)
         {
             let paladin = &mut self.fighters[a];
 
@@ -515,7 +515,7 @@ impl Battle {
                 paladin.stance_index = 0;
             }
 
-            paladin.state_index = STANCES + paladin.stance_index;
+            paladin.enter_state(ActiveState::Stance(paladin.stance_index));
         }
 
         self.control_default(a, b)
@@ -523,10 +523,10 @@ impl Battle {
 
     /// Necromancer minion's attack.
     fn attack_minion(&mut self, a: usize, b: usize) -> bool {
-        let state = self.fighters[a].state();
+        let state = self.fighters[a].state;
         let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
         let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
-        let critical = rng::roll(self.fighters[a].state().critical_chance);
+        let critical = rng::roll(self.fighters[a].state.critical_chance);
 
         self.attack(a, b, damage, skipped, critical, MINION)
     }
@@ -538,14 +538,14 @@ impl Battle {
         necromancer.minion_duration -= 1.0;
 
         if necromancer.minion_duration <= 0.0 {
-            let minion = necromancer.states[MINIONS + necromancer.minion_type];
+            let minion = necromancer.states.minions[necromancer.minion_type];
 
             if rng::roll(minion.revive_chance) && necromancer.minion_revives > 0.0 {
                 necromancer.minion_duration = minion.revive_duration;
                 necromancer.minion_revives -= 1.0;
             } else {
                 necromancer.minion = false;
-                necromancer.state_index = DATA;
+                necromancer.enter_state(ActiveState::Data);
             }
         }
     }
@@ -555,10 +555,11 @@ impl Battle {
         if self.fighters[b].bypass_special {
             self.control_default(a, b)
         } else if self.fighters[a].minion {
-            self.fighters[a].state_index = DATA;
+            self.fighters[a].enter_state(ActiveState::Data);
 
             if self.control_default(a, b) {
-                self.fighters[a].state_index = MINIONS + self.fighters[a].minion_type;
+                let necromancer = &mut self.fighters[a];
+                necromancer.enter_state(ActiveState::Minion(necromancer.minion_type));
 
                 let alive = self.attack_minion(a, b);
                 self.expire_minion(a);
@@ -572,7 +573,7 @@ impl Battle {
 
             let kind = (rng::next() * 3.0).trunc() as usize;
             let necromancer = &mut self.fighters[a];
-            let minion = necromancer.states[MINIONS + kind];
+            let minion = necromancer.states.minions[kind];
 
             necromancer.minion = true;
             necromancer.minion_type = kind;
@@ -581,7 +582,7 @@ impl Battle {
 
             self.log_round(a, b, 0.0, ATTACK_TYPE_MINION_SUMMON, DEFENSE_TYPE_NONE);
 
-            self.fighters[a].state_index = MINIONS + kind;
+            self.fighters[a].enter_state(ActiveState::Minion(kind));
 
             if self.fighters[a].summon_immediate_attack {
                 let alive = self.attack_minion(a, b);
@@ -604,11 +605,11 @@ impl Battle {
 
         if doctor.tincture_duration <= 0.0 {
             doctor.tincture = false;
-            doctor.state_index = DATA;
+            doctor.enter_state(ActiveState::Data);
         } else {
             doctor.tincture = true;
-            doctor.tincture_state = TINCTURE_ROUNDS + (doctor.tincture_duration as usize - 1);
-            doctor.state_index = doctor.tincture_state;
+            doctor.tincture_round = doctor.tincture_duration as usize - 1;
+            doctor.enter_state(ActiveState::TinctureRound(doctor.tincture_round));
         }
     }
 
@@ -618,17 +619,18 @@ impl Battle {
             self.control_default(a, b)
         } else if self.fighters[a].tincture {
             // Poison
-            self.fighters[a].state_index = self.fighters[a].tincture_state;
+            let doctor = &mut self.fighters[a];
+            doctor.enter_state(ActiveState::TinctureRound(doctor.tincture_round));
 
-            let state = self.fighters[a].state();
+            let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
-            let critical = rng::roll(self.fighters[a].state().critical_chance);
+            let critical = rng::roll(self.fighters[a].state.critical_chance);
 
             if !self.attack(a, b, damage, false, critical, TINCTURE) {
                 return false;
             }
 
-            self.fighters[a].state_index = DATA;
+            self.fighters[a].enter_state(ActiveState::Data);
 
             let alive = self.control_default(a, b);
             self.expire_tincture(a);
@@ -636,9 +638,9 @@ impl Battle {
             alive
         } else if rng::roll(self.fighters[a].tincture_chance) {
             // Throw
-            self.fighters[a].state_index = TINCTURE_THROW_STATE;
+            self.fighters[a].enter_state(ActiveState::TinctureThrowState);
 
-            let state = self.fighters[a].state();
+            let state = self.fighters[a].state;
             let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
 
             if !skipped {
@@ -646,15 +648,17 @@ impl Battle {
 
                 doctor.tincture_duration = 3.0;
                 doctor.tincture = true;
-                doctor.tincture_state = TINCTURE_ROUNDS + 2;
+                doctor.tincture_round = 2;
             }
 
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
-            let critical = rng::roll(self.fighters[a].state().critical_chance);
+            let critical = rng::roll(self.fighters[a].state.critical_chance);
             let alive = self.attack(a, b, damage, skipped, critical, TINCTURE_THROW);
 
-            if self.fighters[a].tincture {
-                self.fighters[a].state_index = self.fighters[a].tincture_state;
+            let doctor = &mut self.fighters[a];
+
+            if doctor.tincture {
+                doctor.enter_state(ActiveState::TinctureRound(doctor.tincture_round));
             }
 
             alive
@@ -670,15 +674,15 @@ impl Battle {
         } else if self.fighters[a].seal_used {
             if rng::roll(self.fighters[a].scythe_chance) {
                 // Scythe
-                self.fighters[a].state_index = SCYTHE_STATE;
+                self.fighters[a].enter_state(ActiveState::ScytheState);
 
-                let state = self.fighters[a].state();
+                let state = self.fighters[a].state;
                 let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
                 let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
-                let critical = rng::roll(self.fighters[a].state().critical_chance);
+                let critical = rng::roll(self.fighters[a].state.critical_chance);
                 let alive = self.attack(a, b, damage, skipped, critical, SCYTHE);
 
-                self.fighters[a].state_index = REVIVED_STATE;
+                self.fighters[a].enter_state(ActiveState::RevivedState);
 
                 alive
             } else {
@@ -692,15 +696,15 @@ impl Battle {
 
             weaver.health = (weaver.health * (1.0 - weaver.dagger_sacrifice)).trunc();
             weaver.pact_stacks = weaver.pact_stacks_max.min(weaver.pact_stacks + 1.0);
-            weaver.state_index = DAGGER_STATE;
+            weaver.enter_state(ActiveState::DaggerState);
 
-            let state = self.fighters[a].state();
+            let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
             let skipped = self.skip(b, SKIP_TYPE_DEFAULT);
-            let critical = rng::roll(self.fighters[a].state().critical_chance);
+            let critical = rng::roll(self.fighters[a].state.critical_chance);
             let alive = self.attack(a, b, damage, skipped, critical, DAGGER);
 
-            self.fighters[a].state_index = DATA;
+            self.fighters[a].enter_state(ActiveState::Data);
 
             alive
         } else {

@@ -20,25 +20,6 @@ pub const PALADIN: u32 = 11;
 pub const PLAGUEDOCTOR: u32 = 12;
 pub const BLOODWEAVER: u32 = 13;
 
-/// States per fighter: `Data` plus the class's special states.
-pub const STATE_COUNT: usize = 5;
-
-// Positions in `Fighter::states`
-pub const DATA: usize = 0;
-pub const RAGE_STATE: usize = 1;
-/// Song levels 1-3 at 1-3.
-pub const SONGS: usize = 1;
-/// Neutral, defensive and offensive stance at 1-3.
-pub const STANCES: usize = 1;
-/// Skeleton, hound and golem at 1-3.
-pub const MINIONS: usize = 1;
-pub const TINCTURE_THROW_STATE: usize = 1;
-/// Poison rounds 0-2 at 2-4.
-pub const TINCTURE_ROUNDS: usize = 2;
-pub const DAGGER_STATE: usize = 1;
-pub const SCYTHE_STATE: usize = 2;
-pub const REVIVED_STATE: usize = 3;
-
 // Fighter states and effects shown in the fight log.
 pub const FIGHTER_STATE_NORMAL: u32 = 0;
 pub const FIGHTER_STATE_BLOODWEAVER_REVIVED: u32 = 1;
@@ -99,36 +80,83 @@ impl State {
     }
 }
 
-/// `Data` followed by the class's special states.
-fn read_states(class: u32, data: &StateInput) -> [State; STATE_COUNT] {
-    let mut states = [State::default(); STATE_COUNT];
+/// `model.Data` and its special states. Only the fighter's own class has special states.
+#[derive(Clone, Copy, Default)]
+pub struct States {
+    pub data: State,
+    pub rage_state: State,
+    /// Song levels 1-3.
+    pub songs: [State; 3],
+    /// Neutral, defensive and offensive.
+    pub stances: [State; 3],
+    /// Skeleton, hound and golem.
+    pub minions: [State; 3],
+    pub tincture_throw_state: State,
+    pub tincture_rounds: [State; 3],
+    pub dagger_state: State,
+    pub scythe_state: State,
+    pub revived_state: State,
+}
 
-    states[DATA] = State::from_input(data);
+impl States {
+    fn from_input(data: &StateInput) -> States {
+        let one = |state: &Option<Box<StateInput>>| {
+            state.as_deref().map(State::from_input).unwrap_or_default()
+        };
+        let three = |states: &[StateInput]| {
+            let mut result = [State::default(); 3];
 
-    let special: Vec<&StateInput> = match class {
-        DRUID => data.rage_state.iter().map(|state| state.as_ref()).collect(),
-        BARD => data.songs.iter().collect(),
-        PALADIN => data.stances.iter().collect(),
-        NECROMANCER => data.minions.iter().collect(),
-        PLAGUEDOCTOR => data
-            .tincture_throw_state
-            .iter()
-            .map(|state| state.as_ref())
-            .chain(data.tincture_rounds.iter())
-            .collect(),
-        BLOODWEAVER => [&data.dagger_state, &data.scythe_state, &data.revived_state]
-            .into_iter()
-            .flatten()
-            .map(|state| state.as_ref())
-            .collect(),
-        _ => Vec::new(),
-    };
+            for (index, state) in states.iter().take(3).enumerate() {
+                result[index] = State::from_input(state);
+            }
 
-    for (index, state) in special.into_iter().enumerate().take(STATE_COUNT - 1) {
-        states[index + 1] = State::from_input(state);
+            result
+        };
+
+        States {
+            data: State::from_input(data),
+            rage_state: one(&data.rage_state),
+            songs: three(&data.songs),
+            stances: three(&data.stances),
+            minions: three(&data.minions),
+            tincture_throw_state: one(&data.tincture_throw_state),
+            tincture_rounds: three(&data.tincture_rounds),
+            dagger_state: one(&data.dagger_state),
+            scythe_state: one(&data.scythe_state),
+            revived_state: one(&data.revived_state),
+        }
     }
 
-    states
+    fn get(&self, active: ActiveState) -> State {
+        match active {
+            ActiveState::Data => self.data,
+            ActiveState::RageState => self.rage_state,
+            ActiveState::Song(level) => self.songs[level],
+            ActiveState::Stance(stance) => self.stances[stance],
+            ActiveState::Minion(minion) => self.minions[minion],
+            ActiveState::TinctureThrowState => self.tincture_throw_state,
+            ActiveState::TinctureRound(round) => self.tincture_rounds[round],
+            ActiveState::DaggerState => self.dagger_state,
+            ActiveState::ScytheState => self.scythe_state,
+            ActiveState::RevivedState => self.revived_state,
+        }
+    }
+}
+
+/// Which of the `States` is active.
+#[derive(Clone, Copy, Default, PartialEq)]
+pub enum ActiveState {
+    #[default]
+    Data,
+    RageState,
+    Song(usize),
+    Stance(usize),
+    Minion(usize),
+    TinctureThrowState,
+    TinctureRound(usize),
+    DaggerState,
+    ScytheState,
+    RevivedState,
 }
 
 #[derive(Clone, Copy, Default)]
@@ -182,12 +210,13 @@ pub struct Fighter {
 
     // Depend on the opponent
     pub fireball: f64,
-    pub states: [State; STATE_COUNT],
+    pub states: States,
 
     // Change during a fight
     pub health: f64,
-    /// Position of the active state in `states`.
-    pub state_index: usize,
+    pub active_state: ActiveState,
+    /// Copy of the active state.
+    pub state: State,
     /// Skips in a row.
     pub skip_count: f64,
     /// Demon Hunter revives used.
@@ -206,8 +235,8 @@ pub struct Fighter {
     pub minion_duration: f64,
     pub minion_revives: f64,
     pub tincture: bool,
-    /// Position of the active poison round in `states`.
-    pub tincture_state: usize,
+    /// Active poison round in `states.tincture_rounds`.
+    pub tincture_round: usize,
     pub tincture_duration: f64,
     pub pact_stacks: f64,
     pub seal_used: bool,
@@ -274,7 +303,7 @@ impl Fighter {
             scythe_chance: config.scythe_chance,
 
             fireball: input.fireball,
-            states: read_states(input.class, &input.data),
+            states: States::from_input(&input.data),
 
             health: input.total_health,
             ..Fighter::default()
@@ -282,13 +311,19 @@ impl Fighter {
     }
 
     #[inline(always)]
-    pub fn state(&self) -> State {
-        self.states[self.state_index]
+    pub fn enter_state(&mut self, active: ActiveState) {
+        self.active_state = active;
+        self.state = self.states.get(active);
+    }
+
+    #[inline(always)]
+    pub fn special_state(&self) -> bool {
+        self.active_state != ActiveState::Data
     }
 
     /// Resets the fight state, except health.
     pub fn reset(&mut self) {
-        self.state_index = DATA;
+        self.enter_state(ActiveState::Data);
         self.skip_count = 0.0;
 
         match self.class {
@@ -304,7 +339,7 @@ impl Fighter {
             }
             PALADIN => {
                 self.stance_index = self.stance_initial;
-                self.state_index = STANCES + self.stance_index;
+                self.enter_state(ActiveState::Stance(self.stance_index));
             }
             NECROMANCER => self.minion = false,
             PLAGUEDOCTOR => {
@@ -323,7 +358,7 @@ impl Fighter {
     pub fn log_state(&self) -> u32 {
         match self.class {
             BERSERKER if self.skip_count > 0.0 => FIGHTER_STATE_BERSERKER_RAGE,
-            DRUID if self.state_index != DATA => FIGHTER_STATE_DRUID_RAGE,
+            DRUID if self.special_state() => FIGHTER_STATE_DRUID_RAGE,
             DRUID => FIGHTER_STATE_DRUID_HIDDEN,
             PALADIN if self.stance_index == 1 => FIGHTER_STATE_PALADIN_DEFENSIVE,
             PALADIN if self.stance_index == 2 => FIGHTER_STATE_PALADIN_OFFENSIVE,
@@ -335,7 +370,7 @@ impl Fighter {
     /// The active effect shown next to each logged round, as type, duration and tier.
     pub fn log_effect(&self) -> Option<(u32, f64, f64)> {
         match self.class {
-            BARD if self.state_index != DATA => Some((
+            BARD if self.special_state() => Some((
                 EFFECT_TYPE_SONG,
                 self.effect_reset - self.effect_counter,
                 self.effect_level,
