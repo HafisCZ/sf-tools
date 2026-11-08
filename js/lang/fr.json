@@ -223,6 +223,10 @@
             "title": "Album de maniaque",
             "desc": "Trouver les objets manquants dans votre album de maniaque"
         },
+        "dungeon_break": {
+            "title": "Dungeon Break",
+            "desc": "See progress left in your dungeons"
+        },
         "idle": {
             "title": "Manager d'arène",
             "desc": "Vérifiez la production de votre gestionnaire d'arène"
@@ -442,6 +446,7 @@
         "query": {
             "clear": "Clear the filter",
             "history": "Starred and recent filters",
+            "info": "Filter syntax",
             "shortcut": "Ctrl + Space",
             "starred": "Starred",
             "recent": "Recent",
@@ -598,6 +603,47 @@
             "instructor": "Maître",
             "pet": "Familier",
             "knights": "Salle des chevaliers",
+            "level": "Level #{level}",
+            "xp": "#{xp} / #{next} XP",
+            "potion": "#{name} Potion",
+            "rank": "Rank",
+            "honor": "Honor",
+            "hall_of_fame": "Hall of Fame",
+            "underworld": "Underworld",
+            "guild_rank": "Guild Rank",
+            "chart_title": "#{name} #{column}",
+            "tabs": {
+                "overview": "Overview",
+                "attributes": "Attributes",
+                "items": "Items"
+            },
+            "columns": {
+                "attribute": "Attribute",
+                "total": "Total",
+                "base": "Base",
+                "items": "Items",
+                "upgrades": "Upgrades",
+                "gems": "Gems",
+                "class": "Class",
+                "potion": "Potion",
+                "pets": "Pets"
+            },
+            "items": {
+                "empty": "Empty",
+                "empty_socket": "Empty Socket",
+                "enchanted": "Enchanted",
+                "block_chance": "Block Chance",
+                "all_attributes": "All Attributes",
+                "upgrades": "Upgrades",
+                "gem": "#{name} Gem"
+            },
+            "pets": {
+                "title": "Pets",
+                "collected": "Collected",
+                "total_level": "Total Level",
+                "rank": "Pet Rank",
+                "honor": "Pet Honor"
+            },
             "extras": {
                 "title": "Extras",
                 "registered": "Inscrit",
@@ -679,6 +725,24 @@
         "simulate": "Simuler",
         "simulate_dungeons": "Simuler tous les donjons restants",
         "results": "Résultats",
+        "win_chance": "Win chance",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "details": {
+            "level": "Level #{level}",
+            "boss": "Habitat boss #{position}"
+        },
+        "csv": {
+            "position": "Position",
+            "win_rate": "Win rate %"
+        },
+        "picker": {
+            "search": "Search pets",
+            "empty": "No pets found"
+        },
         "calendar": {
             "collected": "Récupéré",
             "available": "Disponible",
@@ -686,7 +750,16 @@
             "footer#": "Les horaires de l'événement peuvent ne pas être exacts. Veuillez vérifier dans le jeu."
         },
         "map": {
-            "gladiator": "Gladiateur"
+            "gladiator": "Gladiateur",
+            "description": "#{pet}, Level #{level}",
+            "versus": "vs",
+            "legend": {
+                "zero": "0%",
+                "low": "Under 5%",
+                "medium": "5 - 10%",
+                "high": "10 - 25%",
+                "top": "25% and more"
+            }
         },
         "types": {
             "0": "Ombres",
@@ -734,6 +807,7 @@
             "type": "Type",
             "pet": "Familier",
             "habitat": "Habitat",
+            "habitat_boss": "Habitat boss",
             "health": "Points de vie",
             "attribute": "Attribut",
             "defense": "Défense",
@@ -793,6 +867,9 @@
         "simulate_next": "Plus",
         "player": "Joueur",
         "enemy": "Ennemis",
+        "find_boss": "Find boss",
+        "find_boss_search": "Search by boss or dungeon",
+        "find_boss_empty": "No boss matches the search",
         "open": "Donjons actuellement ouverts",
         "graph": {
             "y": "PV restants",
@@ -802,6 +879,30 @@
         },
         "results": "Résultats",
         "experience": "Total: #{experience} XP",
+        "win_chance": "Win chance",
+        "mushrooms": "Mushrooms",
+        "show_mushrooms": "Show estimated mushroom cost",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "csv": {
+            "dungeon": "Dungeon",
+            "position": "Position",
+            "enemy": "Enemy",
+            "level": "Level",
+            "class": "Class",
+            "companions": "With companions",
+            "damage_rune": "Damage rune",
+            "damage_rune_value": "Damage rune %",
+            "win_rate": "Win rate %",
+            "wins": "Wins",
+            "tries": "Tries",
+            "experience": "Experience",
+            "mushrooms_average": "Mushrooms (average)",
+            "mushrooms_certain": "Mushrooms (90%)"
+        },
         "cheats": {
             "title": "Menu de Cheat",
             "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
@@ -817,6 +918,110 @@
         "simulate_next_info": {
             "title": "Aucun donjon ne peut être battu dans le seuil (#{threshold_min} - #{threshold_max}%)",
             "message#": "Utilisez <b>Tout</b> pour simuler tous les donjons ouverts"
+        }
+    },
+    "dungeon_break": {
+        "setup": "Setup",
+        "summary": "Summary",
+        "groups_label": "Dungeon groups",
+        "mushrooms": "Mushrooms to spend",
+        "mushrooms_all": "All",
+        "threshold": "Minimum chance",
+        "simulation": "Threads & Iterations",
+        "simulate": "Simulate",
+        "steps": {
+            "fighters": "Fighters",
+            "plan": "Mushrooms and chances",
+            "simulate": "Simulate"
+        },
+        "cost": {
+            "label": "Mushroom cost",
+            "average": "On average",
+            "certain": "90% sure"
+        },
+        "tiles": {
+            "remaining": "Remaining levels",
+            "remaining_xp": "Remaining XP",
+            "beatable": "Beatable levels",
+            "beatable_xp": "Beatable XP",
+            "mushrooms": "Mushrooms needed"
+        },
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm"
+        },
+        "card": {
+            "open": "#{count} dungeons open",
+            "open_locked": "#{count} open · #{locked} locked",
+            "floor": "Floor #{position} of #{total}",
+            "done": "All done",
+            "levels": "lvl",
+            "remaining": "Remaining",
+            "beatable": "Beatable",
+            "mushrooms": "mushrooms",
+            "for": "for #{won} out of #{total} floors",
+            "left": "#{count} floors left"
+        },
+        "table": {
+            "include": "Include #{name} in the plan",
+            "dungeon": "Dungeon",
+            "next": "Next floor",
+            "floors": "Floors",
+            "remaining": "Remaining XP",
+            "beatable": "Beatable XP",
+            "levels": "Lvl",
+            "mushrooms": "Mushrooms",
+            "boss": "##{position} #{name}",
+            "level": "lvl #{level}",
+            "progress": "#{done} done, #{won} of #{total} left beatable",
+            "progress_pending": "#{done} done, #{total} left"
+        },
+        "status": {
+            "win": "Beatable",
+            "budget": "Over budget",
+            "blocked": "Below minimum chance",
+            "never": "Never won",
+            "none": "Not simulated",
+            "locked": "Locked",
+            "rest": "Not possible or not simulated",
+            "pending": "Not simulated yet"
+        },
+        "unlock": {
+            "level": "Level #{level}",
+            "after": "After #{name}",
+            "after_range": "After dungeons #{from}-#{to}",
+            "floors": "#{count} floors of #{name}",
+            "open": "#{name} open",
+            "level_after": "Level #{level}, after #{name}",
+            "level_open": "Level #{level}, #{name} open"
+        },
+        "floors": {
+            "include": "Include in the plan",
+            "floor": "Floor",
+            "level": "Level",
+            "chance": "Win chance",
+            "experience": "XP"
+        },
+        "chart": {
+            "title": "Levels per mushroom",
+            "levels": "levels gained",
+            "mushrooms": "mushrooms spent",
+            "marker": "#{mushrooms} mushrooms · +#{levels} lvl",
+            "description": "Levels gained against mushrooms spent, #{levels} levels for all #{mushrooms} mushrooms",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance."
+        },
+        "order": {
+            "title": "Fight order",
+            "subtitle": "#{count} fights, cheapest levels first",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance.",
+            "number": "#",
+            "floor": "Floor",
+            "spent": "Mushrooms spent"
         }
     },
     "underworld": {
@@ -946,7 +1151,9 @@
                 "tincture": "Tincture throw chance",
                 "dagger": "Ritual Dagger chance",
                 "scythe": "Blood Scythe chance"
-            }
+            },
+            "longest_chain": "Longest chain",
+            "longest_chain_fight": "Fight #{index}"
         }
     },
     "players": {
@@ -1045,15 +1252,29 @@
     "integration": {
         "file": "Fichier",
         "game": "Connexion",
-        "poll": {
-            "players": "Afficher les joueurs enregistrés",
-            "guilds": "Afficher les guildes enregistrées"
+        "search": "Search player...",
+        "search_guild": "Search guild...",
+        "search_world": "Search in #{world}...",
+        "choose": "Choose your character",
+        "login": "Log in to the game",
+        "import": "Import a file",
+        "load": {
+            "character": "Load character",
+            "player": "Load player",
+            "guild": "Load guild"
         },
+        "member": "#{count} member",
+        "members": "#{count} members",
+        "empty": "Nothing imported yet. Log in to the game or import a file to add some.",
+        "no_match": "Nothing matches your search.",
+        "modify": "Modify",
+        "modify_title": "Modify what you load",
         "tooltip": {
             "cheats": "Appliquer les modifications aux personnages",
             "options": "Configurer l'intégration"
         },
         "hide": {
+            "label": "Hide from this list",
             "title": "Êtes-vous sûr de vouloir masquer ce personnage ?",
             "message": "Vous pourrez à nouveau l'afficher en cliquant sur l'icône de roue et en la retirant de la liste des joueurs et guildes ignorés"
         }
@@ -1065,6 +1286,7 @@
         "add": "Ajouter",
         "save": "Sauvegarder",
         "simulate": "Simuler",
+        "fight_as_player": "Fight as this player",
         "configure": "Configurer le simulateur",
         "information": "Information importante !",
         "configure_copy": "Copier tout, y compris la configuration actuelle",
@@ -1084,6 +1306,8 @@
         "min_chance": "Min %",
         "max_chance": "Max %",
         "avg_chance": "Moy %",
+        "player": "Player",
+        "player_level": "Level #{level}",
         "toast": {
             "title": "Simulation terminée",
             "message": "La simulation a pris #{duration}"
@@ -1130,10 +1354,12 @@
         "cold": "Glace",
         "lightning": "Foudre",
         "auto": "Auto",
-        "gladiator": "Gladiateur (0 - 15)",
+        "gladiator": "Gladiator",
         "life_potion": "Vie éternelle",
         "hand_enchant": "Ombre du cowboy",
         "smart_change": "Changement de classe intelligent",
+        "smart_change_unavailable": "Not available in Character mode",
+        "fighters": "Fighters",
         "mode": {
             "raw": "Raw",
             "character": "Personnage"
@@ -1141,10 +1367,18 @@
         "copy": "Copier",
         "none": "Aucun",
         "equipment": {
+            "equipment": "Equipment",
+            "swap_mannequin": "Swap with Mannequin",
             "empty": "Vide",
             "none": "Aucun",
             "reset_to": "Revenir à #{item}",
             "details": "Rune, gemme et enchantement",
+            "extras_from": "Extras from",
+            "extras_from_description": "Copies its upgrades, gem, rune and enchantment. Fields you change below win over it.",
+            "own_extras": "Its own extras",
+            "no_extras": "No upgrades, gem, rune or enchantment",
+            "enchanted": "Enchanted",
+            "all_attributes": "All attributes",
             "rune": "Rune",
             "gem": "Gemme",
             "enchantment": "Enchantement",
@@ -1166,6 +1400,7 @@
                 "Wpn2": "Main gauche"
             },
             "pool": {
+                "equipped": "Equipped",
                 "backpack": "Sac à dos",
                 "shop": "Armurier & apothicaire",
                 "dummy": "Mannequin"
@@ -1319,7 +1554,17 @@
                 "description": "Limit how many floors are simulated when using the Remaining mode",
                 "twister": "Twister",
                 "sandstorm": "Sandstorm"
+            },
+            "precision": "Decimal places shown for the win chance",
+            "image_background": {
+                "label": "Results image background",
+                "dark": "Dark",
+                "white": "White"
             }
+        },
+        "simulator_options": {
+            "title": "Simulator options",
+            "precision": "Decimal places shown for the win chance"
         },
         "analyzer_autofill": {
             "title": "Données disponibles",
@@ -1643,10 +1888,12 @@
                 "SwoopChanceMax": "Highest swoop chance.",
                 "SwoopChanceDecay": "Swoop chance lost after each swoop. A negative value raises it.",
                 "SwoopBonus": "Added to the damage multiplier for a swoop.",
+                "CriticalSwoopBug": "Copies a game bug: a critical swoop adds the critical and swoop bonuses together instead of multiplying them.",
                 "EffectRounds": "Turns between songs. The first song plays on the first turn.",
                 "EffectBaseDuration": "Attacks a song lasts, for song levels 1 to 3.",
                 "EffectBaseChance": "How often each song level is picked, as weights for levels 1 to 3.",
                 "EffectValues": "Damage bonus of a song, for song levels 1 to 3.",
+                "CriticalSongBug": "Copies a game bug: a critical hit during a song adds the critical and song bonuses together instead of multiplying them.",
                 "SummonChance": "Chance to summon a minion when none is out.",
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
@@ -1698,6 +1945,7 @@
                 "stats": "Stats",
                 "skip": "Skip",
                 "ability": "Ability",
+                "bugs": "Bugs",
                 "opponents": "Against classes"
             },
             "state_fields": {
@@ -2075,14 +2323,9 @@
         "number_max": "La valeur doit être au plus #{max}"
     },
     "inventory": {
-        "back": "Retour",
         "tab": {
             "inventory": "Inventaire",
             "resources": "Ressources"
-        },
-        "picker": {
-            "title": "Gestionnaire d'inventaire",
-            "empty": "Le gestionnaire d'inventaire dépend du module Statistique. Vous devrez télécharger un fichier contenant votre personnage avant de pouvoir utiliser ce module."
         },
         "section": {
             "equipped": "Objets équipés",
@@ -2150,14 +2393,9 @@
         }
     },
     "scrapbook": {
-        "back": "Retour",
         "tab": {
             "items": "Objets",
             "legendaries": "Légendaires"
-        },
-        "picker": {
-            "title": "Album de maniaque",
-            "empty": "L'album de maniaque dépend du module Statistique. Vous devrez télécharger un fichier contenant votre personnage avant de pouvoir utiliser ce module."
         },
         "unlock_level": "Unlock level",
         "shared": "Partagé",

@@ -223,6 +223,10 @@
             "title": "Scrapbook",
             "desc": "Find the items missing from your scrapbook"
         },
+        "dungeon_break": {
+            "title": "Dungeon Break",
+            "desc": "See progress left in your dungeons"
+        },
         "idle": {
             "title": "Aréna menedzser",
             "desc": "Aréna menedszer termelésének ellenőrzése"
@@ -442,6 +446,7 @@
         "query": {
             "clear": "Clear the filter",
             "history": "Starred and recent filters",
+            "info": "Filter syntax",
             "shortcut": "Ctrl + Space",
             "starred": "Starred",
             "recent": "Recent",
@@ -598,6 +603,47 @@
             "instructor": "Instructor",
             "pet": "Kedvenc",
             "knights": "Dicsőség csarnoka",
+            "level": "Level #{level}",
+            "xp": "#{xp} / #{next} XP",
+            "potion": "#{name} Potion",
+            "rank": "Rank",
+            "honor": "Honor",
+            "hall_of_fame": "Hall of Fame",
+            "underworld": "Underworld",
+            "guild_rank": "Guild Rank",
+            "chart_title": "#{name} #{column}",
+            "tabs": {
+                "overview": "Overview",
+                "attributes": "Attributes",
+                "items": "Items"
+            },
+            "columns": {
+                "attribute": "Attribute",
+                "total": "Total",
+                "base": "Base",
+                "items": "Items",
+                "upgrades": "Upgrades",
+                "gems": "Gems",
+                "class": "Class",
+                "potion": "Potion",
+                "pets": "Pets"
+            },
+            "items": {
+                "empty": "Empty",
+                "empty_socket": "Empty Socket",
+                "enchanted": "Enchanted",
+                "block_chance": "Block Chance",
+                "all_attributes": "All Attributes",
+                "upgrades": "Upgrades",
+                "gem": "#{name} Gem"
+            },
+            "pets": {
+                "title": "Pets",
+                "collected": "Collected",
+                "total_level": "Total Level",
+                "rank": "Pet Rank",
+                "honor": "Pet Honor"
+            },
             "extras": {
                 "title": "Extrák",
                 "registered": "Regisztrált",
@@ -679,6 +725,24 @@
         "simulate": "Simulate",
         "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Results",
+        "win_chance": "Win chance",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "details": {
+            "level": "Level #{level}",
+            "boss": "Habitat boss #{position}"
+        },
+        "csv": {
+            "position": "Position",
+            "win_rate": "Win rate %"
+        },
+        "picker": {
+            "search": "Search pets",
+            "empty": "No pets found"
+        },
         "calendar": {
             "collected": "Collected",
             "available": "Available",
@@ -686,7 +750,16 @@
             "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Glad",
+            "description": "#{pet}, Level #{level}",
+            "versus": "vs",
+            "legend": {
+                "zero": "0%",
+                "low": "Under 5%",
+                "medium": "5 - 10%",
+                "high": "10 - 25%",
+                "top": "25% and more"
+            }
         },
         "types": {
             "0": "Árnyék",
@@ -734,6 +807,7 @@
             "type": "Type",
             "pet": "Pet",
             "habitat": "Habitat",
+            "habitat_boss": "Habitat boss",
             "health": "Health",
             "attribute": "Attribute",
             "defense": "Defense",
@@ -793,6 +867,9 @@
         "simulate_next": "More",
         "player": "Player",
         "enemy": "Enemy",
+        "find_boss": "Find boss",
+        "find_boss_search": "Search by boss or dungeon",
+        "find_boss_empty": "No boss matches the search",
         "open": "Nyitott kazamaták",
         "graph": {
             "y": "HP Left",
@@ -802,6 +879,30 @@
         },
         "results": "Eredmények",
         "experience": "Teljes: #{experience} XP",
+        "win_chance": "Win chance",
+        "mushrooms": "Mushrooms",
+        "show_mushrooms": "Show estimated mushroom cost",
+        "copy_image": "Copy as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "csv": {
+            "dungeon": "Dungeon",
+            "position": "Position",
+            "enemy": "Enemy",
+            "level": "Level",
+            "class": "Class",
+            "companions": "With companions",
+            "damage_rune": "Damage rune",
+            "damage_rune_value": "Damage rune %",
+            "win_rate": "Win rate %",
+            "wins": "Wins",
+            "tries": "Tries",
+            "experience": "Experience",
+            "mushrooms_average": "Mushrooms (average)",
+            "mushrooms_certain": "Mushrooms (90%)"
+        },
         "cheats": {
             "title": "Csalás menü",
             "subtitle": "Válaszd ki melyik csalást engedélyezed, és szavazz a karakteredről",
@@ -817,6 +918,110 @@
         "simulate_next_info": {
             "title": "A küszöbön belül nincs legyőzhető kazamata (#{threshold_min} - #{threshold_max} %)",
             "message#": "Használja az <b>Összes</b> funkciót az összes nyitott kazamata szimulálásához"
+        }
+    },
+    "dungeon_break": {
+        "setup": "Setup",
+        "summary": "Summary",
+        "groups_label": "Dungeon groups",
+        "mushrooms": "Mushrooms to spend",
+        "mushrooms_all": "All",
+        "threshold": "Minimum chance",
+        "simulation": "Threads & Iterations",
+        "simulate": "Simulate",
+        "steps": {
+            "fighters": "Fighters",
+            "plan": "Mushrooms and chances",
+            "simulate": "Simulate"
+        },
+        "cost": {
+            "label": "Mushroom cost",
+            "average": "On average",
+            "certain": "90% sure"
+        },
+        "tiles": {
+            "remaining": "Remaining levels",
+            "remaining_xp": "Remaining XP",
+            "beatable": "Beatable levels",
+            "beatable_xp": "Beatable XP",
+            "mushrooms": "Mushrooms needed"
+        },
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm"
+        },
+        "card": {
+            "open": "#{count} dungeons open",
+            "open_locked": "#{count} open · #{locked} locked",
+            "floor": "Floor #{position} of #{total}",
+            "done": "All done",
+            "levels": "lvl",
+            "remaining": "Remaining",
+            "beatable": "Beatable",
+            "mushrooms": "mushrooms",
+            "for": "for #{won} out of #{total} floors",
+            "left": "#{count} floors left"
+        },
+        "table": {
+            "include": "Include #{name} in the plan",
+            "dungeon": "Dungeon",
+            "next": "Next floor",
+            "floors": "Floors",
+            "remaining": "Remaining XP",
+            "beatable": "Beatable XP",
+            "levels": "Lvl",
+            "mushrooms": "Mushrooms",
+            "boss": "##{position} #{name}",
+            "level": "lvl #{level}",
+            "progress": "#{done} done, #{won} of #{total} left beatable",
+            "progress_pending": "#{done} done, #{total} left"
+        },
+        "status": {
+            "win": "Beatable",
+            "budget": "Over budget",
+            "blocked": "Below minimum chance",
+            "never": "Never won",
+            "none": "Not simulated",
+            "locked": "Locked",
+            "rest": "Not possible or not simulated",
+            "pending": "Not simulated yet"
+        },
+        "unlock": {
+            "level": "Level #{level}",
+            "after": "After #{name}",
+            "after_range": "After dungeons #{from}-#{to}",
+            "floors": "#{count} floors of #{name}",
+            "open": "#{name} open",
+            "level_after": "Level #{level}, after #{name}",
+            "level_open": "Level #{level}, #{name} open"
+        },
+        "floors": {
+            "include": "Include in the plan",
+            "floor": "Floor",
+            "level": "Level",
+            "chance": "Win chance",
+            "experience": "XP"
+        },
+        "chart": {
+            "title": "Levels per mushroom",
+            "levels": "levels gained",
+            "mushrooms": "mushrooms spent",
+            "marker": "#{mushrooms} mushrooms · +#{levels} lvl",
+            "description": "Levels gained against mushrooms spent, #{levels} levels for all #{mushrooms} mushrooms",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance."
+        },
+        "order": {
+            "title": "Fight order",
+            "subtitle": "#{count} fights, cheapest levels first",
+            "empty": "Shows up when the simulation finishes.",
+            "nothing": "No floor reaches the minimum chance.",
+            "number": "#",
+            "floor": "Floor",
+            "spent": "Mushrooms spent"
         }
     },
     "underworld": {
@@ -946,7 +1151,9 @@
                 "tincture": "Tincture throw chance",
                 "dagger": "Ritual Dagger chance",
                 "scythe": "Blood Scythe chance"
-            }
+            },
+            "longest_chain": "Longest chain",
+            "longest_chain_fight": "Fight #{index}"
         }
     },
     "players": {
@@ -1045,15 +1252,29 @@
     "integration": {
         "file": "File",
         "game": "Endpoint",
-        "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+        "search": "Search player...",
+        "search_guild": "Search guild...",
+        "search_world": "Search in #{world}...",
+        "choose": "Choose your character",
+        "login": "Log in to the game",
+        "import": "Import a file",
+        "load": {
+            "character": "Load character",
+            "player": "Load player",
+            "guild": "Load guild"
         },
+        "member": "#{count} member",
+        "members": "#{count} members",
+        "empty": "Nothing imported yet. Log in to the game or import a file to add some.",
+        "no_match": "Nothing matches your search.",
+        "modify": "Modify",
+        "modify_title": "Modify what you load",
         "tooltip": {
             "cheats": "Apply modifications to characters",
             "options": "Configure integration"
         },
         "hide": {
+            "label": "Hide from this list",
             "title": "Are you sure you want to hide this character?",
             "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }
@@ -1065,6 +1286,7 @@
         "add": "Add",
         "save": "Save",
         "simulate": "Simulate",
+        "fight_as_player": "Fight as this player",
         "configure": "Szimulátor konfigurálása",
         "information": "Important notice!",
         "configure_copy": "Mindenki másolása, beleértve az aktuális konfigurációt is",
@@ -1084,6 +1306,8 @@
         "min_chance": "Min %",
         "max_chance": "Max %",
         "avg_chance": "Avg %",
+        "player": "Player",
+        "player_level": "Level #{level}",
         "toast": {
             "title": "Simulation finished",
             "message": "Simulation took #{duration}"
@@ -1130,10 +1354,12 @@
         "cold": "Hideg",
         "lightning": "Villám",
         "auto": "Auto",
-        "gladiator": "Gladiátor (0 - 15)",
+        "gladiator": "Gladiator",
         "life_potion": "Életerő bájital",
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
+        "smart_change_unavailable": "Not available in Character mode",
+        "fighters": "Fighters",
         "mode": {
             "raw": "Raw",
             "character": "Character"
@@ -1141,10 +1367,18 @@
         "copy": "Copy",
         "none": "None",
         "equipment": {
+            "equipment": "Equipment",
+            "swap_mannequin": "Swap with Mannequin",
             "empty": "Empty",
             "none": "None",
             "reset_to": "Change back to #{item}",
             "details": "Rune, gem and enchantment",
+            "extras_from": "Extras from",
+            "extras_from_description": "Copies its upgrades, gem, rune and enchantment. Fields you change below win over it.",
+            "own_extras": "Its own extras",
+            "no_extras": "No upgrades, gem, rune or enchantment",
+            "enchanted": "Enchanted",
+            "all_attributes": "All attributes",
             "rune": "Rune",
             "gem": "Gem",
             "enchantment": "Enchantment",
@@ -1166,6 +1400,7 @@
                 "Wpn2": "Off-hand"
             },
             "pool": {
+                "equipped": "Equipped",
                 "backpack": "Backpack",
                 "shop": "Weapon & Magic shop",
                 "dummy": "Mannequin"
@@ -1319,7 +1554,17 @@
                 "description": "Limit how many floors are simulated when using the Remaining mode",
                 "twister": "Twister",
                 "sandstorm": "Sandstorm"
+            },
+            "precision": "Decimal places shown for the win chance",
+            "image_background": {
+                "label": "Results image background",
+                "dark": "Dark",
+                "white": "White"
             }
+        },
+        "simulator_options": {
+            "title": "Simulator options",
+            "precision": "Decimal places shown for the win chance"
         },
         "analyzer_autofill": {
             "title": "Available data",
@@ -1643,10 +1888,12 @@
                 "SwoopChanceMax": "Highest swoop chance.",
                 "SwoopChanceDecay": "Swoop chance lost after each swoop. A negative value raises it.",
                 "SwoopBonus": "Added to the damage multiplier for a swoop.",
+                "CriticalSwoopBug": "Copies a game bug: a critical swoop adds the critical and swoop bonuses together instead of multiplying them.",
                 "EffectRounds": "Turns between songs. The first song plays on the first turn.",
                 "EffectBaseDuration": "Attacks a song lasts, for song levels 1 to 3.",
                 "EffectBaseChance": "How often each song level is picked, as weights for levels 1 to 3.",
                 "EffectValues": "Damage bonus of a song, for song levels 1 to 3.",
+                "CriticalSongBug": "Copies a game bug: a critical hit during a song adds the critical and song bonuses together instead of multiplying them.",
                 "SummonChance": "Chance to summon a minion when none is out.",
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
@@ -1698,6 +1945,7 @@
                 "stats": "Stats",
                 "skip": "Skip",
                 "ability": "Ability",
+                "bugs": "Bugs",
                 "opponents": "Against classes"
             },
             "state_fields": {
@@ -2075,14 +2323,9 @@
         "number_max": "Value has to be at most #{max}"
     },
     "inventory": {
-        "back": "Back",
         "tab": {
             "inventory": "Inventory",
             "resources": "Resources"
-        },
-        "picker": {
-            "title": "Inventory Manager",
-            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
         "section": {
             "equipped": "Equipped items",
@@ -2150,14 +2393,9 @@
         }
     },
     "scrapbook": {
-        "back": "Back",
         "tab": {
             "items": "Items",
             "legendaries": "Legendaries"
-        },
-        "picker": {
-            "title": "Scrapbook",
-            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
         "unlock_level": "Unlock level",
         "shared": "Shared",
