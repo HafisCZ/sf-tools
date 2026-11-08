@@ -555,6 +555,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       BardDamageMultiplier: 1,
 
       TinctureChance: 0.5,
+      TinctureReviveBug: true,
       TinctureThrow: {
         DamageBonus: -0.2,
         SkipChance: 0.2,
@@ -1661,7 +1662,7 @@ class NecromancerModel extends SimulatorModel {
 }
 
 class PlagueDoctorModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'TinctureChance' | 'TinctureThrow' | 'TinctureRounds'>>
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'TinctureChance' | 'TinctureReviveBug' | 'TinctureThrow' | 'TinctureRounds'>>
   declare Data: SimulatorState & { TinctureThrowState: SimulatorState; TinctureRounds: SimulatorState[] }
   declare Tincture: SimulatorState | null
   declare TinctureDuration: number
@@ -1740,10 +1741,16 @@ class PlagueDoctorModel extends SimulatorModel {
       // PD cannot throw against mages
       return super.control(instance, target)
     } else if (this.Tincture) {
+      const revivable = target as DemonHunterModel & BloodWeaverModel
+      const deathTriggers = revivable.DeathTriggers
+      const sealUsed = revivable.SealUsed
+
       if (!this.procTincturePoison(instance, target)) return false
 
       // Take control as player
-      this.enterState()
+      if (!this.Config.TinctureReviveBug || (revivable.DeathTriggers === deathTriggers && revivable.SealUsed === sealUsed)) {
+        this.enterState()
+      }
 
       const state = super.control(instance, target)
 

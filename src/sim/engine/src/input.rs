@@ -65,6 +65,7 @@ pub struct ConfigInput {
 
     // Plague Doctor
     pub tincture_chance: f64,
+    pub tincture_revive_bug: bool,
 
     // Blood Weaver
     pub dagger_chance: f64,

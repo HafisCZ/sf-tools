@@ -125,6 +125,7 @@ export type ClassConfig = {
   StanceInitial?: number
   Stances?: StateConfig[]
   TinctureChance?: number
+  TinctureReviveBug?: boolean
   TinctureThrow?: StateConfig
   TinctureRounds?: StateConfig[]
   DaggerChance?: number

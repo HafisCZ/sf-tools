@@ -1904,6 +1904,7 @@
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "TinctureReviveBug": "Copies a game bug: when the tincture poison kills an opponent who revives or uses Seal of Death, the normal attack after it keeps the tincture's damage.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
                 "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
                 "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",

@@ -625,12 +625,17 @@ impl Battle {
             let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
             let critical = rng::roll(self.fighters[a].state.critical_chance);
+            let revives = (self.fighters[b].death_triggers, self.fighters[b].seal_used);
 
             if !self.attack(a, b, damage, false, critical, TINCTURE) {
                 return false;
             }
 
-            self.fighters[a].enter_state(ActiveState::Data);
+            if !self.fighters[a].tincture_revive_bug
+                || revives == (self.fighters[b].death_triggers, self.fighters[b].seal_used)
+            {
+                self.fighters[a].enter_state(ActiveState::Data);
+            }
 
             let alive = self.control_default(a, b);
             self.expire_tincture(a);

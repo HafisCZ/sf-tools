@@ -200,6 +200,7 @@ pub struct Fighter {
     pub heal_multiplier: f64,
 
     pub tincture_chance: f64,
+    pub tincture_revive_bug: bool,
 
     pub dagger_chance: f64,
     pub dagger_sacrifice: f64,
@@ -294,6 +295,7 @@ impl Fighter {
                 .map_or(0.0, |stance| stance.heal_multiplier),
 
             tincture_chance: config.tincture_chance,
+            tincture_revive_bug: config.tincture_revive_bug,
 
             dagger_chance: config.dagger_chance,
             dagger_sacrifice: config.dagger_sacrifice,

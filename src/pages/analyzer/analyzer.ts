@@ -220,6 +220,7 @@ export type FightRound = {
   targetDeaths?: number
   attackerTinctureThrow?: boolean
   targetTinctureThrow?: boolean
+  attackerTinctureRevive?: number
   attackerSpecialDisplay?: SpecialDisplay
   targetSpecialDisplay?: SpecialDisplay
   hasDamage?: boolean
@@ -976,6 +977,8 @@ function findAttackerState(round: FightRound, model: SimulatorModel) {
 
           if (TINCTURE_THROW_ATTACK_TYPES.includes(round.attackType) || round.attackerTinctureThrow) {
             return data.TinctureThrowState
+          } else if (round.attackerTinctureRevive && model.Config.TinctureReviveBug) {
+            return data.TinctureRounds?.[round.attackerTinctureRevive - 1]
           } else {
             return tinctureEffect && TINCTURE_POISON_ATTACK_TYPES.includes(round.attackType) ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
           }
@@ -1595,6 +1598,17 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
         }
       }
     }
+  }
+
+  // After a poison tick that made the opponent revive, the Plague Doctor's next attack keeps the tick's state
+  for (const { rounds } of group.fights) {
+    rounds.forEach((round, index) => {
+      const tick = rounds[index - 2]
+
+      if (tick && TINCTURE_POISON_ATTACK_TYPES.includes(tick.attackType) && tick.attackerId === round.attackerId && ATTACK_TYPES_REVIVE.includes(rounds[index - 1].attackType)) {
+        round.attackerTinctureRevive = tick.attackerEffects.find((effect) => effect.type === EFFECT_TYPE_TINCTURE)?.duration
+      }
+    })
   }
 
   const flatRounds = group.fights.flatMap((fight) => fight.rounds)
