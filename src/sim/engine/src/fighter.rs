@@ -220,7 +220,7 @@ pub struct Fighter {
     pub state: State,
     /// Skips in a row.
     pub skip_count: f64,
-    /// Demon Hunter revives used.
+    /// Demon Hunter revives and Blood Weaver Seal of Death used.
     pub death_triggers: f64,
     pub swoop_chance: f64,
     /// Druid enters rage at his next turn.
@@ -240,7 +240,6 @@ pub struct Fighter {
     pub tincture_round: usize,
     pub tincture_duration: f64,
     pub pact_stacks: f64,
-    pub seal_used: bool,
 }
 
 impl Fighter {
@@ -327,9 +326,9 @@ impl Fighter {
     pub fn reset(&mut self) {
         self.enter_state(ActiveState::Data);
         self.skip_count = 0.0;
+        self.death_triggers = 0.0;
 
         match self.class {
-            DEMONHUNTER => self.death_triggers = 0.0,
             DRUID => {
                 self.swoop_chance = self.swoop_chance_start;
                 self.request_state = false;
@@ -348,10 +347,7 @@ impl Fighter {
                 self.tincture = false;
                 self.tincture_duration = 0.0;
             }
-            BLOODWEAVER => {
-                self.pact_stacks = 0.0;
-                self.seal_used = false;
-            }
+            BLOODWEAVER => self.pact_stacks = 0.0,
             _ => {}
         }
     }
@@ -364,7 +360,7 @@ impl Fighter {
             DRUID => FIGHTER_STATE_DRUID_HIDDEN,
             PALADIN if self.stance_index == 1 => FIGHTER_STATE_PALADIN_DEFENSIVE,
             PALADIN if self.stance_index == 2 => FIGHTER_STATE_PALADIN_OFFENSIVE,
-            BLOODWEAVER if self.seal_used => FIGHTER_STATE_BLOODWEAVER_REVIVED,
+            BLOODWEAVER if self.death_triggers > 0.0 => FIGHTER_STATE_BLOODWEAVER_REVIVED,
             _ => FIGHTER_STATE_NORMAL,
         }
     }

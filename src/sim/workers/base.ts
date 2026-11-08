@@ -758,6 +758,7 @@ export class SimulatorModel {
   declare Health: number
   declare State: SimulatorState
   declare SkipCount: number
+  declare DeathTriggers: number
   declare SwoopMultiplier?: number
 
   static initializeFighters(fighterA: SimulatorModel, fighterB: SimulatorModel) {
@@ -1058,6 +1059,7 @@ export class SimulatorModel {
   resetInternalState() {
     this.State = this.Data
     this.SkipCount = 0
+    this.DeathTriggers = 0
   }
 
   // Returns type of current state of player, only for logging
@@ -1250,13 +1252,6 @@ class BerserkerModel extends SimulatorModel {
 
 class DemonHunterModel extends SimulatorModel {
   declare Config: ModelConfig & Required<Pick<ClassConfig, 'ReviveChance' | 'ReviveChanceDecay' | 'ReviveHealth' | 'ReviveHealthMin' | 'ReviveHealthDecay' | 'ReviveDamage' | 'ReviveDamageMin' | 'ReviveDamageDecay' | 'ReviveMax'>>
-  declare DeathTriggers: number
-
-  resetInternalState() {
-    super.resetInternalState()
-
-    this.DeathTriggers = 0
-  }
 
   applyAttack(instance: SimulatorBase, source: SimulatorModel, damage: number, skipped: boolean | number, critical: boolean, attackType: number, defenseType: number) {
     const state = super.applyAttack(instance, source, damage, skipped, critical, attackType, defenseType)
@@ -1741,14 +1736,12 @@ class PlagueDoctorModel extends SimulatorModel {
       // PD cannot throw against mages
       return super.control(instance, target)
     } else if (this.Tincture) {
-      const revivable = target as DemonHunterModel & BloodWeaverModel
-      const deathTriggers = revivable.DeathTriggers
-      const sealUsed = revivable.SealUsed
+      const deathTriggers = target.DeathTriggers
 
       if (!this.procTincturePoison(instance, target)) return false
 
       // Take control as player
-      if (!this.Config.TinctureReviveBug || (revivable.DeathTriggers === deathTriggers && revivable.SealUsed === sealUsed)) {
+      if (!this.Config.TinctureReviveBug || target.DeathTriggers === deathTriggers) {
         this.enterState()
       }
 
@@ -1770,7 +1763,6 @@ class BloodWeaverModel extends SimulatorModel {
   declare Config: ModelConfig & Required<Pick<ClassConfig, 'DaggerChance' | 'DaggerSacrifice' | 'Dagger' | 'PactStacksMax' | 'SealHealth' | 'SealHealthPerStack' | 'ScytheChance' | 'Scythe' | 'Revived'>>
   declare Data: SimulatorState & { DaggerState: SimulatorState; ScytheState: SimulatorState; RevivedState: SimulatorState }
   declare PactStacks: number
-  declare SealUsed: boolean
 
   initializeData(target: SimulatorModel) {
     super.initializeData(target)
@@ -1784,11 +1776,10 @@ class BloodWeaverModel extends SimulatorModel {
     super.resetInternalState()
 
     this.PactStacks = 0
-    this.SealUsed = false
   }
 
   getCurrentStateForLog() {
-    return this.SealUsed ? FIGHTER_STATE_BLOODWEAVER_REVIVED : FIGHTER_STATE_NORMAL
+    return this.DeathTriggers > 0 ? FIGHTER_STATE_BLOODWEAVER_REVIVED : FIGHTER_STATE_NORMAL
   }
 
   getCurrentEffectsForLog() {
@@ -1835,7 +1826,7 @@ class BloodWeaverModel extends SimulatorModel {
   control(instance: SimulatorBase, target: SimulatorModel) {
     if (target.Config.BypassSpecial) {
       return super.control(instance, target)
-    } else if (this.SealUsed) {
+    } else if (this.DeathTriggers > 0) {
       return getRandom(this.Config.ScytheChance) ? this.attackScythe(instance, target) : super.control(instance, target)
     } else if (!super.control(instance, target)) {
       return false
@@ -1849,10 +1840,10 @@ class BloodWeaverModel extends SimulatorModel {
   applyAttack(instance: SimulatorBase, source: SimulatorModel, damage: number, skipped: boolean | number, critical: boolean, attackType: number, defenseType: number) {
     const state = super.applyAttack(instance, source, damage, skipped, critical, attackType, defenseType)
 
-    if (state == STATE_DEAD && !this.SealUsed && !source.Config.BypassSpecial) {
+    if (state == STATE_DEAD && this.DeathTriggers === 0 && !source.Config.BypassSpecial) {
       this.Health = Math.ceil(this.TotalHealth * (this.Config.SealHealth + this.Config.SealHealthPerStack * this.PactStacks))
       this.PactStacks = 0
-      this.SealUsed = true
+      this.DeathTriggers += 1
 
       this.enterState(this.Data.RevivedState)
 

@@ -284,14 +284,17 @@ impl Battle {
                     self.apply_attack_default(t, s, damage, skipped, attack_type, defense_type);
 
                 // Seal of Death
-                if !alive && !self.fighters[t].seal_used && !self.fighters[s].bypass_special {
+                if !alive
+                    && self.fighters[t].death_triggers == 0.0
+                    && !self.fighters[s].bypass_special
+                {
                     let weaver = &mut self.fighters[t];
 
                     weaver.health = (weaver.total_health
                         * (weaver.seal_health + weaver.seal_health_per_stack * weaver.pact_stacks))
                         .ceil();
                     weaver.pact_stacks = 0.0;
-                    weaver.seal_used = true;
+                    weaver.death_triggers += 1.0;
                     weaver.enter_state(ActiveState::RevivedState);
 
                     self.rage();
@@ -625,14 +628,14 @@ impl Battle {
             let state = self.fighters[a].state;
             let damage = self.roll_damage(state.weapon1_min, state.weapon1_max);
             let critical = rng::roll(self.fighters[a].state.critical_chance);
-            let revives = (self.fighters[b].death_triggers, self.fighters[b].seal_used);
+            let death_triggers = self.fighters[b].death_triggers;
 
             if !self.attack(a, b, damage, false, critical, TINCTURE) {
                 return false;
             }
 
             if !self.fighters[a].tincture_revive_bug
-                || revives == (self.fighters[b].death_triggers, self.fighters[b].seal_used)
+                || self.fighters[b].death_triggers == death_triggers
             {
                 self.fighters[a].enter_state(ActiveState::Data);
             }
@@ -676,7 +679,7 @@ impl Battle {
     fn control_blood_weaver(&mut self, a: usize, b: usize) -> bool {
         if self.fighters[b].bypass_special {
             self.control_default(a, b)
-        } else if self.fighters[a].seal_used {
+        } else if self.fighters[a].death_triggers > 0.0 {
             if rng::roll(self.fighters[a].scythe_chance) {
                 // Scythe
                 self.fighters[a].enter_state(ActiveState::ScytheState);
