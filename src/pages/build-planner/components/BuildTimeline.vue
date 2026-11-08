@@ -157,7 +157,11 @@ function insertStep(building: number) {
   steps.splice(index, 0, { building, skipped: false })
   closeInsert()
 
-  plan.value = { ...plan.value, steps }
+  const pruned = pruneSteps(props.config, { ...plan.value, steps })
+
+  notifyRemovedSteps(steps.length - pruned.length)
+
+  plan.value = { ...plan.value, steps: pruned }
 }
 
 async function addStep(building: number) {
