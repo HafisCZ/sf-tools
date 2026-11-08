@@ -1,11 +1,12 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <label v-if="props.label || slots.label" :for="id" class="font-bold text-white">
+    <label v-if="props.label || slots.label" :for="id" class="font-bold text-white" :class="{ 'text-center': props.centeredLabel }">
       <slot name="label">{{ props.label }}</slot>
     </label>
     <span class="relative flex">
       <input
         :id="id"
+        ref="input-ref"
         v-model="text"
         v-bind="$attrs"
         type="text"
@@ -18,16 +19,18 @@
         @change="clampValue"
         @keydown="handleKeydown"
         @paste="handlePaste"
+        @focus="focused = true"
+        @blur="focused = false"
       />
       <span v-if="props.suffix" aria-hidden="true" class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-white/60">{{ props.suffix }}</span>
     </span>
-    <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
+    <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" :position="props.validationPosition" :anchor="inputElement" :anchor-focused="focused" />
     <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useId, watch } from 'vue'
+import { computed, ref, useId, useTemplateRef, watch } from 'vue'
 import { createDefaultNumberValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFParagraph from './SFParagraph.vue'
 import SFValidation from './SFValidation.vue'
@@ -72,9 +75,17 @@ const props = defineProps<
      */
     centered?: boolean
     /**
+     * Centers the label above the field
+     */
+    centeredLabel?: boolean
+    /**
      * Text shown inside the field on the right, like a unit
      */
     suffix?: string
+    /**
+     * Where the validation message shows: under the field, or over the page while the field has focus
+     */
+    validationPosition?: 'inline' | 'floating'
   }
 >()
 
@@ -102,6 +113,10 @@ const BORDER_CLASSES = {
 const id = useId()
 
 const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
+
+const inputElement = useTemplateRef('input-ref')
+
+const focused = ref(false)
 
 // Can hold a number in progress such as `-` or `1.`
 const typedText = ref(formatValue(modelValue.value))

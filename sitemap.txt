@@ -18,3 +18,4 @@ https://sftools.mar21.eu/underworld.html
 https://sftools.mar21.eu/fortress.html
 https://sftools.mar21.eu/raids.html
 https://sftools.mar21.eu/scrapbook.html
+https://sftools.mar21.eu/build-planner.html

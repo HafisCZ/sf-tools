@@ -227,6 +227,10 @@
             "title": "Dungeon Break",
             "desc": "See progress left in your dungeons"
         },
+        "build_planner": {
+            "title": "Build Planner",
+            "desc": "Plan your building upgrades step by step"
+        },
         "idle": {
             "title": "Arena Manager",
             "desc": "Check the production of your Arena Manager"
@@ -2463,5 +2467,25 @@
         },
         "empty": "This character has no scrapbook data.",
         "nothing": "No items match these filters."
+    },
+    "build_planner": {
+        "tab": {
+            "fortress": "Fortress",
+            "underworld": "Underworld"
+        },
+        "reset": "Reset",
+        "add": "Add #{name}",
+        "insert": "Insert here",
+        "remove": "Remove step",
+        "build": "Build",
+        "skip": "Skip",
+        "resources": "Resources",
+        "max": "Max",
+        "needs": "Needs #{building} #{level}",
+        "removed": {
+            "title": "Steps removed",
+            "message": "#{count} steps can't be built anymore",
+            "message_one": "#{count} step can't be built anymore"
+        }
     }
 }
