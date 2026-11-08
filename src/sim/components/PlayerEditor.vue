@@ -275,9 +275,9 @@ const hasBlockChance = computed(() => isWarrior.value && !props.companion)
 
 const visibleWeapons = computed(() => (classId.value === String(ASSASSIN) ? weapons : weapons.slice(0, 1)))
 
-const classOptions = computed<SelectOption[]>(() => CONFIG.ids().map((id) => ({ value: String(id), label: localize.global(`general.class${id}`), image: getClassImageUrl(id) })))
+const classOptions = computed<SelectOption[]>(() => CONFIG.enabledIds().map((id) => ({ value: String(id), label: localize.global(`general.class${id}`), image: getClassImageUrl(id) })))
 
-const changeClassItems = computed<DropdownItem[]>(() => CONFIG.ids().map((id) => ({ label: localize.global(`general.class${id}`), image: getClassImageUrl(id), action: () => changeClass(id) })))
+const changeClassItems = computed<DropdownItem[]>(() => CONFIG.enabledIds().map((id) => ({ label: localize.global(`general.class${id}`), image: getClassImageUrl(id), action: () => changeClass(id) })))
 
 const snackOptions = computed<SelectOption[]>(() => [
   { value: '', label: localize('none') },

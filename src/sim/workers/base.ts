@@ -660,9 +660,16 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
         return this.classes().map((klass) => klass.ID)
       }
     },
+    enabledIds: {
+      value: function (this: ClassConfigTable) {
+        return this.classes()
+          .filter((klass) => !klass.Disabled || isSimulatorDebug)
+          .map((klass) => klass.ID)
+      }
+    },
     classes: {
       value: function (this: ClassConfigData) {
-        return Object.values(this).filter((klassLike) => 'ID' in klassLike && (!klassLike.Disabled || isSimulatorDebug))
+        return Object.values(this).filter((klassLike) => 'ID' in klassLike)
       }
     }
   }

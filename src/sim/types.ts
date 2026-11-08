@@ -148,6 +148,7 @@ export type ClassConfigTable = ClassConfigData & {
   set(config?: Record<string, unknown> | null): void
   fromID(index: number): ClassConfig
   ids(): CharacterClass[]
+  enabledIds(): CharacterClass[]
   classes(): ClassConfig[]
 }
 
