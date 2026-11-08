@@ -5,10 +5,10 @@
     </template>
 
     <div class="grid grid-cols-16 items-center gap-[14px]">
-      <SFToggleGroup ref="upgrade-mode-ref" v-model="upgradeMode" :options="UPGRADE_MODES" class="col-span-5" />
+      <SFToggleGroup v-model="upgradeMode" :options="UPGRADE_MODES" class="col-span-5" />
       <SFHeading level="1" class="col-span-6 text-center">{{ localize('title') }}</SFHeading>
-      <SFSelect ref="suggest-mode-ref" v-model="suggestMode" :options="suggestOptions" class="col-span-3" />
-      <SFSelect ref="number-mode-ref" v-model="numberMode" :options="numberOptions" class="col-span-2" />
+      <SFSelect v-model="suggestMode" :options="suggestOptions" class="col-span-3" />
+      <SFSelect v-model="numberMode" :options="numberOptions" class="col-span-2" />
     </div>
 
     <SFTable fixed dense class="mt-[14px]">
@@ -25,14 +25,14 @@
       </template>
       <SFTableRow>
         <SFTableCell>
-          <SFNumber ref="runes-ref" v-model="runes" :placeholder="localize('table.runes')" :min="0" :step="1" />
+          <SFNumber v-model="runes" :placeholder="localize('table.runes')" :min="0" :step="1" />
         </SFTableCell>
-        <SFTableCell>{{ results?.totals.runes }}</SFTableCell>
-        <SFTableCell>{{ results?.totals.spent }}</SFTableCell>
-        <SFTableCell>{{ results?.totals.hour }}</SFTableCell>
-        <SFTableCell>{{ results?.totals.eightHours }}</SFTableCell>
-        <SFTableCell>{{ results?.totals.day }}</SFTableCell>
-        <SFTableCell>{{ results?.totals.week }}</SFTableCell>
+        <SFTableCell>{{ results.totals.runes }}</SFTableCell>
+        <SFTableCell>{{ results.totals.spent }}</SFTableCell>
+        <SFTableCell>{{ results.totals.hour }}</SFTableCell>
+        <SFTableCell>{{ results.totals.eightHours }}</SFTableCell>
+        <SFTableCell>{{ results.totals.day }}</SFTableCell>
+        <SFTableCell>{{ results.totals.week }}</SFTableCell>
       </SFTableRow>
     </SFTable>
 
@@ -51,31 +51,28 @@
         </SFTableRow>
       </template>
       <SFTableRow v-for="({ name }, index) in BUILDINGS" :key="name">
-        <SFTableCell class="text-[105%] font-bold" :class="{ 'text-accent': results?.suggestedIndex === index }">{{ localize(`building.${name}`) }}</SFTableCell>
+        <SFTableCell class="text-[105%] font-bold" :class="{ 'text-accent': results.suggestedIndex === index }">{{ localize(`building.${name}`) }}</SFTableCell>
         <SFTableCell>
-          <SFSelect ref="upgrades-ref" v-model="upgrades[index]" :options="upgradeOptions" />
+          <SFSelect v-model="upgrades[index]" :options="upgradeOptions" />
         </SFTableCell>
         <SFTableCell>
-          <SFNumber ref="levels-ref" v-model="levels[index]" :required="index === 0" :min="index === 0 ? 1 : 0" :max="25000" :step="1" />
+          <SFNumber v-model="levels[index]" :required="index === 0" :min="index === 0 ? 1 : 0" :max="25000" :step="1" />
         </SFTableCell>
-        <template v-if="results">
-          <SFTableCell :class="outputClasses">
-            <button type="button" class="cursor-pointer" @click="applyNextLevel(index)">{{ results.rows[index].levelNext }}</button>
-          </SFTableCell>
-          <SFTableCell :class="outputClasses">{{ results.rows[index].cycleDuration }}</SFTableCell>
-          <SFTableCell :class="outputClasses">{{ results.rows[index].cycleMoney }}</SFTableCell>
-          <SFTableCell align="center" :class="outputClasses">{{ results.rows[index].moneyShare }}</SFTableCell>
-          <SFTableCell :class="outputClasses">{{ results.rows[index].upgradeMoney }}</SFTableCell>
-          <SFTableCell :class="outputClasses">{{ results.rows[index].upgradeEstimation }}</SFTableCell>
-        </template>
-        <SFTableCell v-else colspan="6" />
+        <SFTableCell :class="outputClasses">
+          <button type="button" class="cursor-pointer" @click="applyNextLevel(index)">{{ results.rows[index].levelNext }}</button>
+        </SFTableCell>
+        <SFTableCell :class="outputClasses">{{ results.rows[index].cycleDuration }}</SFTableCell>
+        <SFTableCell :class="outputClasses">{{ results.rows[index].cycleMoney }}</SFTableCell>
+        <SFTableCell align="center" :class="outputClasses">{{ results.rows[index].moneyShare }}</SFTableCell>
+        <SFTableCell :class="outputClasses">{{ results.rows[index].upgradeMoney }}</SFTableCell>
+        <SFTableCell :class="outputClasses">{{ results.rows[index].upgradeEstimation }}</SFTableCell>
       </SFTableRow>
     </SFTable>
   </Page>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref } from 'vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFSelect from '@library/SFSelect.vue'
@@ -86,7 +83,6 @@ import SFTableRow from '@library/SFTableRow.vue'
 import SFToggleGroup from '@library/SFToggleGroup.vue'
 import { formatNamedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { useComponentValidation } from '@utils/validations'
 import { type PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
@@ -116,8 +112,6 @@ const runes = ref<number | null>(0)
 const levels = ref<(number | null)[]>(BUILDINGS.map((_, index) => (index === 0 ? 1 : 0)))
 const upgrades = ref(BUILDINGS.map(() => '0'))
 
-const isValid = useComponentValidation(useTemplateRef('upgrade-mode-ref'), useTemplateRef('suggest-mode-ref'), useTemplateRef('number-mode-ref'), useTemplateRef('runes-ref'), useTemplateRef('levels-ref'), useTemplateRef('upgrades-ref'))
-
 const suggestOptions = computed(() => ['0', '1', '2'].map((value) => ({ value, label: localize(`topbar.suggest.${value}`) })))
 
 const numberOptions = computed(() => ['0', '1'].map((value) => ({ value, label: localize(`topbar.number.${value}`) })))
@@ -132,7 +126,7 @@ const MAX_LEVEL = 25000
 const CURVE_LENGTH = 86401
 
 const results = computed(() => {
-  if (!isValid.value) return null
+  const clampedLevels = levels.value.map((level, index) => Math.min(Math.max(level ?? 0, index === 0 ? 1 : 0), MAX_LEVEL))
 
   const modeUpgrade = Number(upgradeMode.value ?? 0)
   const modeSuggest = Number(suggestMode.value)
@@ -148,7 +142,7 @@ const results = computed(() => {
   let amortizationValue = 0
 
   BUILDINGS.forEach(({ building }, index) => {
-    const level = levels.value[index] ?? 0
+    const level = clampedLevels[index]
     const boost = upgradeToModifiers(Number(upgrades.value[index]))
 
     moneySpent += building.getUpgradePrice(index === 0 ? 1 : 0, level)
@@ -180,7 +174,7 @@ const results = computed(() => {
   })
 
   const rows = BUILDINGS.map(({ building }, index) => {
-    const level = levels.value[index] ?? 0
+    const level = clampedLevels[index]
     const boost = upgradeToModifiers(Number(upgrades.value[index]))
 
     let target = 0
@@ -282,9 +276,7 @@ function upgradeToModifiers(upgrade: number) {
 }
 
 function applyNextLevel(index: number) {
-  if (results.value) {
-    levels.value[index] = results.value.rows[index].levelNext
-  }
+  levels.value[index] = results.value.rows[index].levelNext
 }
 
 function listIdlePlayers() {
