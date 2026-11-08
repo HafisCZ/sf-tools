@@ -7,7 +7,7 @@ import { type Plugin } from 'vite'
 const ENGINE_DIRECTORY = fileURLToPath(new URL('../../src/sim/engine', import.meta.url))
 const ENGINE_SOURCES = [path.join(ENGINE_DIRECTORY, 'src'), path.join(ENGINE_DIRECTORY, 'Cargo.toml'), path.join(ENGINE_DIRECTORY, 'Cargo.lock')]
 
-function buildEngine() {
+export function buildEngine() {
   try {
     execFileSync('cargo', ['build', '--release', '--target', 'wasm32-unknown-unknown'], { cwd: ENGINE_DIRECTORY, stdio: 'inherit' })
   } catch (error) {
