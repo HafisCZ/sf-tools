@@ -40,10 +40,16 @@
           <span :class="{ 'text-white/40 line-through': props.row.skipped }">{{ formatBuildTime(props.row.duration) }}</span>
           <span class="text-xs text-white/50">{{ formatBuildTime(props.row.end) }}</span>
         </span>
-        <SFButton :variant="props.row.skipped ? 'primary' : 'ghost'" size="sm" :aria-label="localize('skip')" :aria-pressed="props.row.skipped" class="justify-self-start" @click="emit('skip')">
-          <img src="/res/mushroom.png" alt="" class="size-3.5 object-contain" />
-          {{ formatSpacedNumber(getSkipCost(props.row.duration)) }}
-        </SFButton>
+        <span class="flex flex-col items-start">
+          <SFButton :variant="props.row.skipped ? 'primary' : 'ghost'" size="sm" :aria-label="localize('skip')" :aria-pressed="props.row.skipped" class="py-0.5!" @click="emit('skip')">
+            <img src="/res/mushroom.png" alt="" class="size-3.5 object-contain" />
+            {{ formatSpacedNumber(getSkipCost(props.row.duration)) }}
+          </SFButton>
+          <span class="flex items-center gap-2 pl-3.25 text-xs text-white/50">
+            <img src="/res/mushroom.png" alt="" class="size-3.5 object-contain" />
+            {{ formatSpacedNumber(props.row.mushrooms) }}
+          </span>
+        </span>
       </template>
     </div>
   </div>

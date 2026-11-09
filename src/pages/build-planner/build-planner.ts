@@ -148,6 +148,7 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
   const state: PlannerState = { time: 0, levels, mined: config.resources.map(() => 0), gems: 0, search: null }
 
   let total = config.resources.map(() => 0)
+  let mushrooms = 0
 
   if (config.gemMine >= 0 && levels[config.gemMine] > 0) {
     state.search = gemSearchTime(levels[config.gemMine], getQuarters(config, plan, levels))
@@ -158,7 +159,7 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
     const building = step.building
     const level = levels[building] + 1
     const block = checkUpgrade(config, levels, building)
-    const row: PlannerRow = { index, building, level, block, skipped: step.skipped, start: state.time, end: state.time, duration: 0, cost: [], discount: [], total: [], gems: 0, searching: state.search !== null }
+    const row: PlannerRow = { index, building, level, block, skipped: step.skipped, start: state.time, end: state.time, duration: 0, cost: [], discount: [], total: [], mushrooms, gems: 0, searching: state.search !== null }
 
     rows.push(row)
 
@@ -171,6 +172,12 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
     total = total.map((value, resource) => value + row.cost[resource])
     row.total = total
     row.duration = getUpgradeTime(config, building, level, quarters)
+
+    if (step.skipped) {
+      mushrooms += getSkipCost(row.duration)
+      row.mushrooms = mushrooms
+    }
+
     row.end = state.time + (step.skipped ? 0 : row.duration)
 
     if (building === config.gemMine) {

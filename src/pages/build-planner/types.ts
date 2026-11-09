@@ -50,6 +50,7 @@ export type PlannerRow = {
   cost: number[]
   discount: number[]
   total: number[]
+  mushrooms: number
   gems: number
   searching: boolean
 }
