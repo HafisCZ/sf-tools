@@ -2,9 +2,9 @@ import { globalLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { clamp } from '@utils/utils'
 import type { PlannerBlock, PlannerConfig, PlannerGemRun, PlannerKind, PlannerOption, PlannerPlan, PlannerRow, PlannerState, PlannerStep } from '~/pages/build-planner/types'
-import { ACADEMY, ARCHERY, BARRACKS, buildTime, EXTRACTOR, FORTRESS, GATE, gemTime, GEMMINE, GEMTIME, GLADIATOR_TRAINER, GOBLIN_PIT, GOLD_PIT, HEART, KEEPER, MAGES, QUARRY, QUARTERS, SMITHY, TIME_MACHINE, TORTURE_CHAMBER, TREASURY, TROLL_BLOCK, WALL, WOODCUTTER } from '~/playa/buildings'
+import { ACADEMY, ARCHERY, BARRACKS, buildTime, EXTRACTOR, FORTRESS, GATE, gemTime, GEMMINE, GEMTIME, GLADIATOR_TRAINER, GOBLIN_PIT, GOLD_PIT, HEART, KEEPER, KNIGHTS, MAGES, QUARRY, QUARTERS, SMITHY, TIME_MACHINE, TORTURE_CHAMBER, TREASURY, TROLL_BLOCK, WALL, WOODCUTTER } from '~/playa/buildings'
 
-export const FORTRESS_BUILDING = { Fortress: 0, LaborerQuarters: 1, WoodcutterGuild: 2, Quarry: 3, GemMine: 4, Academy: 5, ArcheryGuild: 6, Barracks: 7, MageTower: 8, Treasury: 9, Smithy: 10, Fortifications: 11 }
+export const FORTRESS_BUILDING = { Fortress: 0, LaborerQuarters: 1, WoodcutterGuild: 2, Quarry: 3, GemMine: 4, Academy: 5, ArcheryGuild: 6, Barracks: 7, MageTower: 8, Treasury: 9, Smithy: 10, Fortifications: 11, HallOfKnights: 12 }
 export const UNDERWORLD_BUILDING = { Heart: 0, Gate: 1, GoldPit: 2, Extractor: 3, GoblinPit: 4, Torture: 5, Gladiator: 6, TrollBlock: 7, TimeMachine: 8, Keeper: 9 }
 
 function tableRow(table: number[][], level: number) {
@@ -15,9 +15,9 @@ function tableValue(table: number[], level: number) {
   return table[Math.min(level, table.length) - 1]
 }
 
-const FORTRESS_COSTS = [FORTRESS, QUARTERS, WOODCUTTER, QUARRY, GEMMINE, ACADEMY, ARCHERY, BARRACKS, MAGES, TREASURY, SMITHY, WALL]
+const FORTRESS_COSTS = [FORTRESS, QUARTERS, WOODCUTTER, QUARRY, GEMMINE, ACADEMY, ARCHERY, BARRACKS, MAGES, TREASURY, SMITHY, WALL, KNIGHTS]
 
-const FORTRESS_MAX = [20, 15, 20, 20, 100, 20, 15, 15, 15, 45, 20, 20]
+const FORTRESS_MAX = [20, 15, 20, 20, 100, 20, 15, 15, 15, 45, 20, 20, 20]
 
 function fortressRequirement(building: number, level: number) {
   switch (building) {
@@ -45,11 +45,13 @@ function fortressRequirement(building: number, level: number) {
 export const FORTRESS_PLANNER: PlannerConfig = {
   kind: 'fortress',
   buildings: FORTRESS_COSTS.map((table, index) => ({
-    name: `general.buildings.fortress${index + 1}`,
+    name: index === FORTRESS_BUILDING.HallOfKnights ? 'general.buildings.knights' : `general.buildings.fortress${index + 1}`,
     max: FORTRESS_MAX[index],
-    pictures: Math.min(20, table.length),
+    // The game has no Hall of Knights building art, every level shows its icon (13_00)
+    pictures: index === FORTRESS_BUILDING.HallOfKnights ? 0 : Math.min(20, table.length),
     // Treasury levels past 15 repeat level 15
     timeCap: index === FORTRESS_BUILDING.Treasury ? 15 : undefined,
+    instant: index === FORTRESS_BUILDING.HallOfKnights,
     cost: (level) => tableRow(table, level).slice(0, 2)
   })),
   resources: [
@@ -130,6 +132,8 @@ export function getQuarters(config: PlannerConfig, plan: PlannerPlan, levels: nu
 }
 
 export function getUpgradeTime(config: PlannerConfig, building: number, level: number, quarters: number) {
+  if (config.buildings[building].instant) return 0
+
   return buildTime(Math.min(level, config.buildings[building].timeCap ?? level), quarters, config.kind === 'underworld')
 }
 
@@ -192,7 +196,8 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
       }
     }
 
-    state.mined = config.resources.map((resource) => (resource.producer === building ? 0 : (resource.hourly(levels[resource.producer]) * (row.end - row.start)) / 3600000))
+    // An instant upgrade only uses part of what the previous build mined, the rest still goes to the next step
+    state.mined = config.buildings[building].instant ? state.mined.map((value, resource) => value - row.discount[resource]) : config.resources.map((resource) => (resource.producer === building ? 0 : (resource.hourly(levels[resource.producer]) * (row.end - row.start)) / 3600000))
     state.gems += row.gems
     state.time = row.end
     levels[building] = level

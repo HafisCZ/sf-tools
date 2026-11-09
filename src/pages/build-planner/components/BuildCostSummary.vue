@@ -10,11 +10,11 @@
           <span v-if="price.discount >= 1" class="text-white/50">-{{ formatNamedNumber(Math.round(price.discount)) }}</span>
         </span>
       </span>
-      <span class="flex items-center gap-1.5 whitespace-nowrap">
+      <span v-if="props.duration > 0" class="flex items-center gap-1.5 whitespace-nowrap">
         <span class="text-white/60">{{ localize('build') }}:</span>
         <span class="font-bold">{{ formatBuildTime(props.duration) }}</span>
       </span>
-      <span class="flex items-center gap-1.5 whitespace-nowrap">
+      <span v-if="props.duration > 0" class="flex items-center gap-1.5 whitespace-nowrap">
         <span class="text-white/60">{{ localize('skip') }}:</span>
         <img src="/res/mushroom.png" alt="" class="size-3.5 object-contain" />
         <span class="font-bold">{{ formatSpacedNumber(getSkipCost(props.duration)) }}</span>

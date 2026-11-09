@@ -159,7 +159,7 @@ function loadPlayer(player: PlayerModel) {
   const fortress = player.Fortress
   const underworld = player.Underworld
 
-  const fortressLevels = [fortress.Fortress, fortress.LaborerQuarters, fortress.WoodcutterGuild, fortress.Quarry, fortress.GemMine, fortress.Academy, fortress.ArcheryGuild, fortress.Barracks, fortress.MageTower, fortress.Treasury, fortress.Smithy, fortress.Fortifications]
+  const fortressLevels = [fortress.Fortress, fortress.LaborerQuarters, fortress.WoodcutterGuild, fortress.Quarry, fortress.GemMine, fortress.Academy, fortress.ArcheryGuild, fortress.Barracks, fortress.MageTower, fortress.Treasury, fortress.Smithy, fortress.Fortifications, fortress.Knights ?? 0]
   const underworldLevels = [underworld?.Heart, underworld?.Gate, underworld?.GoldPit, underworld?.Extractor, underworld?.GoblinPit, underworld?.Torture, fortress.Gladiator, underworld?.TrollBlock, underworld?.TimeMachine, underworld?.Keeper].map((level) => level ?? 0)
 
   plans.value = {
@@ -266,16 +266,18 @@ async function drawPlan() {
           })),
           {
             lines: [
-              { height: 20, items: [{ text: formatBuildTime(row.duration), font: '13px Lato', color: row.skipped ? 'rgba(255, 255, 255, 0.4)' : text, strike: row.skipped }] },
+              { height: 20, items: [{ text: row.duration > 0 ? formatBuildTime(row.duration) : '-', font: '13px Lato', color: row.skipped ? 'rgba(255, 255, 255, 0.4)' : text, strike: row.skipped }] },
               { height: 16, items: [{ text: formatBuildTime(row.end), font: '12px Lato', color: muted }] }
             ]
           },
-          {
-            lines: [
-              { height: 22, gap: 8, padding: 13, radius: 6, background: row.skipped ? '#ffa500' : undefined, items: [mushroom, { text: formatSpacedNumber(getSkipCost(row.duration)), font: 'bold 12px Lato', color: row.skipped ? '#000000' : text }] },
-              { height: 16, gap: 8, padding: 13, items: [mushroom, { text: formatSpacedNumber(row.mushrooms), font: '12px Lato', color: muted }] }
-            ]
-          }
+          row.duration > 0
+            ? {
+                lines: [
+                  { height: 22, gap: 8, padding: 13, radius: 6, background: row.skipped ? '#ffa500' : undefined, items: [mushroom, { text: formatSpacedNumber(getSkipCost(row.duration)), font: 'bold 12px Lato', color: row.skipped ? '#000000' : text }] },
+                  { height: 16, gap: 8, padding: 13, items: [mushroom, { text: formatSpacedNumber(row.mushrooms), font: '12px Lato', color: muted }] }
+                ]
+              }
+            : null
         ]
       }
     })

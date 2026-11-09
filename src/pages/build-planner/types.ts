@@ -20,6 +20,7 @@ export type PlannerBuilding = {
   max: number
   pictures: number
   timeCap?: number
+  instant?: boolean
   cost: (level: number) => number[]
 }
 
