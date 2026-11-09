@@ -4,7 +4,7 @@
       <div role="menu" class="grid gap-1" :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }">
         <SFTooltip v-for="option in options" :key="option.index">
           <button type="button" role="menuitem" class="block w-full rounded p-0.5 outline-none focus-visible:bg-surface-hover" :class="option.block ? 'cursor-default' : 'cursor-pointer hover:bg-surface-hover'" :aria-disabled="option.block ? 'true' : 'false'" :aria-label="option.label" @click="addStep(option)">
-            <BuildPicture :kind="props.config.kind" :building="option.index" :level="option.picture" :badge="option.badge" :variant="option.block ? 'locked' : 'next'" />
+            <BuildPicture :config="props.config" :building="option.index" :level="option.picture" :badge="option.badge" :variant="option.block ? 'locked' : 'next'" />
           </button>
           <template #content>
             <BuildCostSummary :config="props.config" :name="option.name" :cost="option.cost" :discount="option.discount" :duration="option.duration" />

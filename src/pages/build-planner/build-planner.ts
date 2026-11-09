@@ -5,7 +5,7 @@ import type { PlannerBlock, PlannerConfig, PlannerGemRun, PlannerKind, PlannerOp
 import { ACADEMY, ARCHERY, BARRACKS, buildTime, EXTRACTOR, FORTRESS, GATE, gemTime, GEMMINE, GEMTIME, GLADIATOR_TRAINER, GOBLIN_PIT, GOLD_PIT, HEART, KEEPER, KNIGHTS, MAGES, QUARRY, QUARTERS, SMITHY, TIME_MACHINE, TORTURE_CHAMBER, TREASURY, TROLL_BLOCK, WALL, WOODCUTTER } from '~/playa/buildings'
 
 export const FORTRESS_BUILDING = { Fortress: 0, LaborerQuarters: 1, WoodcutterGuild: 2, Quarry: 3, GemMine: 4, Academy: 5, ArcheryGuild: 6, Barracks: 7, MageTower: 8, Treasury: 9, Smithy: 10, Fortifications: 11, HallOfKnights: 12 }
-export const UNDERWORLD_BUILDING = { Heart: 0, Gate: 1, GoldPit: 2, Extractor: 3, GoblinPit: 4, Torture: 5, Gladiator: 6, TrollBlock: 7, TimeMachine: 8, Keeper: 9 }
+export const UNDERWORLD_BUILDING = { LaborerQuarters: 0, Heart: 1, Gate: 2, GoldPit: 3, Extractor: 4, GoblinPit: 5, Torture: 6, Gladiator: 7, TrollBlock: 8, TimeMachine: 9, Keeper: 10 }
 
 function tableRow(table: number[][], level: number) {
   return table[Math.min(level, table.length) - 1]
@@ -46,6 +46,7 @@ export const FORTRESS_PLANNER: PlannerConfig = {
   kind: 'fortress',
   buildings: FORTRESS_COSTS.map((table, index) => ({
     name: index === FORTRESS_BUILDING.HallOfKnights ? 'general.buildings.knights' : `general.buildings.fortress${index + 1}`,
+    picture: `fortress/${String(index + 1).padStart(2, '0')}`,
     max: FORTRESS_MAX[index],
     // The game has no Hall of Knights building art, every level shows its icon (13_00)
     pictures: index === FORTRESS_BUILDING.HallOfKnights ? 0 : Math.min(20, table.length),
@@ -68,6 +69,7 @@ export const FORTRESS_PLANNER: PlannerConfig = {
 }
 
 const UNDERWORLD_COSTS: ((level: number) => number)[] = [
+  () => 0,
   (level) => tableValue(HEART, level),
   (level) => tableValue(GATE, level),
   (level) => tableValue(GOLD_PIT, level),
@@ -82,19 +84,26 @@ const UNDERWORLD_COSTS: ((level: number) => number)[] = [
 
 export const UNDERWORLD_PLANNER: PlannerConfig = {
   kind: 'underworld',
-  buildings: UNDERWORLD_COSTS.map((cost, index) => ({
-    name: `general.buildings.underworld${index + 1}`,
-    max: index === UNDERWORLD_BUILDING.GoldPit ? 100 : 15,
-    pictures: 15,
-    cost: (level) => [cost(level)]
-  })),
+  buildings: UNDERWORLD_COSTS.map((cost, index) => {
+    // A copy of the fortress building, upgraded for free and instantly here, it only speeds up the underworld builds after it
+    const quarters = index === UNDERWORLD_BUILDING.LaborerQuarters
+
+    return {
+      name: quarters ? 'general.buildings.fortress2' : `general.buildings.underworld${index}`,
+      picture: quarters ? 'fortress/02' : `underworld/${String(index).padStart(2, '0')}`,
+      max: index === UNDERWORLD_BUILDING.GoldPit ? 100 : 15,
+      pictures: 15,
+      instant: quarters,
+      cost: (level) => [cost(level)]
+    }
+  }),
   resources: [{ key: 'souls', producer: UNDERWORLD_BUILDING.Extractor, hourly: (level) => (level > 0 ? EXTRACTOR[level - 1][1] : 0) }],
   required: (building, level) => {
-    if (building === UNDERWORLD_BUILDING.Heart) return null
+    if (building === UNDERWORLD_BUILDING.Heart || building === UNDERWORLD_BUILDING.LaborerQuarters) return null
 
     return { building: UNDERWORLD_BUILDING.Heart, level: building === UNDERWORLD_BUILDING.Gate ? Math.max(2, level) : Math.min(15, level) }
   },
-  quarters: -1,
+  quarters: UNDERWORLD_BUILDING.LaborerQuarters,
   gemMine: -1
 }
 
@@ -104,11 +113,11 @@ export const PLANNER_CONFIGS: Record<PlannerKind, PlannerConfig> = {
 }
 
 export function createPlan(config: PlannerConfig): PlannerPlan {
-  return { levels: config.buildings.map(() => 0), quarters: 0, steps: [] }
+  return { levels: config.buildings.map(() => 0), steps: [] }
 }
 
 export function normalizePlan(config: PlannerConfig, plan: PlannerPlan): PlannerPlan {
-  return { ...plan, levels: getStartLevels(config, plan), quarters: clamp(plan.quarters ?? 0, 0, 15) }
+  return { ...plan, levels: getStartLevels(config, plan) }
 }
 
 export function checkUpgrade(config: PlannerConfig, levels: number[], building: number): PlannerBlock | null {
@@ -125,10 +134,6 @@ export function checkUpgrade(config: PlannerConfig, levels: number[], building: 
 
 export function getStartLevels(config: PlannerConfig, plan: PlannerPlan) {
   return config.buildings.map((building, index) => clamp(plan.levels[index] ?? 0, 0, building.max))
-}
-
-export function getQuarters(config: PlannerConfig, plan: PlannerPlan, levels: number[]) {
-  return config.quarters >= 0 ? levels[config.quarters] : clamp(plan.quarters ?? 0, 0, 15)
 }
 
 export function getUpgradeTime(config: PlannerConfig, building: number, level: number, quarters: number) {
@@ -155,7 +160,7 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
   let mushrooms = 0
 
   if (config.gemMine >= 0 && levels[config.gemMine] > 0) {
-    state.search = gemSearchTime(levels[config.gemMine], getQuarters(config, plan, levels))
+    state.search = gemSearchTime(levels[config.gemMine], levels[config.quarters])
   }
 
   for (let index = 0; index < count; index++) {
@@ -169,7 +174,7 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
 
     if (block) continue
 
-    const quarters = getQuarters(config, plan, levels)
+    const quarters = levels[config.quarters]
 
     row.cost = config.buildings[building].cost(level)
     row.discount = row.cost.map((value, resource) => Math.min(value, state.mined[resource]))
@@ -203,7 +208,7 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
     levels[building] = level
 
     if (building === config.gemMine) {
-      state.search = row.end + gemSearchTime(level, getQuarters(config, plan, levels))
+      state.search = row.end + gemSearchTime(level, levels[config.quarters])
     }
   }
 
@@ -244,7 +249,7 @@ export function getGemRuns(rows: PlannerRow[]) {
 }
 
 export function getNextOptions(config: PlannerConfig, plan: PlannerPlan, state: PlannerState): PlannerOption[] {
-  const quarters = getQuarters(config, plan, state.levels)
+  const quarters = state.levels[config.quarters]
 
   return config.buildings.map((building, index) => {
     const current = state.levels[index]
@@ -288,8 +293,8 @@ export function notifyRemovedSteps(count: number) {
   useToast({ title: globalLocalize('build_planner.removed.title'), message: globalLocalize(count === 1 ? 'build_planner.removed.message_one' : 'build_planner.removed.message', { count }) })
 }
 
-export function getBuildingPicture(kind: PlannerKind, building: number, level: number) {
-  return `/res/buildings/${kind}/${String(building + 1).padStart(2, '0')}_${String(level).padStart(2, '0')}.webp`
+export function getBuildingPicture(config: PlannerConfig, building: number, level: number) {
+  return `/res/buildings/${config.buildings[building].picture}_${String(level).padStart(2, '0')}.webp`
 }
 
 const TRACK_COUNT = Math.max(...Object.values(PLANNER_CONFIGS).map((config) => config.buildings.length))

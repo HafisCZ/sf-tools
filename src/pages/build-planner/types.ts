@@ -9,7 +9,6 @@ export type PlannerStep = {
 
 export type PlannerPlan = {
   levels: (number | null)[]
-  quarters: number | null
   steps: PlannerStep[]
 }
 
@@ -17,6 +16,7 @@ export type PlannerBlock = { kind: 'max' } | { kind: 'needs'; building: number; 
 
 export type PlannerBuilding = {
   name: string
+  picture: string
   max: number
   pictures: number
   timeCap?: number

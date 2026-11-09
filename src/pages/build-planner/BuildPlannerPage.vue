@@ -23,9 +23,6 @@
         />
       </template>
       <template #actions>
-        <div v-if="config.quarters < 0" class="w-36">
-          <SFNumber v-model="plan.quarters" :label="localize.global('general.buildings.fortress2')" :min="0" :max="15" :step="1" centered />
-        </div>
         <SFButton variant="outline" :disabled="isEmpty" @click="resetPlan">{{ localize('reset') }}</SFButton>
         <SFTooltip :content="localize('import')">
           <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('import')" @click="importPlan">
@@ -104,7 +101,7 @@ const config = computed(() => PLANNER_CONFIGS[tab.value])
 
 const plan = computed(() => plans.value[tab.value])
 
-const isEmpty = computed(() => plan.value.steps.length === 0 && !plan.value.quarters && plan.value.levels.every((level) => !level))
+const isEmpty = computed(() => plan.value.steps.length === 0 && plan.value.levels.every((level) => !level))
 
 const { submit: readPlan } = useSubmit(
   async (file: File) => {
@@ -117,7 +114,7 @@ const { submit: readPlan } = useSubmit(
       return
     }
 
-    const loaded = normalizePlan(config.value, { levels: imported.levels, quarters: imported.quarters, steps: imported.steps })
+    const loaded = normalizePlan(config.value, { levels: imported.levels, steps: imported.steps })
     const steps = pruneSteps(config.value, loaded)
 
     notifyRemovedSteps(loaded.steps.length - steps.length)
@@ -160,11 +157,11 @@ function loadPlayer(player: PlayerModel) {
   const underworld = player.Underworld
 
   const fortressLevels = [fortress.Fortress, fortress.LaborerQuarters, fortress.WoodcutterGuild, fortress.Quarry, fortress.GemMine, fortress.Academy, fortress.ArcheryGuild, fortress.Barracks, fortress.MageTower, fortress.Treasury, fortress.Smithy, fortress.Fortifications, fortress.Knights ?? 0]
-  const underworldLevels = [underworld?.Heart, underworld?.Gate, underworld?.GoldPit, underworld?.Extractor, underworld?.GoblinPit, underworld?.Torture, fortress.Gladiator, underworld?.TrollBlock, underworld?.TimeMachine, underworld?.Keeper].map((level) => level ?? 0)
+  const underworldLevels = [fortress.LaborerQuarters, underworld?.Heart, underworld?.Gate, underworld?.GoldPit, underworld?.Extractor, underworld?.GoblinPit, underworld?.Torture, fortress.Gladiator, underworld?.TrollBlock, underworld?.TimeMachine, underworld?.Keeper].map((level) => level ?? 0)
 
   plans.value = {
-    fortress: normalizePlan(FORTRESS_PLANNER, { levels: fortressLevels, quarters: 0, steps: [] }),
-    underworld: normalizePlan(UNDERWORLD_PLANNER, { levels: underworldLevels, quarters: fortress.LaborerQuarters, steps: [] })
+    fortress: normalizePlan(FORTRESS_PLANNER, { levels: fortressLevels, steps: [] }),
+    underworld: normalizePlan(UNDERWORLD_PLANNER, { levels: underworldLevels, steps: [] })
   }
 }
 
@@ -188,7 +185,7 @@ function importPlan() {
 }
 
 function exportPlan() {
-  Exporter.json({ kind: tab.value, levels: plan.value.levels, quarters: plan.value.quarters, steps: plan.value.steps }, `build_planner_${tab.value}_${Exporter.time}`)
+  Exporter.json({ kind: tab.value, levels: plan.value.levels, steps: plan.value.steps }, `build_planner_${tab.value}_${Exporter.time}`)
 }
 
 async function drawPlan() {
@@ -196,7 +193,6 @@ async function drawPlan() {
   const muted = 'rgba(255, 255, 255, 0.5)'
   const heading = 'rgba(255, 255, 255, 0.6)'
 
-  const kind = config.value.kind
   const buildings = config.value.buildings
   const resources = config.value.resources
   const rows = simulate(config.value, plan.value).rows
@@ -221,7 +217,7 @@ async function drawPlan() {
         if (index === row.building) {
           const badge: CanvasGridLine = { height: 13, padding: 4, radius: 3, background: 'rgba(0, 0, 0, 0.65)', items: [{ text: String(row.level), font: 'bold 10px Lato', color: row.block ? '#f87171' : '#ffffff' }] }
 
-          return { lines: [{ height: 63, items: [{ image: getBuildingPicture(kind, index, Math.min(row.level, building.pictures)), width: 84, height: 63, badge }] }] }
+          return { lines: [{ height: 63, items: [{ image: getBuildingPicture(config.value, index, Math.min(row.level, building.pictures)), width: 84, height: 63, badge }] }] }
         }
 
         if (run) {
@@ -259,7 +255,11 @@ async function drawPlan() {
               {
                 height: 20,
                 gap: 4,
-                items: [{ image: `/res/buildings/${resource.key}.webp`, width: 16, height: 14 }, { text: formatNamedNumber(row.cost[index]), font: '13px Lato', color: text }, ...(row.discount[index] >= 1 ? [{ text: `-${formatNamedNumber(Math.round(row.discount[index]))}`, font: '12px Lato', color: muted }] : [])]
+                items: [
+                  { image: `/res/buildings/${resource.key}.webp`, width: 16, height: 14 },
+                  { text: row.cost[index] > 0 ? formatNamedNumber(row.cost[index]) : '-', font: '13px Lato', color: text },
+                  ...(row.discount[index] >= 1 ? [{ text: `-${formatNamedNumber(Math.round(row.discount[index]))}`, font: '12px Lato', color: muted }] : [])
+                ]
               },
               { height: 16, padding: 20, items: [{ text: formatNamedNumber(row.total[index]), font: '12px Lato', color: muted }] }
             ]
@@ -289,8 +289,8 @@ async function drawPlan() {
     background: '#141414',
     fonts: ['12px Lato', '13px Lato', 'bold 10px Lato', 'bold 12px Lato', 'bold 13px Lato', 'bold 14px Lato', 'bold 16px Lato'],
     images: [
-      ...buildings.map((building, index) => getBuildingPicture(kind, index, Math.min(startLevels[index], building.pictures))),
-      ...rows.map((row) => getBuildingPicture(kind, row.building, Math.min(row.level, buildings[row.building].pictures))),
+      ...buildings.map((building, index) => getBuildingPicture(config.value, index, Math.min(startLevels[index], building.pictures))),
+      ...rows.map((row) => getBuildingPicture(config.value, row.building, Math.min(row.level, buildings[row.building].pictures))),
       ...resources.map((resource) => `/res/buildings/${resource.key}.webp`),
       '/res/mushroom.png',
       '/res/gem1.png'
@@ -320,7 +320,7 @@ async function drawPlan() {
 
             return {
               lines: [
-                { height: 63, items: [{ image: getBuildingPicture(kind, index, Math.min(startLevels[index], building.pictures)), width: 84, height: 63 }] },
+                { height: 63, items: [{ image: getBuildingPicture(config.value, index, Math.min(startLevels[index], building.pictures)), width: 84, height: 63 }] },
                 { height: 4, items: [] },
                 ...[words.slice(0, -1).join(' '), words.at(-1) ?? ''].map((name): CanvasGridLine => ({ height: 20, items: [{ text: name, font: 'bold 14px Lato', color: '#ffffff' }] })),
                 { height: 2, items: [] },

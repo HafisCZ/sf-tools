@@ -4,7 +4,7 @@
       <div class="grid" :style="{ gridTemplateColumns: getTimelineColumns(props.config) }">
         <span />
         <div v-for="(building, index) in props.config.buildings" :key="building.name" class="flex flex-col gap-1 px-0.5 pt-1">
-          <BuildPicture :kind="props.config.kind" :building="index" :level="Math.min(startLevels[index], building.pictures)" />
+          <BuildPicture :config="props.config" :building="index" :level="Math.min(startLevels[index], building.pictures)" />
           <div class="mt-auto px-0.5 pt-1.5 pb-1.5">
             <slot name="level" :building="index" />
           </div>

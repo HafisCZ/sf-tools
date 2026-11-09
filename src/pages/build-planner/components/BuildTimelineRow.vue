@@ -20,7 +20,7 @@
       <div class="absolute inset-x-0.5 inset-y-0 bg-white/5" />
       <SFTooltip v-if="index === props.row.building">
         <span class="relative block">
-          <BuildPicture :kind="props.config.kind" :building="index" :level="Math.min(props.row.level, building.pictures)" :badge="String(props.row.level)" :variant="props.row.block ? 'error' : 'built'" />
+          <BuildPicture :config="props.config" :building="index" :level="Math.min(props.row.level, building.pictures)" :badge="String(props.row.level)" :variant="props.row.block ? 'error' : 'built'" />
         </span>
         <template #content>
           <BuildCostSummary :config="props.config" :name="name" :cost="props.row.cost" :discount="props.row.discount" :duration="props.row.duration" />
@@ -36,7 +36,7 @@
         <span v-for="(resource, resourceIndex) in props.config.resources" :key="resource.key" class="flex flex-col whitespace-nowrap">
           <span class="flex items-center gap-1">
             <img :src="`/res/buildings/${resource.key}.webp`" :alt="localize.global(`general.${resource.key}`)" class="h-3.5 w-4 object-contain" />
-            {{ formatNamedNumber(props.row.cost[resourceIndex]) }}
+            {{ props.row.cost[resourceIndex] > 0 ? formatNamedNumber(props.row.cost[resourceIndex]) : '-' }}
             <span v-if="props.row.discount[resourceIndex] >= 1" class="text-xs text-white/50">-{{ formatNamedNumber(Math.round(props.row.discount[resourceIndex])) }}</span>
           </span>
           <span class="pl-5 text-xs text-white/50">{{ formatNamedNumber(props.row.total[resourceIndex]) }}</span>

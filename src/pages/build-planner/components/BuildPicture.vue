@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getBuildingPicture } from '~/pages/build-planner/build-planner'
-import type { PlannerKind } from '~/pages/build-planner/types'
+import type { PlannerConfig } from '~/pages/build-planner/types'
 
 defineOptions({
   name: 'BuildPicture'
@@ -19,11 +19,11 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Fortress or underworld picture set
+   * Buildings of the planned area, each names its picture files
    */
-  kind: PlannerKind
+  config: PlannerConfig
   /**
-   * Building index in save order
+   * Building index in the config
    */
   building: number
   /**
@@ -54,5 +54,5 @@ const BADGE_CLASSES = {
   locked: 'text-white/60'
 }
 
-const picture = computed(() => getBuildingPicture(props.kind, props.building, props.level))
+const picture = computed(() => getBuildingPicture(props.config, props.building, props.level))
 </script>

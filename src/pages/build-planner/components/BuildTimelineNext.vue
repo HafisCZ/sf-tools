@@ -12,7 +12,7 @@
           :aria-label="option.label"
           @click="addStep(option)"
         >
-          <BuildPicture :kind="props.config.kind" :building="option.index" :level="option.picture" :badge="option.badge" :variant="option.block ? 'locked' : 'next'" />
+          <BuildPicture :config="props.config" :building="option.index" :level="option.picture" :badge="option.badge" :variant="option.block ? 'locked' : 'next'" />
         </button>
         <template #content>
           <BuildCostSummary :config="props.config" :name="option.name" :cost="option.cost" :discount="option.discount" :duration="option.duration" />
