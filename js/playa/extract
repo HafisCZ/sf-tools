@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Extracts item, portrait and endpoint pictures from the game asset bundles into res/items, res/portraits and res/endpoint
+# Extracts item, portrait, endpoint and monster pictures from the game asset bundles into res/items, res/portraits, res/endpoint and res/monsters
 # Requires: pip install UnityPy Pillow
 
 import json
@@ -13,6 +13,7 @@ import UnityPy
 STREAMING_ASSETS_PATH = '/mnt/c/Program Files (x86)/Steam/steamapps/common/Shakes & Fidget/shakesandfidget_Data/StreamingAssets'
 ITEMS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'items')
 PORTRAITS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'portraits')
+MONSTERS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'monsters')
 SHARED_ASSETS_PATH = os.path.join(os.path.dirname(STREAMING_ASSETS_PATH), 'sharedassets1.assets')
 
 ROOT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
@@ -47,6 +48,10 @@ ENDPOINT_SIZE = 256
 
 # Character tile of the S&F Account screen
 ENDPOINT_SPRITES = {'portrait_glow_background': 'tile', 'ovl_portrait_sso_noface': 'noface'}
+
+MONSTER_SIZE = 256
+
+MONSTER_NAME = re.compile(r'^m(\d+)$')
 
 
 def target_name(name):
@@ -249,10 +254,34 @@ def extract_endpoint():
     print(f'{"endpoint":20} done')
 
 
+def extract_monsters():
+    target = os.path.join(ROOT_PATH, 'res', 'monsters')
+
+    os.makedirs(target, exist_ok=True)
+
+    for name in sorted(os.listdir(MONSTERS_PATH)):
+        match = MONSTER_NAME.match(name)
+
+        if match is None:
+            continue
+
+        file = os.path.join(target, f'{int(match[1])}.webp')
+
+        if os.path.exists(file):
+            continue
+
+        # The texture is the whole monster frame, monster 199 is invisible on purpose and only 1px
+        texture = next(entry.read() for entry in UnityPy.load(os.path.join(MONSTERS_PATH, name)).objects if entry.type.name == 'Texture2D')
+        texture.image.resize((MONSTER_SIZE, MONSTER_SIZE), PIL.Image.LANCZOS).save(file, 'WEBP', quality=90)
+
+    print(f'{"monsters":20} done')
+
+
 def main():
     extract_items()
     extract_portraits()
     extract_endpoint()
+    extract_monsters()
 
 
 if __name__ == '__main__':
