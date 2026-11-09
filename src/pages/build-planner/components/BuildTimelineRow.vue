@@ -1,5 +1,10 @@
 <template>
-  <div draggable="true" class="group relative grid before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5" :class="{ 'shadow-[inset_0_2px_0_var(--color-accent)]': props.dropTarget }" :style="{ gridTemplateColumns: getTimelineColumns(props.config) }">
+  <div
+    draggable="true"
+    class="group relative grid before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/5"
+    :class="{ 'shadow-[inset_0_2px_0_var(--color-accent)]': props.dropTarget === 'above', 'shadow-[inset_0_-2px_0_var(--color-accent)]': props.dropTarget === 'below' }"
+    :style="{ gridTemplateColumns: getTimelineColumns(props.config) }"
+  >
     <button ref="insert-ref" type="button" class="group/insert absolute inset-x-0 top-0 z-2 flex h-3 -translate-y-1/2 cursor-pointer items-center" :aria-label="localize('insert')" :aria-expanded="props.inserting" @click="openInsert">
       <span class="ml-2 flex size-4 shrink-0 items-center justify-center rounded-full bg-accent text-[10px] text-page" :class="insertLineClass">
         <SFIcon name="plus" />
@@ -81,9 +86,9 @@ const props = defineProps<{
    */
   row: PlannerRow
   /**
-   * Shows where a dragged step would land
+   * Shows on which edge of this row a dragged step would land
    */
-  dropTarget: boolean
+  dropTarget?: 'above' | 'below'
   /**
    * Keeps the insert line above this row shown while its building menu is open
    */

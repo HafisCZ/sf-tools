@@ -27,7 +27,7 @@
         :key="row.index"
         :config="props.config"
         :row="row"
-        :drop-target="row.index === dropIndex"
+        :drop-target="row.index === dropIndex ? dropSide : undefined"
         :inserting="open && row.index === insertAt"
         :gem-run="gemRuns.get(row.index)"
         @insert="(anchor: HTMLElement) => openInsert(row.index, anchor)"
@@ -91,6 +91,7 @@ const insertAnchor = shallowRef<HTMLElement | null>(null)
 const dragIndex = shallowRef<number | null>(null)
 
 const dropIndex = shallowRef<number | null>(null)
+const dropSide = computed(() => (dragIndex.value !== null && dropIndex.value !== null && dragIndex.value < dropIndex.value ? 'below' : 'above'))
 
 const endElement = useTemplateRef('end-ref')
 
