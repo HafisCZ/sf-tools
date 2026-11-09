@@ -24,16 +24,6 @@
       </template>
       <template #actions>
         <SFButton variant="outline" :disabled="isEmpty" @click="resetPlan">{{ localize('reset') }}</SFButton>
-        <SFTooltip :content="localize('import')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('import')" @click="importPlan">
-            <SFIcon name="upload" />
-          </SFButton>
-        </SFTooltip>
-        <SFTooltip :content="localize('export')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('export')" :disabled="isEmpty" @click="exportPlan">
-            <SFIcon name="download" />
-          </SFButton>
-        </SFTooltip>
         <SFTooltip :content="localize('copy_image')">
           <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('copy_image')" :disabled="isCopying ? 'loading' : isEmpty" @click="copy">
             <SFIcon name="file-image" badge="copy-solid" />
@@ -54,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFNumber from '@library/SFNumber.vue'
@@ -62,7 +52,6 @@ import SFTabs from '@library/SFTabs.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { createCanvas, getGridHeight, type CanvasGrid, type CanvasGridCell, type CanvasGridColumn, type CanvasGridLine, type CanvasGridRow } from '@utils/canvas'
 import { type SelectOption } from '@utils/components'
-import { useFilePicker } from '@utils/dialogs'
 import { formatNamedNumber, formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useSuccessToast } from '@utils/toasts'
@@ -73,7 +62,7 @@ import { type PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import { createPlan, formatBuildTime, FORTRESS_PLANNER, getBuildingPicture, getGemRuns, getSkipCost, getStartLevels, normalizePlan, notifyRemovedSteps, PLANNER_CONFIGS, pruneSteps, simulate, UNDERWORLD_PLANNER } from '~/pages/build-planner/build-planner'
+import { createPlan, decodePlan, encodePlan, formatBuildTime, FORTRESS_PLANNER, getBuildingPicture, getGemRuns, getSkipCost, getStartLevels, normalizePlan, notifyRemovedSteps, PLANNER_CONFIGS, pruneSteps, simulate, UNDERWORLD_PLANNER } from '~/pages/build-planner/build-planner'
 import BuildTimeline from '~/pages/build-planner/components/BuildTimeline.vue'
 import type { PlannerKind, PlannerPlan } from '~/pages/build-planner/types'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
@@ -101,27 +90,55 @@ const config = computed(() => PLANNER_CONFIGS[tab.value])
 
 const plan = computed(() => plans.value[tab.value])
 
-const isEmpty = computed(() => plan.value.steps.length === 0 && plan.value.levels.every((level) => !level))
+const isEmpty = computed(() => isPlanEmpty(plan.value))
 
-const { submit: readPlan } = useSubmit(
-  async (file: File) => {
-    const imported = JSON.parse(await file.text()) as PlannerPlan & { kind: string }
+const PLANNER_KINDS: PlannerKind[] = ['fortress', 'underworld']
 
-    if (imported.kind !== tab.value) {
-      const known = imported.kind === 'fortress' || imported.kind === 'underworld'
+const params = new URLSearchParams(window.location.search)
 
-      useErrorToast(localize('import_error.title'), known ? localize('import_error.tab', { tab: localize(`tab.${imported.kind}`) }) : localize('import_error.message'))
-      return
-    }
+for (const kind of PLANNER_KINDS) {
+  const linked = params.get(kind)
+  if (!linked) continue
 
-    const loaded = normalizePlan(config.value, { levels: imported.levels, steps: imported.steps })
-    const steps = pruneSteps(config.value, loaded)
+  try {
+    const linkedConfig = PLANNER_CONFIGS[kind]
+    const loaded = normalizePlan(linkedConfig, decodePlan(linkedConfig, linked))
+    const steps = pruneSteps(linkedConfig, loaded)
 
     notifyRemovedSteps(loaded.steps.length - steps.length)
 
-    plans.value[tab.value] = { ...loaded, steps }
+    plans.value[kind] = { ...loaded, steps }
+  } catch {
+    useErrorToast(localize('link_error.title'), localize('link_error.message'))
+  }
+}
+
+const linkedTab = PLANNER_KINDS.find((kind) => kind === params.get('tab'))
+if (linkedTab) tab.value = linkedTab
+
+// Both plans and the open tab live in the URL, so the address can be shared or reloaded
+watch(
+  () => {
+    const url = new URL(window.location.href)
+
+    for (const kind of PLANNER_KINDS) {
+      if (isPlanEmpty(plans.value[kind])) {
+        url.searchParams.delete(kind)
+      } else {
+        url.searchParams.set(kind, encodePlan(PLANNER_CONFIGS[kind], plans.value[kind]))
+      }
+    }
+
+    if (tab.value === 'fortress') {
+      url.searchParams.delete('tab')
+    } else {
+      url.searchParams.set('tab', tab.value)
+    }
+
+    return url.toString()
   },
-  () => ({ title: localize('import_error.title'), message: localize('import_error.message') })
+  (url) => window.history.replaceState(window.history.state, '', url),
+  { immediate: true }
 )
 
 const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
@@ -180,12 +197,8 @@ function resetPlan() {
   plans.value[tab.value] = createPlan(config.value)
 }
 
-function importPlan() {
-  useFilePicker({ accept: '.json', callback: (files) => void readPlan(files[0]) })
-}
-
-function exportPlan() {
-  Exporter.json({ kind: tab.value, levels: plan.value.levels, steps: plan.value.steps }, `build_planner_${tab.value}_${Exporter.time}`)
+function isPlanEmpty(value: PlannerPlan) {
+  return value.steps.length === 0 && value.levels.every((level) => !level)
 }
 
 async function drawPlan() {

@@ -120,6 +120,23 @@ export function normalizePlan(config: PlannerConfig, plan: PlannerPlan): Planner
   return { ...plan, levels: getStartLevels(config, plan) }
 }
 
+// Bytes: every start level, then one per step (building index, +128 when skipped), as base64url
+export function encodePlan(config: PlannerConfig, plan: PlannerPlan) {
+  const bytes = [...getStartLevels(config, plan), ...plan.steps.map((step) => step.building + (step.skipped ? 128 : 0))]
+
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+}
+
+export function decodePlan(config: PlannerConfig, value: string): PlannerPlan {
+  const bytes = Array.from(atob(value.replace(/-/g, '+').replace(/_/g, '/')), (character) => character.charCodeAt(0))
+  const count = config.buildings.length
+
+  return { levels: bytes.slice(0, count), steps: bytes.slice(count).map((byte) => ({ building: byte & 127, skipped: byte >= 128 })) }
+}
+
 export function checkUpgrade(config: PlannerConfig, levels: number[], building: number): PlannerBlock | null {
   const level = levels[building] + 1
 
