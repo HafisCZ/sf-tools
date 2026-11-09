@@ -2486,6 +2486,19 @@
             "title": "Steps removed",
             "message": "#{count} steps can't be built anymore",
             "message_one": "#{count} step can't be built anymore"
+        },
+        "import": "Import",
+        "export": "Export",
+        "copy_image": "Copy as image",
+        "save_image": "Save as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "import_error": {
+            "title": "Import failed",
+            "message": "This file is not a Build Planner plan",
+            "tab": "This file is for the #{tab} tab"
         }
     }
 }

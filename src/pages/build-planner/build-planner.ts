@@ -1,7 +1,7 @@
 import { globalLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { clamp } from '@utils/utils'
-import type { PlannerBlock, PlannerConfig, PlannerKind, PlannerOption, PlannerPlan, PlannerRow, PlannerState, PlannerStep } from '~/pages/build-planner/types'
+import type { PlannerBlock, PlannerConfig, PlannerGemRun, PlannerKind, PlannerOption, PlannerPlan, PlannerRow, PlannerState, PlannerStep } from '~/pages/build-planner/types'
 import { ACADEMY, ARCHERY, BARRACKS, buildTime, EXTRACTOR, FORTRESS, GATE, gemTime, GEMMINE, GEMTIME, GLADIATOR_TRAINER, GOBLIN_PIT, GOLD_PIT, HEART, KEEPER, MAGES, QUARRY, QUARTERS, SMITHY, TIME_MACHINE, TORTURE_CHAMBER, TREASURY, TROLL_BLOCK, WALL, WOODCUTTER } from '~/playa/buildings'
 
 export const FORTRESS_BUILDING = { Fortress: 0, LaborerQuarters: 1, WoodcutterGuild: 2, Quarry: 3, GemMine: 4, Academy: 5, ArcheryGuild: 6, Barracks: 7, MageTower: 8, Treasury: 9, Smithy: 10, Fortifications: 11 }
@@ -205,6 +205,39 @@ export function simulate(config: PlannerConfig, plan: PlannerPlan, count = plan.
   return { rows, state }
 }
 
+export function getGemRuns(rows: PlannerRow[]) {
+  const runs = new Map<number, PlannerGemRun>()
+
+  let first = -1
+  let run: PlannerGemRun = { rows: 0, gems: 0 }
+
+  for (const row of rows) {
+    if (first >= 0 && !row.searching) {
+      if (run.gems > 0) {
+        runs.set(first, run)
+      }
+
+      first = -1
+    }
+
+    if (row.searching) {
+      if (first < 0) {
+        first = row.index
+        run = { rows: 0, gems: 0 }
+      }
+
+      run.rows += 1
+      run.gems += row.gems
+    }
+  }
+
+  if (first >= 0 && run.gems > 0) {
+    runs.set(first, run)
+  }
+
+  return runs
+}
+
 export function getNextOptions(config: PlannerConfig, plan: PlannerPlan, state: PlannerState): PlannerOption[] {
   const quarters = getQuarters(config, plan, state.levels)
 
@@ -248,6 +281,10 @@ export function notifyRemovedSteps(count: number) {
   if (count <= 0) return
 
   useToast({ title: globalLocalize('build_planner.removed.title'), message: globalLocalize(count === 1 ? 'build_planner.removed.message_one' : 'build_planner.removed.message', { count }) })
+}
+
+export function getBuildingPicture(kind: PlannerKind, building: number, level: number) {
+  return `/res/buildings/${kind}/${String(building + 1).padStart(2, '0')}_${String(level).padStart(2, '0')}.webp`
 }
 
 const TRACK_COUNT = Math.max(...Object.values(PLANNER_CONFIGS).map((config) => config.buildings.length))

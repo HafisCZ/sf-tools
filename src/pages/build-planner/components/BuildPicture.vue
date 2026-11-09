@@ -10,6 +10,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { getBuildingPicture } from '~/pages/build-planner/build-planner'
 import type { PlannerKind } from '~/pages/build-planner/types'
 
 defineOptions({
@@ -53,5 +54,5 @@ const BADGE_CLASSES = {
   locked: 'text-white/60'
 }
 
-const picture = computed(() => `/res/buildings/${props.kind}/${String(props.building + 1).padStart(2, '0')}_${String(props.level).padStart(2, '0')}.webp`)
+const picture = computed(() => getBuildingPicture(props.kind, props.building, props.level))
 </script>

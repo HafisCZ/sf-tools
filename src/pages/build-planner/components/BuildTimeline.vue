@@ -50,12 +50,12 @@
 import { computed, nextTick, shallowRef, useTemplateRef } from 'vue'
 import { useDropdown } from '@utils/interactions'
 import { useLocalize } from '@utils/localization'
-import { getDetailColumns, getStartLevels, getTimelineColumns, notifyRemovedSteps, pruneSteps, simulate } from '~/pages/build-planner/build-planner'
+import { getDetailColumns, getGemRuns, getStartLevels, getTimelineColumns, notifyRemovedSteps, pruneSteps, simulate } from '~/pages/build-planner/build-planner'
 import BuildInsertMenu from '~/pages/build-planner/components/BuildInsertMenu.vue'
 import BuildPicture from '~/pages/build-planner/components/BuildPicture.vue'
 import BuildTimelineNext from '~/pages/build-planner/components/BuildTimelineNext.vue'
 import BuildTimelineRow from '~/pages/build-planner/components/BuildTimelineRow.vue'
-import type { PlannerConfig, PlannerGemRun, PlannerPlan } from '~/pages/build-planner/types'
+import type { PlannerConfig, PlannerPlan } from '~/pages/build-planner/types'
 
 defineOptions({
   name: 'BuildTimeline'
@@ -102,39 +102,7 @@ const simulation = computed(() => simulate(props.config, plan.value))
 
 const insertState = computed(() => (insertAt.value === null ? null : simulate(props.config, plan.value, insertAt.value).state))
 
-// One block per stretch of searching that finds a gem
-const gemRuns = computed(() => {
-  const runs = new Map<number, PlannerGemRun>()
-
-  let first = -1
-  let run: PlannerGemRun = { rows: 0, gems: 0 }
-
-  for (const row of simulation.value.rows) {
-    if (first >= 0 && !row.searching) {
-      if (run.gems > 0) {
-        runs.set(first, run)
-      }
-
-      first = -1
-    }
-
-    if (row.searching) {
-      if (first < 0) {
-        first = row.index
-        run = { rows: 0, gems: 0 }
-      }
-
-      run.rows += 1
-      run.gems += row.gems
-    }
-  }
-
-  if (first >= 0 && run.gems > 0) {
-    runs.set(first, run)
-  }
-
-  return runs
-})
+const gemRuns = computed(() => getGemRuns(simulation.value.rows))
 
 function openInsert(index: number, anchor: HTMLElement) {
   insertAt.value = index
