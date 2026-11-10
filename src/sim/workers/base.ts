@@ -315,7 +315,9 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       SkipChance: 0,
       SkipLimit: 999,
       SkipType: SKIP_TYPE_DEFAULT,
-      SkipVariant: DEFENSE_TYPE_NONE
+      SkipVariant: DEFENSE_TYPE_NONE,
+
+      BloodWeaverDamageMultiplier: 1.2
     },
     Berserker: {
       ID: BERSERKER,
@@ -593,11 +595,10 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
     },
     BloodWeaver: {
       ID: BLOODWEAVER,
-      Disabled: true,
 
       Attribute: 'Strength',
 
-      HealthMultiplier: 5,
+      HealthMultiplier: 4,
       WeaponMultiplier: 2,
       DamageMultiplier: 1,
       MaximumDamageReduction: 25,
@@ -607,6 +608,10 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       SkipLimit: 999,
       SkipType: SKIP_TYPE_DEFAULT,
       SkipVariant: DEFENSE_TYPE_NONE,
+
+      AssassinDamageMultiplier: 1.1,
+      BerserkerDamageMultiplier: 1.1,
+      MageDamageMultiplier: 1.25,
 
       DaggerChance: 0.3,
       DaggerSacrifice: 0.1,
@@ -625,8 +630,8 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
 
       ScytheChance: 0.5,
       Scythe: {
-        DamageBonus: 1,
-        SkipChance: 0.2,
+        DamageBonus: 1.1,
+        SkipChance: 0.3,
         CriticalBonus: 0,
         CriticalChance: 0.5,
         CriticalChanceBonus: 0,
@@ -634,7 +639,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       },
 
       Revived: {
-        SkipChance: 0.2,
+        SkipChance: 0.3,
         CriticalBonus: 0,
         CriticalChance: 0.5,
         CriticalChanceBonus: 0,
