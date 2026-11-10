@@ -24,14 +24,7 @@
       </div>
       <div class="relative border-b border-line">
         <div class="mx-auto flex max-w-[1280px] items-center gap-4 px-4 py-2">
-          <SFTabs
-            v-model="tab"
-            :options="[
-              { value: 'overview', label: localize('tabs.overview') },
-              { value: 'attributes', label: localize('tabs.attributes') },
-              { value: 'items', label: localize('tabs.items') }
-            ]"
-          />
+          <SFTabs v-model="tab" :options="tabOptions" />
           <span class="ml-auto truncate text-xs text-white/60">{{ DatabaseManager.getLinkedIdentifiers(props.identifier).join(' / ') }}</span>
         </div>
       </div>
@@ -40,25 +33,27 @@
       <div role="tabpanel" class="mx-auto max-w-[1280px] px-4 pt-7 pb-14">
         <PlayerDetailOverview v-if="tab === 'overview'" :player="player" :compare="compare" />
         <PlayerDetailAttributes v-else-if="tab === 'attributes'" :player="player" :compare="compare" />
-        <PlayerDetailItems v-else :player="player" />
+        <PlayerDetailItems v-else-if="tab === 'items'" :player="player" />
+        <PlayerDetailDeeds v-else-if="player.Deeds" :deeds="player.Deeds" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, provide, ref, useId, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref, useId, useTemplateRef, watch } from 'vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFProgress from '@library/SFProgress.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { formatDate, formatSpacedNumber, formatWorldName } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { getClassImageUrl } from '@utils/utils'
+import { compact, getClassImageUrl } from '@utils/utils'
 import CharacterRenderer from '~/components/CharacterRenderer.vue'
 import { type PlayerModel } from '~/core/models/player'
 import { DatabaseManager, type PlayerHistory } from '~/data/database-manager'
 import PlayerDetailAttributes from '~/pages/stats/components/PlayerDetailAttributes.vue'
+import PlayerDetailDeeds from '~/pages/stats/components/PlayerDetailDeeds.vue'
 import PlayerDetailItems from '~/pages/stats/components/PlayerDetailItems.vue'
 import PlayerDetailOverview from '~/pages/stats/components/PlayerDetailOverview.vue'
 import PlayerDetailValue from '~/pages/stats/components/PlayerDetailValue.vue'
@@ -88,7 +83,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-type DetailTab = 'overview' | 'attributes' | 'items'
+type DetailTab = 'overview' | 'attributes' | 'items' | 'deeds'
 
 const localize = useLocalize('stats.player')
 
@@ -107,6 +102,16 @@ const tab = ref<DetailTab>('overview')
 
 const player = computed(() => DatabaseManager.getPlayer(props.identifier, timestamp.value) as PlayerModel)
 const compare = computed(() => DatabaseManager.getPlayer(props.identifier, reference.value) as PlayerModel)
+
+const tabOptions = computed(() =>
+  compact<{ value: DetailTab; label: string } | false>([{ value: 'overview', label: localize('tabs.overview') }, { value: 'attributes', label: localize('tabs.attributes') }, { value: 'items', label: localize('tabs.items') }, !!player.value.Deeds && { value: 'deeds', label: localize('tabs.deeds') }])
+)
+
+watch(player, (value) => {
+  if (tab.value === 'deeds' && !value.Deeds) {
+    tab.value = 'overview'
+  }
+})
 
 provide(PLAYER_DETAIL_KEY, {
   get player() {

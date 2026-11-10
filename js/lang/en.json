@@ -619,7 +619,8 @@
             "tabs": {
                 "overview": "Overview",
                 "attributes": "Attributes",
-                "items": "Items"
+                "items": "Items",
+                "deeds": "Deeds & Titles"
             },
             "columns": {
                 "attribute": "Attribute",
@@ -652,6 +653,16 @@
                 "title": "Toilet",
                 "aura": "Aura",
                 "fill": "Fill"
+            },
+            "deeds": {
+                "glory": "Glory",
+                "points": "Points",
+                "trophies": "Trophies",
+                "titles": "Hero Titles",
+                "title": "Title",
+                "unlocked": "Unlocked",
+                "shelf": "Glory Shelf",
+                "required": "Required: #{value}"
             },
             "extras": {
                 "title": "Extras",

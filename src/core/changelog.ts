@@ -69,6 +69,8 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Added new tool that shows the progress left in your dungeons'
     ],
     Statistics: [
+      'Added Deeds & Titles tab to player details',
+      'Added headers for Glory and trophies',
       'Updated player detail screen with more information and charts'
     ],
     'Dungeon Simulator': [
@@ -84,7 +86,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Updated layout'
     ],
     'Fight Analyzer': [
-      'Added tracking oflongest Berserker chain'
+      'Added tracking of longest Berserker chain'
     ],
     'All Simulators': [
       'Added support for Blood Weaver',
