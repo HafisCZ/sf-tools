@@ -92,7 +92,8 @@ const TOOLS = [
   { key: 'raids', href: 'raids.html' },
   { key: 'scrapbook', href: 'scrapbook.html' },
   { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro' },
-  { key: 'build_planner', href: 'build-planner.html' }
+  { key: 'build_planner', href: 'build-planner.html' },
+  { key: 'bestiary', href: 'bestiary.html' }
 ]
 
 const COMMUNITY_TOOLS = [

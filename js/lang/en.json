@@ -233,6 +233,10 @@
             "title": "Build Planner",
             "desc": "Plan your building upgrades step by step"
         },
+        "bestiary": {
+            "title": "Bestiary",
+            "desc": "All dungeon information you might need"
+        },
         "idle": {
             "title": "Arena Manager",
             "desc": "Check the production of your Arena Manager"
@@ -2388,5 +2392,22 @@
             "title": "Plan not loaded",
             "message": "This link doesn't contain a Build Planner plan"
         }
+    },
+    "bestiary": {
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "tower": "Tower",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm",
+            "class": "Class World"
+        },
+        "back": "Dungeons",
+        "search": "Search",
+        "search_placeholder": "Search #{name}",
+        "level": "Level #{level}",
+        "health": "Health",
+        "damage": "Damage"
     }
 }
