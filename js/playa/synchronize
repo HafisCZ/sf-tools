@@ -18,6 +18,56 @@ module Synchronize
   REGEXP_RAID_NAME = /^guild_raid_name_(\d+)$/
   REGEXP_ACHIEVEMENT = /^album_ach_(\d+)_title$/
 
+  # Deed number used by trophy ids (deed n has trophies 3n-2 to 3n), number 36 is unused
+  DEED_NUMBERS = {
+    'soul_eater' => 1,
+    'gladiator' => 2,
+    'dungeon_master' => 3,
+    'dungeon_jesus' => 4,
+    'luck_or_glory' => 5,
+    'architect' => 6,
+    'stoned' => 7,
+    'booze_level' => 8,
+    'sleep_and_earn' => 9,
+    'heroic' => 10,
+    'fortytwo' => 11,
+    'beer_blessed' => 12,
+    'hercules' => 13,
+    'three_right_thumbs' => 14,
+    'brainiac' => 15,
+    'whirlwind' => 16,
+    'golddigga' => 17,
+    'immortal' => 18,
+    'pentagram' => 19,
+    'achiever' => 20,
+    'master_brewer' => 21,
+    'leaf_clover' => 22,
+    'professor_gadget' => 23,
+    'one_for_all' => 24,
+    'tamer' => 25,
+    'epic_outfit' => 26,
+    'halo' => 27,
+    'collector' => 28,
+    'secret_sign' => 29,
+    'dug_too_deep' => 30,
+    'bad_luck' => 31,
+    'goldie' => 32,
+    'witch' => 33,
+    'pizza' => 34,
+    'goblin' => 35,
+    'equestrianism' => 37,
+    'hero_for_more_than_just_one_day' => 38,
+    'plush_riot' => 39,
+    'man_of_honor' => 40,
+    'mushroom_expert' => 41
+  }.freeze
+
+  REGEXP_DEED_NAME = /^deed_(#{DEED_NUMBERS.keys.join('|')})_name$/
+  REGEXP_DEED_DESCRIPTION = /^deed_(#{DEED_NUMBERS.keys.join('|')})_description$/
+  REGEXP_HERO_TITLE = /^hero_title_type_\d+$/
+  REGEXP_DEED_SHELF = /^deed_shelf_\d+$/
+  REGEXP_TROPHY_TIER = /^trophy_(bronze|silver|gold)$/
+
   LANGUAGE_LIST = {
     'en' => 'en',
     'de' => 'de',
@@ -70,7 +120,7 @@ module Synchronize
 
       File.write("lang/#{sftools_language}/items.json", JSON.pretty_generate(items))
 
-      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME, REGEXP_ACHIEVEMENT].any? { key.match?(_1) } }
+      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME, REGEXP_ACHIEVEMENT, REGEXP_DEED_NAME, REGEXP_DEED_DESCRIPTION, REGEXP_HERO_TITLE, REGEXP_DEED_SHELF, REGEXP_TROPHY_TIER].any? { key.match?(_1) } }
       general = general.map do |key, text|
         parsed_key = case key
         when REGEXP_PET_REQUIREMENT
@@ -79,6 +129,10 @@ module Synchronize
           "guild_raid_#{Regexp.last_match(1).to_i}"
         when REGEXP_ACHIEVEMENT
           "achievement_#{Regexp.last_match(1).to_i - 1}"
+        when REGEXP_DEED_NAME
+          "deed_#{DEED_NUMBERS[Regexp.last_match(1)]}"
+        when REGEXP_DEED_DESCRIPTION
+          "deed_#{DEED_NUMBERS[Regexp.last_match(1)]}_description"
         else
           key
         end
