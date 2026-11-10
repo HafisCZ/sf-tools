@@ -72,7 +72,8 @@ const columns = computed(() => {
           { label: localize('honor'), value: formatSpacedNumber(player.Honor), read: (scan) => scan.Honor }
         ]
       },
-      player.Pets.TotalCount !== undefined && { title: localize('pets.title'), icon: '/res/player/pets.webp', rows: getPetRows() }
+      player.Pets.TotalCount !== undefined && { title: localize('pets.title'), icon: '/res/player/pets.webp', rows: getPetRows() },
+      !!player.Toilet.Aura && { title: localize('toilet.title'), icon: '/res/player/toilet.webp', rows: getToiletRows() }
     ]),
     compact<DetailPanel | false | 0>([{ title: localize('bonuses'), rows: getBonusRows() }, runeRows.length && { title: localize('runes.title'), rows: runeRows }, underworldRows.length && { title: localize('underworld'), icon: '/res/player/underworld.webp', rows: underworldRows }]),
     compact<DetailPanel | false | 0>([{ title: localize('fortress.title'), icon: '/res/player/fortress.webp', rows: getFortressRows() }, player.hasGuild() && { title: localize('guild'), icon: '/res/player/guild.webp', rows: getGuildRows() }, player.Own && { title: localize('extras.title'), rows: getExtraRows() }])
@@ -218,6 +219,15 @@ function getPetRows() {
     pets.Rank && { label: localize('pets.rank'), value: formatSpacedNumber(pets.Rank) },
     pets.Honor !== undefined && { label: localize('pets.honor'), value: formatSpacedNumber(pets.Honor), read: (scan) => scan.Pets.Honor }
   ])
+}
+
+function getToiletRows(): PlayerDetailRow[] {
+  const toilet = props.player.Toilet
+
+  return [
+    { label: localize('toilet.aura'), value: String(toilet.Aura), read: (scan) => scan.Toilet.Aura },
+    { label: localize('toilet.fill'), value: `${toilet.Fill} / ${toilet.Capacity}`, read: (scan) => scan.Toilet.Fill }
+  ]
 }
 
 function getExtraRows() {

@@ -648,6 +648,11 @@
                 "rank": "Pet Rank",
                 "honor": "Pet Honor"
             },
+            "toilet": {
+                "title": "Toilet",
+                "aura": "Aura",
+                "fill": "Fill"
+            },
             "extras": {
                 "title": "Extras",
                 "registered": "Registered",
