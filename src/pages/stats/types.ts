@@ -6,6 +6,7 @@ export type PlayerDetailRow = {
   icon?: `/${string}`
   read?: (player: PlayerModel) => number | undefined
   placeholder?: string
+  gap?: boolean
 }
 
 export type PlayerDetailContext = {

@@ -4,7 +4,7 @@
       <img v-if="props.icon" :src="props.icon" alt="" class="size-7 object-contain" />
       <SFHeading level="4" class="leading-none">{{ props.title }}</SFHeading>
     </div>
-    <div v-for="(row, rowIndex) in props.rows" :key="rowIndex" class="flex items-start gap-2 border-b border-white/5 py-1.5 leading-[22px]">
+    <div v-for="(row, rowIndex) in props.rows" :key="rowIndex" :class="{ 'mt-[35px]': row.gap }" class="flex items-start gap-2 border-b border-white/5 py-1.5 leading-[22px]">
       <img v-if="row.icon" :src="row.icon" alt="" class="size-[22px] shrink-0 object-contain" />
       <span class="flex-1">{{ row.label }}</span>
       <span v-if="row.placeholder" class="group grid text-right">

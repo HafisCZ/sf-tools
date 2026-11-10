@@ -151,11 +151,15 @@ function getFortressRows() {
 
   const units = (count: number, level: number | undefined) => (level === undefined ? '' : ` (${count}x ${level})`)
 
-  return compact<PlayerDetailRow | false>([
+  const summaryRows = compact<PlayerDetailRow | false>([
     fortress.Rank !== undefined && { label: localize('fortress.rank'), value: formatSpacedNumber(fortress.Rank) },
     fortress.Honor !== undefined && { label: localize('fortress.honor'), value: formatSpacedNumber(fortress.Honor), read: (scan) => scan.Fortress.Honor },
-    fortress.Upgrades !== undefined && { label: localize('fortress.upgrades'), value: String(fortress.Upgrades), read: (scan) => scan.Fortress.Upgrades },
-    building(1, 'Fortress'),
+    fortress.Upgrades !== undefined && { label: localize('fortress.upgrades'), value: String(fortress.Upgrades), read: (scan) => scan.Fortress.Upgrades }
+  ])
+
+  return [
+    ...summaryRows,
+    { ...building(1, 'Fortress'), gap: summaryRows.length > 0 },
     building(2, 'LaborerQuarters'),
     building(3, 'WoodcutterGuild'),
     building(4, 'Quarry'),
@@ -167,7 +171,7 @@ function getFortressRows() {
     building(10, 'Treasury'),
     building(11, 'Smithy'),
     building(12, 'Fortifications', fortress.Wall === undefined ? '' : ` (${fortress.Wall})`)
-  ])
+  ]
 }
 
 const UNDERWORLD_BUILDINGS = [
