@@ -161,6 +161,19 @@ export type PlayerPets = Record<PetHabitat, number> &
     TotalLevel?: number
   }
 
+export type PlayerDeeds = {
+  GloryPoints: number
+  Rank?: number
+  TrophiesBronze: number
+  TrophiesSilver: number
+  TrophiesGold: number
+  TitlesUnlocked: number
+  EquippedTitle: number
+  EquippedTitleHot: boolean
+  Shelf: number
+  Trophies: { Type: number; Hot: boolean }[]
+}
+
 export type PlayerRunes = {
   Gold: number
   Chance: number
@@ -398,6 +411,7 @@ export class PlayerModel {
   declare LinkId: string
   declare IsProxy?: true
   declare Toilet: { Aura?: number; Fill?: number; Capacity?: number }
+  declare Deeds?: PlayerDeeds
   declare Witch: PlayerWitch
   declare Achievements: PlayerAchievements
   declare GroupTournament?: { Tokens?: number; Floor?: number; FloorMax?: number }
@@ -822,6 +836,33 @@ export class PlayerModel {
     dataType.skip(1)
 
     this.Toilet.Capacity = dataType.long()
+  }
+
+  #initDeedsSave(data: RawPlayer) {
+    if (!data.deeds) return
+
+    const dataType = new ComplexDataType(data.deeds)
+    dataType.skip(1)
+
+    const gloryPoints = dataType.long()
+    const rank = dataType.long()
+
+    this.Deeds = {
+      GloryPoints: gloryPoints,
+      Rank: rank > 0 ? rank : undefined,
+      TrophiesBronze: dataType.long(),
+      TrophiesSilver: dataType.long(),
+      TrophiesGold: dataType.long(),
+      TitlesUnlocked: dataType.long(),
+      EquippedTitle: dataType.long(),
+      EquippedTitleHot: dataType.long() === 1,
+      Shelf: dataType.long(),
+      Trophies: []
+    }
+
+    for (let i = 0; i < 6; i++) {
+      this.Deeds.Trophies.push({ Type: dataType.long(), Hot: dataType.long() === 1 })
+    }
   }
 
   #initResources(resources: PlayerResources) {
@@ -1705,6 +1746,8 @@ export class PlayerModel {
     this.Description = PlayaResponse.unescape(data.description)
 
     this.DataVersion = data.saveVersion
+
+    this.#initDeedsSave(data)
 
     this.Inventory = {
       Backpack: [],

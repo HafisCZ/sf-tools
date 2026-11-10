@@ -2539,6 +2539,42 @@ TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Achievements', {
   expr: (p) => p.Achievements?.Owned
 })
 
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Glory Points', {
+  expr: (p) => p.Deeds?.GloryPoints
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Glory Rank', {
+  expr: (p) => p.Deeds?.Rank,
+  flip: true
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Bronze Trophies', {
+  expr: (p) => p.Deeds?.TrophiesBronze
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Silver Trophies', {
+  expr: (p) => p.Deeds?.TrophiesSilver
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Gold Trophies', {
+  expr: (p) => p.Deeds?.TrophiesGold
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Trophies', {
+  expr: (p) => p.Deeds && p.Deeds.TrophiesBronze + p.Deeds.TrophiesSilver + p.Deeds.TrophiesGold
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Hero Titles', {
+  expr: (p) => p.Deeds?.TitlesUnlocked
+})
+
+TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Hero Title', {
+  expr: (p) => p.Deeds?.EquippedTitle,
+  format: (p, x: number) => (x ? globalLocalize(`general.hero_title_type_${x}`) : ''),
+  difference: false,
+  statistics: false
+})
+
 TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Pets Unlocked', {
   expr: (p) => p.Achievements?.PetLover,
   format: 'boolean',
