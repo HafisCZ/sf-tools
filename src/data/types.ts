@@ -55,6 +55,7 @@ export type RawPlayer = RawEntry & {
   eventTasks?: number[]
   eventTasksRewards?: number[]
   toilet?: number[]
+  deeds?: number[]
   adventure?: number[]
   groupMetadata?: number[]
   wheel?: number[]

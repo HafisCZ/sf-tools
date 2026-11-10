@@ -209,6 +209,7 @@ export class PlayaResponse {
           data.eventTasksRewards = r.eventtaskrewardpreview?.numbers()
           data.description = r.owndescription?.string
           data.toilet = r.arcanetoilet?.numbers()
+          data.deeds = r.deedsandtitlesplayersave?.numbers()
           data.adventure = r.adventure?.numbers()
           data.groupMetadata = r.charactergroup?.numbers()
           data.wheel = r.wheel?.numbers()
@@ -276,6 +277,7 @@ export class PlayaResponse {
           data.fortressrank = r.otherplayerfortressrank?.number
           data.pets = r.otherplayerpetbonus?.numbers()
           data.description = r.otherdescription?.string
+          data.deeds = r.deedsandtitlesplayersave?.numbers()
 
           data.equippedItems = r.otherplayersaveequipment?.numbers()
 
