@@ -346,7 +346,7 @@ export const DUNGEON_DATA: Record<string, Dungeon> = {
       '6': { pos: 6, id: 73, class: 2, level: 44, str: 191, dex: 190, int: 780, con: 411, lck: 259, health: 36990, min: 143, max: 241 },
       '7': { pos: 7, id: 23, class: 1, level: 48, str: 744, dex: 243, int: 230, con: 563, lck: 246, health: 137935, min: 69, max: 122 },
       '8': { pos: 8, id: 48, class: 3, level: 56, str: 250, dex: 960, int: 240, con: 680, lck: 345, health: 155040, min: 92, max: 160 },
-      '9': { pos: 9, id: 82, class: 3, level: 66, str: 300, dex: 1160, int: 290, con: 880, lck: 420, health: 235840, min: 102, max: 175 },
+      '9': { pos: 9, id: 92, class: 3, level: 66, str: 300, dex: 1160, int: 290, con: 880, lck: 420, health: 235840, min: 102, max: 175 },
       '10': { pos: 10, id: 7, class: 1, level: 70, str: 1240, dex: 385, int: 360, con: 960, lck: 340, health: 340800, min: 85, max: 143 }
     }
   },
