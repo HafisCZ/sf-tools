@@ -72,8 +72,32 @@ module Synchronize
   REGEXP_DUNGEON_FLOOR = /^dungeon_(\d+)_level_(\d+)_text$/
   REGEXP_QUOTES = /\A[\s"„“”«»]+|[\s"„“”«»]+\.?\z/
 
-  DUNGEON_NAMES = { 15 => 'tower_name' }.freeze
-  DUNGEON_DESCRIPTIONS = { 15 => 'tower_overview_description', 18 => 'yt_dungeon_overview_description', 32 => 'sandstorm_overview_description' }.freeze
+  DUNGEON_NAMES = {
+    15 => 'tower_name'
+  }.freeze
+
+  DUNGEON_DESCRIPTIONS = {
+    15 => 'tower_overview_description',
+    18 => 'yt_dungeon_overview_description',
+    32 => 'sandstorm_overview_description'
+  }.freeze
+
+  DUNGEON_IDS = {
+    15 => 201,
+    18 => 202,
+    31 => nil,
+    32 => 204,
+    33 => 31,
+    34 => 32,
+    35 => 33,
+    36 => 34,
+    37 => 35,
+    100 => 300,
+    101 => 301,
+    102 => 302,
+    103 => 303,
+    104 => nil
+  }.freeze
 
   LANGUAGE_LIST = {
     'en' => 'en',
@@ -157,20 +181,31 @@ module Synchronize
       strings.each do |key, text|
         next unless (match = key.match(REGEXP_DUNGEON_TITLE))
 
-        id = match[1].to_i
+        game_id = match[1].to_i
+        id = DUNGEON_IDS.fetch(game_id, game_id)
+        next unless id
+
         title = text.split('|', 2)
-        description = DUNGEON_DESCRIPTIONS[id] ? strings[DUNGEON_DESCRIPTIONS[id]] : (title[1] || strings["dungeon_#{match[1]}_comment"])
+        description = DUNGEON_DESCRIPTIONS[game_id] ? strings[DUNGEON_DESCRIPTIONS[game_id]] : (title[1] || strings["dungeon_#{match[1]}_comment"])
 
         dungeons[id] = {
-          name: DUNGEON_NAMES[id] ? strings[DUNGEON_NAMES[id]] : title.first,
+          name: DUNGEON_NAMES[game_id] ? strings[DUNGEON_NAMES[game_id]] : title.first,
           description: description&.gsub(/(?:<br>)+/, ' ')&.gsub(REGEXP_QUOTES, '')
         }.compact
       end
 
+      dungeons[203] = {
+        name: strings['dungeon_15_title'],
+        description: strings['twister_overview_description'].gsub(/(?:<br>)+/, ' ')
+      }
+
       strings.each do |key, text|
         next unless (match = key.match(REGEXP_DUNGEON_FLOOR))
 
-        floors = (dungeons[match[1].to_i][:floors] ||= {})
+        id = DUNGEON_IDS.fetch(match[1].to_i, match[1].to_i)
+        next unless id
+
+        floors = (dungeons[id][:floors] ||= {})
         floors[match[2].to_i] = text.gsub(/(?:<br>)+/, ' ')
       end
 

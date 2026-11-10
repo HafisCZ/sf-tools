@@ -62,7 +62,8 @@ async function fetchTranslation(value: string, url: string, ...path: string[]) {
 const INJECTIONS: Record<string, [string, string]> = {
   translations_general: ['/js/playa/lang/{{locale}}/general.json', 'general'],
   translations_monsters: ['/js/playa/lang/{{locale}}/monsters.json', 'monsters'],
-  translations_items: ['/js/playa/lang/{{locale}}/items.json', 'items']
+  translations_items: ['/js/playa/lang/{{locale}}/items.json', 'items'],
+  translations_dungeons: ['/js/playa/lang/{{locale}}/dungeons.json', 'dungeons']
 }
 
 async function fetchTranslations(value: string) {

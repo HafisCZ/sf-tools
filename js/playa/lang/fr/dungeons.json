@@ -243,112 +243,6 @@
       "20": "Non, je n'ai pas peur des dragons géants. Pourquoi en aurais-je peur ? Je n'en ai jamais renc- Aaaah !"
     }
   },
-  "15": {
-    "name": "Tour",
-    "description": "Il était une fois, un aventurier et ses trois compagnons...",
-    "floors": {
-      "1": "Au premier niveau, vous rencontrez un homme-biscuit sympathique et plein d'arôme. Quelle est votre place dans la chaîne alimentaire ?",
-      "2": "Une pincée d'anis, un zeste d'absinthe et la potion est prête. Buvette vous offre un schnaps qui peut vous mettre K.O.... Sauf si vous frappez en premier !",
-      "3": "Le pauvre ! En fait, il recherche juste son grand amour, mais comme il est blessé... c'est le moment d'attaquer !",
-      "4": "Il n'a peut-être pas un potentiel offensif, mais tant qu'il salue joyeusement, il est dans le passage. À l'attaque !",
-      "5": "Une petite fille fleur vous sépare de votre but. Le mieux est de vous séparer d'elle !",
-      "6": "C'était donc elle qui volait les dents de lait pour des clopinettes. L'heure de la vengeance a sonné !",
-      "7": "Un rejet des castings pour mannequins. Il semble avoir encore de grandes ambitions esthétiques. À moins que vous ne l'arrêtiez maintenant !",
-      "8": "Cette pollution auditive est insupportable ! Que quelqu'un plume cette bête !",
-      "9": "Oui, on a un vœu : dégage le passage !",
-      "10": "L'histoire de son enfance semble très exagérée. Je me demande si les techniques de survie apprises dans la jungle lui seront utiles contre vous.",
-      "11": "Il n'y aura plus de chanson ! C'est si difficile à comprendre ? Allez, écrasez cette boulette !",
-      "12": "Il joue la carte amicale, mais la même main tirera les ficelles du mal en personne. C'est l'heure de lui renvoyer ses papiers sur pattes à cet imposteur !",
-      "13": "Elle est tellement hautaine ! Vous n'avez pas à supporter ce genre de comportement.",
-      "14": "Aspirant à être prince... Vous avez entendu l'histoire trop de fois pour y croire encore !",
-      "15": "Le truc au milieu de son visage montre bien qu'il prépare encore un mauvais coup.",
-      "16": "Chacun son tour, on fait un vœu, puis chacun attaque à tour de rôle !",
-      "17": "Le doux mélange d'alcool et de bottes en cuir avec en plus de grandes promesses de fortune... Qui le croirait ?",
-      "18": "Cette voleuse de chaussure. Elle devrait retourner d'où elle vient !",
-      "19": "Johnny ! Beaucoup le tiennent responsable du trou dans la couche d'ozone parce qu'il fixait tout le temps le ciel.",
-      "20": "L'un est un frimeur éhonté, l'autre un escroc sans retenue. Les deux devraient être punis sans attendre !",
-      "21": "Les oies sauvages sont des animaux protégés. Quiconque vole une oie aura affaire à vous !",
-      "22": "Même le fantôme le plus joyeux est contre nature et doit un jour disparaître. Exorcisez les fantômes, les bons comme les mauvais !",
-      "23": "Ce qu'elle et ses complices ont fait à ce loup, c'est de la cruauté envers les animaux et ça doit être puni !",
-      "24": "L'été vient. Et avec lui, le dégel.",
-      "25": "La suspecte a d'abord été vue nue à la belle étoile. Plus tard, des ressources financières d'origine douteuse ont été découvertes à côté d'elle.",
-      "26": "Une pauvre créature sans défense qui souffre injustement. Quiconque continue à jouer à partir de maintenant aura mauvaise conscience pour Noël.",
-      "27": "Elle attend impatiemment de vous serrer dans ses bras jusqu'à ce que vous succombiez d'une mort glaciale.",
-      "28": "Un merveilleux exemple de l'éducation non autoritaire.",
-      "29": "Avec un air aussi adorable et triste, on a juste envie d'abréger leurs souffrances.",
-      "30": "C'est son nom, ou presque. En tout cas, tout le monde le prononce comme ça. Opposé à l'énergie éolienne et sûrement un ardent défenseur du nucléaire.",
-      "31": "A un peu trop sniffé sa lampe à huile et souffre d'hallucinations... Abrégez ses souffrances.",
-      "32": "Depuis que son lapin s'est échappé, elle se fait des films. Qui sait de quoi elle est capable ? Qu'on lui coupe la tête !",
-      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine !",
-      "34": "Il agit comme s'il ne vieillissait pas. On voit tes rides, Peter, et on connaît ton point faible !",
-      "35": "Elle ne devrait pas poser de problème. Après tout, elle se fait avoir par le plus simple des tours. Mais assurez-vous quand même qu'elle est morte !",
-      "36": "Aucune raison de faire la fête ? Impossible. Il y a toujours quelque chose à célébrer. Mettez un terme à ses festivités incessantes !",
-      "37": "Personne ne sait d'où elle vient exactement, mais elle arrive toujours à s'infiltrer dans les soirées mondaines avec l'aide de ses complices suspects.",
-      "38": "Tu peux trouver mieux qu'une retraite anticipée n'importe où !",
-      "39": "Haut perché sur son muret avec son livre de grammaire. Que se passerait-il si on le faisait tomber ?",
-      "40": "Si sa barbe n'était pas de travers et qu'il arrêtait de vouloir apprendre les bonnes manières aux demoiselles, on pourrait presque le trouver sympathique.",
-      "41": "Une personne se faufilant dans les chambres des enfants pour leur jeter du sable dans les yeux n'a pas sa place dans une société civilisée.",
-      "42": "... ou quelque chose comme ça. Une sorcière le saurait...",
-      "43": "Un moyen privilégié en politique pour faire passer des mallettes pleines de billets. Empêcher la corruption est une bien noble cause !",
-      "44": "Il abuse de sa liberté en montrant le reflet de la vérité. Est-ce qu'une société civile doit supporter cela ?",
-      "45": "Il va leur falloir plus qu'une maison en briques pour les protéger contre vous.",
-      "46": "Si vous lui donnez une bonne correction, elle vous donnera peut-être Hans ?",
-      "47": "Beaucoup de rumeurs ont germé sur sa plantation de haricots. Il les a peut-être suivies jusqu'en haut de la Tour ?",
-      "48": "Elle est venue de la forêt de Molwania et a trouvé refuge dans la Tour. Mais ce refuge ne fait pas le poids contre vous !",
-      "49": "Des rumeurs non vérifiées lui attribuent des pouvoirs magiques. Il faut frapper de plein fouet dans ce cas !",
-      "50": "La deuxième histoire d'amour la plus tragique. Enfin, seulement si vous refaites la fin.",
-      "51": "Un déguisement ingénieux. J'espère que vous en percerez les secrets.",
-      "52": "Mettre un tel désordre dans l'équilibre social ne peut que lui attirer les foudres des politiciens.",
-      "53": "Des rochers bloquent la porte derrière lui. Il va falloir lui faire cracher le mot de passe.",
-      "54": "Vaut mieux ne pas lui dire que ces vêtements le grossissent. Il porte une nouvelle épée à sa nouvelle ceinture.",
-      "55": "L'industrie de la colle offrirait des millions pour cette oie en or. Tu ferais bien de mettre la main à la pâte.",
-      "56": "Apéritif : des miettes de pain ramassées dans la forêt. Plat principal : des morveux braisés. Dessert : un assortiment de gâteaux.",
-      "57": "L'intrus entre par effraction, détruit les meubles et vole les provisions. Il n'y aura aucune pitié !",
-      "58": "Ce n'est pas elle qui a inventé la police de caractère « Chicory » pour un dollar ? Ça suffit maintenant. En plus, elle est dans le passage ! ",
-      "59": "Une personne qui écrase les mouches fera inévitablement de même avec les aventuriers. Vous feriez bien de mettre un terme à son petit jeu.",
-      "60": "Parle aux animaux. Prétend être maltraitée à la maison. Veut aller au casting. C'est l'heure de lui faire enfiler l'autre pantoufle.",
-      "61": "La blonde de la série télé était bien meilleure. Qui voudrait faire un vœu à un type tout bleu et grassouillet ?",
-      "62": "Toujours à la pointe. L'amitié c'est magique ! Et la vengeance est glace - ça se mange froid.",
-      "63": "Secoue tes édredons pour nous ! Autrement c'est la bataille d'oreillers !",
-      "64": "Au bout de l'arc-en-ciel, il y a un chaudron rempli de... quelques malheureuses pièces ? Euh... peu importe, on attaque quand même. Ça fera l'affaire.",
-      "65": "Son pistolet au poivre ne fait pas le poids contre ce que vous, Berserkers sniffez... les cendres de vos ennemis !",
-      "66": "Il est peut-être gentil, mais ça ne suffit pas. Il est blessé, c'est le moment !",
-      "67": "Pas de doute, elle sait comment utiliser ses coquillages. Certains ont tellement été éblouis qu'ils en ont navigué droit dans le récif.",
-      "68": "Ce charmeur abominablement mielleux essaiera de s'en sortir avec des mots gentils. Vous convaincra-t-il ? ",
-      "69": "Une ancienne légende qui dénonce essentiellement les mauvais films à son sujet. C'est compréhensible, mais malheureusement il est dans le passage.",
-      "70": "... Un type comme ça est aussi imprévisible qu'il y paraît. Tuez-le d'abord, posez les questions ensuite !",
-      "71": "Il faudra des miracles pour que des crétins comme vous l'impressionnent...",
-      "72": "Apparemment, il n'a jamais joué à Slender... Et il vous rencontre pour la première fois.",
-      "73": "Quand la forêt du conte a été abattue, les sœurs se sont reconverties en mascotte de l'équipe de foot de Munich et à la promotion du ketchup et de la mayonnaise.",
-      "74": "Envie de carottes ?",
-      "75": "Avec sa brochette géante, il doit chercher le Saint Grill. C'est l'heure de rôtir du plouc !",
-      "76": "Personne n'est à sa taille quand il s'agit de boire le vin de messe. Mais vous devez bien avoir d'autres tours dans votre sac.",
-      "77": "C'est le moment d'abolir la monarchie.",
-      "78": "Il voulait pourfendre des dragons, mais a raté l'ouverture. Il est devenu Mister Univers.",
-      "79": "Les horribles bêtes qui veulent danser au son de sa flûte... sont condamnées !",
-      "80": "Le lion a enfin une raison d'avoir peur ! Vous avez traversé le niveau de brique jaune pour le combattre !",
-      "81": "En espérant que votre préparation est à la hauteur malgré son nom trompeur...",
-      "82": "Joyeux Hanouka !",
-      "83": "Des milliers d'abeilles ont travaillé avec acharnement et cette canaille vient se servir comme ça ! Qui vengera la reine des abeilles ?",
-      "84": "L'âne du village n'a pas parlé d'un ogre vert ? Il va voir ce qu'il va prendre !",
-      "85": "Il devrait continuer à essayer de prendre ses aises pendant que vous essayez vos armes.",
-      "86": "Ce compteur de haricots a été promu ? Plus ils montent les échelons, plus longue sera la chute. Comme de la fenêtre d'une tour par exemple.",
-      "87": "Qui a mangé vos provisions ? Quelqu'un qui n'aura pas la chance de recevoir son dernier repas ! Attrapez-la !",
-      "88": "Disons que vous vouliez les sauver des griffes du loup, mais qu'ils se sont retrouvés pris entre deux feux.",
-      "89": "Ils n'avaient pas enlevé la princesse naïve ? En tout cas, leur ADN a été retrouvé derrière les sept collines...",
-      "90": "Dommage pour lui, vous n'êtes pas des dragons !",
-      "91": "Préparez les laxatifs pour une richesse maximum ! Mais attention, on ne sait jamais ce qu'il y a dans le sac !",
-      "92": "Ses méthodes pour compter ne sont pas conventionnelles, mais elle sait aligner les pois.",
-      "93": "Il vient probablement de finir les restes d'un de ses types qui se prétendent tueurs de dragons. C'est l'occasion rêvée !",
-      "94": "Contrairement à son frère Peter, il était intelligent et a breveté la coupe afro.",
-      "95": "Voyons ce qu'il dit de Maman Lance-flamme ? Il va surement fondre de bonheur.",
-      "96": "Grâce à la plateforme PairPlex et son algorithme de rencontre, ces deux-là sont trop occupés pour pouvoir se défendre !",
-      "97": "Chaque année il y a un nouveau remake. C'est tout simplement impossible de tuer le fantôme... vraiment ?",
-      "98": "Vous pouvez peut-être trouver un truc « romantique » pour la réveiller ?",
-      "99": "Le phénomène visqueux jaunâtre dans toute sa beauté !",
-      "100": "S'emmêler dans les cheveux de cette femme est inévitable."
-    }
-  },
   "16": {
     "name": "École de Magie ancestrale",
     "description": "Accessible depuis le quai 9 3/4 !",
@@ -399,42 +293,6 @@
       "18": "Oh, sa monture est trop chou !",
       "19": "Dans ta face !",
       "20": "Le secret de sa puissance doit résider dans sa gigantesque épée. Ou pas. Mais quand même."
-    }
-  },
-  "18": {
-    "name": "Boucle Continue d'Idoles",
-    "description": "Combats avec tes compagnons contre des idoles d'un autre monde.",
-    "floors": {
-      "1": "Seule une vraie brute peut le battre !",
-      "2": "Un compte à rebours défile devant tes yeux : 3... 2... 1... LIVE ! Te voilà au beau milieu de son stream... et donc au beau milieu de ton prochain combat.",
-      "3": "À peine entres-tu dans la pièce qu'un cri strident retentit ! Alors que tes oreilles sifflent encore, il en profite pour t'attaquer physiquement.",
-      "4": "Le cochon sur son épaule a l'air mignon comme ça, mais les apparences sont parfois trompeuses.",
-      "5": "Le mage le plus discipliné et le plus craint, le cauchemar de Jack the Hammerer. Un calculateur ambulant qui est prêt à t'amener dans son skibidi ! Alors, on y va ?",
-      "6": "Ce type aux cheveux bleus a peur des araignées, mais comme tu n'as pas huit pattes, il n'aura aucun mal à te faire du mal ! Prépare-toi à mourir !",
-      "7": "Si on suit la tendance actuelle, les héros prétentieux peuvent facilement être vaincus à l'aide de ces habiles subterfuges !",
-      "8": "Sous cette peau épaisse se cache un grand cœur. Il acceptera peut-être même de te laisser passer en échange de quelques donuts.",
-      "9": "Son crâne parfaitement rasé t'éblouira, tout comme ses incroyables figures de style. Tu ne survivras pas à une telle danse !",
-      "10": "À l'approche de l'écran suivant, le stream commence immédiatement. Tous les yeux sont rivés sur toi. Réussiras-tu à gagner malgré la pression ?",
-      "11": "Il est jeune, il est beau, mais ne te laisse pas berner par son charme ravageur car il ne recule devant rien. À l'attaque !",
-      "12": "Et bonjour à tous les héros de la part du célèbre maître français de la baguette et champion du monde de Minecraft ! Même saoul, il ne te voit pas comme une menace.",
-      "13": "Il t'accueille dans son salon avec un grand sourire. Son humour et sa bonne humeur sont contagieux, mais si tu baisses ta garde, c'en est fini de toi !",
-      "14": "Tu traverses une pièce ostensiblement pixellisée quand une silhouette surgit tout à coup, avec un guide à la main. Il maîtrise depuis longtemps le monde des blocs et va désormais t'enseigner une ou deux astuces de combat.",
-      "15": "Si tu penses qu'il n'avait pas la même couleur de cheveux la dernière fois, alors on peut dire que tu as l'œil.",
-      "16": "On raconte que ce monstre est né avec trois pattes et qu'il a grandi dans un cendrier. Enlève tes chaussettes avant de le regarder !",
-      "17": "Cette créature mi-homme mi-zèbre adore rire à ses propres blagues et se moquer de tes aptitudes au combat.",
-      "18": "Tes yeux carrés ne lui ont pas échappé. Dommage que le bouton Pause ne marche plus...",
-      "19": "Le Roi des incompétents n'est pas roi pour rien, alors prosterne-toi !",
-      "20": "À l'aide ! Un informaticien ! Attention : s'il a les autorisations d'administrateur, il va te fragmenter jusqu'à la moelle. C'est un adversaire NP-difficile.",
-      "21": "Moin moin, bonjour et bienvenue à ton passage à tabac. « Tu es fait comme un rat ! », s'écrie-t-il triomphalement, pour reprendre une de ses célèbres métaphores.",
-      "22": "Attention, il balance des memes comme des projectiles et t'embarque dans un chaos imprévisible. Ce GIGACHAD ne vit que pour le divertissement. Que le spectacle commence !",
-      "23": "Tu entends le doux bruit des vagues... avant que sa vague d'expertise stratégique ne se fracasse sur toi. Tandis qu'il répond patiemment à tes questions pendant la bataille, tu as l'impression que le courant t'emporte lentement hors du donjon.",
-      "24": "Son savoir est encore plus impressionnant que ce donjon, et ses sarcasmes plus aiguisés que ton épée. Il a réponse à toutes les questions... sauf si tu veux savoir comment survivre à ce duel.",
-      "25": "Aussitôt, tu aperçois le pionnier des légendes, l'idole de tous les hommes et de toutes les femmes. Et il se fiche éperdument que tu veuilles rester en vie.",
-      "26": "Ce colosse de basses s'est propagé jusqu'à l'extérieur d'Azeroth ! Parviendras-tu à y remédier ?",
-      "27": "Une voix calme et douce résonne dans ta tête, faisant disparaître toute la tension de ton corps. En revanche, le coup de feu qui suit te ramène brutalement à la réalité.",
-      "28": "Un vieux démon, dont la voix résonne comme le tonnerre à travers les murs virtuels, se dresse devant toi. Une créature ressemblant à une araignée se tient sur son épaule, chuchotant sans cesse. Est-ce que les démons aussi... ont leurs propres démons ?",
-      "29": "Ce guerrier éteint son cerveau de temps en temps pour t'embrouiller avec ses propos incohérents. C'est alors que vient la phrase la plus importante : pour le battre, il te suffit de surfer correctement sur la vague !",
-      "30": "Deux mètres sous la toise, le PDG proclamé des fans se tient magistralement devant toi. Il boit nonchalamment une gorgée de son élixir de vie fumant en pensant à son kebab du vendredi. Tu es son dernier obstacle... et il a très faim."
     }
   },
   "19": {
@@ -582,26 +440,6 @@
     "description": "Toujours prêts à recevoir des critiques constructives."
   },
   "31": {
-    "name": "Camp d'entraînement",
-    "description": "Ses équipements instables risquent à tout moment de se désagréger.",
-    "floors": {
-      "1": "L'inondation est son pire ennemi. Au moins Shakes a veillé à utiliser des cartons recyclés.",
-      "2": "Il ne devrait pas se contenter d'effrayer les corbeaux. Cela dit, il a l'air assez inerte.",
-      "3": "Il ne tient pas en place... mais au moins, il reste toujours au même endroit. Tu veux monter dessus ? Même pas en rêve !",
-      "4": "Attention aux échardes !",
-      "5": "Une bosse de plus ou de moins, ça ne changera rien.",
-      "6": "Risque fortement de s'embraser.",
-      "7": "Vrombit et tournoie dans les airs avant d'atterrir en catastrophe. Teste tes réflexes en sautant pour l'éviter.",
-      "8": "Son crâne vibre encore depuis sa dernière entorse cervicale. Il a déjà été détruit et remonté plusieurs fois, ce qui explique qu'il puisse péter un boulon.",
-      "9": "Quand sa lame de scie n'est pas assez précise, le canon entre en jeu pour tout dézinguer !",
-      "10": "Tout ce que Shakes a pu trouver a été réutilisé ici. Sa polyvalence lui permet d'être utile lors des campings et de servir de test final pour les héros débutants."
-    }
-  },
-  "32": {
-    "name": "Tempête de sable",
-    "description": "Non seulement elle te fait tourbillonner dans les airs avec 1000 monstres, mais elle t'envoie aussi de gros grains de sable dans les yeux."
-  },
-  "33": {
     "name": "Salle des Vieilles Icônes Pixellisées",
     "description": "Où les meilleurs scores sont bien plus importants qu'une bonne hygiène de vie.",
     "floors": {
@@ -617,7 +455,7 @@
       "10": "Des cartouches et des consoles sont empilées dans un coin. Entouré de souvenirs rétro, le boss de fin sort sa manette. Il a établi tous les meilleurs scores et n'hésite pas à utiliser des codes de triche pour te mettre hors d'état de nuire. Haut, haut, bas, bas, gauche, droite, gauche, droite, B, A, start !"
     }
   },
-  "34": {
+  "32": {
     "name": "La Salle des Serveurs",
     "description": "Un terminal plein de bips et de lumières clignotantes.",
     "floors": {
@@ -633,7 +471,7 @@
       "10": "Te voilà enfin au bout de la salle des serveurs, mais dans les derniers mètres, tu trébuches sur un énorme tas de câbles. Une ombre menaçante s'abat sur toi, t'obligeant à lever les yeux. Le seigneur démoniaque du royaume de la qualité se tient devant toi, prêt à mettre tes nerfs et toutes les lignes de code à rude épreuve !"
     }
   },
-  "35": {
+  "33": {
     "name": "Atelier des Chasseurs de Revenants",
     "description": "Les êtres ranimés sont démembrés ici par des mains expertes.",
     "floors": {
@@ -649,7 +487,7 @@
       "10": "Te voilà dans la partie rose bonbon de l'atelier. Un haut-parleur crache de la musique pop, bientôt interrompue par le vrombissement d'une tronçonneuse. La moitié d'un zombie passe devant toi, immédiatement suivi par une pom-pom girl en minijupe. Seul l'amour qu'elle porte à son petit ami reste intact !"
     }
   },
-  "36": {
+  "34": {
     "name": "Légendes de la TV",
     "description": "Allume la télé pour découvrir un vaste programme de personnages cultes.",
     "floors": {
@@ -665,7 +503,7 @@
       "10": "La dernière chaîne s'allume au son d'une intro héroïque, tandis qu'apparaît un homme doté de son arme ultime : un trombone. Mais attention, prends garde à ne pas le sous-estimer ! L'improvisation est sa meilleure arme. Et toi ? Tu es son prochain chef-d'œuvre."
     }
   },
-  "37": {
+  "35": {
     "name": "La Salle de Réunion",
     "description": "Une salle où les opinions tranchées et les maux de crâne sont monnaie courante.",
     "floors": {
@@ -681,7 +519,157 @@
       "10": "Mariam conçoit des campagnes pour l'enfer et règne sur le royaume du marketing, obligeant même les meilleurs guerriers à se convertir. Sur sa tête, toutefois, se trouve la véritable reine de ce bureau démoniaque : Jules. Tu ferais mieux de t'incliner... ou d'aller chercher sa balle de tennis préférée !"
     }
   },
-  "100": {
+  "201": {
+    "name": "Tour",
+    "description": "Il était une fois, un aventurier et ses trois compagnons...",
+    "floors": {
+      "1": "Au premier niveau, vous rencontrez un homme-biscuit sympathique et plein d'arôme. Quelle est votre place dans la chaîne alimentaire ?",
+      "2": "Une pincée d'anis, un zeste d'absinthe et la potion est prête. Buvette vous offre un schnaps qui peut vous mettre K.O.... Sauf si vous frappez en premier !",
+      "3": "Le pauvre ! En fait, il recherche juste son grand amour, mais comme il est blessé... c'est le moment d'attaquer !",
+      "4": "Il n'a peut-être pas un potentiel offensif, mais tant qu'il salue joyeusement, il est dans le passage. À l'attaque !",
+      "5": "Une petite fille fleur vous sépare de votre but. Le mieux est de vous séparer d'elle !",
+      "6": "C'était donc elle qui volait les dents de lait pour des clopinettes. L'heure de la vengeance a sonné !",
+      "7": "Un rejet des castings pour mannequins. Il semble avoir encore de grandes ambitions esthétiques. À moins que vous ne l'arrêtiez maintenant !",
+      "8": "Cette pollution auditive est insupportable ! Que quelqu'un plume cette bête !",
+      "9": "Oui, on a un vœu : dégage le passage !",
+      "10": "L'histoire de son enfance semble très exagérée. Je me demande si les techniques de survie apprises dans la jungle lui seront utiles contre vous.",
+      "11": "Il n'y aura plus de chanson ! C'est si difficile à comprendre ? Allez, écrasez cette boulette !",
+      "12": "Il joue la carte amicale, mais la même main tirera les ficelles du mal en personne. C'est l'heure de lui renvoyer ses papiers sur pattes à cet imposteur !",
+      "13": "Elle est tellement hautaine ! Vous n'avez pas à supporter ce genre de comportement.",
+      "14": "Aspirant à être prince... Vous avez entendu l'histoire trop de fois pour y croire encore !",
+      "15": "Le truc au milieu de son visage montre bien qu'il prépare encore un mauvais coup.",
+      "16": "Chacun son tour, on fait un vœu, puis chacun attaque à tour de rôle !",
+      "17": "Le doux mélange d'alcool et de bottes en cuir avec en plus de grandes promesses de fortune... Qui le croirait ?",
+      "18": "Cette voleuse de chaussure. Elle devrait retourner d'où elle vient !",
+      "19": "Johnny ! Beaucoup le tiennent responsable du trou dans la couche d'ozone parce qu'il fixait tout le temps le ciel.",
+      "20": "L'un est un frimeur éhonté, l'autre un escroc sans retenue. Les deux devraient être punis sans attendre !",
+      "21": "Les oies sauvages sont des animaux protégés. Quiconque vole une oie aura affaire à vous !",
+      "22": "Même le fantôme le plus joyeux est contre nature et doit un jour disparaître. Exorcisez les fantômes, les bons comme les mauvais !",
+      "23": "Ce qu'elle et ses complices ont fait à ce loup, c'est de la cruauté envers les animaux et ça doit être puni !",
+      "24": "L'été vient. Et avec lui, le dégel.",
+      "25": "La suspecte a d'abord été vue nue à la belle étoile. Plus tard, des ressources financières d'origine douteuse ont été découvertes à côté d'elle.",
+      "26": "Une pauvre créature sans défense qui souffre injustement. Quiconque continue à jouer à partir de maintenant aura mauvaise conscience pour Noël.",
+      "27": "Elle attend impatiemment de vous serrer dans ses bras jusqu'à ce que vous succombiez d'une mort glaciale.",
+      "28": "Un merveilleux exemple de l'éducation non autoritaire.",
+      "29": "Avec un air aussi adorable et triste, on a juste envie d'abréger leurs souffrances.",
+      "30": "C'est son nom, ou presque. En tout cas, tout le monde le prononce comme ça. Opposé à l'énergie éolienne et sûrement un ardent défenseur du nucléaire.",
+      "31": "A un peu trop sniffé sa lampe à huile et souffre d'hallucinations... Abrégez ses souffrances.",
+      "32": "Depuis que son lapin s'est échappé, elle se fait des films. Qui sait de quoi elle est capable ? Qu'on lui coupe la tête !",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine !",
+      "34": "Il agit comme s'il ne vieillissait pas. On voit tes rides, Peter, et on connaît ton point faible !",
+      "35": "Elle ne devrait pas poser de problème. Après tout, elle se fait avoir par le plus simple des tours. Mais assurez-vous quand même qu'elle est morte !",
+      "36": "Aucune raison de faire la fête ? Impossible. Il y a toujours quelque chose à célébrer. Mettez un terme à ses festivités incessantes !",
+      "37": "Personne ne sait d'où elle vient exactement, mais elle arrive toujours à s'infiltrer dans les soirées mondaines avec l'aide de ses complices suspects.",
+      "38": "Tu peux trouver mieux qu'une retraite anticipée n'importe où !",
+      "39": "Haut perché sur son muret avec son livre de grammaire. Que se passerait-il si on le faisait tomber ?",
+      "40": "Si sa barbe n'était pas de travers et qu'il arrêtait de vouloir apprendre les bonnes manières aux demoiselles, on pourrait presque le trouver sympathique.",
+      "41": "Une personne se faufilant dans les chambres des enfants pour leur jeter du sable dans les yeux n'a pas sa place dans une société civilisée.",
+      "42": "... ou quelque chose comme ça. Une sorcière le saurait...",
+      "43": "Un moyen privilégié en politique pour faire passer des mallettes pleines de billets. Empêcher la corruption est une bien noble cause !",
+      "44": "Il abuse de sa liberté en montrant le reflet de la vérité. Est-ce qu'une société civile doit supporter cela ?",
+      "45": "Il va leur falloir plus qu'une maison en briques pour les protéger contre vous.",
+      "46": "Si vous lui donnez une bonne correction, elle vous donnera peut-être Hans ?",
+      "47": "Beaucoup de rumeurs ont germé sur sa plantation de haricots. Il les a peut-être suivies jusqu'en haut de la Tour ?",
+      "48": "Elle est venue de la forêt de Molwania et a trouvé refuge dans la Tour. Mais ce refuge ne fait pas le poids contre vous !",
+      "49": "Des rumeurs non vérifiées lui attribuent des pouvoirs magiques. Il faut frapper de plein fouet dans ce cas !",
+      "50": "La deuxième histoire d'amour la plus tragique. Enfin, seulement si vous refaites la fin.",
+      "51": "Un déguisement ingénieux. J'espère que vous en percerez les secrets.",
+      "52": "Mettre un tel désordre dans l'équilibre social ne peut que lui attirer les foudres des politiciens.",
+      "53": "Des rochers bloquent la porte derrière lui. Il va falloir lui faire cracher le mot de passe.",
+      "54": "Vaut mieux ne pas lui dire que ces vêtements le grossissent. Il porte une nouvelle épée à sa nouvelle ceinture.",
+      "55": "L'industrie de la colle offrirait des millions pour cette oie en or. Tu ferais bien de mettre la main à la pâte.",
+      "56": "Apéritif : des miettes de pain ramassées dans la forêt. Plat principal : des morveux braisés. Dessert : un assortiment de gâteaux.",
+      "57": "L'intrus entre par effraction, détruit les meubles et vole les provisions. Il n'y aura aucune pitié !",
+      "58": "Ce n'est pas elle qui a inventé la police de caractère « Chicory » pour un dollar ? Ça suffit maintenant. En plus, elle est dans le passage ! ",
+      "59": "Une personne qui écrase les mouches fera inévitablement de même avec les aventuriers. Vous feriez bien de mettre un terme à son petit jeu.",
+      "60": "Parle aux animaux. Prétend être maltraitée à la maison. Veut aller au casting. C'est l'heure de lui faire enfiler l'autre pantoufle.",
+      "61": "La blonde de la série télé était bien meilleure. Qui voudrait faire un vœu à un type tout bleu et grassouillet ?",
+      "62": "Toujours à la pointe. L'amitié c'est magique ! Et la vengeance est glace - ça se mange froid.",
+      "63": "Secoue tes édredons pour nous ! Autrement c'est la bataille d'oreillers !",
+      "64": "Au bout de l'arc-en-ciel, il y a un chaudron rempli de... quelques malheureuses pièces ? Euh... peu importe, on attaque quand même. Ça fera l'affaire.",
+      "65": "Son pistolet au poivre ne fait pas le poids contre ce que vous, Berserkers sniffez... les cendres de vos ennemis !",
+      "66": "Il est peut-être gentil, mais ça ne suffit pas. Il est blessé, c'est le moment !",
+      "67": "Pas de doute, elle sait comment utiliser ses coquillages. Certains ont tellement été éblouis qu'ils en ont navigué droit dans le récif.",
+      "68": "Ce charmeur abominablement mielleux essaiera de s'en sortir avec des mots gentils. Vous convaincra-t-il ? ",
+      "69": "Une ancienne légende qui dénonce essentiellement les mauvais films à son sujet. C'est compréhensible, mais malheureusement il est dans le passage.",
+      "70": "... Un type comme ça est aussi imprévisible qu'il y paraît. Tuez-le d'abord, posez les questions ensuite !",
+      "71": "Il faudra des miracles pour que des crétins comme vous l'impressionnent...",
+      "72": "Apparemment, il n'a jamais joué à Slender... Et il vous rencontre pour la première fois.",
+      "73": "Quand la forêt du conte a été abattue, les sœurs se sont reconverties en mascotte de l'équipe de foot de Munich et à la promotion du ketchup et de la mayonnaise.",
+      "74": "Envie de carottes ?",
+      "75": "Avec sa brochette géante, il doit chercher le Saint Grill. C'est l'heure de rôtir du plouc !",
+      "76": "Personne n'est à sa taille quand il s'agit de boire le vin de messe. Mais vous devez bien avoir d'autres tours dans votre sac.",
+      "77": "C'est le moment d'abolir la monarchie.",
+      "78": "Il voulait pourfendre des dragons, mais a raté l'ouverture. Il est devenu Mister Univers.",
+      "79": "Les horribles bêtes qui veulent danser au son de sa flûte... sont condamnées !",
+      "80": "Le lion a enfin une raison d'avoir peur ! Vous avez traversé le niveau de brique jaune pour le combattre !",
+      "81": "En espérant que votre préparation est à la hauteur malgré son nom trompeur...",
+      "82": "Joyeux Hanouka !",
+      "83": "Des milliers d'abeilles ont travaillé avec acharnement et cette canaille vient se servir comme ça ! Qui vengera la reine des abeilles ?",
+      "84": "L'âne du village n'a pas parlé d'un ogre vert ? Il va voir ce qu'il va prendre !",
+      "85": "Il devrait continuer à essayer de prendre ses aises pendant que vous essayez vos armes.",
+      "86": "Ce compteur de haricots a été promu ? Plus ils montent les échelons, plus longue sera la chute. Comme de la fenêtre d'une tour par exemple.",
+      "87": "Qui a mangé vos provisions ? Quelqu'un qui n'aura pas la chance de recevoir son dernier repas ! Attrapez-la !",
+      "88": "Disons que vous vouliez les sauver des griffes du loup, mais qu'ils se sont retrouvés pris entre deux feux.",
+      "89": "Ils n'avaient pas enlevé la princesse naïve ? En tout cas, leur ADN a été retrouvé derrière les sept collines...",
+      "90": "Dommage pour lui, vous n'êtes pas des dragons !",
+      "91": "Préparez les laxatifs pour une richesse maximum ! Mais attention, on ne sait jamais ce qu'il y a dans le sac !",
+      "92": "Ses méthodes pour compter ne sont pas conventionnelles, mais elle sait aligner les pois.",
+      "93": "Il vient probablement de finir les restes d'un de ses types qui se prétendent tueurs de dragons. C'est l'occasion rêvée !",
+      "94": "Contrairement à son frère Peter, il était intelligent et a breveté la coupe afro.",
+      "95": "Voyons ce qu'il dit de Maman Lance-flamme ? Il va surement fondre de bonheur.",
+      "96": "Grâce à la plateforme PairPlex et son algorithme de rencontre, ces deux-là sont trop occupés pour pouvoir se défendre !",
+      "97": "Chaque année il y a un nouveau remake. C'est tout simplement impossible de tuer le fantôme... vraiment ?",
+      "98": "Vous pouvez peut-être trouver un truc « romantique » pour la réveiller ?",
+      "99": "Le phénomène visqueux jaunâtre dans toute sa beauté !",
+      "100": "S'emmêler dans les cheveux de cette femme est inévitable."
+    }
+  },
+  "202": {
+    "name": "Boucle Continue d'Idoles",
+    "description": "Combats avec tes compagnons contre des idoles d'un autre monde.",
+    "floors": {
+      "1": "Seule une vraie brute peut le battre !",
+      "2": "Un compte à rebours défile devant tes yeux : 3... 2... 1... LIVE ! Te voilà au beau milieu de son stream... et donc au beau milieu de ton prochain combat.",
+      "3": "À peine entres-tu dans la pièce qu'un cri strident retentit ! Alors que tes oreilles sifflent encore, il en profite pour t'attaquer physiquement.",
+      "4": "Le cochon sur son épaule a l'air mignon comme ça, mais les apparences sont parfois trompeuses.",
+      "5": "Le mage le plus discipliné et le plus craint, le cauchemar de Jack the Hammerer. Un calculateur ambulant qui est prêt à t'amener dans son skibidi ! Alors, on y va ?",
+      "6": "Ce type aux cheveux bleus a peur des araignées, mais comme tu n'as pas huit pattes, il n'aura aucun mal à te faire du mal ! Prépare-toi à mourir !",
+      "7": "Si on suit la tendance actuelle, les héros prétentieux peuvent facilement être vaincus à l'aide de ces habiles subterfuges !",
+      "8": "Sous cette peau épaisse se cache un grand cœur. Il acceptera peut-être même de te laisser passer en échange de quelques donuts.",
+      "9": "Son crâne parfaitement rasé t'éblouira, tout comme ses incroyables figures de style. Tu ne survivras pas à une telle danse !",
+      "10": "À l'approche de l'écran suivant, le stream commence immédiatement. Tous les yeux sont rivés sur toi. Réussiras-tu à gagner malgré la pression ?",
+      "11": "Il est jeune, il est beau, mais ne te laisse pas berner par son charme ravageur car il ne recule devant rien. À l'attaque !",
+      "12": "Et bonjour à tous les héros de la part du célèbre maître français de la baguette et champion du monde de Minecraft ! Même saoul, il ne te voit pas comme une menace.",
+      "13": "Il t'accueille dans son salon avec un grand sourire. Son humour et sa bonne humeur sont contagieux, mais si tu baisses ta garde, c'en est fini de toi !",
+      "14": "Tu traverses une pièce ostensiblement pixellisée quand une silhouette surgit tout à coup, avec un guide à la main. Il maîtrise depuis longtemps le monde des blocs et va désormais t'enseigner une ou deux astuces de combat.",
+      "15": "Si tu penses qu'il n'avait pas la même couleur de cheveux la dernière fois, alors on peut dire que tu as l'œil.",
+      "16": "On raconte que ce monstre est né avec trois pattes et qu'il a grandi dans un cendrier. Enlève tes chaussettes avant de le regarder !",
+      "17": "Cette créature mi-homme mi-zèbre adore rire à ses propres blagues et se moquer de tes aptitudes au combat.",
+      "18": "Tes yeux carrés ne lui ont pas échappé. Dommage que le bouton Pause ne marche plus...",
+      "19": "Le Roi des incompétents n'est pas roi pour rien, alors prosterne-toi !",
+      "20": "À l'aide ! Un informaticien ! Attention : s'il a les autorisations d'administrateur, il va te fragmenter jusqu'à la moelle. C'est un adversaire NP-difficile.",
+      "21": "Moin moin, bonjour et bienvenue à ton passage à tabac. « Tu es fait comme un rat ! », s'écrie-t-il triomphalement, pour reprendre une de ses célèbres métaphores.",
+      "22": "Attention, il balance des memes comme des projectiles et t'embarque dans un chaos imprévisible. Ce GIGACHAD ne vit que pour le divertissement. Que le spectacle commence !",
+      "23": "Tu entends le doux bruit des vagues... avant que sa vague d'expertise stratégique ne se fracasse sur toi. Tandis qu'il répond patiemment à tes questions pendant la bataille, tu as l'impression que le courant t'emporte lentement hors du donjon.",
+      "24": "Son savoir est encore plus impressionnant que ce donjon, et ses sarcasmes plus aiguisés que ton épée. Il a réponse à toutes les questions... sauf si tu veux savoir comment survivre à ce duel.",
+      "25": "Aussitôt, tu aperçois le pionnier des légendes, l'idole de tous les hommes et de toutes les femmes. Et il se fiche éperdument que tu veuilles rester en vie.",
+      "26": "Ce colosse de basses s'est propagé jusqu'à l'extérieur d'Azeroth ! Parviendras-tu à y remédier ?",
+      "27": "Une voix calme et douce résonne dans ta tête, faisant disparaître toute la tension de ton corps. En revanche, le coup de feu qui suit te ramène brutalement à la réalité.",
+      "28": "Un vieux démon, dont la voix résonne comme le tonnerre à travers les murs virtuels, se dresse devant toi. Une créature ressemblant à une araignée se tient sur son épaule, chuchotant sans cesse. Est-ce que les démons aussi... ont leurs propres démons ?",
+      "29": "Ce guerrier éteint son cerveau de temps en temps pour t'embrouiller avec ses propos incohérents. C'est alors que vient la phrase la plus importante : pour le battre, il te suffit de surfer correctement sur la vague !",
+      "30": "Deux mètres sous la toise, le PDG proclamé des fans se tient magistralement devant toi. Il boit nonchalamment une gorgée de son élixir de vie fumant en pensant à son kebab du vendredi. Tu es son dernier obstacle... et il a très faim."
+    }
+  },
+  "203": {
+    "name": "Tornade",
+    "description": "C'est le chaos ici. Une violente tornade qui balaie tout sur son passage a d'ores et déjà attiré 1 000 monstres... et toi."
+  },
+  "204": {
+    "name": "Tempête de sable",
+    "description": "Non seulement elle te fait tourbillonner dans les airs avec 1000 monstres, mais elle t'envoie aussi de gros grains de sable dans les yeux."
+  },
+  "300": {
     "name": "Guilde des guerriers inébranlables",
     "description": "Épées et boucliers définissent cette fière guilde.",
     "floors": {
@@ -697,7 +685,7 @@
       "10": "Tu te tiens enfin face à la cheffe de la Guilde des guerriers. Cette matriarche tout en muscles place une force impitoyable et une détermination farouche au combat au-dessus de tout. Réussiras-tu à tenir tête à la domination écrasante de cette générale ? En tout cas, elle ne fait pas de quartier..."
     }
   },
-  "101": {
+  "301": {
     "name": "Guilde des mages curieux",
     "description": "Quand la sagesse et la folie accomplissent des miracles.",
     "floors": {
@@ -713,7 +701,7 @@
       "10": "Tu gravis le dernier long escalier et pénètres dans la tour de la guilde. Au lieu d'un vieux magicien, c'est un prestidigitateur enchaîné qui barbote la tête en bas dans un réservoir d'eau qui t'accueille. Bats-le avant qu'il ne se libère, ou prends-lui la clé !"
     }
   },
-  "102": {
+  "302": {
     "name": "Guilde des éclaireurs acrobatiques",
     "description": "Tiens, y a anguille sous buisson ? Oh, et hop, déjà esquivé d'un bond !",
     "floors": {
@@ -729,7 +717,7 @@
       "10": "Tu pénètres dans la cour, le terrain d'entraînement de la Guilde des éclaireurs. Une flèche siffle et atterrit pile devant tes pieds, t'obligeant à scruter les environs. Ton regard est immédiatement attiré par une elfe gracieuse qui transporte un nain sur son dos."
     }
   },
-  "103": {
+  "303": {
     "name": "Guilde animée des nécromanciens",
     "description": "Recycleurs professionnels d'enveloppes autrefois vivantes.",
     "floors": {
@@ -744,9 +732,5 @@
       "9": "Entre nécromancie de masse et rêve de conquête du monde, il est constamment à la recherche du chirurgien orthopédiste le plus proche, en vain jusqu'à présent. Avant de faire craquer ses os, il va lever la main sur toi !",
       "10": "Il se considère comme le gardien de l'équilibre, mais malheureusement, il fait plutôt pencher la balance en faveur de la mort. Ne t'en fais pas, après la mort, il te ressuscitera pour servir ses propres fins."
     }
-  },
-  "104": {
-    "name": "Portail de classe des aberrations",
-    "description": "Fiers, sages, agiles et ressuscités ? C'est un peu ça, mais aussi carrément corrompus..."
   }
 }

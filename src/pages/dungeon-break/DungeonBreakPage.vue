@@ -320,7 +320,7 @@ const curve = computed(() => {
 })
 
 const fights = computed(() => {
-  const shadow = localize.global('dungeon_enemies.shadow')
+  const shadow = localize.global('general.dungeon_shadow')
 
   let spent = 0
 

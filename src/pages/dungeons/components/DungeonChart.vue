@@ -64,7 +64,7 @@ const lines = computed(() => {
 
   const { dungeon, score, iterations } = result
 
-  const shadow = dungeon.id !== TOWER && dungeon.companions ? `${localize.global('dungeon_enemies.shadow')} ` : ''
+  const shadow = dungeon.id !== TOWER && dungeon.companions ? `${localize.global('general.dungeon_shadow')} ` : ''
   const experience = getDungeonExperience(result)
 
   return compact([`${shadow}${getDungeonName(dungeon)}: ${getBossName(result)}`, experience > 0 && `${formatSpacedNumber(experience)} XP`, localize('graph.winrate', { rate: ((100 * score) / iterations).toFixed(props.decimals), score: formatSpacedNumber(score), tries: formatSpacedNumber(iterations) })])

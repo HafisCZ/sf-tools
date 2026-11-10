@@ -1,4 +1,4 @@
-import { globalLocalize, hasTranslation } from '@utils/localization'
+import { globalLocalize } from '@utils/localization'
 import { compact, getValueAtPath, setValueAtPath } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type PlayerDungeons } from '~/data/dungeon-helper'
@@ -84,13 +84,11 @@ export const NEXT_DUNGEONS: Record<number, number> = {
 export const PREVIOUS_DUNGEONS: Record<number, number> = Object.fromEntries(Object.entries(NEXT_DUNGEONS).map(([id, next]) => [next, Number(id)]))
 
 export function getDungeonName(dungeon: Dungeon) {
-  return globalLocalize(`dungeon_enemies.${dungeon.intl}.name`)
+  return globalLocalize(`dungeons.${dungeon.intl}.name`)
 }
 
-export function getBossName({ dungeon, boss }: DungeonEntry) {
-  const key = `monsters.${boss.id}`
-
-  return boss.id !== undefined && hasTranslation(key) ? globalLocalize(key) : globalLocalize(`dungeon_enemies.${dungeon.intl}.${boss.pos}`)
+export function getBossName({ boss }: DungeonEntry) {
+  return boss.id === undefined ? globalLocalize('general.dungeon_yourself') : globalLocalize(`monsters.${boss.id}`)
 }
 
 const RUNE_LETTERS = ['F', 'C', 'L']

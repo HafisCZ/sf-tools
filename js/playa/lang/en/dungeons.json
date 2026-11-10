@@ -243,112 +243,6 @@
       "20": "No, I'm not scared of giant dragons. Why would I be scared of that? I've never met ... ahhhh!"
     }
   },
-  "15": {
-    "name": "Tower",
-    "description": "Once upon a time there was an adventurer and three companions...",
-    "floors": {
-      "1": "On the first level you meet a friendly, aromatic cake man. What's your place in the food chain?",
-      "2": "Anise, wormwood, and the magic brew is ready. Drinkerbell offers you a schnapps that can knock you out... Unless you strike first!",
-      "3": "The poor thing! He's actually only looking for his great love, but he's wounded - now's your chance to attack!",
-      "4": "He might not be able to really hurt you, but while he's cheerfully waving he's blocking your way. Let him have it!",
-      "5": "A small flower girl is separating you from your goal. It's best if you separate yourself from her!",
-      "6": "It was her who stole your milk teeth in exchange for a pittance. The time for revenge has come!",
-      "7": "A top-model casting reject. It still seems to have big beauty ambitions. That is, unless you stop it now!",
-      "8": "That noise pollution is unbearable! Someone should give the beast a good plucking!",
-      "9": "Yeah, we've got a wish - get out of the damn way!",
-      "10": "The story of his childhood seems very overwrought. I wonder if the survival techniques from the jungle will help him against you?",
-      "11": "There'll be no more singing! Is that too hard to understand? Come on, turn that dumpling into porridge!",
-      "12": "He pretends to be so friendly, but he'll use the same hand to play the Devil himself. It's time to hand him his walking papers, the fraud!",
-      "13": "She's always so haughty! You don't have to put up with that kind of attitude.",
-      "14": "Wannabe prince... You've heard the story too many times to still believe it!",
-      "15": "The whatsit on his face says he's up to no good again.",
-      "16": "Everyone take a turn to make a wish, then everyone take a turn to attack!",
-      "17": "The stink of booze and boot leather and great promises of wealth and fortune on top... Who would believe it.",
-      "18": "That shoe thief. She should go back where she came from!",
-      "19": "Jonny! Many hold him responsible for the hole in the ozone layer because he used to always stare up at the sky.",
-      "20": "One is a shameless show off, the other an uninhibited fraudster. Both should be punished, in the name of the moon!",
-      "21": "Wild geese are protected animals. Anyone who steals one has you to reckon with!",
-      "22": "Even the most cheerful ghost is unholy and has to meet its end some time. Exorcise the ghosts, the good and the bad!",
-      "23": "What she and her accomplices did to that wolf is animal cruelty and needs punishing!",
-      "24": "Summer is coming. And so is the thaw.",
-      "25": "The suspect was first spotted naked beneath the open sky. Later, financial resources of dubious origin were discovered near her person.",
-      "26": "A poor, harmless creature suffering undeservedly. Anyone who keeps playing here will have a bad conscience at Christmas.",
-      "27": "She's looking forward to holding you in her arms, until you die an icy death.",
-      "28": "A wonderful example of how well anti-authoritarian parenting works.",
-      "29": "Anyone who looks this cute and sad deserves to be put out of their misery.",
-      "30": "Called that, or something like that, at least that's how everyone says it. Anti-wind power fanatic, probably a nuclear power lobbyist.",
-      "31": "Sniffed his oil lamp too much and now suffers from hallucinations... Put him out of his misery.",
-      "32": "Ever since her rabbit ran off she's suffered from delusions. Who knows what she's capable of? Off with her head!",
-      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
-      "34": "He always like he never ages. We see your wrinkles, Peter, and we know your weaknesses!",
-      "35": "She should be easy to beat. After all, she falls for any stupid trick. But just make sure she really is dead!",
-      "36": "No excuse to party is too silly for him. He's always celebrating something. Do the right thing and put an end to his endless revels!",
-      "37": "Who knows exactly where she comes from, but she's always trying to creep into high society circles with the help of dubious accomplices.",
-      "38": "You can find something better than early retirement everywhere!",
-      "39": "Sitting pretty on the wall with his grammar book. What would happen if you knocked him off?",
-      "40": "If his beard wasn't so lopsided and if he stopped trying to teach young women manners, it might be possible to have some sympathy for him. ",
-      "41": "Anyone who creeps into children's bedrooms at night and throws sand in their eyes has no place in civilized society.",
-      "42": "...or something like that. Ask a witch, she will know.",
-      "43": "A preferred method in politics for handing over briefcases of cash. Preventing corruption is a noble endeavor!",
-      "44": "He abuses his freedom by mirroring the truth. Can a civil society suffer such a thing?",
-      "45": "They'll need more than a brick house to be safe from you.",
-      "46": "If your give her a good thrashing, maybe she'll swap you Hans?",
-      "47": "Rumors have sprouted up around his bean growing enterprise. Perhaps he's followed them all the way up into the Tower?",
-      "48": "She emerged from the forest of Molwania and found shelter in the Tower. But not from you!",
-      "49": "According to unconfirmed rumors, he possesses magic powers. Pure brute force is needed here!",
-      "50": "The second most tragic love story ever. That is, if you rework the ending.",
-      "51": "An ingenious disguise. I hope you see through it!",
-      "52": "Upsetting the social balance like that can't be popular with politicians.",
-      "53": "The door behind him is blocked by rocks. You'll have to beat the password out of him.",
-      "54": "Better not tell him that those clothes make him look fat. He's also carrying a new sword on his new belt.",
-      "55": "The glue industry would pay millions for that golden goose. You'd better lend a hand!",
-      "56": "Appetizer: Bread crumbs from the forest floor. Main course: Braised snotty brats. Dessert: Selection of gingerbread cakes.",
-      "57": "The intruder breaks in, destroys furniture, and steals food. Show no mercy!",
-      "58": "Didn't she invent the Chicory font and get paid a dollar coin for it? That's gotta be enough. Plus, she's standing in your way! ",
-      "59": "Anyone who swats flies will do the same to adventurers at some point. Better stop him now.",
-      "60": "Talks to animals. Claims she's being bullied at home. Wants to go to the casting show. It's time to put the shoe on the other foot.",
-      "61": "The blonde woman from the TV show was better. Who wants to wish anything from a tubby blue guy?",
-      "62": "Always on the cutting edge. Friendship is magic! And revenge is salami - because it's best served cold.",
-      "63": "Shake your bed for us! Otherwise, we'll have to move on to the pillow fight!",
-      "64": "At the end of the rainbow there is a pot full of... measly dimes? Hmm, never mind, attack anyway. It all adds up.",
-      "65": "His pepper gun is a joke compared to what you seasoned berserkers snort - the ashes of your enemies!",
-      "66": "He's probably quite nice, but that excuse won't fly with you. Just be glad he's wounded!",
-      "67": "She knows how to use those two shells. Many seafarers have been so entranced that they've sailed straight onto the reef.",
-      "68": "That shamefully suave charmer will try and sweet talk his way out of it. The question is, will you fall for it? ",
-      "69": "A former legend who now mainly fights people who make terrible films about him. That's understandable, but unfortunately, he's in the way.",
-      "70": "...A guy like this looks as unpredictable as he is. Kill first, ask questions later!",
-      "71": "You'll have to perform miracles if you rogues want to impress her...",
-      "72": "He's obviously never played Slender... And he's never met you.",
-      "73": "After Fairy Tale Forest was cut down, the sisters set themselves up as soccer club mascots and ketchup and mayonnaise promoters.",
-      "74": "Hungry for carrots?",
-      "75": "With that giant skewer, he's probably on the hunt for the holy grill. Time to barbecue the hick!",
-      "76": "No one can keep up with him when it comes to drinking the communion wine. But perhaps you've got some other tricks up your sleeves.",
-      "77": "Time to dispose of the monarchy.",
-      "78": "He wanted to be a dragon slayer, but didn't make the cut. So he became Mister Universe instead.",
-      "79": "Horrible beasts that want to dance to his piping...it shall become their doom!",
-      "80": "The lion finally has a reason to be scared! Because you've come to fight it through the yellow-bricked level!",
-      "81": "Hopefully you're adequately prepared despite the misleading nickname...",
-      "82": "Happy Hanukkah!",
-      "83": "Thousands of bees had to work very hard just for that villain to come and help himself! Who will avenge the queen of bees?",
-      "84": "Didn't the village donkey say something about a green ogre? He's sure to pay a bounty!",
-      "85": "He should keep trying to get comfortable while you keep trying out your weapons.",
-      "86": "Promoted from bean counter? Well, the higher they climb, the harder they fall. From a tower window, for example.",
-      "87": "Who's been eating your food? Someone who's not going to be granted a last meal! Get her!",
-      "88": "Just say that you wanted to save them from the wolf's clutches and they somehow got caught up in the crossfire.",
-      "89": "Didn't they kidnap that gullible princess? Well, their DNA was found behind Seven Hills...",
-      "90": "Tough luck for him that you're not dragons!",
-      "91": "Keep the laxatives ready for maximum wealth! But be careful, you never know what's in the sack!",
-      "92": "Her counting methods may be unconventional, but at least she knows how to lie on peas the right way.",
-      "93": "He's probably just eaten the leftovers of one of those self-proclaimed dragon slayers. This is your chance!",
-      "94": "In contrast to his brother Peter, he was clever and patented the Afro hairstyle.",
-      "95": "Let's see what he has to say about Mama Flamethrower? He's sure to just melt in rapture.",
-      "96": "Thanks to the dating platform PairPlex and its matchmaking algorithm, these two are too busy with each other to defend themselves!",
-      "97": "Every year there's a new film adaptation. It's just impossible to kill the ghost...or is it?",
-      "98": "Perhaps you can come up with a \"romantic\" way to wake her?",
-      "99": "The yellow-beige-goo phenomenon in all its glory!",
-      "100": "Getting tangled up in this woman's hair is probably unavoidable."
-    }
-  },
   "16": {
     "name": "Time-honored School of Magic",
     "description": "Accessible from Platform 9 3/4!",
@@ -399,42 +293,6 @@
       "18": "His mount looks really cute.",
       "19": "In your face!",
       "20": "The secret behind his power must be his giant sword! That's why you say \"Lord of the Stings\"."
-    }
-  },
-  "18": {
-    "name": "Continuous Loop of Idols",
-    "description": "Fight together with your companions against your idols from another world.",
-    "floors": {
-      "1": "Only a true bully can defeat him!",
-      "2": "A countdown flickers before your eyes: 3... 2... 1... LIVE! You're in - in the middle of his stream... and therefore also in the middle of your next fight.",
-      "3": "As soon as you enter the room, you are met with a scream! While your ears are still ringing, he is already starting a physical attack.",
-      "4": "The pig on the shoulder may seem cute, but don't be fooled or you will be booped out of existence.",
-      "5": "The most disciplined and feared mage, the terror of Jack the Hammerer. A walking calculator who is ready to pull you on his skibidi side! Are you ready for it?",
-      "6": "The blue-haired guy is afraid of spiders, but since you don't have eight legs, you'll have to bite the dust! Welcome to your demise!",
-      "7": "According to the current trend cocky heroes can be easily defeated with these clever tricks!",
-      "8": "Underneath the thick layer of skin hides a good heart. If you bring him a packet of donuts, he might even let you pass.",
-      "9": "He will blind you with his perfectly shaved head, and then then blow you away with his stylish moves. You won't survive this dance!",
-      "10": "You approach the next monitor and the stream starts immediately. All eyes are on you. Can you win under this pressure?",
-      "11": "Young and handsome, but don't let his looks bewitch you. Nothing holds him back. Charge!",
-      "12": "And hello to all heroes from the famous French baguette master and Minecraft World Champion! Even drunk he does not see you as a threat.",
-      "13": "He welcomes you to his room with a broad grin. His humor and good mood are infectious, but letting your guard down will soon be your doom!",
-      "14": "You are stumbling through a conspicuously pixelated room when suddenly a shadow appears with a guide in its hand. He has long since mastered life in the block world and will now teach you a thing or two in battle.",
-      "15": "If you think he had a different hair color the last time you saw him, you may be right.",
-      "16": "Rumor has it this monster was born with three legs and raised in an ashtray. Remove your socks before looking at it!",
-      "17": "This zebra-human hybrid loves to laugh at its own jokes and your combat challenge.",
-      "18": "Your already square-shaped eyes haven't escaped his notice. It's inconvenient that your pause button has just broken.",
-      "19": "The King of the Incompetent is not a king for nothing, so you'd better kneel down!",
-      "20": "Help! A computer scientist! Be careful. If he gets root access, he'll fragment you to the last bit. This opponent is NP-hard.",
-      "21": "Moin moin and welcome to your beating! \"You're ripe for the picking, like a bruised fruit!\" he triumphantly yells, for with his terrible puns and clumsy similes, he'll remodel your face, like an avant-garde sculptor with a sledgehammer.",
-      "22": "Warning: He hyperactively shoots memes like projectiles as he rolls you over in a storm of unpredictable chaos. This GIGACHAD lives for entertainment. Give him a good show!",
-      "23": "A slight sound of the sea...then his wave of strategic expertise hits you. While he answers your questions in a friendly and patient manner during the battle, you feel that you are slowly being washed out of the dungeon.",
-      "24": "His knowledge is deeper than this dungeon, his sarcasm sharper than your drawn weapon. He leaves no questions unanswered... except how to survive this duel.",
-      "25": "You look at the tube and catch sight of the pioneer of legends, the slim idol of all men and women. He doesn't give a damn that you want to get past him alive.",
-      "26": "In this monitor, a bass-heavy bulwark has spread even outside of Azeroth! Can you do anything about it?",
-      "27": "A pleasantly calm voice reaches your ear, and you notice how all tension leaves your body. The shot that follows brings you back to reality brutally.",
-      "28": "A demonic veteran stands before you - his voice echoes like thunder through the virtual walls. A spider-like creature sits on his shoulder, whispering incessantly. Can even demons... have inner demons?",
-      "29": "This warrior turns off his brain from time to time to confuse you with crazy drivel. And then comes the most important sentence: To defeat him, you should surf the wave properly!",
-      "30": "The two-meter tall, fan-appointed CEO stands colossally in front of you. He casually sips from his steaming elixir of life cup and longs for his Friday kebab. You're his last obstacle... and he's mighty hungry."
     }
   },
   "19": {
@@ -582,26 +440,6 @@
     "description": "Always open for constructive criticism."
   },
   "31": {
-    "name": "Training Camp",
-    "description": "Its unstable designs are followed by the greatest risk of splintering.",
-    "floors": {
-      "1": "Sudden water damage is his greatest enemy. At least Shakes made sure to value recyclability.",
-      "2": "Should not only scare crows. However, this good guy looks rather lifeless.",
-      "3": "Always on the move...at least in one and the same place. Wanna have a ride? Forget it!",
-      "4": "Just have your most potent blistering ointment ready!",
-      "5": "One more bump no longer matters.",
-      "6": "Is in great danger of setting himself on fire.",
-      "7": "Buzzes and staggers through the air. A crash landing is unavoidable. Trains your reflexes when jumping into cover though.",
-      "8": "His skull is still throbbing from the last whiplash injury. He has already been destroyed and reassembled several times, which is why some of his screws are loose.",
-      "9": "Where the precision of her saw blade fails, the cannon comes into play for the rough work!",
-      "10": "Everything Shakes could find was used here. His versatility makes him suitable for camping as well as a final test for beginner heroes."
-    }
-  },
-  "32": {
-    "name": "Sandstorm",
-    "description": "Not only whirls you through the air with 1,000 monsters, but also blows thick grains of sand into your eyes."
-  },
-  "33": {
     "name": "Arcade of the Old Pixel Icons",
     "description": "Where highscores are far more important than solid hygiene.",
     "floors": {
@@ -617,7 +455,7 @@
       "10": "Cartridges and consoles are piled up in the corner. Surrounded by retro memorabilia, the final boss pulls out his controller. He has broken every highscore and doesn't shy away from using cheat codes for your game over. Up, up, down, down, left, right, left, right, B, A, start!"
     }
   },
-  "34": {
+  "32": {
     "name": "The Server Room",
     "description": "A beeping terminal of flashing status lights.",
     "floors": {
@@ -633,7 +471,7 @@
       "10": "You can finally see the end of the server room, but on the last few meters you trip over the dense network of cables. A huge shadow falls over you and you look up. The infernal lord of the quality realm looms before you, ready to test your nerves and every line of code mercilessly!"
     }
   },
-  "35": {
+  "33": {
     "name": "Workshop of the Hunters of the Undead",
     "description": "The reanimated are expertly disassembled into their individual parts here.",
     "floors": {
@@ -649,7 +487,7 @@
       "10": "You enter a pink-glowing workshop section. Pop music is blasting from a loudspeaker, followed by the screech of a chainsaw. A zombie's half flies past, immediately followed by a cheerleader in a miniskirt. Only her love for her boyfriend remains whole here!"
     }
   },
-  "36": {
+  "34": {
     "name": "Retro TV Legends",
     "description": "Turn on the flickering tube for a program full of nostalgic cult figures.",
     "floors": {
@@ -665,7 +503,7 @@
       "10": "The last channel flickers with noisy colors followed by a heroic intro. Then you see a man pulling out his ultimate weapon: a paper clip. But don't underestimate him! Improvisation is his strongest weapon. And you? You're his next craft project."
     }
   },
-  "37": {
+  "35": {
     "name": "The Meeting Room",
     "description": "A room full of loud opinions and spinning heads.",
     "floors": {
@@ -681,7 +519,157 @@
       "10": "Mariam designs campaigns for the perfect hell branding and reigns over the realm of reach, forcing even the toughest warriors into conversion. On her head, however, sits the true queen of the demonic office: Jules. You better take a bow... or spontaneously retrieve her favorite tennis ball!"
     }
   },
-  "100": {
+  "201": {
+    "name": "Tower",
+    "description": "Once upon a time there was an adventurer and three companions...",
+    "floors": {
+      "1": "On the first level you meet a friendly, aromatic cake man. What's your place in the food chain?",
+      "2": "Anise, wormwood, and the magic brew is ready. Drinkerbell offers you a schnapps that can knock you out... Unless you strike first!",
+      "3": "The poor thing! He's actually only looking for his great love, but he's wounded - now's your chance to attack!",
+      "4": "He might not be able to really hurt you, but while he's cheerfully waving he's blocking your way. Let him have it!",
+      "5": "A small flower girl is separating you from your goal. It's best if you separate yourself from her!",
+      "6": "It was her who stole your milk teeth in exchange for a pittance. The time for revenge has come!",
+      "7": "A top-model casting reject. It still seems to have big beauty ambitions. That is, unless you stop it now!",
+      "8": "That noise pollution is unbearable! Someone should give the beast a good plucking!",
+      "9": "Yeah, we've got a wish - get out of the damn way!",
+      "10": "The story of his childhood seems very overwrought. I wonder if the survival techniques from the jungle will help him against you?",
+      "11": "There'll be no more singing! Is that too hard to understand? Come on, turn that dumpling into porridge!",
+      "12": "He pretends to be so friendly, but he'll use the same hand to play the Devil himself. It's time to hand him his walking papers, the fraud!",
+      "13": "She's always so haughty! You don't have to put up with that kind of attitude.",
+      "14": "Wannabe prince... You've heard the story too many times to still believe it!",
+      "15": "The whatsit on his face says he's up to no good again.",
+      "16": "Everyone take a turn to make a wish, then everyone take a turn to attack!",
+      "17": "The stink of booze and boot leather and great promises of wealth and fortune on top... Who would believe it.",
+      "18": "That shoe thief. She should go back where she came from!",
+      "19": "Jonny! Many hold him responsible for the hole in the ozone layer because he used to always stare up at the sky.",
+      "20": "One is a shameless show off, the other an uninhibited fraudster. Both should be punished, in the name of the moon!",
+      "21": "Wild geese are protected animals. Anyone who steals one has you to reckon with!",
+      "22": "Even the most cheerful ghost is unholy and has to meet its end some time. Exorcise the ghosts, the good and the bad!",
+      "23": "What she and her accomplices did to that wolf is animal cruelty and needs punishing!",
+      "24": "Summer is coming. And so is the thaw.",
+      "25": "The suspect was first spotted naked beneath the open sky. Later, financial resources of dubious origin were discovered near her person.",
+      "26": "A poor, harmless creature suffering undeservedly. Anyone who keeps playing here will have a bad conscience at Christmas.",
+      "27": "She's looking forward to holding you in her arms, until you die an icy death.",
+      "28": "A wonderful example of how well anti-authoritarian parenting works.",
+      "29": "Anyone who looks this cute and sad deserves to be put out of their misery.",
+      "30": "Called that, or something like that, at least that's how everyone says it. Anti-wind power fanatic, probably a nuclear power lobbyist.",
+      "31": "Sniffed his oil lamp too much and now suffers from hallucinations... Put him out of his misery.",
+      "32": "Ever since her rabbit ran off she's suffered from delusions. Who knows what she's capable of? Off with her head!",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
+      "34": "He always like he never ages. We see your wrinkles, Peter, and we know your weaknesses!",
+      "35": "She should be easy to beat. After all, she falls for any stupid trick. But just make sure she really is dead!",
+      "36": "No excuse to party is too silly for him. He's always celebrating something. Do the right thing and put an end to his endless revels!",
+      "37": "Who knows exactly where she comes from, but she's always trying to creep into high society circles with the help of dubious accomplices.",
+      "38": "You can find something better than early retirement everywhere!",
+      "39": "Sitting pretty on the wall with his grammar book. What would happen if you knocked him off?",
+      "40": "If his beard wasn't so lopsided and if he stopped trying to teach young women manners, it might be possible to have some sympathy for him. ",
+      "41": "Anyone who creeps into children's bedrooms at night and throws sand in their eyes has no place in civilized society.",
+      "42": "...or something like that. Ask a witch, she will know.",
+      "43": "A preferred method in politics for handing over briefcases of cash. Preventing corruption is a noble endeavor!",
+      "44": "He abuses his freedom by mirroring the truth. Can a civil society suffer such a thing?",
+      "45": "They'll need more than a brick house to be safe from you.",
+      "46": "If your give her a good thrashing, maybe she'll swap you Hans?",
+      "47": "Rumors have sprouted up around his bean growing enterprise. Perhaps he's followed them all the way up into the Tower?",
+      "48": "She emerged from the forest of Molwania and found shelter in the Tower. But not from you!",
+      "49": "According to unconfirmed rumors, he possesses magic powers. Pure brute force is needed here!",
+      "50": "The second most tragic love story ever. That is, if you rework the ending.",
+      "51": "An ingenious disguise. I hope you see through it!",
+      "52": "Upsetting the social balance like that can't be popular with politicians.",
+      "53": "The door behind him is blocked by rocks. You'll have to beat the password out of him.",
+      "54": "Better not tell him that those clothes make him look fat. He's also carrying a new sword on his new belt.",
+      "55": "The glue industry would pay millions for that golden goose. You'd better lend a hand!",
+      "56": "Appetizer: Bread crumbs from the forest floor. Main course: Braised snotty brats. Dessert: Selection of gingerbread cakes.",
+      "57": "The intruder breaks in, destroys furniture, and steals food. Show no mercy!",
+      "58": "Didn't she invent the Chicory font and get paid a dollar coin for it? That's gotta be enough. Plus, she's standing in your way! ",
+      "59": "Anyone who swats flies will do the same to adventurers at some point. Better stop him now.",
+      "60": "Talks to animals. Claims she's being bullied at home. Wants to go to the casting show. It's time to put the shoe on the other foot.",
+      "61": "The blonde woman from the TV show was better. Who wants to wish anything from a tubby blue guy?",
+      "62": "Always on the cutting edge. Friendship is magic! And revenge is salami - because it's best served cold.",
+      "63": "Shake your bed for us! Otherwise, we'll have to move on to the pillow fight!",
+      "64": "At the end of the rainbow there is a pot full of... measly dimes? Hmm, never mind, attack anyway. It all adds up.",
+      "65": "His pepper gun is a joke compared to what you seasoned berserkers snort - the ashes of your enemies!",
+      "66": "He's probably quite nice, but that excuse won't fly with you. Just be glad he's wounded!",
+      "67": "She knows how to use those two shells. Many seafarers have been so entranced that they've sailed straight onto the reef.",
+      "68": "That shamefully suave charmer will try and sweet talk his way out of it. The question is, will you fall for it? ",
+      "69": "A former legend who now mainly fights people who make terrible films about him. That's understandable, but unfortunately, he's in the way.",
+      "70": "...A guy like this looks as unpredictable as he is. Kill first, ask questions later!",
+      "71": "You'll have to perform miracles if you rogues want to impress her...",
+      "72": "He's obviously never played Slender... And he's never met you.",
+      "73": "After Fairy Tale Forest was cut down, the sisters set themselves up as soccer club mascots and ketchup and mayonnaise promoters.",
+      "74": "Hungry for carrots?",
+      "75": "With that giant skewer, he's probably on the hunt for the holy grill. Time to barbecue the hick!",
+      "76": "No one can keep up with him when it comes to drinking the communion wine. But perhaps you've got some other tricks up your sleeves.",
+      "77": "Time to dispose of the monarchy.",
+      "78": "He wanted to be a dragon slayer, but didn't make the cut. So he became Mister Universe instead.",
+      "79": "Horrible beasts that want to dance to his piping...it shall become their doom!",
+      "80": "The lion finally has a reason to be scared! Because you've come to fight it through the yellow-bricked level!",
+      "81": "Hopefully you're adequately prepared despite the misleading nickname...",
+      "82": "Happy Hanukkah!",
+      "83": "Thousands of bees had to work very hard just for that villain to come and help himself! Who will avenge the queen of bees?",
+      "84": "Didn't the village donkey say something about a green ogre? He's sure to pay a bounty!",
+      "85": "He should keep trying to get comfortable while you keep trying out your weapons.",
+      "86": "Promoted from bean counter? Well, the higher they climb, the harder they fall. From a tower window, for example.",
+      "87": "Who's been eating your food? Someone who's not going to be granted a last meal! Get her!",
+      "88": "Just say that you wanted to save them from the wolf's clutches and they somehow got caught up in the crossfire.",
+      "89": "Didn't they kidnap that gullible princess? Well, their DNA was found behind Seven Hills...",
+      "90": "Tough luck for him that you're not dragons!",
+      "91": "Keep the laxatives ready for maximum wealth! But be careful, you never know what's in the sack!",
+      "92": "Her counting methods may be unconventional, but at least she knows how to lie on peas the right way.",
+      "93": "He's probably just eaten the leftovers of one of those self-proclaimed dragon slayers. This is your chance!",
+      "94": "In contrast to his brother Peter, he was clever and patented the Afro hairstyle.",
+      "95": "Let's see what he has to say about Mama Flamethrower? He's sure to just melt in rapture.",
+      "96": "Thanks to the dating platform PairPlex and its matchmaking algorithm, these two are too busy with each other to defend themselves!",
+      "97": "Every year there's a new film adaptation. It's just impossible to kill the ghost...or is it?",
+      "98": "Perhaps you can come up with a \"romantic\" way to wake her?",
+      "99": "The yellow-beige-goo phenomenon in all its glory!",
+      "100": "Getting tangled up in this woman's hair is probably unavoidable."
+    }
+  },
+  "202": {
+    "name": "Continuous Loop of Idols",
+    "description": "Fight together with your companions against your idols from another world.",
+    "floors": {
+      "1": "Only a true bully can defeat him!",
+      "2": "A countdown flickers before your eyes: 3... 2... 1... LIVE! You're in - in the middle of his stream... and therefore also in the middle of your next fight.",
+      "3": "As soon as you enter the room, you are met with a scream! While your ears are still ringing, he is already starting a physical attack.",
+      "4": "The pig on the shoulder may seem cute, but don't be fooled or you will be booped out of existence.",
+      "5": "The most disciplined and feared mage, the terror of Jack the Hammerer. A walking calculator who is ready to pull you on his skibidi side! Are you ready for it?",
+      "6": "The blue-haired guy is afraid of spiders, but since you don't have eight legs, you'll have to bite the dust! Welcome to your demise!",
+      "7": "According to the current trend cocky heroes can be easily defeated with these clever tricks!",
+      "8": "Underneath the thick layer of skin hides a good heart. If you bring him a packet of donuts, he might even let you pass.",
+      "9": "He will blind you with his perfectly shaved head, and then then blow you away with his stylish moves. You won't survive this dance!",
+      "10": "You approach the next monitor and the stream starts immediately. All eyes are on you. Can you win under this pressure?",
+      "11": "Young and handsome, but don't let his looks bewitch you. Nothing holds him back. Charge!",
+      "12": "And hello to all heroes from the famous French baguette master and Minecraft World Champion! Even drunk he does not see you as a threat.",
+      "13": "He welcomes you to his room with a broad grin. His humor and good mood are infectious, but letting your guard down will soon be your doom!",
+      "14": "You are stumbling through a conspicuously pixelated room when suddenly a shadow appears with a guide in its hand. He has long since mastered life in the block world and will now teach you a thing or two in battle.",
+      "15": "If you think he had a different hair color the last time you saw him, you may be right.",
+      "16": "Rumor has it this monster was born with three legs and raised in an ashtray. Remove your socks before looking at it!",
+      "17": "This zebra-human hybrid loves to laugh at its own jokes and your combat challenge.",
+      "18": "Your already square-shaped eyes haven't escaped his notice. It's inconvenient that your pause button has just broken.",
+      "19": "The King of the Incompetent is not a king for nothing, so you'd better kneel down!",
+      "20": "Help! A computer scientist! Be careful. If he gets root access, he'll fragment you to the last bit. This opponent is NP-hard.",
+      "21": "Moin moin and welcome to your beating! \"You're ripe for the picking, like a bruised fruit!\" he triumphantly yells, for with his terrible puns and clumsy similes, he'll remodel your face, like an avant-garde sculptor with a sledgehammer.",
+      "22": "Warning: He hyperactively shoots memes like projectiles as he rolls you over in a storm of unpredictable chaos. This GIGACHAD lives for entertainment. Give him a good show!",
+      "23": "A slight sound of the sea...then his wave of strategic expertise hits you. While he answers your questions in a friendly and patient manner during the battle, you feel that you are slowly being washed out of the dungeon.",
+      "24": "His knowledge is deeper than this dungeon, his sarcasm sharper than your drawn weapon. He leaves no questions unanswered... except how to survive this duel.",
+      "25": "You look at the tube and catch sight of the pioneer of legends, the slim idol of all men and women. He doesn't give a damn that you want to get past him alive.",
+      "26": "In this monitor, a bass-heavy bulwark has spread even outside of Azeroth! Can you do anything about it?",
+      "27": "A pleasantly calm voice reaches your ear, and you notice how all tension leaves your body. The shot that follows brings you back to reality brutally.",
+      "28": "A demonic veteran stands before you - his voice echoes like thunder through the virtual walls. A spider-like creature sits on his shoulder, whispering incessantly. Can even demons... have inner demons?",
+      "29": "This warrior turns off his brain from time to time to confuse you with crazy drivel. And then comes the most important sentence: To defeat him, you should surf the wave properly!",
+      "30": "The two-meter tall, fan-appointed CEO stands colossally in front of you. He casually sips from his steaming elixir of life cup and longs for his Friday kebab. You're his last obstacle... and he's mighty hungry."
+    }
+  },
+  "203": {
+    "name": "Twister",
+    "description": "It's all haywire here. A huge twister is sweeping through the land and has drawn 1,000 monsters in its inside along with you."
+  },
+  "204": {
+    "name": "Sandstorm",
+    "description": "Not only whirls you through the air with 1,000 monsters, but also blows thick grains of sand into your eyes."
+  },
+  "300": {
     "name": "Unwavering Warrior Guild",
     "description": "Swords and shields define this proud guild.",
     "floors": {
@@ -697,7 +685,7 @@
       "10": "You finally step before the head of the Warrior Guild. This muscular matriarch prizes ruthless strength and fearless determination in battle above all. Will you be able to halt the overwhelming dominance of this general? Either way, she takes no prisoners…"
     }
   },
-  "101": {
+  "301": {
     "name": "Inquisitive Mage Guild",
     "description": "When wisdom and madness work wonders.",
     "floors": {
@@ -713,7 +701,7 @@
       "10": "You climb the final long staircase and enter the guild tower. Instead of an ancient archmage, you are greeted by a chained escape artist bubbling away upside down in a water tank. Defeat him before he breaks free – or swipe his key!"
     }
   },
-  "102": {
+  "302": {
     "name": "Acrobatic Scout Guild",
     "description": "Is that trouble rustling in the underbrush? Oh, already leaped away!",
     "floors": {
@@ -729,7 +717,7 @@
       "10": "You reach the courtyard used as the training ground for the Scout Guild. An arrow lands with a hiss right at your feet, prompting you to scan your surroundings. Your eyes lock onto a light-footed elf carrying a clingy dwarf on her back."
     }
   },
-  "103": {
+  "303": {
     "name": "Lively Necromancer Guild",
     "description": "Professional recyclers of once-living vessels.",
     "floors": {
@@ -744,9 +732,5 @@
       "9": "Between mass necromancy and the goal of conquering the world, he is constantly looking for the nearest orthopaedic surgeon, so far without success. Before he cracks his own bones, he is going to lay hands upon you!",
       "10": "Regards himself as the keeper of balance, but unfortunately, he weighs everything in favor of death. Don't worry, after death he will resurrect you for his own purposes."
     }
-  },
-  "104": {
-    "name": "Class Portal of Aberrations",
-    "description": "Proud, wise, agile, and revived? Sort of, but also pretty twisted..."
   }
 }

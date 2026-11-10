@@ -243,112 +243,6 @@
       "20": "Nem, nem félek az óriássárkányoktól. Miért félnék? Még sosem láttam... Ajjaj!"
     }
   },
-  "15": {
-    "name": "Torony",
-    "description": "Egyszer volt, hol nem volt egy kalandor és a három társa...",
-    "floors": {
-      "1": "Az első szinten találkozol egy barátságos, kellemes illatú sütiemberrel. Hol a helyed a táplálékláncban?",
-      "2": "Ánizs, üröm és már kész is a mágikus párlat. Piásharang olyan itallal kínál, amely könnyen kiüthet... Persze csak akkor, ha nem te ütsz elsőnek!",
-      "3": "Szegény! Valójában csak a nagy szerelmét keresi, de sebet kapott - itt a remek lehetőség megtámadni!",
-      "4": "Lehet, hogy nem tud kárt tenni benned, de elállja az utat, miközben vidáman integet. Adj neki!",
-      "5": "Egy kis virágoslány választ el a célodtól. Legjobb lesz a tövénél elvágni a problémát!",
-      "6": "Ő volt az, aki ellopta a tejfogad és pár garassal szúrta ki a szemed cserébe. Eljött a bosszú ideje!",
-      "7": "Topmodellnek nem válogatták be. Ettől még meg akarja hódítani a szépségipart. Persze csak akkor, ha nem állítod meg most!",
-      "8": "Elviselhetetlen ez a zaj! Valakinek ki kellene tépnie a szörnyeteg tollait!",
-      "9": "Igen, lenne egy kívánságom: húzz már el az útból!",
-      "10": "A gyerekkora története eléggé elcsépelt. Vajon elbír veled, ha beveti a dzsungelben tanult túlélési technikákat?",
-      "11": "Elég az éneklésből! Olyan nehéz megérteni ezt? Gyerünk, csinálj galuskát a gombócból!",
-      "12": "Barátságosnak mutatja magát, pedig ugyanazon a kézen magát az Ördögöt is játszotta. Ideje végre lekezelően bánni a nyomorult csalóval!",
-      "13": "Mindig olyan gőgösen néz! Ideje kisebbre szabni az arcát.",
-      "14": "Herceg szeretne lenni... Túl sokszor hallottad már ezt a sztorit ahhoz, hogy még mindig higgy benne!",
-      "15": "Az izé az arcán azt jelzi, hogy már megint rosszban sántikál.",
-      "16": "Mindenki kívánhat valami és mindenkire jut egy támadási lehetőség is!",
-      "17": "Piától bűzlik, a bőrcsizma szagától, és folyton a meggazdagodásról zagyvál... Ki hisz neki?",
-      "18": "A cipőtolvaj. Jobb, ha visszamegy oda, ahonnan jött!",
-      "19": "Petikém! Lehet, hogy ő a felelős az ózonlyukért, amennyit az eget bámulja.",
-      "20": "Az egyik szégyentelen hencegő, a másik gátlástalan csalód. Mindkettőt meg kell büntetni a Hold nevében!",
-      "21": "A vadlibák védett állatok. Ha valaki ellop egyet, veled gyűlik meg a baja!",
-      "22": "Még a legvidámabb kísértet is természetellenes és nem tarthat a végtelenségig az örök élete. Részesítsd mindet alapos ördögűzésben, függetlenül attól, hogy jók vagy rosszak!",
-      "23": "Az, amit a bűntársaival műveltek a farkassal állatkínzás, és példás büntetést érdemel!",
-      "24": "Jön a nyár. Beköszönt az olvasztás.",
-      "25": "A gyanúsítottat először meztelenül látták a szabad ég alatt. Később gyanús eredetű összegeket találtak a közelében.",
-      "26": "Szerencsétlen, ártatlan lény, aki nem érdemelte meg azt, amit kapott. Aki tovább játszik itt, rossz lelkiismerettel futhat neki a karácsonynak.",
-      "27": "Szeretne a karjába zárni, hogy aztán szörnyű, jeges halált halj.",
-      "28": "Tökéletes példája annak, hogy milyen jól működik, ha a szülők engedékenyek.",
-      "29": "Ha valaki ennyire cuki és ennyire szomorú, megérdemli, hogy rövid úton felaprítsák.",
-      "30": "Bármi is az eredeti neve, mindenki így emlegeti. Fanatikusan gyűlöli a szélenergiát, valószínűleg az atomiparnak dolgozik.",
-      "31": "Addig szagolgatta az olajlámpását, amíg el nem kezdett hallucinálni... Szabadítsd meg a szenvedéstől.",
-      "32": "Mióta lelépett a nyula, folyamatosan képzeleg. Ki tudja, mire képes? Le a fejével!",
-      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
-      "34": "Olyan, mintha nem öregedne. Látjuk a ráncaidat, Péter, és a gyenge pontjaidat is!",
-      "35": "Őt könnyű lesz legyőzni. Elvégre minden buta trükknek bedől. Csak arra kell figyelned, hogy tényleg meghaljon!",
-      "36": "Bármilyen idióta indok elég neki a bulizáshoz. Állandóan ünnepel valamit. Tedd, amit tenned kell, és szoktasd le az állandó partizásról!",
-      "37": "Senki sem tudja, honnan jött, de a gyanús tettestársaival folyamatosan a magas körökbe próbál beférkőzni.",
-      "38": "Korai nyugdíj helyett vár a kolbásztöltő!",
-      "39": "Jó magasan ül a falon a nyelvtankönyvével. Mi lenne, ha valaki megpöccintené egy kicsit?",
-      "40": "Ha nem lenne ilyen felemás a szakálla és nem akarná folyton a helyes viselkedésre oktatni a fiatal lányokat, akár még meg is könyörülnél rajta.",
-      "41": "Annak, aki éjszakánként gyerekek hálószobájába lopózik be, hogy homokot szórjon a szemükbe, nincs helye a civilizált világban.",
-      "42": "...vagy valami ilyesmi. Kérdezd meg az Ördögöt, ő minden senkiházi nevét tudja.",
-      "43": "A politikusok előszeretettel használják pénzzel teletömött bőröndök átadására. Ideje visszaszorítani a korrupciót!",
-      "44": "Mindenkit azzal idegesít, hogy az igazságot mutatja. Muszáj eltűrnie ezt a civilizált világnak?",
-      "45": "Ellened nem lesz elég, ha egy téglaházban bújnak el.",
-      "46": "Agyald meg háromszor, lássuk, mit szól hozzá Matyi!",
-      "47": "A pletykák szerint a babtermesztő iparban próbálkozik. Lehet, hogy a Toronyba is követte őket?",
-      "48": "A moldáv erdőkből érkezett és menedékre lelt a toronyban. Csak éppen nem előled!",
-      "49": "Ellenőrizetlen híresztelések szerint mágikus hatalommal rendelkezik. Itt csak a brutális erő bevetésével boldogulhatsz!",
-      "50": "Minden idők második legtragikusabb szerelmi története. Már persze csak akkor, ha átszabod a sztori végét.",
-      "51": "Zseniális álruha. Reméljük, téged nem téveszt meg!",
-      "52": "Ha valaki ennyire felforgatja a társadalom egyensúlyát, valószínűleg felidegesíti a politikusokat.",
-      "53": "A mögötte levő ajtót sziklák torlaszolják el. Ki kell verned belőle a jelszót.",
-      "54": "Jobb, ha nem mondod el neki, hogy az új szerelésében kövérnek tűnik. Ráadásul az új övéről új kard fityeg.",
-      "55": "A ragasztóipar sokat fizetne azért az aranylibáért. Jobb, ha megadod a kezdőlökést!",
-      "56": "Előétel: kenyérmorzsák az erdő talajáról. Főétel: taknyos kölykök jól átsütve. Desszert: mézeskalács-variációk.",
-      "57": "A betolakodó betör, összetöri a bútorokat és ellopja az ételt. Nem érdemel könyörületet!",
-      "58": "Nem ő találta fel a Chicory betűtípust és kapott érte egy dollárt? Ebből elég. Ráadásul az utadban áll! ",
-      "59": "Aki a legyek ellen fordult, idővel a kalandozókra is veszélyt jelent. Jobb, ha idejében megállítod.",
-      "60": "Állatokkal beszélget. Azt mondja, hogy otthon rosszul bánnak vele. Szereplőválogatásokra akar járni. Legjobb lesz, ha lenyomjuk a torkán a másik cipőjét.",
-      "61": "A tévésorozat szőke csaja jobb volt. Ki akarja, hogy egy bilikék fickó teljesítse a kívánságait?",
-      "62": "Mindig az élen jár. A barátság csodás dolog! A bosszú pedig olyan, mint a szalámi: csak hidegen ínycsiklandó.",
-      "63": "Rázd fel az ágyneműt! Különben jön a párnacsata!",
-      "64": "A szivárvány tövénél ott vár egy nagy üst... hamis érme? Na, mindegy, henteljük csak fel szépen. A pénzhamisítást a törvény bünteti.",
-      "65": "A borspisztolya nevetséges játékszer a taknyodhoz képest is: a viharvert kalandozók az ellenségeik hamvait fújják ki az orrukból!",
-      "66": "Valószínűleg szimpatikus alak, de ettől még nem könyörülsz meg rajta. Azért szerencse, hogy már meg van sebesülve.",
-      "67": "Tudja, hogy billegesse a kagylóit. Sok tengerészt annyira elbűvölt, hogy egyenesen a zátonyra hajóztak.",
-      "68": "A bókok mestere biztosan megpróbálja majd kidumálni magát a szorult helyzetből. A kérdés csak az, ki fog hinni neki? ",
-      "69": "Korábban legenda volt, ma főleg olyanokkal harcol, akik pocsék filmeket készítenek róla. Ez valahol szimpatikus, de sajnos az utadban van.",
-      "70": "Ugyanolyan kiszámíthatatlan, amilyennek látszik. Kaszabold le, és csak utána kérdezz!",
-      "71": "Csodát kell tenned, hogy le szeretnéd nyűgözni...",
-      "72": "Nyilván sosem játszott még a Slenderrel... Ahogy veled sem futott még össze.",
-      "73": "Miután kivágták a varázserdőt, a nővérek beálltak az FC Bayern München kabalafigurájának, és ketchupot és majonézt reklámoznak.",
-      "74": "Jöhet egy kis répa?",
-      "75": "Ekkora nyárssal az oldalán biztos, hogy a Szent Grillt keresi. Ideje felcsapni a sütőrostra!",
-      "76": "Senki sem tud lépést tartani vele, ha a misebor vedeléséről van szó. Azért nem árt az óvatosság: lehet, hogy máshoz is ugyanígy ért.",
-      "77": "Ideje véget vetni a monarchiának.",
-      "78": "Szeretett volna sárkányölő lenni, de nem ütötte meg a szintet. Így aztán inkább a Mister Universe versenyeken próbálkozott.",
-      "79": "A dudájára táncolni vágyó rettegett fenevadaknak ez lesz a vesztük!",
-      "80": "Az oroszlánnak végre jó oka van félni! A sárga köves útról fogják felmosni őket, miután végeztél a dolgoddal!",
-      "81": "Reméljük, a félrevezető becenév ellenére tisztességes ellenfél lesz...",
-      "82": "Boldog hanukát!",
-      "83": "Több ezer méh dolgozott keményen, hogy aztán gonosz módon lenyúlja a munkájuk gyümölcsét! Ki áll bosszút a méhkirálynő nevében?",
-      "84": "Nem magyarázott valami a falu vadszamara egy zöld ogréról? Biztos jó pénzt adnak a fejéért!",
-      "85": "Ő megpróbál kényelmesen elhelyezkedni, te pedig kipróbálhatod rajta a fegyvereidet.",
-      "86": "Előléptették a vén zsugorit? Nos, minél magasabbra kapaszkodik valaki, annál nagyobbat esik. Például akkor, ha egy torony egyik ablakából hajítják ki.",
-      "87": "Ki ette meg a kajádat? Bárki is volt, ez volt az utolsó vacsorája! Kapd el!",
-      "88": "Majd azt mondjuk, meg akartuk menteni őket, csak valahogy a kereszttűzbe kerültek...",
-      "89": "Nem ők rabolták el azt a hiszékeny hercegkisasszonyt? A DNS-üket biztosan megtalálták a tetthelyen...",
-      "90": "Ráfaragott, hogy ti nem sárkányok vagytok!",
-      "91": "Mindig legyen kéznél hashajtó, és garantált a gazdagság! Azért légy óvatos: sosem lehet tudni, mi kerül a zsákba!",
-      "92": "A számlálási módszerei talán szokatlanok, de legalább tudja, hogyan kell kényelmesen heverni a borsószemeken.",
-      "93": "Valószínűleg most falta fel az egyik önjelölt sárkányölőt. Itt a soha vissza nem térő alkalom!",
-      "94": "Testvérével, Péterrel ellentétben neki volt annyi esze, hogy szabadalmaztassa az afro frizurát.",
-      "95": "Lássuk, mit szól, ha bemutatjuk neki Lángszóró Mamát? Biztos elolvad a gyönyörűségtől.",
-      "96": "A PárPlex társkereső szolgáltatás egyedülálló algoritmusának köszönhetően annyira egymásra koncentrálnak, hogy nem fognak védekezni.",
-      "97": "Minden évben kijön egy új filmfeldolgozás. A szellemeket ugyebár nem lehet megölni... Vagy mégis?",
-      "98": "Talán te ki tudsz találni valami „romantikusat”, hogy felébreszd?",
-      "99": "A sárgás-barnás trutymó teljes szépségében!",
-      "100": "Majdnem biztos, hogy bele fogsz gabalyodni a hajába."
-    }
-  },
   "16": {
     "name": "A Mágia Ősi Iskolája",
     "description": "Bejárás a 9 és 3/4. vágányról!",
@@ -399,42 +293,6 @@
       "18": "Cuki a hátasa.",
       "19": "Az arcodba!",
       "20": "Hatalmának titka, a hatalmas nagy kardja! Ezért mondják rá, hogy ő a \"Pengék Ura\"!"
-    }
-  },
-  "18": {
-    "name": "Bálványok Végtelen Hurokja",
-    "description": "Harcolj együtt a kísérőiddel a másik világból származó bálványok ellen!",
-    "floors": {
-      "1": "Csak egy igazi agresszív vadbarom győzheti le!",
-      "2": "Szemed előtt pereg a visszaszámláló: 3... 2... 1... ÉLŐ! Ott vagy, a stream kellős közepén... és persze a következő harc sűrűjében is.",
-      "3": "Amikor belépsz a szobába, irtózatos rikoltás fogad. A füled még cseng, de ő máris rád veti magát.",
-      "4": "A malac a vállán talán aranyosnak tűnik, de ne tévesszen meg, vagy az életed bánja.",
-      "5": "A legfegyelmezettebb és legrettegettebb mágus, a vérfagyasztó Kalapács Józsi. A két lábon járó számológép, aki azonnal átránt skibidi oldalára. Készen állsz?",
-      "6": "A kék hajú fickó fél a pókoktól, mivel azonban neked nincs nyolc lábad, elég gyengék az esélyeid. Vár a végzeted!",
-      "7": "A legújabb trendek azt mutatják, hogy az elbizakodott hősöket könnyű legyőzni ezekkel az okos trükkökkel.",
-      "8": "A vastag bőr alatt alapvetően jó szív rejtőzik. Ha hozol neki egy csomag fánkot, talán még át is enged.",
-      "9": "Megvakít tükörfényesre borotvált koponyájával, aztán elsöpör stílusos mozdulataival. Ezt a táncot nem éled túl!",
-      "10": "Közelebb lépsz a következő monitorhoz, és már el is indul a stream. Ilyen nyomás alatt is képes vagy győzni?",
-      "11": "Fiatal és elbűvölő, de ne hagyd, hogy becsapjon a külseje. Semmi sem tartja vissza. Támadás!",
-      "12": "És minden hőst köszönt a híres francia baguette-mester és Minecraft-világbajnok! Még részegen sem tekint rád fenyegetésként.",
-      "13": "Széles vigyorral fogad a szobájában. A humora és a modora mindenkit lefegyverez, de ha nem vagy résen, szörnyű vég vár rád!",
-      "14": "Gyanúsan pixeles szobában botladozol előre, amikor hirtelen megjelenik egy árnyék útmutatóval a kezében. Rég megtanulta, hogyan boldoguljon az alacsony felbontású világban, és most a csatában is tanít neked pár új dolgot.",
-      "15": "Ha úgy rémlik, hogy a múltkor más volt a hajszíne, könnyen lehet, hogy nem tévedsz.",
-      "16": "A pletykák szerint ez a szörny három lábbal született, és egy hamutartóban nőtt fel. Vedd le a zoknid, mielőtt ránézel!",
-      "17": "Ez a zebra-ember kiméra imád nevetni a saját viccein és a harci kihívásodon.",
-      "18": "A képernyőbámulásba révedt szemed nem kerülte el a figyelmét. Nagy kár, hogy pont most romlott el a szünet gomb.",
-      "19": "Az Alkalmatlanok Királya nem véletlenül lett király, szóval jobb, ha térdre borulsz!",
-      "20": "Segítség! Egy informatikus! Légy óvatos! Ha root hozzáférést szerez, bitekre szaggat. Ez az ellenfél finoman szólva is kiszámíthatatlanul nehéz.",
-      "21": "Moin moin, helló és köszöntelek alapos elverésed alkalmából! „Most pedig kikészítelek, mint a frissen nyúzott gereznát!” – üvölti diadalittasan, mert a pocsék szóvicceivel és hasonlataival úgy helyedre rak, mint egy lakberendező.",
-      "22": "Figyelmeztetés: Golyószóróként ontja a gyilkos mémeket, miközben beránt a kiszámíthatatlan káoszba. Ez a GIGACHAD a szórakozásnak él. Ne okozz neki csalódást!",
-      "23": "A tenger morajlását hallod... aztán telibe talál stratégiai szakértelmének hulláma. Miközben folyik a harc, barátságosan és türelmesen válaszol a kérdéseidre, és úgy érzed, hogy a hullámok lassan kimosnak a kazamatából.",
-      "24": "A tudása mélyebb ennél a kazamatánál, a szarkasztikus megjegyzései pedig élesebbek a fegyvered pengéjénél. Egy kérdést sem hagy válasz nélkül... kivéve azt, ami arra vonatkozik, hogyan éld túl ezt a párbajt.",
-      "25": "Ránézel a monitorra, és a legendák ősét pillantod meg, minden férfi és nő karcsú bálványát. Sajnos kicsit sem érdekli, hogy élve szeretnél távozni.",
-      "26": "Ezen a monitoron egy basszusban gazdag bulwark már Azerothon is túlterjeszkedik. Tudsz tenni valamit ellene?",
-      "27": "Kellemesen nyugodt hang üti meg a füledet, érzed, ahogy minden feszültség elhagyja a testedet. Az ezt követő ütés viszont brutálisan visszaránt a valóságba.",
-      "28": "Démoni veterán áll előtted – a hangja mennydörgésként robajlik a virtuális falak között. A vállán pókszerű, folyamatosan suttogó lény ül. Vajon a démonoknak is vannak... belső démonaik?",
-      "29": "Ez a harcos néha kikapcsolja az agyát, hogy teljesen összezavarjon. Ezt követi a legfontosabb mondat: a legyőzéséhez jól kell meglovagolnod a hullámokat!",
-      "30": "A két méter magas, a rajongók által a pozíciójába juttatott vezérigazgató tornyosul föléd. Lazán kortyol egyet a bögréjében gőzölgő életelixírből, és a pénteki kebabja után vágyakozik. Már csak te állsz közte és a kaja között... és tényleg farkaséhes."
     }
   },
   "19": {
@@ -582,26 +440,6 @@
     "description": "Mindig nyitott az építő kritikára"
   },
   "31": {
-    "name": "Kiképzőtábor",
-    "description": "Nem túl stabil, ráadásul repkednek belőle a szálkák.",
-    "floors": {
-      "1": "A váratlan elázás a legnagyobb ellensége. Még jó, hogy Shakes nagy híve az újrahasznosításnak.",
-      "2": "Biztos nem csak a madarakat riasztja el. Viszont ránézésre eléggé élettelen szegényke.",
-      "3": "Folyton mozgásban van… bár igaz, hogy egy helyben. Beneveznél egy menetre? Felejtsd el!",
-      "4": "Csak készítsd elő a legjobb balzsamodat a szálkák miatt!",
-      "5": "Egy újabb horpadás már fel sem tűnik neki.",
-      "6": "Tüzes egy jószág, de ilyen hozzáállással könnyen megégetheti magát.",
-      "7": "Hangosan zúgva szeli át a levegőt. A becsapódás elkerülhetetlen. Viszont legalább megtanulsz élesebb reflexekkel fedezékbe ugrani.",
-      "8": "A koponyája még mindig sajog az utolsó csapástól. Többször is elpusztították és újra összerakták, ezért lötyög néhány csavarja.",
-      "9": "Amikor a fűrésze pontossága már nem elég, az ágyú végzi el a piszkos munkát.",
-      "10": "Shakes mindent felhasznált hozzá, amit csak össze tudott szedni. Igazi svájci bicska, táborozáshoz ugyanolyan ideális, mint a kezdő hősök vizsgáztatásához."
-    }
-  },
-  "32": {
-    "name": "Homokvihar",
-    "description": "Nem egyszerűen csak felkap a levegőbe 1000 szörnnyel együtt, de még a szemed is telefújja homokkal."
-  },
-  "33": {
     "name": "Retró pixellegendák játékterme",
     "description": "Ahol a rekordpontszám fontosabb a minimális higiéniánál is.",
     "floors": {
@@ -617,7 +455,7 @@
       "10": "Cartridge-ek és konzolok állnak halmokban a sarokban. A retró emléktárgyakkal körülvett végső ellenfél előhúzza a kontrollerét. Minden rekordot megdöntött, és csalásokat is kész bevetni, csak hogy végleg game over legyen neked. Fel, fel, le, le, balra, jobbra, balra, jobbra, B, A, start!"
     }
   },
-  "34": {
+  "32": {
     "name": "A Szerverszoba",
     "description": "Állapotjelző fényekkel teli, folyamatosan csipogó terminál.",
     "floors": {
@@ -633,7 +471,7 @@
       "10": "Végre látod a Szerverszoba végét, de az utolsó métereken felbuksz a mindenhol indaként tekergő kábelekben. Hatalmas árny borul rád, felpillantasz, és a minőség-ellenőrzés világának pokolbéli ura néz farkasszemet veled. Készen áll arra, hogy könyörtelenül próbára tegye az idegeidet és a tested minden egyes kódsorát!"
     }
   },
-  "35": {
+  "33": {
     "name": "Élőholtvadászok műhelye",
     "description": "Itt szedik szét szakavatottan alkatrészekre az élőholtakat.",
     "floors": {
@@ -649,7 +487,7 @@
       "10": "Rózsaszínben ragyogó műhelybe lépsz be. A hangszóróból popzene üvölt, majd felhangzik a láncfűrész összetéveszthetetlen visítása. Elrepül melletted egy félbevágott zombi, majd rögtön utána megpillantasz egy miniszoknyás pomponlányt. Csak a pasija iránti szerelme maradt teljes!"
     }
   },
-  "36": {
+  "34": {
     "name": "Retró tévélegendák",
     "description": "Kapcsold be a tévét, és élvezd a nosztalgikus figurákkal teli műsort!",
     "floors": {
@@ -665,7 +503,7 @@
       "10": "Az utolsó csatorna hangos, színes képsorokkal és hősies főcímzenével köszönt. Aztán meglátsz egy férfit, amit előhúzza legfélelmetesebb fegyverét: egy gemkapcsot. Nehogy alábecsüld! A rögtönzés a legerősebb oldala. Te pedig csak a következő megoldandó feladata vagy."
     }
   },
-  "37": {
+  "35": {
     "name": "A Tárgyaló",
     "description": "Határozott véleményekkel és izzó agyakkal teli szoba.",
     "floors": {
@@ -681,7 +519,157 @@
       "10": "Mariam a tökéletes pokolbrand reklámkampányait tervezgeti, az elérés királysága felett uralkodik, és a legkeményebb harcosokat is áttérésre kényszeríti. A démoni iroda igazi ura azonban a fejénél üldögél: Jules. Jobban jársz, ha meghajolsz... vagy gyorsan visszahozod a kedvenc teniszlabdáját!"
     }
   },
-  "100": {
+  "201": {
+    "name": "Torony",
+    "description": "Egyszer volt, hol nem volt egy kalandor és a három társa...",
+    "floors": {
+      "1": "Az első szinten találkozol egy barátságos, kellemes illatú sütiemberrel. Hol a helyed a táplálékláncban?",
+      "2": "Ánizs, üröm és már kész is a mágikus párlat. Piásharang olyan itallal kínál, amely könnyen kiüthet... Persze csak akkor, ha nem te ütsz elsőnek!",
+      "3": "Szegény! Valójában csak a nagy szerelmét keresi, de sebet kapott - itt a remek lehetőség megtámadni!",
+      "4": "Lehet, hogy nem tud kárt tenni benned, de elállja az utat, miközben vidáman integet. Adj neki!",
+      "5": "Egy kis virágoslány választ el a célodtól. Legjobb lesz a tövénél elvágni a problémát!",
+      "6": "Ő volt az, aki ellopta a tejfogad és pár garassal szúrta ki a szemed cserébe. Eljött a bosszú ideje!",
+      "7": "Topmodellnek nem válogatták be. Ettől még meg akarja hódítani a szépségipart. Persze csak akkor, ha nem állítod meg most!",
+      "8": "Elviselhetetlen ez a zaj! Valakinek ki kellene tépnie a szörnyeteg tollait!",
+      "9": "Igen, lenne egy kívánságom: húzz már el az útból!",
+      "10": "A gyerekkora története eléggé elcsépelt. Vajon elbír veled, ha beveti a dzsungelben tanult túlélési technikákat?",
+      "11": "Elég az éneklésből! Olyan nehéz megérteni ezt? Gyerünk, csinálj galuskát a gombócból!",
+      "12": "Barátságosnak mutatja magát, pedig ugyanazon a kézen magát az Ördögöt is játszotta. Ideje végre lekezelően bánni a nyomorult csalóval!",
+      "13": "Mindig olyan gőgösen néz! Ideje kisebbre szabni az arcát.",
+      "14": "Herceg szeretne lenni... Túl sokszor hallottad már ezt a sztorit ahhoz, hogy még mindig higgy benne!",
+      "15": "Az izé az arcán azt jelzi, hogy már megint rosszban sántikál.",
+      "16": "Mindenki kívánhat valami és mindenkire jut egy támadási lehetőség is!",
+      "17": "Piától bűzlik, a bőrcsizma szagától, és folyton a meggazdagodásról zagyvál... Ki hisz neki?",
+      "18": "A cipőtolvaj. Jobb, ha visszamegy oda, ahonnan jött!",
+      "19": "Petikém! Lehet, hogy ő a felelős az ózonlyukért, amennyit az eget bámulja.",
+      "20": "Az egyik szégyentelen hencegő, a másik gátlástalan csalód. Mindkettőt meg kell büntetni a Hold nevében!",
+      "21": "A vadlibák védett állatok. Ha valaki ellop egyet, veled gyűlik meg a baja!",
+      "22": "Még a legvidámabb kísértet is természetellenes és nem tarthat a végtelenségig az örök élete. Részesítsd mindet alapos ördögűzésben, függetlenül attól, hogy jók vagy rosszak!",
+      "23": "Az, amit a bűntársaival műveltek a farkassal állatkínzás, és példás büntetést érdemel!",
+      "24": "Jön a nyár. Beköszönt az olvasztás.",
+      "25": "A gyanúsítottat először meztelenül látták a szabad ég alatt. Később gyanús eredetű összegeket találtak a közelében.",
+      "26": "Szerencsétlen, ártatlan lény, aki nem érdemelte meg azt, amit kapott. Aki tovább játszik itt, rossz lelkiismerettel futhat neki a karácsonynak.",
+      "27": "Szeretne a karjába zárni, hogy aztán szörnyű, jeges halált halj.",
+      "28": "Tökéletes példája annak, hogy milyen jól működik, ha a szülők engedékenyek.",
+      "29": "Ha valaki ennyire cuki és ennyire szomorú, megérdemli, hogy rövid úton felaprítsák.",
+      "30": "Bármi is az eredeti neve, mindenki így emlegeti. Fanatikusan gyűlöli a szélenergiát, valószínűleg az atomiparnak dolgozik.",
+      "31": "Addig szagolgatta az olajlámpását, amíg el nem kezdett hallucinálni... Szabadítsd meg a szenvedéstől.",
+      "32": "Mióta lelépett a nyula, folyamatosan képzeleg. Ki tudja, mire képes? Le a fejével!",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
+      "34": "Olyan, mintha nem öregedne. Látjuk a ráncaidat, Péter, és a gyenge pontjaidat is!",
+      "35": "Őt könnyű lesz legyőzni. Elvégre minden buta trükknek bedől. Csak arra kell figyelned, hogy tényleg meghaljon!",
+      "36": "Bármilyen idióta indok elég neki a bulizáshoz. Állandóan ünnepel valamit. Tedd, amit tenned kell, és szoktasd le az állandó partizásról!",
+      "37": "Senki sem tudja, honnan jött, de a gyanús tettestársaival folyamatosan a magas körökbe próbál beférkőzni.",
+      "38": "Korai nyugdíj helyett vár a kolbásztöltő!",
+      "39": "Jó magasan ül a falon a nyelvtankönyvével. Mi lenne, ha valaki megpöccintené egy kicsit?",
+      "40": "Ha nem lenne ilyen felemás a szakálla és nem akarná folyton a helyes viselkedésre oktatni a fiatal lányokat, akár még meg is könyörülnél rajta.",
+      "41": "Annak, aki éjszakánként gyerekek hálószobájába lopózik be, hogy homokot szórjon a szemükbe, nincs helye a civilizált világban.",
+      "42": "...vagy valami ilyesmi. Kérdezd meg az Ördögöt, ő minden senkiházi nevét tudja.",
+      "43": "A politikusok előszeretettel használják pénzzel teletömött bőröndök átadására. Ideje visszaszorítani a korrupciót!",
+      "44": "Mindenkit azzal idegesít, hogy az igazságot mutatja. Muszáj eltűrnie ezt a civilizált világnak?",
+      "45": "Ellened nem lesz elég, ha egy téglaházban bújnak el.",
+      "46": "Agyald meg háromszor, lássuk, mit szól hozzá Matyi!",
+      "47": "A pletykák szerint a babtermesztő iparban próbálkozik. Lehet, hogy a Toronyba is követte őket?",
+      "48": "A moldáv erdőkből érkezett és menedékre lelt a toronyban. Csak éppen nem előled!",
+      "49": "Ellenőrizetlen híresztelések szerint mágikus hatalommal rendelkezik. Itt csak a brutális erő bevetésével boldogulhatsz!",
+      "50": "Minden idők második legtragikusabb szerelmi története. Már persze csak akkor, ha átszabod a sztori végét.",
+      "51": "Zseniális álruha. Reméljük, téged nem téveszt meg!",
+      "52": "Ha valaki ennyire felforgatja a társadalom egyensúlyát, valószínűleg felidegesíti a politikusokat.",
+      "53": "A mögötte levő ajtót sziklák torlaszolják el. Ki kell verned belőle a jelszót.",
+      "54": "Jobb, ha nem mondod el neki, hogy az új szerelésében kövérnek tűnik. Ráadásul az új övéről új kard fityeg.",
+      "55": "A ragasztóipar sokat fizetne azért az aranylibáért. Jobb, ha megadod a kezdőlökést!",
+      "56": "Előétel: kenyérmorzsák az erdő talajáról. Főétel: taknyos kölykök jól átsütve. Desszert: mézeskalács-variációk.",
+      "57": "A betolakodó betör, összetöri a bútorokat és ellopja az ételt. Nem érdemel könyörületet!",
+      "58": "Nem ő találta fel a Chicory betűtípust és kapott érte egy dollárt? Ebből elég. Ráadásul az utadban áll! ",
+      "59": "Aki a legyek ellen fordult, idővel a kalandozókra is veszélyt jelent. Jobb, ha idejében megállítod.",
+      "60": "Állatokkal beszélget. Azt mondja, hogy otthon rosszul bánnak vele. Szereplőválogatásokra akar járni. Legjobb lesz, ha lenyomjuk a torkán a másik cipőjét.",
+      "61": "A tévésorozat szőke csaja jobb volt. Ki akarja, hogy egy bilikék fickó teljesítse a kívánságait?",
+      "62": "Mindig az élen jár. A barátság csodás dolog! A bosszú pedig olyan, mint a szalámi: csak hidegen ínycsiklandó.",
+      "63": "Rázd fel az ágyneműt! Különben jön a párnacsata!",
+      "64": "A szivárvány tövénél ott vár egy nagy üst... hamis érme? Na, mindegy, henteljük csak fel szépen. A pénzhamisítást a törvény bünteti.",
+      "65": "A borspisztolya nevetséges játékszer a taknyodhoz képest is: a viharvert kalandozók az ellenségeik hamvait fújják ki az orrukból!",
+      "66": "Valószínűleg szimpatikus alak, de ettől még nem könyörülsz meg rajta. Azért szerencse, hogy már meg van sebesülve.",
+      "67": "Tudja, hogy billegesse a kagylóit. Sok tengerészt annyira elbűvölt, hogy egyenesen a zátonyra hajóztak.",
+      "68": "A bókok mestere biztosan megpróbálja majd kidumálni magát a szorult helyzetből. A kérdés csak az, ki fog hinni neki? ",
+      "69": "Korábban legenda volt, ma főleg olyanokkal harcol, akik pocsék filmeket készítenek róla. Ez valahol szimpatikus, de sajnos az utadban van.",
+      "70": "Ugyanolyan kiszámíthatatlan, amilyennek látszik. Kaszabold le, és csak utána kérdezz!",
+      "71": "Csodát kell tenned, hogy le szeretnéd nyűgözni...",
+      "72": "Nyilván sosem játszott még a Slenderrel... Ahogy veled sem futott még össze.",
+      "73": "Miután kivágták a varázserdőt, a nővérek beálltak az FC Bayern München kabalafigurájának, és ketchupot és majonézt reklámoznak.",
+      "74": "Jöhet egy kis répa?",
+      "75": "Ekkora nyárssal az oldalán biztos, hogy a Szent Grillt keresi. Ideje felcsapni a sütőrostra!",
+      "76": "Senki sem tud lépést tartani vele, ha a misebor vedeléséről van szó. Azért nem árt az óvatosság: lehet, hogy máshoz is ugyanígy ért.",
+      "77": "Ideje véget vetni a monarchiának.",
+      "78": "Szeretett volna sárkányölő lenni, de nem ütötte meg a szintet. Így aztán inkább a Mister Universe versenyeken próbálkozott.",
+      "79": "A dudájára táncolni vágyó rettegett fenevadaknak ez lesz a vesztük!",
+      "80": "Az oroszlánnak végre jó oka van félni! A sárga köves útról fogják felmosni őket, miután végeztél a dolgoddal!",
+      "81": "Reméljük, a félrevezető becenév ellenére tisztességes ellenfél lesz...",
+      "82": "Boldog hanukát!",
+      "83": "Több ezer méh dolgozott keményen, hogy aztán gonosz módon lenyúlja a munkájuk gyümölcsét! Ki áll bosszút a méhkirálynő nevében?",
+      "84": "Nem magyarázott valami a falu vadszamara egy zöld ogréról? Biztos jó pénzt adnak a fejéért!",
+      "85": "Ő megpróbál kényelmesen elhelyezkedni, te pedig kipróbálhatod rajta a fegyvereidet.",
+      "86": "Előléptették a vén zsugorit? Nos, minél magasabbra kapaszkodik valaki, annál nagyobbat esik. Például akkor, ha egy torony egyik ablakából hajítják ki.",
+      "87": "Ki ette meg a kajádat? Bárki is volt, ez volt az utolsó vacsorája! Kapd el!",
+      "88": "Majd azt mondjuk, meg akartuk menteni őket, csak valahogy a kereszttűzbe kerültek...",
+      "89": "Nem ők rabolták el azt a hiszékeny hercegkisasszonyt? A DNS-üket biztosan megtalálták a tetthelyen...",
+      "90": "Ráfaragott, hogy ti nem sárkányok vagytok!",
+      "91": "Mindig legyen kéznél hashajtó, és garantált a gazdagság! Azért légy óvatos: sosem lehet tudni, mi kerül a zsákba!",
+      "92": "A számlálási módszerei talán szokatlanok, de legalább tudja, hogyan kell kényelmesen heverni a borsószemeken.",
+      "93": "Valószínűleg most falta fel az egyik önjelölt sárkányölőt. Itt a soha vissza nem térő alkalom!",
+      "94": "Testvérével, Péterrel ellentétben neki volt annyi esze, hogy szabadalmaztassa az afro frizurát.",
+      "95": "Lássuk, mit szól, ha bemutatjuk neki Lángszóró Mamát? Biztos elolvad a gyönyörűségtől.",
+      "96": "A PárPlex társkereső szolgáltatás egyedülálló algoritmusának köszönhetően annyira egymásra koncentrálnak, hogy nem fognak védekezni.",
+      "97": "Minden évben kijön egy új filmfeldolgozás. A szellemeket ugyebár nem lehet megölni... Vagy mégis?",
+      "98": "Talán te ki tudsz találni valami „romantikusat”, hogy felébreszd?",
+      "99": "A sárgás-barnás trutymó teljes szépségében!",
+      "100": "Majdnem biztos, hogy bele fogsz gabalyodni a hajába."
+    }
+  },
+  "202": {
+    "name": "Bálványok Végtelen Hurokja",
+    "description": "Harcolj együtt a kísérőiddel a másik világból származó bálványok ellen!",
+    "floors": {
+      "1": "Csak egy igazi agresszív vadbarom győzheti le!",
+      "2": "Szemed előtt pereg a visszaszámláló: 3... 2... 1... ÉLŐ! Ott vagy, a stream kellős közepén... és persze a következő harc sűrűjében is.",
+      "3": "Amikor belépsz a szobába, irtózatos rikoltás fogad. A füled még cseng, de ő máris rád veti magát.",
+      "4": "A malac a vállán talán aranyosnak tűnik, de ne tévesszen meg, vagy az életed bánja.",
+      "5": "A legfegyelmezettebb és legrettegettebb mágus, a vérfagyasztó Kalapács Józsi. A két lábon járó számológép, aki azonnal átránt skibidi oldalára. Készen állsz?",
+      "6": "A kék hajú fickó fél a pókoktól, mivel azonban neked nincs nyolc lábad, elég gyengék az esélyeid. Vár a végzeted!",
+      "7": "A legújabb trendek azt mutatják, hogy az elbizakodott hősöket könnyű legyőzni ezekkel az okos trükkökkel.",
+      "8": "A vastag bőr alatt alapvetően jó szív rejtőzik. Ha hozol neki egy csomag fánkot, talán még át is enged.",
+      "9": "Megvakít tükörfényesre borotvált koponyájával, aztán elsöpör stílusos mozdulataival. Ezt a táncot nem éled túl!",
+      "10": "Közelebb lépsz a következő monitorhoz, és már el is indul a stream. Ilyen nyomás alatt is képes vagy győzni?",
+      "11": "Fiatal és elbűvölő, de ne hagyd, hogy becsapjon a külseje. Semmi sem tartja vissza. Támadás!",
+      "12": "És minden hőst köszönt a híres francia baguette-mester és Minecraft-világbajnok! Még részegen sem tekint rád fenyegetésként.",
+      "13": "Széles vigyorral fogad a szobájában. A humora és a modora mindenkit lefegyverez, de ha nem vagy résen, szörnyű vég vár rád!",
+      "14": "Gyanúsan pixeles szobában botladozol előre, amikor hirtelen megjelenik egy árnyék útmutatóval a kezében. Rég megtanulta, hogyan boldoguljon az alacsony felbontású világban, és most a csatában is tanít neked pár új dolgot.",
+      "15": "Ha úgy rémlik, hogy a múltkor más volt a hajszíne, könnyen lehet, hogy nem tévedsz.",
+      "16": "A pletykák szerint ez a szörny három lábbal született, és egy hamutartóban nőtt fel. Vedd le a zoknid, mielőtt ránézel!",
+      "17": "Ez a zebra-ember kiméra imád nevetni a saját viccein és a harci kihívásodon.",
+      "18": "A képernyőbámulásba révedt szemed nem kerülte el a figyelmét. Nagy kár, hogy pont most romlott el a szünet gomb.",
+      "19": "Az Alkalmatlanok Királya nem véletlenül lett király, szóval jobb, ha térdre borulsz!",
+      "20": "Segítség! Egy informatikus! Légy óvatos! Ha root hozzáférést szerez, bitekre szaggat. Ez az ellenfél finoman szólva is kiszámíthatatlanul nehéz.",
+      "21": "Moin moin, helló és köszöntelek alapos elverésed alkalmából! „Most pedig kikészítelek, mint a frissen nyúzott gereznát!” – üvölti diadalittasan, mert a pocsék szóvicceivel és hasonlataival úgy helyedre rak, mint egy lakberendező.",
+      "22": "Figyelmeztetés: Golyószóróként ontja a gyilkos mémeket, miközben beránt a kiszámíthatatlan káoszba. Ez a GIGACHAD a szórakozásnak él. Ne okozz neki csalódást!",
+      "23": "A tenger morajlását hallod... aztán telibe talál stratégiai szakértelmének hulláma. Miközben folyik a harc, barátságosan és türelmesen válaszol a kérdéseidre, és úgy érzed, hogy a hullámok lassan kimosnak a kazamatából.",
+      "24": "A tudása mélyebb ennél a kazamatánál, a szarkasztikus megjegyzései pedig élesebbek a fegyvered pengéjénél. Egy kérdést sem hagy válasz nélkül... kivéve azt, ami arra vonatkozik, hogyan éld túl ezt a párbajt.",
+      "25": "Ránézel a monitorra, és a legendák ősét pillantod meg, minden férfi és nő karcsú bálványát. Sajnos kicsit sem érdekli, hogy élve szeretnél távozni.",
+      "26": "Ezen a monitoron egy basszusban gazdag bulwark már Azerothon is túlterjeszkedik. Tudsz tenni valamit ellene?",
+      "27": "Kellemesen nyugodt hang üti meg a füledet, érzed, ahogy minden feszültség elhagyja a testedet. Az ezt követő ütés viszont brutálisan visszaránt a valóságba.",
+      "28": "Démoni veterán áll előtted – a hangja mennydörgésként robajlik a virtuális falak között. A vállán pókszerű, folyamatosan suttogó lény ül. Vajon a démonoknak is vannak... belső démonaik?",
+      "29": "Ez a harcos néha kikapcsolja az agyát, hogy teljesen összezavarjon. Ezt követi a legfontosabb mondat: a legyőzéséhez jól kell meglovagolnod a hullámokat!",
+      "30": "A két méter magas, a rajongók által a pozíciójába juttatott vezérigazgató tornyosul föléd. Lazán kortyol egyet a bögréjében gőzölgő életelixírből, és a pénteki kebabja után vágyakozik. Már csak te állsz közte és a kaja között... és tényleg farkaséhes."
+    }
+  },
+  "203": {
+    "name": "Forgószél",
+    "description": "Teljes a zűrzavar. Hatalmas forgószél söpör végig a vidéken, ami rajtad kívül 1000 szörnyet szippantott fel."
+  },
+  "204": {
+    "name": "Homokvihar",
+    "description": "Nem egyszerűen csak felkap a levegőbe 1000 szörnnyel együtt, de még a szemed is telefújja homokkal."
+  },
+  "300": {
     "name": "Rendíthetetlen harcosok céhe",
     "description": "Kardok és pajzsok fémjelzik ezt a büszke céhet.",
     "floors": {
@@ -697,7 +685,7 @@
       "10": "Végre a harcosok céhének vezetője elé lépsz. Ez az izmos mátriárka mindennél többre tartja a könyörtelen erőt és a rettenthetetlen harci elszántságot. Képes leszel megtörni e tábornok elsöprő fölényét? Akárhogy is, foglyokat nem ejt…"
     }
   },
-  "101": {
+  "301": {
     "name": "Tudásszomjas mágusok céhe",
     "description": "Amikor a tudás és a téboly csodát szül.",
     "floors": {
@@ -713,7 +701,7 @@
       "10": "Felkapaszkodsz az utolsó hosszú lépcsősoron, majd belépsz a céh tornyába. Egy ősi főmágus helyett egy megláncolt szabadulóművész fogad, aki fejjel lefelé bugyborékol egy víztartályban. Győzd le, mielőtt kiszabadul, vagy lopd el a kulcsát!"
     }
   },
-  "102": {
+  "302": {
     "name": "Akrobatikus felderítők céhe",
     "description": "Mintha lapulna valami a bokorban? Ó, már el is iszkolt.",
     "floors": {
@@ -729,7 +717,7 @@
       "10": "Eléred a belső udvart, amely a felderítők céhének gyakorlótereként szolgál. Egy nyílvessző süvítve fúródik a földbe közvetlenül a lábad előtt, mire azonnal pásztázni kezded a környéket. Tekinteted egy könnyed léptű tündelányon akad meg, aki egy csimpaszkodó törpét cipel a hátán."
     }
   },
-  "103": {
+  "303": {
     "name": "Eleven nekromanták céhe",
     "description": "Az egykor élő porhüvelyek hivatásos újrahasznosítói.",
     "floors": {
@@ -744,9 +732,5 @@
       "9": "A tömeges halottidézés és a világhódító tervek mellett folyamatosan próbál ortopédus sebészt keríteni, egyelőre kevés sikerrel. A csontjai ropognak, de a fő célja a tieid begyűjtése.",
       "10": "Az egyensúly fenntartójának tartja magát, miközben mindenben a halál oldalán áll. Azért ne félj, ha sikerül kicsinálnia, feléleszt: hogy sötét céljainak szolgájává tegyen."
     }
-  },
-  "104": {
-    "name": "Elfajzott kasztok átjárója",
-    "description": "Büszke, bölcs, fürge és feltámasztott? Valahogy úgy, de azért eléggé eltorzul..."
   }
 }

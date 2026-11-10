@@ -177,7 +177,9 @@
         "companion3": "Kunigunde",
         "companion1_full": "#{player}'s Bert",
         "companion2_full": "#{player}'s Mark",
-        "companion3_full": "#{player}'s Kunigunde"
+        "companion3_full": "#{player}'s Kunigunde",
+        "dungeon_shadow": "Shadow",
+        "dungeon_yourself": "Yourself"
     },
     "index": {
         "toggle": "Toggle credits",
@@ -2215,133 +2217,6 @@
             "reclaimable": "Reclaimable",
             "required": "Required",
             "invalid": "Please insert valid attribute value"
-        }
-    },
-    "dungeon_enemies": {
-        "shadow": "Shadow",
-        "1": {
-            "name": "Desecrated Catacombs"
-        },
-        "2": {
-            "name": "The Mines of Gloria"
-        },
-        "3": {
-            "name": "The Ruins of Gnark"
-        },
-        "4": {
-            "name": "The Cutthroat Grotto"
-        },
-        "5": {
-            "name": "The Emerald Scale Altar"
-        },
-        "6": {
-            "name": "The Toxic Tree"
-        },
-        "7": {
-            "name": "The Magma Stream"
-        },
-        "8": {
-            "name": "The Frost Blood Temple"
-        },
-        "9": {
-            "name": "The Pyramids of Madness",
-            "10": "Yourself"
-        },
-        "10": {
-            "name": "Black Skull Fortress"
-        },
-        "11": {
-            "name": "Circus of Terror"
-        },
-        "12": {
-            "name": "Hell"
-        },
-        "13": {
-            "name": "13th Floor"
-        },
-        "14": {
-            "name": "Easteros"
-        },
-        "16": {
-            "name": "Time-honored School of Magic"
-        },
-        "17": {
-            "name": "Hemorridor"
-        },
-        "19": {
-            "name": "Nordic Gods"
-        },
-        "20": {
-            "name": "Mount Olympus"
-        },
-        "21": {
-            "name": "Tavern of the Dark Doppelgangers"
-        },
-        "22": {
-            "name": "Dragon's Hoard"
-        },
-        "23": {
-            "name": "House of Horrors"
-        },
-        "24": {
-            "name": "The 3rd League of Superheroes"
-        },
-        "25": {
-            "name": "Dojo of Childhood Heroes"
-        },
-        "26": {
-            "name": "Monster Grotto"
-        },
-        "27": {
-            "name": "City of Intrigues"
-        },
-        "28": {
-            "name": "School of Magic Express"
-        },
-        "29": {
-            "name": "Ash Mountain"
-        },
-        "30": {
-            "name": "Playa HQ"
-        },
-        "31": {
-            "name": "Arcade of the Old Pixel Icons"
-        },
-        "32": {
-            "name": "The Server Room"
-        },
-        "33": {
-            "name": "Workshop of the Hunters of the Undead"
-        },
-        "34": {
-            "name": "Retro TV Legends"
-        },
-        "35": {
-            "name": "The Meeting Room"
-        },
-        "201": {
-            "name": "Tower"
-        },
-        "202": {
-            "name": "Continuous Loop of Idols"
-        },
-        "203": {
-            "name": "Twister"
-        },
-        "204": {
-            "name": "Sandstorm"
-        },
-        "300": {
-            "name": "Unwavering Warrior Guild"
-        },
-        "301": {
-            "name": "Inquisitive Mage Guild"
-        },
-        "302": {
-            "name": "Acrobatic Scout Guild"
-        },
-        "303": {
-            "name": "Lively Necromancer Guild"
         }
     },
     "validations": {

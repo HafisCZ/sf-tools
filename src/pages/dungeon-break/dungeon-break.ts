@@ -170,7 +170,7 @@ export function getFightKey({ dungeon, boss }: DungeonEntry) {
 function getUnlockName(id: number) {
   const name = getDungeonName(DUNGEON_DATA[id])
 
-  return id > 100 && id < TOWER ? `${globalLocalize('dungeon_enemies.shadow')} ${name}` : name
+  return id > 100 && id < TOWER ? `${globalLocalize('general.dungeon_shadow')} ${name}` : name
 }
 
 export function getUnlockText(id: number) {
