@@ -61,6 +61,40 @@ export const ANNOUNCEMENTS: Announcement[] = [
 ]
 
 export const CHANGELOG: Record<string, ChangelogRelease> = {
+  'v8.XXXX': {
+    'Build Planner': [
+      'Added new tool for planning Fortress and Underworld building upgrades'
+    ],
+    'Dungeon Break': [
+      'Added new tool that shows the progress left in your dungeons'
+    ],
+    Statistics: [
+      'Updated player detail screen with more information and charts'
+    ],
+    'Dungeon Simulator': [
+      'Added runes and estimated mushroom cost to simulation results',
+      'Added Copy as image',
+      'Updated layout'
+    ],
+    'Fight Simulator': [
+      'Added option to change win chance decimal places'
+    ],
+    'Pet Simulator': [
+      'Added Copy as image',
+      'Updated layout'
+    ],
+    'Fight Analyzer': [
+      'Added tracking oflongest Berserker chain'
+    ],
+    'All Simulators': [
+      'Added support for Blood Weaver',
+      'Added new simulator engine to massively improve simulator performance',
+      'Fixed revive while under Plague Doctor tincture'
+    ],
+    'All Tools': [
+      'Replaced Poll saved characters/guilds with Load character/guild'
+    ]
+  },
   'v8.5101': {
     Statistics: [
       'Added support for new data formats (game version 30.5)',
