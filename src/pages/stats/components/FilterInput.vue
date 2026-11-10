@@ -451,6 +451,12 @@ function insertKey(suggestion: QuerySuggestion) {
   fieldElement.value?.focus()
 
   insertSuggestion(suggestion, text, text.length, text.length)
+
+  if (suggestion.kind === 'option' && !suggestion.keepOpen) {
+    addHistory(modelValue.value)
+
+    commit(modelValue.value)
+  }
 }
 
 function insertSuggestion(suggestion: QuerySuggestion, text: string, start: number, end: number) {
