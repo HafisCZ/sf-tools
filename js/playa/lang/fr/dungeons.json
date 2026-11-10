@@ -1,0 +1,752 @@
+{
+  "1": {
+    "name": "Les catacombes profanées",
+    "description": "Les morts sont drôlement vivants.",
+    "floors": {
+      "1": "Tu viens à peine de poser le pied dans cette cave poussiéreuse qu'une première apparition fantomatique se matérialise dans la pénombre. Un fantôme effrayant essaie de te faire peur…",
+      "2": "Alors que tu nettoies ton visage des derniers restes visqueux d'ectoplasme en longeant prudemment les parois glacées de la crypte, une créature à quatre pattes s'approche lentement mais sûrement de toi. Dommage qu'il soit trop tard pour se faire vacciner contre la rage !",
+      "3": "Tu as bien compris que les personnes qu'on ensevelissait ici jadis n'étaient pas si morts qu'on voulait bien le croire. Tu as donc l'air moyennement surpris quand un adversaire dégoûtant te barre soudainement la route.",
+      "4": "Au loin, tu entends un battement d'ailes - une chauve-souris ? Non, en t'approchant, tu te rends compte que ces bruits proviennent d'une créature bien plus grande : un vampire rusé veut te faire la peau.",
+      "5": "Un hurlement effrayant fait trembler les murs des catacombes - tu commences à avoir des sueurs froides. Mais armé de ton courage, tu affrontes sans sourciller le Ghoul de nuit qui te barre le chemin.",
+      "6": "À mesure que tu avances, tu traverses des toiles d'araignées de plus en plus gigantesques et des cocons de soie de plus en plus épais. Tu finis par t'arrêter, les membres emmêlés au milieu de toiles gluantes. En t'agitant, tu attires l'attention d'une araignée géante affamée qui ne demande qu'à se délecter de ta chair.",
+      "7": "Dans l'ombre des torches vacillantes apparaît une silhouette sombre vêtue d'une robe de moine. D'abord immobile, puis tout à coup à vive allure, elle te fonce dessus, cape au vent et dague sanglante à la main. Ce moine profane n'est pas venu pour prêcher la paix.",
+      "8": "Tu entres dans un couloir haut de plafond dont les murs sont recouverts de signes mystérieux. Serait-ce de la magie mystique ? Mais avant que tu aies le temps d'en avoir le cœur net, un maître vaudou t'attaque.",
+      "9": "Des yeux rouges étincelants te fixent dans l'obscurité. De petits morceaux de pierre se détachent du plafond, révélant ainsi un trou béant. Du coin de l'œil, tu penses apercevoir la fourrure blanche d'un rat albinos. Soit il est très rapide, soit il n'est pas seul...",
+      "10": "Tu pénètres dans un vaste tombeau. Un vent cinglant manque d'éteindre les torches. Puis, tu entends un rire sombre au loin. Le Grand Maître du Mal se dresse devant toi."
+    }
+  },
+  "2": {
+    "name": "Les mines de Gloria",
+    "description": "Bonne chance ! Un dur travail t'attend.",
+    "floors": {
+      "1": "Éprouvant la désagréable sensation que quelqu'un t'observe, tu regardes frénétiquement autour de toi, repérant un lion des montagnes prêt à bondir sur sa proie. Le moment est venu d'inverser les rôles.",
+      "2": "Tout en sifflant, le cobrasalive serpente le long des impressionnants piliers d'une civilisation disparue, prêt à t'injecter son venin pour te faire halluciner de jeunes demoiselles en détresse. Malheureusement, la rêverie attendra. Au lieu de cela, tu pourrais en profiter pour perfectionner ta maîtrise des nœuds.",
+      "3": "La lumière se concentre au-dessus d'un autel en pierre. Une femme démoniaque légèrement vêtue y est allongée et t'invite à la rejoindre dans une pose lascive. Mais en guise de lune de miel, cette fiancée des enfers te saute dessus avec un couteau aiguisé.",
+      "4": "Tu ne t'attendais pas à ce que surgisse d'un côté une petite et perfide créature. Tu arrives à t'en débarrasser mais cet horrible Gremlin n'arrête pas de t'attaquer.",
+      "5": "Soudain, un tas de rochers te barre l'accès à la galerie située devant toi. S'est-elle effondrée ? Quelque chose ne va pas. Quand tout à coup, les rochers se mettent bouger et, devant toi, apparait un géant en pierre.",
+      "6": "Le son des sabots au galop résonne à travers les salles silencieuses, et tu te demandes comment un cheval a bien pu se perdre ici. Ce n'est toutefois pas un cheval, mais bien un centaure gris qui se cabre devant toi sur ses pattes arrière. Si seulement tu avais une délicieuse pomme dans ton inventaire, tu pourrais l'apprivoiser facilement.",
+      "7": "Tu entres dans une caverne gardée par un troll de pierre au regard peu commode. Il exulte à l'idée de pouvoir enfin tuer quelqu'un.",
+      "8": "Derrière toi, une grille en acier rouillé s'écrase sur le sol avant que le Taure mauvaise humeur ne te regarde brièvement. Quel soulagement ! Par chance, tu ne portes pas d'armure rouge aujourd'hui. Mais le Taure mauvaise humeur se met à faire tournoyer sa grande hache au-dessus de sa tête. Manifestement, celui-ci est daltonien.",
+      "9": "L'horrible rire que tu entends soudain derrière toi ne peut signifier qu'une chose : un monstre affreux veut se battre contre toi.",
+      "10": "La terre se met tout à coup à trembler sous tes pieds. Une lumière rouge vif inonde toute la mine d'une lueur menaçante, tandis qu'un hurlement à glacer le sang s'élève des profondeurs. L'air semble scintiller, empli de la chaleur oppressante que dégage un dragon de feu en approche. Ne le laisse pas passer !"
+    }
+  },
+  "3": {
+    "name": "Les ruines de Gnark",
+    "description": "Le repaire des sauvages...",
+    "floors": {
+      "1": "Au cœur des ruines, tout est sens dessous. Sous un épais tapis de poussière, un écosystème semble s'être développé. Un rat domestique bien gras a jeté son dévolu sur toi.",
+      "2": "Une chauve-souris poussiéreuse se jette sur toi sans se soucier de ton allergie aux acariens. Tu renifles, éternues, et sors ton arme pour te défendre contre cette créature.",
+      "3": "Tu entres dans une grande salle recouverte de toiles d'araignées. Une énorme Tarentule de Terreur pend au plafond. Quand elle t'aperçoit, elle se jette sur toi en criant.",
+      "4": "Pétrifiée au-dessus de la grande porte en fer, une statue diabolique semble regarder au loin. Alors que tu tends la main vers la poignée, tu aperçois de la poussière tomber sur ton épaule. En levant la tête, tu distingues très nettement le regard perçant de la Gargouille grise qui plonge en piqué dans ta direction.",
+      "5": "Une canaille se jette sur toi, brandissant une épée qui semble être de bonne qualité. Elle l'a sans doute volée quelque part. Elle regarde ton équipement avec envie.",
+      "6": "Apparemment, les nouveaux occupants des ruines utilisent des loups sauvages pour monter la garde. L'un d'entre eux, au regard particulièrement menaçant, t'a repéré. Il s'approche maintenant en grognant et en montrant ses dents.",
+      "7": "Tu es soudainement plongé dans un silence inquiétant. Aux aguets, tu avances à pas de loup. Tu redoutes un guet-apens. Tout à coup, tu entends des pas derrière toi : un méchant Bandit essaie de te poignarder.",
+      "8": "Bien qu'il ne semble plus rester une seule pièce d'or dans la salle du trésor, un ours brun a élu domicile dans cette salle couverte de poussière. Tu recules prudemment en le voyant dévorer le dernier visiteur de la salle du trésor, mais l'animal te surprend au moment où ton pied heurte un immense tas d'os.",
+      "9": "Un sanglier complètement hors de contrôle et débordant d'énergie fonce dans ta direction. À cet instant très précis, tu éprouves alors une étrange sensation : un enthousiasme palpable à l'idée de cette confrontation imminente.",
+      "10": "Tu as pénétré dans les appartements privés du chef des brigands. Tous les sous-fifres que tu as pu mettre hors d'état de nuire n'arrivent pas à la cheville de ce grand criminel."
+    }
+  },
+  "4": {
+    "name": "Grotte des coupeurs de gorge ",
+    "description": "Sabre courbé et affaires louches.",
+    "floors": {
+      "1": "Cachée au cœur d'un gigantesque crâne de pierre, la grotte des Coupe-Gorges n'attend plus que toi. Le comité d'accueil se résume à un Glompf d'eau qui meurt d'envie de t'arracher les membres.",
+      "2": "L'air se remplit de l'odeur de l'eau salée qui coule dans le réseau de grottes, et de temps à autre, il t'arrive de sentir l'arôme pénétrant du rhum qui est stocké ici dans de vieux fûts. Un Bandit-Lézard surgit de l'eau, t'empêchant ainsi d'atteindre la passerelle en bois.",
+      "3": "Un Brigand balaise a entendu dire que tu aurais eu une large récompense pour des actes héroïques commis autrefois. Il aimerait lui aussi pouvoir en profiter. Tu es ravi à l'idée de recevoir une autre récompense à l'issue du combat.",
+      "4": "Dans l'eau, à côté du ponton auquel est amarré un vieux navire, flotte quelque chose ressemblant à un tronc d'arbre. Mais le tronc d'arbre émerge soudainement de l'eau et tente de t'attraper - c'est un Alligator d'Ombre.",
+      "5": "Un pirate costaud essaye de t'empêcher de monter à bord - il s'agit du célèbre John Nightingale. Tu te lances courageusement dans ce combat à trois, contre lui et son perroquet.",
+      "6": "Une curieuse créature déambule partout sur ce navire. Tu ne parviens pas à l'apercevoir mais, soudainement, tu regardes dans les yeux fous d'un perfide Lapin-Monstre. Sa lame projette de dangereuses étincelles.",
+      "7": "Tu descends dans la soute parce que tu y as entendu un bruit bizarre. Quand soudain, une lame manque de peu de te trancher : un Coupe-Gorge vient d'essayer de faire honneur à son nom.",
+      "8": "Dans la soute tu aperçois derrière une caisse le pirate Nez-en-Sang, visiblement craintif. Il implore ta grâce mais tu ne veux rien entendre : tu l'attaques sans plus attendre.",
+      "9": "Soudain, un bruit terrible... « CRAC ! ». Les planches de la coque éclatent en mille morceaux. Tu comprends rapidement ce qui vient de se produire : une énorme pieuvre vient d'éperonner le bateau dans l'espoir d'y trouver son quatre heures.",
+      "10": "À peine remonté sur le pont du navire qui est maintenant en train de sombrer, tu découvres le Capitaine Pirate semi-mutant face à toi. Il t'accuse d'être le responsable et te demande si tu es bien assuré."
+    }
+  },
+  "5": {
+    "name": "L'autel sacré en écaille d'émeraude ",
+    "description": "Nous devons tous faire des sacrifices.",
+    "floors": {
+      "1": "Un Cobra à Sonnette t'indique le chemin vers le premier étage sous l'autel. Dans l'antiquité, ces serpents avaient la réputation d'être sacrés. Aujourd'hui, ils sont uniquement connus pour être extrêmement dangereux.",
+      "2": "Une créature Lézard te barre le chemin. Il s'agit d'un saurus gladius, en français : Lézard Lame-de-Rasoir. Dans l'antiquité, ces créatures devaient protéger des sites sacrés des intrus comme toi.",
+      "3": "A l'étage suivant, impossible de ne pas entendre le Raptor-Hurleur qui demande ton attention. Enervé, tu cherches tes boules Quies avant de te jeter dans le combat.",
+      "4": "Au milieu de la salle se trouve le grand baptistaire sacré, rempli d'une boue qui pue horriblement. Soudain, un Guerrier des Marais fraîchement baptisé en surgit !",
+      "5": "L'étage suivant est surveillé par un énorme Rex Vert somnolant paisiblement. Mais étourdi comme tu es, tu renverses une canette qui traînait à terre. Le monstre se réveille.",
+      "6": "Le scorpion de la jungle a quitté les buissons de la Jungle Grossomme pour les salles d'un vert scintillant de l'autel sacré en écaille d'émeraude, afin de tester son dard venimeux sur les intrus tels que toi.",
+      "7": "Le Dragon des Marais aurait dû être enchaîné et enfermé dans une cage. Mais quelqu'un a visiblement « oublié »… Plus qu'à l'affronter.",
+      "8": "L'étage suivant est entièrement recouvert de vase. Une Méduse des Marais surgit soudainement de l'eau stagnante. Avec un réflexe extraordinaire, tu t'empares de ton arme.",
+      "9": "Derrière la grande grille qui se dresse face à toi, tu crois apercevoir l'élément sacré. Mais il est sous bonne garde : le Dragon-Poison attend avec impatience de ne faire qu'une bouchée de toi.",
+      "10": "Le Roi-Lézard a peu envie que quelqu'un comme toi transforme cet autel sacré fait d'écailles d'émeraude, en un banal site touristique. Son attaque est à l'image de sa détermination."
+    }
+  },
+  "6": {
+    "name": "L'arbre malade",
+    "description": "Ses racines descendent jusque dans les profondeurs infernales.",
+    "floors": {
+      "1": "Il ne reste plus beaucoup de temps à vivre à cet arbre malade. Tu devrais tailler quelques branches avant de pouvoir entrer.",
+      "2": "L'odeur nauséabonde de la putréfaction et de la décomposition se répand inexorablement à travers le labyrinthe envahi par la végétation, à tel point que tu ne remarques que maintenant le Ghoul-marais qui te suit lentement.",
+      "3": "Dans ce monde d'arbres malades, de nombreuses variantes de mutation de cette épidémie ont cherché de nouveaux hôtes. Un loup qui s'est perdu dans cet arbre a attrapé la rage. Ses grognements ne trompent pas : il rêve de te mordre.",
+      "4": "La boue verdâtre de cet arbre constitue l'habitat idéal d'un Bavebloub Gluant. Pas étonnant qu'un tel Bavebloub t'attaque tout d'un coup avec sa bave gluante. Beurk !",
+      "5": "Evidemment, à la lueur de cette boue brillante, il était facile de ne pas voir ce Gremlin Verdâtre qui t'attaquait par derrière. Mais pourras-tu le vaincre tout aussi facilement ?",
+      "6": "De loin, tu aperçois quelque chose de poilu - un ours brun ? Comment fait-il pour venir ici ? Il semble soudainement avoir flairé ta présence... Il s'avance vers toi en hurlant. L'épidémie ne l'a évidemment pas épargné.",
+      "7": "Tu essaies tant bien que mal d'échapper aux immenses gouttes qui tombent des murs en bois. Un rire machiavélique retentit dans le couloir au moment où tu aperçois un Gnoll vert qui se roule négligemment dans l'épaisse substance visqueuse devant toi. Fais taire ce rire contagieux une bonne fois pour toutes !",
+      "8": "C'est l'endroit idéal pour faire pousser une Bouffeboue. Dommage pour toi : elle pousse précisément dans ce couloir qui t'emmène au cœur de l'arbre malade. Pas moyen de l'éviter, il va falloir l'affronter.",
+      "9": "La substance gluante et verte suinte à travers les fissures et les crevasses de l'arbre, formant de petites mares et des ruisseaux qui éclairent l'obscurité d'une étrange lueur. Avant que tu ne puisses atteindre le cœur de l'arbre, un gorille de la forêt se dresse devant toi en bombant le torse pour t'intimider.",
+      "10": "Alors que tu pensais avoir officiellement décimé la race Gremlin, une version mutée encore plus mortelle apparait : l'horrible Gremlin Mortel. Et il vient de t'apercevoir..."
+    }
+  },
+  "7": {
+    "name": "Coulée de magma",
+    "description": "Ça dépote au sous-sol.",
+    "floors": {
+      "1": "Un Scorpion à Dard-de-Feu est assis sur la roche réchauffée. Il n'a pas l'air ravi de ta visite. Il semble au contraire bien décidé à tester sur toi son poison.",
+      "2": "Arrivé à la porte aux enfers, un Basilic de Feu surgit soudainement des laves fumantes en poussant de terribles hurlements. Il sort ses griffes finement aiguisées.",
+      "3": "Tu es sur le point d'entrer aux enfers quand une créature difforme sort de la mare de lave. Un Bloubloub de Lave lance sur toi une poignée de lave brûlante. Tu pourrais t'enfuir, mais tu préfères évidemment te battre.",
+      "4": "Te voilà enfin dans la grotte qui mène au cœur de cette coulée de magma. Une petite boule de poils roule sur les pierres ardentes et rebondit devant toi en étirant ses petits membres. Le Glompf de feu s'apprête à t'arracher la tête de ses dents acérées !",
+      "5": "À chacune de tes inspirations, tes poumons se remplissent un peu plus de vapeurs de soufre jaunâtre. Des coulées de lave traversent la roche volcanique comme des veines de feu liquide, et alors que tu t'efforces de ne pas y tomber, tu entends le sifflement infernal du tigre derrière toi.",
+      "6": "Arrive d'un autre couloir un Cyclope des Enfers en traînant les pieds. Sa mission : exécuter des travaux de maintenance et de nettoyage. Ceci dit, il est également capable de tuer.",
+      "7": "Le couloir est traversé par une crevasse. Alors que tu t'apprêtes à sauter par-dessus, tu as tout juste le temps de reculer devant une flamme qui s'en échappe... C’est un Élémentaire de Feu !",
+      "8": "Ces rochers entassés dans un coin de la salle te semblaient suspects... S'agit-il d'un Géant de Lave ? Non ! Mais un autre Géant de Lave se tient dans ton dos. Bouh !",
+      "9": "Tu entres enfin dans la salle renfermant la coulée de magma. Tu es près de la source. Seulement un Dragon Géant, portant très bien son nom, te barre l'entrée.",
+      "10": "Tu as enfin réussi à atteindre la source de la coulée de magma. Tu veux enfiler tes gants de cuisine et fermer le robinet quand s'élève derrière toi, dans un grognement sourd, l'Esprit du Volcan."
+    }
+  },
+  "8": {
+    "name": "Le Temple de Sang-Givré ",
+    "description": "On a le sang qui gèle dans les veines.",
+    "floors": {
+      "1": "Ce froid glacial rend ta progression vers le Temple vraiment difficile. La silhouette d'une énorme créature poilue se dessine au loin - un Yéti te barre la route.",
+      "2": "Dans l'ombre de l'enceinte du Temple, tu as failli ne pas remarquer cette silhouette encagoulée qui te poursuit. Qui peut bien être ce fantôme noir et que te veut-il ? Tu devrais lui proposer un défi !",
+      "3": "Tu cherches toujours l'entrée du temple, grelotant de froid, quand un Dragon descend à pic sur toi. Les doigts gelés, tu parviens à saisir ton arme et engages le combat.",
+      "4": "La porte gelée du temple de sang-givré est entrouverte, ce qui te permet de t'y faufiler. À l'abri des vents violents dont tu ne perçois plus qu'un doux hurlement, tu t'émerveilles devant l'imposant hall d'entrée du temple. Mais avant d'y pénétrer, il te faudra d'abord t'occuper du lion des neiges qui s'est enfin décidé à sortir de sa cachette.",
+      "5": "Tu traverses prudemment un grand étang gelé. Sous la couche de glace qui craque de façon suspecte, tu aperçois furtivement une ombre qui passe. Deux saphirs d'un bleu métallique scintillent dans ta direction, avant qu'un alligator givré ne brise la glace sous tes pieds.",
+      "6": "Soudain, une porte s'ouvre, libérant une lumière aveuglante. Les yeux plissés, tu distingues une silhouette surmontée d'une tête énorme - un Extraterrestre !",
+      "7": "Dans cette atmosphère glaciale, le Dragon de Folie a grandi très vite. Il se dresse soudainement face à toi, te menaçant d'un regard glacial.",
+      "8": "Quelque chose bouge dans la pénombre. Une étrange créature, un monstre venu d'un monde inconnu. Un Alien de la Pénombre. Il t'a aperçu depuis longtemps. Bientôt, il se jettera sur toi…",
+      "9": "Soudain tu entends une sorte de chant de grillon - le langage secret des Globelointains. Une de ces bestioles est sûrement terrée près de toi, te visant avec son arme d'une technologie qui t'est totalement inconnue.",
+      "10": "Tu n'as pas les mots pour décrire le sentiment de terreur qui s'empare de toi. Jamais rien n'avait pu tuer de façon aussi cruelle et variée."
+    }
+  },
+  "9": {
+    "name": "La pyramide de la folie",
+    "description": "L'esprit ou la vie !",
+    "floors": {
+      "1": "Comment ? Un Cyclope des Cavernes ? Ici ? Il y a quelque chose qui ne va pas. Tu devrais le vaincre rapidement et explorer ce lieu davantage.",
+      "2": "Une tempête de sable se soulève soudainement. Quelques secondes plus tôt tout était paisible et, ziouuu, un vent venu de nulle part s'est levé ! Déconcerté, tu essayes de lutter contre le mal.",
+      "3": "Tu atteins enfin la pyramide. Au pied de celle-ci se tient un Alien visiblement étonné se grattant la tête. Mais ton apparition le débarrasse d'un doute : il t'attaque.",
+      "4": "En montant, tu croises dans l'escalier un Bigfoot qui ne cesse de ramasser et de lâcher un os comme s'il s'étonnait de sa pesanteur. Mais plus rien ne semble t'étonner…",
+      "5": "Chacun de tes pas remue la boue qui macule le sol. Mais... pourquoi y aurait-il de la boue ici ? Et pourquoi la femme devant toi a des cornes ? La nymphomane des marais veut assouvir ses passions et ses pulsions en te plantant ses griffes dans la peau avant de te projeter au sol. Attache ta ceinture, ça va secouer !",
+      "6": "Le Taure saure déteste travailler les jambes, ce qui explique pourquoi il aime détruire à ce point les escaliers. Puisque les pouvoirs mystiques de la pyramide l'en empêchent, c'est sur toi qu'il déversera toute sa rage. On se demande encore quel crétin lui a vendu des stéroïdes...",
+      "7": "Un terrible démon se jette sur toi en sautant de la pointe de la pyramide. Tandis que tu essayes de le frapper avec ta hache tu l'entends parler tout seul.",
+      "8": "Tu fais tout pour garder ton sang froid mais tu ne peux t'empêcher de penser aux Lapins roses. Un Lapin-monstre rose particulièrement méchant ne semble pas vouloir reculer devant la violence.",
+      "9": "L'ancien sage érudit essaie de reprendre son souffle pour ne pas s'étrangler de rire. On dirait que tu viens de découvrir le berceau des Gnolls. Ce n'est pas le premier Gnoll fou que tu croises, mais espérons que ce soit le dernier. À toi de lui porter le coup de grâce.",
+      "10": "À la pointe de la pyramide se trouve un miroir… Quand soudain, ton reflet sort de la glace et t'attaque. As-tu perdu la tête ? Sauras-tu t'affronter ?"
+    }
+  },
+  "10": {
+    "name": "La forteresse des crânes noirs",
+    "description": "Dans ses profondeurs se cache une boutique souvenirs.",
+    "floors": {
+      "1": "Un Chevalier Noir s'avance vers toi. Il te somme de faire demi-tour. Comme tu fais mine de ne pas vouloir exécuter ses ordres, il dégaine son épée afin de t'apprendre à obéir. Et pour te tuer ensuite.",
+      "2": "La lourde porte en fer située de l'autre côté du pont givré s'ouvre, libérant une chauve-bête qui vole frénétiquement dans ta direction. Tu te demandes si cela ne cacherait pas la légendaire Bat cave et son chevalier noir. Une chose est sûre : la chauve-bête se pose moins de questions.",
+      "3": "Alors que la porte s'effondre derrière toi, un lapin gambade jusqu'à tes pieds et te regarde de ses petits yeux ronds. Tu tends la main pour caresser son épaisse fourrure, mais son visage se crispe alors en une affreuse grimace.",
+      "4": "Un Troll de nuit de mauvaise humeur surgit d'un coin pour t'écraser le crâne avec un objet arrondi. A peine a-t'il remarqué qu'il s'apprête à recommencer.",
+      "5": "La grille devant se relève soudainement. Une bête sombre était enfermée... Maintenant libre, tu peux la distinguer. C'est une panthère, et elle semble affamée.",
+      "6": "Tu viens à peine de te dépêtrer de la dernière bête que tu as l'impression qu'on t'observe. Tu remarques alors approcher un ogre horrible. Tu viens visiblement de tuer son animal de compagnie.",
+      "7": "Que fait le Dragon gris ici ? Son nom semble faire directement référence à son âge car, atteint de démence et de cataracte, il ne fait que cracher des nuages de suie dans toutes les directions, sauf la tienne. Il est temps de mettre un terme à ses souffrances.",
+      "8": "Alors que tu prends la direction de la tour principale, un Guerrier Crâne-Noir te barre la route, bien décidé à ne pas te laisser. Cette tour doit renfermer quelque chose d'important.",
+      "9": "La tour principale est habitée par un énorme Dragon des Ténèbres. Compte-tenu de sa taille, il n'a jamais pu quitter ces murs. Ce confinement semble passablement l'agacer.",
+      "10": "En regardant par la fenêtre de la tour tu aperçois une énorme silhouette sombre qui t'attend dans la cour du château. Il s'agit du Chevalier Crâne-Noir en personne qui te provoque en dernier duel épique."
+    }
+  },
+  "11": {
+    "name": "Le cirque de l'horreur",
+    "description": "Humains, animaux, monstres !",
+    "floors": {
+      "1": "Marqué par la fatigue des aventures que tu as vécues, tu te rappelles ton enfance heureuse. Tout d'un coup, ton visage s'éclaire quand tu entends une musique au loin. Le cirque est en ville !",
+      "2": "Le clown n'était pas vraiment une partie de plaisir. Mais, quand tu t'approches de la prochaine attraction, tu es encore moins à l'aise. Un vieux garçon, armé de couteaux pointus menace de présenter son numéro plus que douteux... à l'abri, vite !",
+      "3": "Ayant échappé de justesse aux lames du lanceur de couteaux, tu as failli écraser la prochaine star du manège. Qu'est-ce qu'il est mignon ! Mais son regard agressif ne te dit rien qui vaille...",
+      "4": "Au cours de tes voyages, tu as vu beaucoup de choses étranges et effroyables. Tu es habitué à la vue de monstres repoussants et grincheux. Tu regardes le danger en face sans frémir. Mais ce spectacle te coupe le sifflet.",
+      "5": "Oh, c'est un jongleur qui présente le programme ! C'est incroyable, tout ce qu'il sait faire ! Mais la question est : en es-tu aussi capable ? Essaie donc, pour voir !",
+      "6": "Les deux types en face de toi sont très proches, depuis le jour de leur naissance qui s'avéra extrêmement compliquée. Ils ne s'apprécient pas particulièrement, mais ils ont appris à se défouler sur d'autres.",
+      "7": "Voilà le clown, qui fait aussi bien peur aux adultes qu'aux enfants ! Tout comme aux animaux, aux plantes, à la mort et au diable. Des applaudissements pour Bronko le rigolo, l'homme aux gags lourds et aux chutes brutales, bien en dessous de la ceinture.",
+      "8": "Il faut parfois s'adapter un peu pour arriver à quelque chose dans la vie. Ton prochain adversaire en sait quelque chose. Ses contorsions lui permettent de t'attaquer de quatre côtés à la fois.",
+      "9": "La boule de cristal ne ment jamais, la vieille dame bossue te l'assure. Et ton avenir n'est que mort et perdition. Tu ne peux pas échapper à ton destin. Tout ce que tu peux faire, c'est de te battre avec tous tes moyens.",
+      "10": "C'est trop drôle ! Bon d'accord, son rire est un peu diabolique et les ballons qu'il porte ont déjà été repérés plusieurs fois dans le cadre d'histoires de meurtre non résolues. Mais il n'y a sûrement pas de manière plus drôle de subir une mort atroce."
+    }
+  },
+  "12": {
+    "name": "L'enfer",
+    "description": "Ça ne peut pas être SI terrible...",
+    "floors": {
+      "1": "Tu crois donc avoir déjà vaincu la mort et le diable ? Des clous ! Mais le Beelzeboss se fera un plaisir de relever ton défi. La porte des enfers s'ouvre dans un grondement et une âme sans repos vient te souhaiter la bienvenue.",
+      "2": "Tu ne te rappelles sûrement pas de tous les adversaires que tu as expédiés dans l'au-delà au cours de tes voyages, mais eux, ils ne t'ont pas oublié. Et certains d'entre eux sont vraiment rancuniers.",
+      "3": "Sur terre, personne ne le supportait plus à force de râler et pester. Ça n'a pas changé. Par contre, la force de frappe de son chasse-mouches n'est plus la même.",
+      "4": "Que se passe-t-il quand un petit garçon insupportable est dévoré par un loup-garou ? C'est ce que tu vas découvrir.",
+      "5": "Les autres âmes perdues sont maintenant aussi au courant de ton arrivée. Elles ont hâte de te réserver l'accueil que tu mérites.",
+      "6": "Pour que l'enfer soit vraiment infernal pour ses habitants, il y a des ouvriers spécialisés. Il arrive souvent que les patrons de studios de développement de jeux soient mêmes débauchés par des chasseurs de têtes. Celui-ci a eu beaucoup de succès.",
+      "7": "Oh, qu'il est adorable ! Il mord ? Mais bien sûr !",
+      "8": "Un tas puant et répugnant se dresse devant toi. Il commence à prendre des dimensions impressionnantes, nourri par une masse d'âmes abruties et par un flot intarissable de diarrhée verbale. Pourras-tu stopper le maudit barbu ?",
+      "9": "Il a jusqu'ici aidé chaque coupable à atteindre l'injustice. Si le compte est bon, il trouve toujours un moyen. Des scrupules, une conscience, une âme même ? Amateur ! Tu veux faire valoir tes droits ? Il va falloir payer !",
+      "10": "Ah, le voilà, le Beelzeboss. La mort et le diable réincarnés. Le sombre maître des enfers. Bon... je l'imaginais plus grand que ça."
+    }
+  },
+  "13": {
+    "name": "13e étage",
+    "description": "Entre si tu l'oses !",
+    "floors": {
+      "1": "Pour te plaindre du niveau de difficulté trop faible du donjon, tu as entrepris un périlleux voyage jusqu'au 13e étage. La porte de l'ascenseur s'ouvre lentement, et dans l'obscurité, une petite bête hargneuse te saute dessus.",
+      "2": "Bien amoché par les griffes d'Hellgore, ton visage s'illumine lorsqu'une bonne fée apparaît. Elle va sûrement t'aider ! Sauf que... ce n'est pas du tout le genre de fée qui exauce les souhaits...",
+      "3": "Tu entends du bruit dans un des bureaux saccagés. Tu jettes un œil avec prudence. Ce n'est probablement rien... Mais tout à coup, Bruce le tombeur de culottes te saute dessus. Et il ne te veut pas que du bien !",
+      "4": "Lors du dernier combat, tu te sentais déjà observé. Soudain, tu te retrouves nez à nez avec le terrifiant Martel van Hellsing. Pour une raison inconnue, il est armé d'un pinceau. Un pinceau couvert de peinture rouge... ou quelque chose d'approchant...",
+      "5": "Tu décides de t'adresser au service clientèle de la communauté et atterris chez le COmaCOmmandant, qui se fait un plaisir d'enregistrer ta réclamation.",
+      "6": "Dans une pièce spacieuse, derrière un bureau massif, une silhouette suspecte compte l'argent que l'on aurait pu, voire dû, investir dans des donjons plus difficiles.",
+      "7": "Tu te noies dans une comptabilité infernale ? Il a lu attentivement tous les contrats et intériorisé tous les petits caractères. Ses prédictions exactes ne manqueront pas de te surprendre. Quiconque se présente ici sans ticket de caisse sera impitoyablement enfermé dans des cellules Excel brûlantes... pour l'éternité.",
+      "8": "Enfin, quelqu'un prend le temps de s'occuper de toi : le patron accepte de t'accorder une audience. Il te suffit de signer un petit document de rien du tout. De ton sang.",
+      "9": "Tu refuses de signer ce petit contrat de vente d'âme inoffensif. Et cela ne plaît pas à Max la massue, qui adore les âmes de joueurs.",
+      "10": "Enfin, tu trouves un interlocuteur charismatique et surtout, beaucoup plus accommodant. Oui, le niveau de difficulté sera augmenté. Il te tend le marteau... euh... la pince pour sceller le deal.",
+      "11": "Tu as réussi, tu as terminé le donjon ! Mais... qu'est-ce que c'est que ça ? Il y a une deuxième aile dans le bâtiment ?! On dirait que quelqu'un veut te faire vivre un enfer. Seras-tu à la hauteur face à Thési ?",
+      "12": "Pfiou, c'était tout juste. Tu te faufiles discrètement dans le couloir sans te faire remarquer. Tu ouvres la porte d'un bureau touuuuut doucement quand soudain, un serviteur de la mort se met à te crier dessus avec un mégaphone !",
+      "13": "Tes oreilles sifflent encore pendant que tu songes à la version Remastered du jeu. Il faudrait vraiment modifier deux ou trois trucs... Gert a hâte d'entendre tes propositions mais avant, il aimerait bien te donner quelques coups de hache !",
+      "14": "Après ce cours de musique forcé, tu découvres un parchemin légèrement brûlé. On peut y lire : « À traduire pour hier ! ». Tu te demandes ce que ça peut bien signifier quand le maître des mensonges arrive pour te faire une promesse en l'air... euh, en enfer.",
+      "15": "L'organisation est la clé de tout. Ce qui est valable pour la maison, l'école ou même le travail l'est encore plus pour les enfers. Là-bas, c'est le chaos à tous les coins de rue. Heureusement que la sœur d'Hellgore l'infernal est là pour donner un coup de main. Pour l'anecdote, ce n'est pas sa vraie sœur, juste une camarade de souffrance.",
+      "16": "Tant pis, ils n'ont qu'à s'organiser eux-mêmes. Tu entres dans la cuisine dévastée mais heureusement, elle est vide. Mais... quelqu'un prépare une pizza ? Si seulement ! Quelqu'un se cache dans le four à 200 °C ! Et avec cette pizza, mieux vaut avoir l'estomac bien accroché !",
+      "17": "Maintenant que tu as eu ta dose de pizza, tu commences à chercher des réponses. Dans les mauvais romans fantastiques, un ennemi vaincu, c'est trois adversaires qui reviennent ! Tu avances de quelques pas quand une pioche manque de te décapiter avant de finir empalée contre un mur.",
+      "18": "Un léger tapotement attire ton attention. Tu avances, tandis que le bruit se fait de plus en plus sourd. Là, tu trouves une sorte de kobold assis devant un ordinateur en flammes. Un codebold, peut-être ? Ici, de nombreuses fonctionnalités sont développées grâce à un système à 20 doigts ! Mais soudain, il t'entend et appuie sur une mauvaise touche. Tu vas le payer !",
+      "19": "Il s'est passé plein de choses, mais rien qu'on ne puisse couvrir avec un peu de peinture. Une question demeure : où trouver un bon peintre en enfer ? Comme par enchantement, un petit homme apparaît avec ses pinceaux. Non, c'est impossible. Il les tient entre ses doigts tels des griffes et se lance sur toi !",
+      "20": "Tu entres dans le dernier bureau, le boss flotte dans les airs droit devant toi ! Le Duc des damnés, l'Empereur des enfers, le Prince du purgatoire, le Maître du mal, le Commandant du chaos, l'Archidémon de l'agonie, le Comte du calvaire, le Seigneur du supplice, le Suppôt de Satan... mais ses amis l'appellent Marv."
+    }
+  },
+  "14": {
+    "name": "Easteros",
+    "description": "De derrière ce mur émane un étrange murmure…",
+    "floors": {
+      "1": "Tu arrives de l'autre côté du mur et une brute en surpoids te fonce dessus, coiffée d'une couronne de travers. Tu vas devoir la combattre avec la férocité d'un sanglier !",
+      "2": "Un guerrier te tend la main, mais sa peau est remarquablement froide. L'hiver serait-il déjà là ? Montre à cet étranger que tu peux être froid comme la glace, toi aussi !",
+      "3": "C'est qui, ce mec ? Et pourquoi il a deux femmes armées jusqu'aux dents avec lui !?",
+      "4": "Holundor !",
+      "5": "Un étranger à la crinière particulièrement fournie te fonce dessus en criant. Quelles que soient ses intentions, tire-lui les cheveux !",
+      "6": "Avec un rire dédaigneux, ton prochain adversaire s'approche en arborant une posture des plus menaçantes…",
+      "7": "Le signe étrange en forme de diamant n'augure rien de bon… Ni les deux gardes équipés d'une épaisse armure en or.",
+      "8": "Ouah, ça c'est de la balafre ! Comment es-tu censé te concentrer avec un truc pareil sur le visage de ton adversaire ? Ça enfreint pas les règles ?",
+      "9": "Tu as presque pitié de ce géant… Il doit galérer pour trouver des t-shirts à sa taille !",
+      "10": "Ton prochain adversaire est un combattant des plus honorables ! Il n'oserait jamais achever quelqu'un qui git au sol avec son arbalète, nooon…",
+      "11": "Celui-ci a l'air particulièrement « givré ». Et il vient d'où, d'abord ? As-tu laissé une ouverture dans le grand mur ?",
+      "12": "À l'approche du passage, tu tombes sur cette justicière aux cheveux de feu. Pourquoi diantre t'en veux-t-elle autant d'avoir tué ses deux compagnons ?",
+      "13": "Ton prochain ennemi se tient dans l'ombre… d'un loup géant, apparemment. Et la bête s'en prend maintenant à toi. Grand dieu !",
+      "14": "Il fait soudain beaucoup trop chaud dans la neige… Trop chaud pour une Terreur de la nuit comme toi ?",
+      "15": "Ton prochain adversaire veut un combat juste ? Et bien il va sûrement perdre ! Haha !",
+      "16": "Quoi qu'il ait à dire, les ciseaux et l'autre truc dans sa main indiquent que ce n'est sûrement pas une bonne nouvelle.",
+      "17": "Qu'il montre son vrai visage. Et qu'il cesse de débagouler ce discours bizarre.",
+      "18": "Est-ce le meurtrier ? C'est forcément le meurtrier ! Ça se voit à son regard bovin et innocent !",
+      "19": "Tu veux m'arrêter ? Ha ! Et avec lequel des Gardes de la Reine ? Ah… Euh, CE Garde… D'accord…",
+      "20": "Non, je n'ai pas peur des dragons géants. Pourquoi en aurais-je peur ? Je n'en ai jamais renc- Aaaah !"
+    }
+  },
+  "15": {
+    "name": "Tour",
+    "description": "Il était une fois, un aventurier et ses trois compagnons...",
+    "floors": {
+      "1": "Au premier niveau, vous rencontrez un homme-biscuit sympathique et plein d'arôme. Quelle est votre place dans la chaîne alimentaire ?",
+      "2": "Une pincée d'anis, un zeste d'absinthe et la potion est prête. Buvette vous offre un schnaps qui peut vous mettre K.O.... Sauf si vous frappez en premier !",
+      "3": "Le pauvre ! En fait, il recherche juste son grand amour, mais comme il est blessé... c'est le moment d'attaquer !",
+      "4": "Il n'a peut-être pas un potentiel offensif, mais tant qu'il salue joyeusement, il est dans le passage. À l'attaque !",
+      "5": "Une petite fille fleur vous sépare de votre but. Le mieux est de vous séparer d'elle !",
+      "6": "C'était donc elle qui volait les dents de lait pour des clopinettes. L'heure de la vengeance a sonné !",
+      "7": "Un rejet des castings pour mannequins. Il semble avoir encore de grandes ambitions esthétiques. À moins que vous ne l'arrêtiez maintenant !",
+      "8": "Cette pollution auditive est insupportable ! Que quelqu'un plume cette bête !",
+      "9": "Oui, on a un vœu : dégage le passage !",
+      "10": "L'histoire de son enfance semble très exagérée. Je me demande si les techniques de survie apprises dans la jungle lui seront utiles contre vous.",
+      "11": "Il n'y aura plus de chanson ! C'est si difficile à comprendre ? Allez, écrasez cette boulette !",
+      "12": "Il joue la carte amicale, mais la même main tirera les ficelles du mal en personne. C'est l'heure de lui renvoyer ses papiers sur pattes à cet imposteur !",
+      "13": "Elle est tellement hautaine ! Vous n'avez pas à supporter ce genre de comportement.",
+      "14": "Aspirant à être prince... Vous avez entendu l'histoire trop de fois pour y croire encore !",
+      "15": "Le truc au milieu de son visage montre bien qu'il prépare encore un mauvais coup.",
+      "16": "Chacun son tour, on fait un vœu, puis chacun attaque à tour de rôle !",
+      "17": "Le doux mélange d'alcool et de bottes en cuir avec en plus de grandes promesses de fortune... Qui le croirait ?",
+      "18": "Cette voleuse de chaussure. Elle devrait retourner d'où elle vient !",
+      "19": "Johnny ! Beaucoup le tiennent responsable du trou dans la couche d'ozone parce qu'il fixait tout le temps le ciel.",
+      "20": "L'un est un frimeur éhonté, l'autre un escroc sans retenue. Les deux devraient être punis sans attendre !",
+      "21": "Les oies sauvages sont des animaux protégés. Quiconque vole une oie aura affaire à vous !",
+      "22": "Même le fantôme le plus joyeux est contre nature et doit un jour disparaître. Exorcisez les fantômes, les bons comme les mauvais !",
+      "23": "Ce qu'elle et ses complices ont fait à ce loup, c'est de la cruauté envers les animaux et ça doit être puni !",
+      "24": "L'été vient. Et avec lui, le dégel.",
+      "25": "La suspecte a d'abord été vue nue à la belle étoile. Plus tard, des ressources financières d'origine douteuse ont été découvertes à côté d'elle.",
+      "26": "Une pauvre créature sans défense qui souffre injustement. Quiconque continue à jouer à partir de maintenant aura mauvaise conscience pour Noël.",
+      "27": "Elle attend impatiemment de vous serrer dans ses bras jusqu'à ce que vous succombiez d'une mort glaciale.",
+      "28": "Un merveilleux exemple de l'éducation non autoritaire.",
+      "29": "Avec un air aussi adorable et triste, on a juste envie d'abréger leurs souffrances.",
+      "30": "C'est son nom, ou presque. En tout cas, tout le monde le prononce comme ça. Opposé à l'énergie éolienne et sûrement un ardent défenseur du nucléaire.",
+      "31": "A un peu trop sniffé sa lampe à huile et souffre d'hallucinations... Abrégez ses souffrances.",
+      "32": "Depuis que son lapin s'est échappé, elle se fait des films. Qui sait de quoi elle est capable ? Qu'on lui coupe la tête !",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine !",
+      "34": "Il agit comme s'il ne vieillissait pas. On voit tes rides, Peter, et on connaît ton point faible !",
+      "35": "Elle ne devrait pas poser de problème. Après tout, elle se fait avoir par le plus simple des tours. Mais assurez-vous quand même qu'elle est morte !",
+      "36": "Aucune raison de faire la fête ? Impossible. Il y a toujours quelque chose à célébrer. Mettez un terme à ses festivités incessantes !",
+      "37": "Personne ne sait d'où elle vient exactement, mais elle arrive toujours à s'infiltrer dans les soirées mondaines avec l'aide de ses complices suspects.",
+      "38": "Tu peux trouver mieux qu'une retraite anticipée n'importe où !",
+      "39": "Haut perché sur son muret avec son livre de grammaire. Que se passerait-il si on le faisait tomber ?",
+      "40": "Si sa barbe n'était pas de travers et qu'il arrêtait de vouloir apprendre les bonnes manières aux demoiselles, on pourrait presque le trouver sympathique.",
+      "41": "Une personne se faufilant dans les chambres des enfants pour leur jeter du sable dans les yeux n'a pas sa place dans une société civilisée.",
+      "42": "... ou quelque chose comme ça. Une sorcière le saurait...",
+      "43": "Un moyen privilégié en politique pour faire passer des mallettes pleines de billets. Empêcher la corruption est une bien noble cause !",
+      "44": "Il abuse de sa liberté en montrant le reflet de la vérité. Est-ce qu'une société civile doit supporter cela ?",
+      "45": "Il va leur falloir plus qu'une maison en briques pour les protéger contre vous.",
+      "46": "Si vous lui donnez une bonne correction, elle vous donnera peut-être Hans ?",
+      "47": "Beaucoup de rumeurs ont germé sur sa plantation de haricots. Il les a peut-être suivies jusqu'en haut de la Tour ?",
+      "48": "Elle est venue de la forêt de Molwania et a trouvé refuge dans la Tour. Mais ce refuge ne fait pas le poids contre vous !",
+      "49": "Des rumeurs non vérifiées lui attribuent des pouvoirs magiques. Il faut frapper de plein fouet dans ce cas !",
+      "50": "La deuxième histoire d'amour la plus tragique. Enfin, seulement si vous refaites la fin.",
+      "51": "Un déguisement ingénieux. J'espère que vous en percerez les secrets.",
+      "52": "Mettre un tel désordre dans l'équilibre social ne peut que lui attirer les foudres des politiciens.",
+      "53": "Des rochers bloquent la porte derrière lui. Il va falloir lui faire cracher le mot de passe.",
+      "54": "Vaut mieux ne pas lui dire que ces vêtements le grossissent. Il porte une nouvelle épée à sa nouvelle ceinture.",
+      "55": "L'industrie de la colle offrirait des millions pour cette oie en or. Tu ferais bien de mettre la main à la pâte.",
+      "56": "Apéritif : des miettes de pain ramassées dans la forêt. Plat principal : des morveux braisés. Dessert : un assortiment de gâteaux.",
+      "57": "L'intrus entre par effraction, détruit les meubles et vole les provisions. Il n'y aura aucune pitié !",
+      "58": "Ce n'est pas elle qui a inventé la police de caractère « Chicory » pour un dollar ? Ça suffit maintenant. En plus, elle est dans le passage ! ",
+      "59": "Une personne qui écrase les mouches fera inévitablement de même avec les aventuriers. Vous feriez bien de mettre un terme à son petit jeu.",
+      "60": "Parle aux animaux. Prétend être maltraitée à la maison. Veut aller au casting. C'est l'heure de lui faire enfiler l'autre pantoufle.",
+      "61": "La blonde de la série télé était bien meilleure. Qui voudrait faire un vœu à un type tout bleu et grassouillet ?",
+      "62": "Toujours à la pointe. L'amitié c'est magique ! Et la vengeance est glace - ça se mange froid.",
+      "63": "Secoue tes édredons pour nous ! Autrement c'est la bataille d'oreillers !",
+      "64": "Au bout de l'arc-en-ciel, il y a un chaudron rempli de... quelques malheureuses pièces ? Euh... peu importe, on attaque quand même. Ça fera l'affaire.",
+      "65": "Son pistolet au poivre ne fait pas le poids contre ce que vous, Berserkers sniffez... les cendres de vos ennemis !",
+      "66": "Il est peut-être gentil, mais ça ne suffit pas. Il est blessé, c'est le moment !",
+      "67": "Pas de doute, elle sait comment utiliser ses coquillages. Certains ont tellement été éblouis qu'ils en ont navigué droit dans le récif.",
+      "68": "Ce charmeur abominablement mielleux essaiera de s'en sortir avec des mots gentils. Vous convaincra-t-il ? ",
+      "69": "Une ancienne légende qui dénonce essentiellement les mauvais films à son sujet. C'est compréhensible, mais malheureusement il est dans le passage.",
+      "70": "... Un type comme ça est aussi imprévisible qu'il y paraît. Tuez-le d'abord, posez les questions ensuite !",
+      "71": "Il faudra des miracles pour que des crétins comme vous l'impressionnent...",
+      "72": "Apparemment, il n'a jamais joué à Slender... Et il vous rencontre pour la première fois.",
+      "73": "Quand la forêt du conte a été abattue, les sœurs se sont reconverties en mascotte de l'équipe de foot de Munich et à la promotion du ketchup et de la mayonnaise.",
+      "74": "Envie de carottes ?",
+      "75": "Avec sa brochette géante, il doit chercher le Saint Grill. C'est l'heure de rôtir du plouc !",
+      "76": "Personne n'est à sa taille quand il s'agit de boire le vin de messe. Mais vous devez bien avoir d'autres tours dans votre sac.",
+      "77": "C'est le moment d'abolir la monarchie.",
+      "78": "Il voulait pourfendre des dragons, mais a raté l'ouverture. Il est devenu Mister Univers.",
+      "79": "Les horribles bêtes qui veulent danser au son de sa flûte... sont condamnées !",
+      "80": "Le lion a enfin une raison d'avoir peur ! Vous avez traversé le niveau de brique jaune pour le combattre !",
+      "81": "En espérant que votre préparation est à la hauteur malgré son nom trompeur...",
+      "82": "Joyeux Hanouka !",
+      "83": "Des milliers d'abeilles ont travaillé avec acharnement et cette canaille vient se servir comme ça ! Qui vengera la reine des abeilles ?",
+      "84": "L'âne du village n'a pas parlé d'un ogre vert ? Il va voir ce qu'il va prendre !",
+      "85": "Il devrait continuer à essayer de prendre ses aises pendant que vous essayez vos armes.",
+      "86": "Ce compteur de haricots a été promu ? Plus ils montent les échelons, plus longue sera la chute. Comme de la fenêtre d'une tour par exemple.",
+      "87": "Qui a mangé vos provisions ? Quelqu'un qui n'aura pas la chance de recevoir son dernier repas ! Attrapez-la !",
+      "88": "Disons que vous vouliez les sauver des griffes du loup, mais qu'ils se sont retrouvés pris entre deux feux.",
+      "89": "Ils n'avaient pas enlevé la princesse naïve ? En tout cas, leur ADN a été retrouvé derrière les sept collines...",
+      "90": "Dommage pour lui, vous n'êtes pas des dragons !",
+      "91": "Préparez les laxatifs pour une richesse maximum ! Mais attention, on ne sait jamais ce qu'il y a dans le sac !",
+      "92": "Ses méthodes pour compter ne sont pas conventionnelles, mais elle sait aligner les pois.",
+      "93": "Il vient probablement de finir les restes d'un de ses types qui se prétendent tueurs de dragons. C'est l'occasion rêvée !",
+      "94": "Contrairement à son frère Peter, il était intelligent et a breveté la coupe afro.",
+      "95": "Voyons ce qu'il dit de Maman Lance-flamme ? Il va surement fondre de bonheur.",
+      "96": "Grâce à la plateforme PairPlex et son algorithme de rencontre, ces deux-là sont trop occupés pour pouvoir se défendre !",
+      "97": "Chaque année il y a un nouveau remake. C'est tout simplement impossible de tuer le fantôme... vraiment ?",
+      "98": "Vous pouvez peut-être trouver un truc « romantique » pour la réveiller ?",
+      "99": "Le phénomène visqueux jaunâtre dans toute sa beauté !",
+      "100": "S'emmêler dans les cheveux de cette femme est inévitable."
+    }
+  },
+  "16": {
+    "name": "École de Magie ancestrale",
+    "description": "Accessible depuis le quai 9 3/4 !",
+    "floors": {
+      "1": "Quelqu'un a dû oublier ce vieux chapeau dans un casier, pour qu'il soit aussi froissé et bougon. Et maintenant, à toi d'entrer dans une case ! Quelle maison choisiras-tu ? Griffedor ? Pifsouffle ? Sertête ? Serpentôt ?",
+      "2": "Son regard est si pénétrant que tu as l'impression qu'il peut te maudire à tout moment. Heureusement, il n'a pas de pouvoirs magiques.",
+      "3": "Un chien, trois têtes, toutes plus hargneuses les unes que les autres !",
+      "4": "Il a plus de rejetons que de jambes, c'est dire !",
+      "5": "Ses actes héroïques pourraient remplir des bibliothèques. Et chacune de ses histoires est basée sur des faits (ir)réels !",
+      "6": "Lorsque le danger est imminent, il vaut mieux l'ignorer ! Mais tu ne risques pas grand-chose à le regarder dans le miroir.",
+      "7": "Qui aurait cru qu'un sac d'os volant pourrait faire autant de mal ?",
+      "8": "Voler cet œuf devrait être un jeu d'enfant.",
+      "9": "Un amour malavisé des animaux ne le conduirait JAMAIS à créer un monstre !",
+      "10": "Certains détails visuels et étymologiques laissent penser qu'il fait partie des méchants.",
+      "11": "Ce que ce professeur fait au directeur est odieux !",
+      "12": "La seule chose qui soit plus redoutable qu'un groupe de super sorciers maléfiques, ce sont trois écoliers.",
+      "13": "Son jumeau est obèse et vit avec des rennes au Pôle Nord.",
+      "14": "Ce gendre idéal ne peut être qu'un personnage bien comme il faut.",
+      "15": "Qui serait mieux placé pour enseigner la Défense contre la Magie noire ?",
+      "16": "Aujourd'hui, on ne trouve plus un donjon qui ne soit pas envahi par les zombis... pardon, les inferi.",
+      "17": "Elle adore les sortilèges impardonnables. Qui le lui reprocherait ?",
+      "18": "Note à moi-même : fuir quiconque prétend être de « sang pur ».",
+      "19": "Ne t'en fais pas, cet amour ne mord pas !",
+      "20": "Voici ce qui arrive quand un oncle te pique ton nez quand tu es petit et ne te le rend pas ! Tu n'as pas d'autre choix que de devenir l'incarnation ultime du MAL."
+    }
+  },
+  "17": {
+    "name": "Hémorridor",
+    "description": "Les forces du mal imprègnent la Montagne des Cendres du monde",
+    "floors": {
+      "1": "Qui parcourt ces étendues sinistres au cœur de la nuit ? C'est un orc sur son warg..",
+      "2": "Ne pas nourrir !",
+      "3": "Au royaume des gobelins, le roi gobelin est roi.",
+      "4": "Mon préchieux !",
+      "5": "Visiblement, il y a du réseau partout...",
+      "6": "La beauté est intérieure. Comme sa masse dans les entrailles de ses ennemis, en somme.",
+      "7": "Rapide + Sans pitié = Mort assurée !",
+      "8": "Rime avec épaules brûlées, dur comme un rocher, et brasier déchaîné !",
+      "9": "Ou Nazegules ?",
+      "10": "Baignade interdite",
+      "11": "Démon de l'horreur ? Bah, ça peut pas être si méchant que ça...",
+      "12": "Parce que les orcs ne sont pas suffisamment terribles...",
+      "13": "Mal conseillé, à moitié empoisonné.",
+      "14": "Il a rejoint le côté obscur de la force... Oups, mauvais film.",
+      "15": "Heureusement que tu n'es pas allergique aux arachides.",
+      "16": "Ils ne sont peut-être pas si morts que ça.",
+      "17": "Ah, enfin une araignée digne de ce nom.",
+      "18": "Oh, sa monture est trop chou !",
+      "19": "Dans ta face !",
+      "20": "Le secret de sa puissance doit résider dans sa gigantesque épée. Ou pas. Mais quand même."
+    }
+  },
+  "18": {
+    "name": "Boucle Continue d'Idoles",
+    "description": "Combats avec tes compagnons contre des idoles d'un autre monde.",
+    "floors": {
+      "1": "Seule une vraie brute peut le battre !",
+      "2": "Un compte à rebours défile devant tes yeux : 3... 2... 1... LIVE ! Te voilà au beau milieu de son stream... et donc au beau milieu de ton prochain combat.",
+      "3": "À peine entres-tu dans la pièce qu'un cri strident retentit ! Alors que tes oreilles sifflent encore, il en profite pour t'attaquer physiquement.",
+      "4": "Le cochon sur son épaule a l'air mignon comme ça, mais les apparences sont parfois trompeuses.",
+      "5": "Le mage le plus discipliné et le plus craint, le cauchemar de Jack the Hammerer. Un calculateur ambulant qui est prêt à t'amener dans son skibidi ! Alors, on y va ?",
+      "6": "Ce type aux cheveux bleus a peur des araignées, mais comme tu n'as pas huit pattes, il n'aura aucun mal à te faire du mal ! Prépare-toi à mourir !",
+      "7": "Si on suit la tendance actuelle, les héros prétentieux peuvent facilement être vaincus à l'aide de ces habiles subterfuges !",
+      "8": "Sous cette peau épaisse se cache un grand cœur. Il acceptera peut-être même de te laisser passer en échange de quelques donuts.",
+      "9": "Son crâne parfaitement rasé t'éblouira, tout comme ses incroyables figures de style. Tu ne survivras pas à une telle danse !",
+      "10": "À l'approche de l'écran suivant, le stream commence immédiatement. Tous les yeux sont rivés sur toi. Réussiras-tu à gagner malgré la pression ?",
+      "11": "Il est jeune, il est beau, mais ne te laisse pas berner par son charme ravageur car il ne recule devant rien. À l'attaque !",
+      "12": "Et bonjour à tous les héros de la part du célèbre maître français de la baguette et champion du monde de Minecraft ! Même saoul, il ne te voit pas comme une menace.",
+      "13": "Il t'accueille dans son salon avec un grand sourire. Son humour et sa bonne humeur sont contagieux, mais si tu baisses ta garde, c'en est fini de toi !",
+      "14": "Tu traverses une pièce ostensiblement pixellisée quand une silhouette surgit tout à coup, avec un guide à la main. Il maîtrise depuis longtemps le monde des blocs et va désormais t'enseigner une ou deux astuces de combat.",
+      "15": "Si tu penses qu'il n'avait pas la même couleur de cheveux la dernière fois, alors on peut dire que tu as l'œil.",
+      "16": "On raconte que ce monstre est né avec trois pattes et qu'il a grandi dans un cendrier. Enlève tes chaussettes avant de le regarder !",
+      "17": "Cette créature mi-homme mi-zèbre adore rire à ses propres blagues et se moquer de tes aptitudes au combat.",
+      "18": "Tes yeux carrés ne lui ont pas échappé. Dommage que le bouton Pause ne marche plus...",
+      "19": "Le Roi des incompétents n'est pas roi pour rien, alors prosterne-toi !",
+      "20": "À l'aide ! Un informaticien ! Attention : s'il a les autorisations d'administrateur, il va te fragmenter jusqu'à la moelle. C'est un adversaire NP-difficile.",
+      "21": "Moin moin, bonjour et bienvenue à ton passage à tabac. « Tu es fait comme un rat ! », s'écrie-t-il triomphalement, pour reprendre une de ses célèbres métaphores.",
+      "22": "Attention, il balance des memes comme des projectiles et t'embarque dans un chaos imprévisible. Ce GIGACHAD ne vit que pour le divertissement. Que le spectacle commence !",
+      "23": "Tu entends le doux bruit des vagues... avant que sa vague d'expertise stratégique ne se fracasse sur toi. Tandis qu'il répond patiemment à tes questions pendant la bataille, tu as l'impression que le courant t'emporte lentement hors du donjon.",
+      "24": "Son savoir est encore plus impressionnant que ce donjon, et ses sarcasmes plus aiguisés que ton épée. Il a réponse à toutes les questions... sauf si tu veux savoir comment survivre à ce duel.",
+      "25": "Aussitôt, tu aperçois le pionnier des légendes, l'idole de tous les hommes et de toutes les femmes. Et il se fiche éperdument que tu veuilles rester en vie.",
+      "26": "Ce colosse de basses s'est propagé jusqu'à l'extérieur d'Azeroth ! Parviendras-tu à y remédier ?",
+      "27": "Une voix calme et douce résonne dans ta tête, faisant disparaître toute la tension de ton corps. En revanche, le coup de feu qui suit te ramène brutalement à la réalité.",
+      "28": "Un vieux démon, dont la voix résonne comme le tonnerre à travers les murs virtuels, se dresse devant toi. Une créature ressemblant à une araignée se tient sur son épaule, chuchotant sans cesse. Est-ce que les démons aussi... ont leurs propres démons ?",
+      "29": "Ce guerrier éteint son cerveau de temps en temps pour t'embrouiller avec ses propos incohérents. C'est alors que vient la phrase la plus importante : pour le battre, il te suffit de surfer correctement sur la vague !",
+      "30": "Deux mètres sous la toise, le PDG proclamé des fans se tient magistralement devant toi. Il boit nonchalamment une gorgée de son élixir de vie fumant en pensant à son kebab du vendredi. Tu es son dernier obstacle... et il a très faim."
+    }
+  },
+  "19": {
+    "name": "Dieux nordiques",
+    "description": "Rien que de t'imaginer au cœur du Ragnarök, ça fait froid dans le Bifröst !",
+    "floors": {
+      "1": "Si tu t'en prends à sa mère, sache que tu insultes aussi ses neuf sœurs.",
+      "2": "Les messagers d'Odin n'envoient qu'une seule chose aujourd'hui : toi... dans l'au-delà.",
+      "3": "Elle t'a réservé une place bien au chaud dans les enfers.",
+      "4": "Son palais composé de 540 chambres est le plus grand jamais construit à Asgard. Malheureusement, il n'y a pas de chambre pour toi.",
+      "5": "Crémation offerte sur-le-champ pour libérer ton âme de ce corps insipide.",
+      "6": "Il est plus beau que toi, plus méchant que toi et tu ne peux rien face à son intelligence et sa ruse.",
+      "7": "Son fils et sa fille sont nés de la sueur de son aisselle gauche. Je te laisse imaginer ce qui se passera quand il toussera dans ta direction.",
+      "8": "Un animal lunatique qui pourrait enlacer le monde entier et se mordre la queue.",
+      "9": "Il vient de briser ses chaînes magiques pourtant indestructibles et te dévore littéralement des yeux.",
+      "10": "Un géant qui met le monde à feu et à sang, lance des flammes dans toutes les directions et anéantit toute forme de vie... à commencer par toi."
+    }
+  },
+  "20": {
+    "name": "Mont Olympe",
+    "description": "Atteindre le sommet pourrait ressembler à un vrai marathon.",
+    "floors": {
+      "1": "Peut-on encore appeler ça du chant ? De la torture, oui !",
+      "2": "Œil pour œil !",
+      "3": "Ce chien ne laisse pas entrer les mortels dans les enfers. Tu sais ce que ça veut dire pour toi...",
+      "4": "C'est ce qu'on appelle avoir le regard qui tue...",
+      "5": "Il te faut une nouvelle tactique pour affronter la Déesse de la stratégie.",
+      "6": "Tu connais les Travaux d'Hercule ? À toi de jouer !",
+      "7": "Tes dernières paroles : « Le Dieu de la guerre, enfin un adversaire à ma hauteur ! »",
+      "8": "Tu peux faire une croix sur votre amitié. Tu as déjà « rencontré » son amie Méduse et son fils Polyphème.",
+      "9": "Après ce combat, le Roi des morts sera aussi ton roi.",
+      "10": "Conseil : pendant une tempête, accroche-toi comme une moule à son rocher."
+    }
+  },
+  "21": {
+    "name": "Taverne des sombres sosies",
+    "description": "Les vieux amis deviennent de nouveaux ennemis",
+    "floors": {
+      "1": "Il a l'air sacrément énervé.",
+      "2": "Ils se disent déserteurs mais en fait, ils ont été renvoyés parce qu'ils n'étaient pas assez compétents. Cela dit, ils ne feront qu'une bouchée de toi !",
+      "3": "Quel honneur ! Habituellement, seuls les meilleurs peuvent voir l'arsenal caché sous le comptoir.",
+      "4": "Le jeu se déroule selon les règles secrètes des ombres. Tout ce qu'il te reste à faire, c'est mettre ta vie en jeu.",
+      "5": "Il avait le choix entre de nombreuses armes... mais il refusait catégoriquement de lâcher son marteau.",
+      "6": "Le chaudron est déjà chaud, et pour une fois, ce sera peut-être toi au menu du jour.",
+      "7": "D'un geste habile, il t'envoie dans l'au-delà et tu en paies le prix fort.",
+      "8": "Lui seul sait où la roue s'arrêtera. Ne compte pas sur la chance cette fois-ci.",
+      "9": "Jusqu'ici, il a toujours provoqué des catastrophes par accident. Maintenant, c'est volontaire.",
+      "10": "Sa taille a toujours été idéale pour lui permettre toutes sortes de coups bas."
+    }
+  },
+  "22": {
+    "name": "Magot du dragon",
+    "description": "Tu as pris ton extincteur ?",
+    "floors": {
+      "1": "Un mémorial dédié aux conséquences de la mauvaise hygiène dentaire.",
+      "2": "Certainement le dernier de son espèce !",
+      "3": "Il n'y a pas que la taille qui compte !",
+      "4": "Quel archéologue a assemblé ces os dans le mauvais ordre ? Il faut corriger cela !",
+      "5": "T'accorde un vœu, surtout si tu as le vœu de mourir.",
+      "6": "Vite, terrasse-le avant que sa mère revienne.",
+      "7": "La chance est de son côté aujourd'hui.",
+      "8": "Entrée 006 du FamilierDex : « Ce familier peut faire fondre de la cire avec son souffle ardent. Il provoque parfois des incendies. »",
+      "9": "Il regarde avec intérêt les gemmes de ton armure avant de fondre sur toi.",
+      "10": "Si tu ne te débarrasses pas d'elle maintenant, elle pourrait finir par poser problème."
+    }
+  },
+  "23": {
+    "name": "Maison des horreurs",
+    "description": "Ils ont plus peur de toi que tu n'as peur d'eux !",
+    "floors": {
+      "1": "Une interprétation moderne de l'idéal de la beauté. Si ça ne te plaît pas, alors tu mérites une bonne correction !",
+      "2": "Le vrai monstre, c'est la personne qui l'a créé. Heureusement, tu n'auras pas à l'affronter.",
+      "3": "Pour lui, tu n'es qu'une réserve de sang sur pattes.",
+      "4": "Tiens, c'est ton téléphone qui sonne ?",
+      "5": "Tout ce qu'elles veulent, c'est jouer avec toi !",
+      "6": "Il t'offre un ballon, que tu acceptes avec joie.",
+      "7": "Certes, elle veut te tuer, mais elle veut surtout t'aider à te remettre sur le droit chemin.",
+      "8": "Le fait qu'il te poursuive même en dehors de tes rêves mérite d'être puni !",
+      "9": "Malgré toi, tu vas l'aider à parfaire sa technique de découpe.",
+      "10": "Beaucoup d'aventuriers impatients ont été victimes d'elle."
+    }
+  },
+  "24": {
+    "name": "La 3e Ligue des super-héros",
+    "description": "La licence de héros officielle devrait être vérifiée de toute urgence...",
+    "floors": {
+      "1": "Élimine chacun de ses adversaires en leur infligeant 1 000 coups.",
+      "2": "Le cauchemar du vestiaire des filles. Mieux vaut qu'il se batte les yeux fermés.",
+      "3": "Toujours en route pour aller faire un tour aux toilettes, même s'il doit te passer sur le corps.",
+      "4": "Repasse les chemises de ses adversaires à n'importe quel sacrifice.",
+      "5": "Retient tous les numéros de téléphone.",
+      "6": "Peut devenir invisible, mais seulement quand personne ne regarde.",
+      "7": "Après avoir mangé un de ses bonbons douteux, tu es une proie facile pour lui.",
+      "8": "Procure le même effet que 100 tasses de café après une tasse.",
+      "9": "Il possède le plus grand des superpouvoirs, mais il ne s'en souvient pas...",
+      "10": "Souffre d'une terrible gueule de bois que seule une bonne baston peut guérir !"
+    }
+  },
+  "25": {
+    "name": "Dojo des héros de l'enfance",
+    "description": "Terre des grands yeux et des nez qui pissent le sang.",
+    "floors": {
+      "1": "Dépêche-toi de la terrasser avant qu'elle finisse de se changer !",
+      "2": "Rêve de devenir maire un jour, et n'hésitera pas à t'écraser pour y arriver.",
+      "3": "Fait partie de ces voisins particulièrement intrusifs.",
+      "4": "Il doit certainement se racheter de quelque chose...",
+      "5": "Un sérieux danger avec sa montre suisse.",
+      "6": "Malheureusement, il n'a rien sur le caillou.",
+      "7": "Ça prend du temps de devenir le meilleur.",
+      "8": "La masculinité toxique à l'état pur.",
+      "9": "Plus ses cheveux sont blonds, plus il est puissant.",
+      "10": "Connaît beaucoup de tours de cartes."
+    }
+  },
+  "26": {
+    "name": "Grotte des monstres",
+    "description": "Chaque fois que l'un d'entre eux s'échappe, c'est une ville qui s'embrase.",
+    "floors": {
+      "1": "Quel dommage que tu ne parles que le baleine. Tu devras certainement laisser parler ton arme pour toi.",
+      "2": "Tu viens d'interrompre sa lune de miel... et ne t'en fais pas : ce n'est vraiment pas la taille qui compte.",
+      "3": "Pour lui, tu ne vaux pas plus qu'une petite citadine.",
+      "4": "S'amuse à grignoter des aventuriers de temps en temps.",
+      "5": "C'est collant, c'est sucré et c'est chaud ? Essuie cette bave de ta bouche et termine cette boulette immédiatement !",
+      "6": "Fais attention à ne pas marcher sur son petit château de sable.",
+      "7": "Donne un coup de klaxon si tu penses pouvoir y arriver !",
+      "8": "Si tu t'y connais en nœuds, tu devrais pouvoir étouffer ses cris, et plutôt trois fois qu'une. Sinon, ton arme très bien fera l'affaire.",
+      "9": "Il vient de Tokyo en touriste avec de mauvaises intentions, et tu te trouves en plein milieu du circuit touristique.",
+      "10": "Pense sérieusement à détruire le monde si quelqu'un prononce encore le mot « expresso »."
+    }
+  },
+  "27": {
+    "name": "Ville des complots",
+    "description": "Si tu veux t'asseoir sur ce trône, il te suffit de trahir toute ta famille et tous tes amis."
+  },
+  "28": {
+    "name": "École de Magie express",
+    "description": "Les enfants les plus cool s'assoient toujours au fond."
+  },
+  "29": {
+    "name": "Montagne de cendres",
+    "description": "Le mal réside ici."
+  },
+  "30": {
+    "name": "QG de Playa",
+    "description": "Toujours prêts à recevoir des critiques constructives."
+  },
+  "31": {
+    "name": "Camp d'entraînement",
+    "description": "Ses équipements instables risquent à tout moment de se désagréger.",
+    "floors": {
+      "1": "L'inondation est son pire ennemi. Au moins Shakes a veillé à utiliser des cartons recyclés.",
+      "2": "Il ne devrait pas se contenter d'effrayer les corbeaux. Cela dit, il a l'air assez inerte.",
+      "3": "Il ne tient pas en place... mais au moins, il reste toujours au même endroit. Tu veux monter dessus ? Même pas en rêve !",
+      "4": "Attention aux échardes !",
+      "5": "Une bosse de plus ou de moins, ça ne changera rien.",
+      "6": "Risque fortement de s'embraser.",
+      "7": "Vrombit et tournoie dans les airs avant d'atterrir en catastrophe. Teste tes réflexes en sautant pour l'éviter.",
+      "8": "Son crâne vibre encore depuis sa dernière entorse cervicale. Il a déjà été détruit et remonté plusieurs fois, ce qui explique qu'il puisse péter un boulon.",
+      "9": "Quand sa lame de scie n'est pas assez précise, le canon entre en jeu pour tout dézinguer !",
+      "10": "Tout ce que Shakes a pu trouver a été réutilisé ici. Sa polyvalence lui permet d'être utile lors des campings et de servir de test final pour les héros débutants."
+    }
+  },
+  "32": {
+    "name": "Tempête de sable",
+    "description": "Non seulement elle te fait tourbillonner dans les airs avec 1000 monstres, mais elle t'envoie aussi de gros grains de sable dans les yeux."
+  },
+  "33": {
+    "name": "Salle des Vieilles Icônes Pixellisées",
+    "description": "Où les meilleurs scores sont bien plus importants qu'une bonne hygiène de vie.",
+    "floors": {
+      "1": "Des lumières clignotantes apparaissent sur l'écran, uniquement interrompues par le rythme d'un claquement qui s'approche de manière suspicieuse. Pour ce gros glouton, tu es bien plus qu'un simple fruit : il en veut carrément à ton âme ! Mets-le au régime, et que ça saute !",
+      "2": "Un marsupial énervé apparaît devant toi et tourbillonne sur lui-même en explosant tout sur son passage. Ce fou furieux en a assez de manger des fruits, et envisage très sérieusement d'élargir ses expériences culinaires en commençant par toi. Dommage que ton dernier checkpoint soit si loin...",
+      "3": "Clic ! Une pilleuse de tombes aux seins polygonaux pointus, encore plus aiguisés que son regard, apparaît devant toi. Elle t'examine de haut en bas comme un mystérieux artefact, furieuse que tu aies encore enfermé son majordome dans la chambre froide. Tu parles d'un flegme britannique !",
+      "4": "De gros câbles crépitent sur le sol fissuré et collant de la salle d'arcade. Une petite boule de métal roule à tes pieds... Plop ! Un guerrier intergalactique apparaît, ou plutôt... une guerrière intergalactique. Attention à sa cadence de tir !",
+      "5": "Une rangée de créatures pixellisées s'avance inexorablement vers toi depuis le plafond. Bien qu'elles soient bien plus nombreuses que toi, la 3e dimension pourrait bien être ton salut !",
+      "6": "Une boule de poils bleus hirsutes jaillit de l'un des flippers clinquants. Sa consommation excessive d'anneaux a probablement abîmé bien plus que ses dents. Dans sa folie, il s'empresse de réduire ta barre de vie à zéro.",
+      "7": "Une détonation fait trembler les murs et voler la moitié d'une borne d'arcade. Mieux vaut ne pas se trouver derrière lui quand il pond son œuf explosif. Quoi que tu fasses, il est toujours d'humeur explosive... à moins qu'il ne se fasse sauter lui aussi.",
+      "8": "Après avoir fracassé la porte rouillée derrière toi, un combattant musclé avec un bandeau rouge apparaît dans l'encadrement. Il te semble entendre \"Are you Ken\" avant qu'il ne t'envoie dans les airs... alors que tu ne t'appelles même pas Ken ! Il a beau enchaîner les combos les plus complexes, tu peux toujours t'en sortir en appuyant furieusement sur tous les boutons.",
+      "9": "Une musique 8-bit résonne faiblement dans la salle d'arcade totalement vide, tandis qu'un énorme Z jaillit du plafond, prêt à détruire toute structure parfaite avec une imprécision chirurgicale. Vite, dépêche-toi de trouver un espace approprié pour te débarrasser de cette aberration !",
+      "10": "Des cartouches et des consoles sont empilées dans un coin. Entouré de souvenirs rétro, le boss de fin sort sa manette. Il a établi tous les meilleurs scores et n'hésite pas à utiliser des codes de triche pour te mettre hors d'état de nuire. Haut, haut, bas, bas, gauche, droite, gauche, droite, B, A, start !"
+    }
+  },
+  "34": {
+    "name": "La Salle des Serveurs",
+    "description": "Un terminal plein de bips et de lumières clignotantes.",
+    "floors": {
+      "1": "Près de l'entrée de la salle des serveurs se trouve l'homme qui murmurait à l'oreille des cochons. Entouré de câbles lumineux, il grogne : « Pas de bug », tout en caressant tranquillement son animal de compagnie. Sors ton arme ! Ceci n'est pas un test !",
+      "2": "Ce roi du barbecue ne laisse jamais rien cramer, ou alors il ne fait pas exprès. Au mieux, ses tests sentent juste un peu le roussi. Rôti ou saignant, il y en aura pour tous les goûts !",
+      "3": "Tout à coup, du heavy metal résonne dans la salle des serveurs. Tu avances vers le vacarme et tu aperçois le responsable qualité vêtu d'une chemise hawaïenne qui laisse apparaître ses muscles. Tu penses pouvoir le prendre par surprise ? Erreur ! Ce contrôle qualité s'annonce particulièrement corsé !",
+      "4": "De la fumée s'échappe dans le couloir, mais pas de panique : c'est un opérateur frontend qui vient d'activer le générateur de brouillard. La salle des serveurs se transforme en scène, tandis que Simon danse habilement sur les câbles emmêlés. Son code est aussi fluide que son déhanché. Réussiras-tu à suivre la cadence ?",
+      "5": "Quand un conflit éclate sur le forum de l'enfer, DarkwingDang débarque pour tous les faire taire ! Et sans pression, car la pression, il la boit bien fraîche de préférence ! Avec ses acolytes, il fait office d'intermédiaire entre les héros et la direction de l'enfer. Toutefois, ton souhait de nettoyer le donjon ne semble pas l'intéresser outre mesure.",
+      "6": "Le prêtre démoniaque de la technologie, le dompteur des serveurs, apparaît devant toi au milieu des machines vrombissantes. Il prêche dans un langage de programmation oublié, et fait plier les flux de données selon sa volonté. Une voix résonne à l'intérieur : « Le code spaghetti te mettra à rude épreuve ! Repentez-vous ! »",
+      "7": "Les néons clignotent, et les ventilateurs tournent à plein régime pour atténuer la chaleur accablante. Tel un guerrier frontend au top de sa forme, il se dresse devant toi et montre son corps musclé. Tout à coup, la salle des serveurs s'emplit d'une aura flamboyante et Taha s'écrie : « Kaaaa-meeee-haaaa-meeee-TAHA !!! »",
+      "8": "Juste au moment où tu te demandais si l'interminable salle des serveurs allait prendre fin, un sympathique employé du frontend sort de la pénombre. Il prend une profonde inspiration, s'empare d'un keytar et se lance dans un solo qui te met K.-O. Cette jam session s'annonce diabolique !",
+      "9": "Quand les connexions se font plus lentes et que les appareils du démon conspirent contre leurs utilisateurs, Kevin arrive à la rescousse. Il te regarde brièvement, tandis que sa fille est déjà en train de te pointer du doigt d'un air moqueur. Il lui tapote fièrement la tête et procède au plus vieux des rituels : ton propre reboot.",
+      "10": "Te voilà enfin au bout de la salle des serveurs, mais dans les derniers mètres, tu trébuches sur un énorme tas de câbles. Une ombre menaçante s'abat sur toi, t'obligeant à lever les yeux. Le seigneur démoniaque du royaume de la qualité se tient devant toi, prêt à mettre tes nerfs et toutes les lignes de code à rude épreuve !"
+    }
+  },
+  "35": {
+    "name": "Atelier des Chasseurs de Revenants",
+    "description": "Les êtres ranimés sont démembrés ici par des mains expertes.",
+    "floors": {
+      "1": "Venant d'échapper aux morts-vivants, tu atterris dans un atelier. Un homme doté d'une tronçonneuse à la place de la main travaille sur un établi en riant comme un psychopathe. Attention, ça va trancher !",
+      "2": "Devant un râtelier d'armes, un homme au visage fermé fabrique des pièges tandis qu'une adolescente lit à voix haute un livre de blagues douteuses. Plus besoin d'état d'âme dans ce monde brisé, mais tu auras bien besoin d'un médecin si tu ne t'enfuis pas vite !",
+      "3": "Une femme en robe courte, créée par Umbrella, sort de derrière des barils de pétrole perforés. L'arme à la main, elle effectue un saut acrobatique dans ta direction, et tu remarques que tout ce qui t'entoure semble avancer au ralenti.",
+      "4": "Le bruit d'un manteau fouetté par le vent te fait sursauter. Quand tu te retournes, tu aperçois ton propre reflet dans ses lunettes. Le puissant vampire esquisse un sourire moqueur, brandit ses pistolets et attend que tu le divertisses. Maintenant que tu figures sur sa liste, il te faudra plus que des armes à feu pour l'arrêter.",
+      "5": "Sorti de nulle part, un carreau d'arbalète te frôle l'oreille. Dans un coin de l'atelier, le chasseur taciturne enfourche sa moto et fonce à toute allure, son arbalète braquée sur toi. Et ce ne sont pas des bavardages inutiles qui arrêteront ce survivant monosyllabique.",
+      "6": "Derrière une étagère de clés à molette, tu remarques tout à coup que des yeux d'un bleu métallique te fixent. À peine le temps de cligner des yeux qu'elle apparaît devant toi. Au moment où elle brandit son arme, tu te demandes si les tenues moulantes en cuir sont obligatoires pour la chasse. Dire que tu n'apparaîtras même pas dans un de ses flash-back...",
+      "7": "Tu entends quelqu'un qui joue du banjo. Le cowboy nostalgique de l'époque préapocalypse est adossé à la porte du garage. Règle n°42 : toujours le laisser manger à sa faim ! Tu n'es peut-être pas sa pâtisserie préférée, mais sûr que tu seras bien à son goût !",
+      "8": "Tout à coup, un liquide rouge qui sent le fer se déverse des sprinklers de l'atelier. Il vient d'une époque où les vampires n'étaient pas encore bling-bling. La seule chose qui brille ici, c'est son envie de meurtre derrière ses lunettes de soleil.",
+      "9": "Deux braqueurs suspects traînent autour du bar fabriqué à partir de pneus et de barils, en te dévisageant d'un air dédaigneux. À la base, ils voulaient juste un verre de tequila, mais maintenant que tu es là... ils vont te voler ton âme !",
+      "10": "Te voilà dans la partie rose bonbon de l'atelier. Un haut-parleur crache de la musique pop, bientôt interrompue par le vrombissement d'une tronçonneuse. La moitié d'un zombie passe devant toi, immédiatement suivi par une pom-pom girl en minijupe. Seul l'amour qu'elle porte à son petit ami reste intact !"
+    }
+  },
+  "36": {
+    "name": "Légendes de la TV",
+    "description": "Allume la télé pour découvrir un vaste programme de personnages cultes.",
+    "floors": {
+      "1": "Des lianes recouvertes de mousse pendent du cadre de la vieille télévision. Quand tu appuies sur la télécommande, la télé s'allume au son d'un rythme tropical. C'est alors qu'apparaît un détective privé hyper cool vêtu d'une chemise hawaïenne, prêt à mener l'enquête et à te coffrer pour de bon.",
+      "2": "Tu changes de chaîne et tu aperçois deux bouées sur l'eau. Non, une seconde... c'est la sauveteuse en mer qui s'entraîne à nager le dos crawlé ! S'ensuit une courte scène sur la plage où elle court vers toi au ralenti. Généralement, elle sauve des vies mais aujourd'hui, elle va t'étouffer de tout son corps.",
+      "3": "Un homme étrangement impassible avec des oreilles pointues se matérialise devant toi. Il lève un sourcil et calcule la probabilité que tu meures avec une froide précision. Mi-humain, mi-extraterrestre, ce passionné de logique connaît parfaitement la définition du mot « pitié », mais il n'en aura aucune avec toi.",
+      "4": "Tu appuies sur la télécommande, quand apparaissent à l'écran un salon élégant et un canapé sur lequel une grosse boule de poils est en train de manger un sandwich. Tu n'es pas tout à fait son genre, mais il fera quand même l'effort de te grignoter pour le dessert.",
+      "5": "Tu changes encore de chaîne. Une femme au brushing impeccable, arborant un legging moulant et un regard de braise se prélasse sur le canapé. Elle te dévisage quelques instants et s'imagine déjà à tes côtés lors de sa prochaine virée shopping.",
+      "6": "La télécommande semble complètement détraquée, et la voilà maintenant qui change de chaîne toute seule ! Deux agents spéciaux te dévisagent longuement, prêts à classer ton dossier une bonne fois pour toutes. Si tu parviens à les battre, ce sera le plus grand phénomène paranormal de leur vie !",
+      "7": "Au milieu d'énormes explosions, des pneus et des outils traversent l'écran. Un homme musclé avec une chaîne en or et une crête iroquoise sort de la fumée. Malheureusement pour toi, tu ne fais pas partie de la bonne agence ! Ta seule chance, c'est de lui échapper en avion...",
+      "8": "Un bricoleur du dimanche, qui provoque plus de chaos qu'il ne rétablit l'ordre, s'avance vers toi en hurlant « Aarrrggghhh ! ». Il casse tout sur son passage, et ce n'est pas toi qui dérogeras à la règle.",
+      "9": "Une voiture de sport noire fonce vers toi dans un crissement de pneus. Avant même que tu ne puisses réagir, sa lumière rouge te scanne de haut en bas et te considère comme une menace à éradiquer. Un bel homme est assis derrière le volant. Ensemble, ils luttent pour la justice... et contre toi !",
+      "10": "La dernière chaîne s'allume au son d'une intro héroïque, tandis qu'apparaît un homme doté de son arme ultime : un trombone. Mais attention, prends garde à ne pas le sous-estimer ! L'improvisation est sa meilleure arme. Et toi ? Tu es son prochain chef-d'œuvre."
+    }
+  },
+  "37": {
+    "name": "La Salle de Réunion",
+    "description": "Une salle où les opinions tranchées et les maux de crâne sont monnaie courante.",
+    "floors": {
+      "1": "Les éclats de voix cessent subitement lorsque tu entres dans la pièce. « Lance pour ta survie ! », crie quelqu'un à l'autre bout de la table. Le maître du jeu est assis devant des jeux de société, et s'apprête à te mettre des bâtons dans les roues !",
+      "2": "Un tourbillon créatif vient rompre le silence oppressant. Quand elle monte sur le ring de l'interface, elle fait danser les pixels comme des démons dans une fosse de concert. Chacune de ses lignes s'emboîte parfaitement comme un puissant dropkick. Tout ce qui ne correspond pas à son esthétique est impitoyablement jeté hors du donjon, alors prends garde à toi !",
+      "3": "Un sabre de pirate te transperce le dos. Armé d'une carte de la conception de jeux, il navigue sur les eaux les plus tumultueuses qui soient, et ne reculera devant aucun piège pour en révéler le trésor. Quant à toi, tu aurais bien besoin d'une refonte particulièrement douloureuse !",
+      "4": "Les planches de tendances inondent la pièce tels des parchemins maudits, au milieu desquels se trouve l'artiste en chef électrifié. Entre concepts farfelus et icônes inachevées, il dirige la démoniaque équipe artistique. Chaque coup de pinceau est soumis à son avis d'artiste. Et pour lui, tu n'apparais pas dans le bon format !",
+      "5": "Le grattement régulier d'une plume aiguisée attire ton attention. La maîtresse des mots rédige ton destin, jusqu'à ta mort pour le moins honteuse. Dans un éclat de rire tonitruant, elle remplit ton histoire d'ambiguïtés et de blagues plus tordantes les unes que les autres. Réussiras-tu à échapper à sa trame narrative pour écrire ta propre histoire ?",
+      "6": "Quand la porte s'ouvre, la responsable au visage affable se précipite sur son skateboard fumant, armée de donuts qu'elle agite juste sous ton nez ! Dans un sourire, elle montre le calendrier et s'exclame : « C'est l'heure de la mise à jour ! » Tu hésites entre fuir ou rester pour manger des donuts.",
+      "7": "Elle fait régner l'ordre grâce à ses griffes d'acier. Derrière son teint de pêche se cache une discipline de fer, et ceux qui sèment le chaos sur son serveur se heurteront à des structures claires et à une parfaite cohérence. Véritable cauchemar des trolls, elle te bannira également dans les abysses en murmurant : « Bonne chance, petit héros ! »",
+      "8": "Dans les coulisses enflammées de l'enfer, un démon travaille en silence, ne s'exprimant qu'en sombres langages de code. Cet adepte du backend échappe encore pour le moment aux bips incessants de la salle des serveurs, ce qui va lui permettre de corriger ce vilain bug qui se trouve juste devant lui !",
+      "9": "Cela fait des jours qu'elle laisse briller les touches de son clavier. Entourée de montagnes de boissons énergisantes vides, elle se bat contre un code tenace et le besoin vital de dormir, qu'elle considère comme secondaire. Tout en continuant de taper au clavier, elle t'observe longuement et te sourit : « J'en veux encore... encore de la caféine !» Elle sent l'odeur de la caféine dans ton sang !",
+      "10": "Mariam conçoit des campagnes pour l'enfer et règne sur le royaume du marketing, obligeant même les meilleurs guerriers à se convertir. Sur sa tête, toutefois, se trouve la véritable reine de ce bureau démoniaque : Jules. Tu ferais mieux de t'incliner... ou d'aller chercher sa balle de tennis préférée !"
+    }
+  },
+  "100": {
+    "name": "Guilde des guerriers inébranlables",
+    "description": "Épées et boucliers définissent cette fière guilde.",
+    "floors": {
+      "1": "Le fort de pierre qui se dresse devant toi, robuste et inébranlable, laisse s'abattre sa porte massive dans un fracas retentissant. Alors que la poussière retombe, tu aperçois un viking à l'allure décontractée qui dégaine ses armes avec un large sourire.",
+      "2": "En pénétrant dans la cour, tu lèves les yeux au ciel et aperçois un objet bleu qui fonce droit sur toi. Tu sautes en arrière juste à temps, alors qu'un chevalier en équilibre sur une pelle s'écrase devant toi. Il se fera un plaisir de creuser ta tombe, mais il veut d'abord t'offrir un sacré mal de crâne.",
+      "3": "Pin-pon, pin-pon, voilà la police des mages ! Un gardien de la paix magique surgit de nulle part, accompagné par le hurlement d'une sirène d'alarme. Ton crime ? Intrusion dans la Guilde des guerriers inébranlables ! Rends-toi à la police, ton ennemi et futur geôlier !",
+      "4": "En descendant les escaliers, tes doigts effleurent la paroi glaciale. Un bruit d'épées qui s'entrechoquent résonne en écho. Dans cette pénombre humide et moisie se cache une tortue mutante, dont l'obsession pour les pizzas la pousse à vouloir t'achever.",
+      "5": "Poussant un hurlement à te glacer le sang, ce guerrier écossais lève son épée et son bouclier en t'apercevant. Sa jupette légère flotte joyeusement autour de ses mollets nus et poilus. Pas question de le priver de cette liberté, ni d'aucune autre !",
+      "6": "Une fois en bas des escaliers, tu atteins le donjon réaménagé, au milieu duquel trône un ring de combat délimité par des cordes. Un samouraï s'y tient, tranchant d'un air blasé divers fruits avec son katana. Il te fait signe d'approcher et saisit son sabre à deux mains. Prépare-toi pour la salade de fruits !",
+      "7": "Un vacarme retentit derrière toi, s'approchant à toute allure depuis la voûte de l'escalier. Un petit chef tout rond s'arrête devant toi et te colle silencieusement son insigne sous le nez. Ton crime ? Flagrant délit de vol de part de pizza !",
+      "8": "Face à toi se dresse – non, sautille – un chevalier noir sans bras ni jambes. Tu ne doutes pas longtemps de sa détermination à te provoquer, car il saute sur place en essayant de te cracher dans l'œil. S'il ne veut pas s'écarter en sautillant, il va apprendre à voler !",
+      "9": "En route vers le QG de la guilde, tu t'arrêtes net devant un tas d'hommes. En escaladant ce monticule, tu te rends compte qu'ils s'appellent tous Bill. Une fois au sommet, tu fais la connaissance d'un ange vengeur très motivé qui, malgré ton nom, décide de faire une exception !",
+      "10": "Tu te tiens enfin face à la cheffe de la Guilde des guerriers. Cette matriarche tout en muscles place une force impitoyable et une détermination farouche au combat au-dessus de tout. Réussiras-tu à tenir tête à la domination écrasante de cette générale ? En tout cas, elle ne fait pas de quartier..."
+    }
+  },
+  "101": {
+    "name": "Guilde des mages curieux",
+    "description": "Quand la sagesse et la folie accomplissent des miracles.",
+    "floors": {
+      "1": "Derrière la porte qui s'ouvre à la volée, un séduisant mage est en train de s'enfiler une botte avec délectation. Avant même que tu ne puisses lui demander dans quel genre de club fétichiste tu as atterri, il commence à marmonner un sort d'attaque la bouche pleine. Voilà qu'il veut aussi te faire la peau !",
+      "2": "Soudain, le tapis s'enroule sous tes pieds et te saucissonne dans ses plis poussiéreux et pleins de miettes. Une jeune sorcière se dresse devant toi. Sa marionnette-chat ronchonne que ce n'était pas la bonne formule magique pour battre le tapis. Un geste de la main, et un batteur à tapis fonce déjà sur toi !",
+      "3": "En passant, tu entends des pleurs amers. Alors que tu tends l'oreille près d'une porte entrouverte, tu distingues une voix féminine partager tout son traumatisme lié à la perte. Mal à l'aise, tu t'apprêtes à passer ton chemin en vitesse, mais un gant arcanique t'attrape par le col. C'est l'heure de la thérapie de groupe !",
+      "4": "D'épaisses volutes de fumée s'échappent de la pièce suivante. Une petite créature encapuchonnée en sort en flottant d'un air chancelant, puis te parle d'une voix traînante d'une magie ancestrale de la planète Terre appelée \"herbe\". Pensant que tu en as sur toi, elle commence à réciter une formule magique en rimes.",
+      "5": "Suivant le son d'une chanson pop où l'artiste réclame un héros à grands cris, tu te retrouves dans une grande salle. Inutile de lui demander un autre morceau : elle préfère te promettre une mort tragique et se fera un plaisir d'ensorceler ta fin, histoire de gâcher ton \"ils vécurent heureux et eurent beaucoup d'enfants\" !",
+      "6": "Après avoir erré un bon moment dans des couloirs apparemment infinis, tu remarques un mage assis sur un coffre sur pattes qui te dévisage. Il connaît sans doute le chemin, mais il préfère prendre les jambes de son bagage à son cou et déguerpir sans demander son reste. Vite, cours après lui !",
+      "7": "Le parfum sucré du lilas et de la groseille à maquereau te caresse le nez. Tu clignes des yeux et te voilà soudain dans une chambre raffinée. Au centre de la pièce se dresse une licorne empaillée, chevauchée par une magicienne aussi puissante que séduisante. Auras-tu assez d'endurance pour cette chevauchée ?",
+      "8": "La porte suivante résiste d'abord, mais tu parviens à l'ouvrir et une avalanche de lampes à huile dorées dégringole à tes pieds. Au milieu de cette pile de lampes, un sorcier d'Orient de pacotille les frotte comme un possédé. Ne regarde pas son sceptre-cobra dans les yeux, sinon il te tiendra sous sa coupe !",
+      "9": "Une fois dans la bibliothèque, tu esquives des balais et des livres volants, les yeux écarquillés devant ce joyeux bazar. Soudain, tout se fige dans la glace et une immense pleine lune se lève au cœur de ce temple du savoir magique désormais plongé dans l'obscurité. La sorcière-poupée secoue tous les as de ses manches rien que pour toi !",
+      "10": "Tu gravis le dernier long escalier et pénètres dans la tour de la guilde. Au lieu d'un vieux magicien, c'est un prestidigitateur enchaîné qui barbote la tête en bas dans un réservoir d'eau qui t'accueille. Bats-le avant qu'il ne se libère, ou prends-lui la clé !"
+    }
+  },
+  "102": {
+    "name": "Guilde des éclaireurs acrobatiques",
+    "description": "Tiens, y a anguille sous buisson ? Oh, et hop, déjà esquivé d'un bond !",
+    "floors": {
+      "1": "À l'orée d'une forêt, les tours de la guilde bâtie par les elfes s'élèvent vers le ciel. À l'ouverture de la porte finement sculptée, un lézard de ferraille te projette au sol. La cavalière rousse ne se laisse dicter sa conduite par personne, et encore moins les avis sur son maquillage ou son duvet !",
+      "2": "Tu as l'impression d'avoir perdu du poids... attends, où est passé tout ton or ? Une troupe d'hommes, des vrais de vrais, qui dansent en collants serrés, chantent leur intention de distribuer tes économies. La seule aumône dont ils devraient se soucier, ce sont des pantalons amples !",
+      "3": "À pleine vitesse dans un couloir vide, tu te fais soudainement flasher. Une fois que tu as cessé de voir des étoiles, tu découvres un mage qui te dévisage. Pourras-tu l'empêcher de t'infliger un point de pénalité au registre de Flembourg ?",
+      "4": "Un mage qui bouffe des chaussures, et maintenant te voilà face à une célèbre archère qui bécote une tête de pierre. Chaque guilde de classe a ses propres originaux. Peut-être s'est-elle juste trompée de visage de pierre ? Une chose est sûre, la cible de sa flèche, c'est toi.",
+      "5": "Tu pénètres ensuite dans une serre d'arbres démesurés et de plantes luminescentes. Sur une branche, une grande silhouette bleue semble vouloir \"se connecter\" d'une manière un peu trop littérale. Malheureusement, elle perd le fil et t'associe immédiatement à l'erreur de connexion qui s'ensuit.",
+      "6": "En montant l'escalier en bois finement travaillé, un gobelin paniqué attire ton attention. Il est encoché sur un arc et l'archer responsable estime qu'il doit se débrouiller pour te laisser une petite chance de victoire.",
+      "7": "Sur le prochain palier, un mage te barre la route. Il aurait volontiers fermé les yeux sur ton vacarme et les membres de la guilde vaincus si tu avais apporté une chaise pliante confortable.",
+      "8": "Suspendu au-dessus de toi à son amie ailée caquetante, un héros s'attelle à une quête secondaire de la plus haute importance. Il a l'air d'un calme olympien et communique uniquement par une série de \"Hyah !\". Si tu touches à sa cocotte, c'est la dégringolade pour vous deux !",
+      "9": "Des flèches fusent de partout ! Tu les évites de justesse, mais leur explosion fait voler en éclats le long escalier sous tes pieds. L'archer n'a peut-être pas de super pouvoirs, mais on peut dire que ses tirs font un carton... explosif !",
+      "10": "Tu pénètres dans la cour, le terrain d'entraînement de la Guilde des éclaireurs. Une flèche siffle et atterrit pile devant tes pieds, t'obligeant à scruter les environs. Ton regard est immédiatement attiré par une elfe gracieuse qui transporte un nain sur son dos."
+    }
+  },
+  "103": {
+    "name": "Guilde animée des nécromanciens",
+    "description": "Recycleurs professionnels d'enveloppes autrefois vivantes.",
+    "floors": {
+      "1": "Condamné à la vie éternelle, il possède des papillons à la place de ses organes, ce qui lui donne une légère sensation de picotement dans son corps en décomposition. Il ne pense que du bien de toi.",
+      "2": "Maître des secrets, seigneur des complots, et incapable de retrouver sa main perdue. Ces nécromanciens ont vraiment du mal à garder leurs organes ou leurs membres intacts, mais il n'hésitera pas à te démembrer quand même !",
+      "3": "Guette les retardataires négligents pour les plonger dans le désespoir. Qu'il s'agisse de montures, de balais volants ou de tes fesses garées en double file, l'amende est désormais le cadet de tes soucis !",
+      "4": "Prêche l'amour, l'esprit de sacrifice et le travail forcé volontaire, que ce soit pour nettoyer les matières fécales, cuisiner ou travailler dans les champs. En guise de récompense, tout le monde a le droit de succomber au péché. Ça ne te dit rien ? Ne t'en fais pas, il a un rituel pour toi... mais d'abord, il doit te convertir à son culte !",
+      "5": "Pour lui, les funérailles sont de simples événements de réseautage, mais il ne rechigne pas à faire quelques visites à domicile également. Aurais-tu un peu de temps pour parler de son seigneur et sauveur, le Dieu de la mort ?",
+      "6": "Victime de la mode, elle condamne les mortels qui ne portent pas de vêtements de créateurs. Elle te regarde de haut en bas pour évaluer tes mensurations... pour ton cercueil, bien sûr !",
+      "7": "Quelqu'un t'a envoyé une surprise bien sucrée. De manière provocante, ce policier maculé de glaçage ondule des hanches en se déshabillant sur une musique érotique. Il n'y a pas que sa baguette magique qui brûle d'envie de faire jaillir sa magie, alors renvoie cette livraison à l'expéditeur !",
+      "8": "Il est sur un gros coup. Avec sa voix angélique et le niveau sonore d'un vendeur de poissons, il te hurle l'un de ses monologues narcissiques.",
+      "9": "Entre nécromancie de masse et rêve de conquête du monde, il est constamment à la recherche du chirurgien orthopédiste le plus proche, en vain jusqu'à présent. Avant de faire craquer ses os, il va lever la main sur toi !",
+      "10": "Il se considère comme le gardien de l'équilibre, mais malheureusement, il fait plutôt pencher la balance en faveur de la mort. Ne t'en fais pas, après la mort, il te ressuscitera pour servir ses propres fins."
+    }
+  },
+  "104": {
+    "name": "Portail de classe des aberrations",
+    "description": "Fiers, sages, agiles et ressuscités ? C'est un peu ça, mais aussi carrément corrompus..."
+  }
+}

@@ -1,0 +1,752 @@
+{
+  "1": {
+    "name": "Znesvěcené katakomby",
+    "description": "Ti mrtví jsou překvapivě živí.",
+    "floors": {
+      "1": "Ihned po vkročení do zaprášeného sklepení, už se v temném koutě zhmotňuje něco strašidelného. Hrůzné strašidlo se ti snaží nahnat strach.",
+      "2": "Z obličeje si stíráš poslední zbytky slizovité ektoplazmy. Opatrně pohmatem hledáš cestu podél chladné stěny, když vtom se k tobě pomalu ale jistě začne přibližovat vrčící čtyřnohý přítel. Teď už je na očkování proti vzteklině pozdě.",
+      "3": "Hned tě napadlo, že kdo tu zemře, asi tak úplně mrtvý není. Takže tě ani moc nepřekvapilo, že se ti do cesty postavil jeden nemrtvý.",
+      "4": "V dálce slyšíš nějaké třepotání – že by netopýr? Jak se to ale přibližuje, je ti jasné, že ten zvuk musí vydávat něco daleko většího. Ano, skutečně – jde na tebe lstivý vampír.",
+      "5": "Katakombami otřásá hrůzný zvuk a po zádech ti běhá mráz. Sbíráš zbytky kuráže a jdeš čelit nočnímu ghúlovi, který ti zastoupil cestu.",
+      "6": "S každým tvým krokem se zahušťují okolní pavučiny a potkáváš tlusté hedvábné kokony. Nakonec tě zastavilo, že máš končetiny zcela zamotané do lepivých sítí. Tvé záškuby přivolaly hladového obřího pavouka na dlouho očekávanou hostinu.",
+      "7": "Ve stínu mihotajících se pochodní se objevila temná postava oděná v mnišské róbě. Nejprve nehybná, pak se náhle pohotovým tempem vyřítila s vlajícím kabátem proti tobě, v ruce zakrvavenou dýku. Tenhle bezbožný mnich se teď hodlá věnovat něčemu jinému než modlení.",
+      "8": "Vstupuješ do vysokého průchodu, jehož stěny jsou posety záhadnými hieroglyfy – že by pohanské čáry? Když v tom v dálce zahlédneš pár červeně zářících očí, které patří mistrovi voodoo.",
+      "9": "Z temnoty na tebe zahlíží blyštivé rudé oči. Ze stropu nad tebou se drolí úlomky kamene a odhalují zející díru. Máš pocit, že jsi v koutku oka zahlédl bílý kožich krysy albína. Buď je zatracené rychlá, nebo není sama...",
+      "10": "Vstupuješ do obrovské krypty. Do obličeje ti narazil mrazivý závan, který téměř uhasil pochodeň. Následuje zlověstný, temný smích. Přímo před tebou stojí sám velmistr zla."
+    }
+  },
+  "2": {
+    "name": "Doly slávy",
+    "description": "Fárání zdar! Tvrdá práce čeká nás.",
+    "floors": {
+      "1": "Sžírá tě pocit, že tě někdo pozoruje – zoufale se rozhlížíš a zahlédneš horského lva, jak se krčí a připravuje zaútočit na svoji kořist. Je načase prohodit role lovce o oběti.",
+      "2": "Plivkobra se se syčením plazí po impozantních sloupech zapomenuté civilizace a je připravená do tebe vpravit svůj jed, po kterém budeš mít halucinace o bezradných dámách v nesnázích. Nicméně snění za bílého dne budeš muset odložit. Radši by sis na ní mohl natrénovat své dovednosti vázání uzlů.",
+      "3": "Světlo se zaměřuje na kamenný oltář. Opírá se o něj spoře oděná démonická žena a naznačuje ti, aby ses neostýchal přiblížit. Pekelná nevěsta chce asi rovnou přejít k líbánkám, ale najednou si všimneš něčeho ostrého. Přiskočila k tobě s nožem.",
+      "4": "Jak tak jdeš, najednou na tebe ze strany skočí něco malého a začne to do tebe kousat. Podaří se ti to setřást, a jen zpozoruješ, že jde o hrozného gremlina, už se chystá k dalšímu útoku.",
+      "5": "Vypadá to jako slepá ulička – chodba se tu zdá být zasypaná. Něco tu ale nehraje. Kameny se najednou začnou pohybovat a před tebou se tyčí kamenný obr.",
+      "6": "Tichými sály se nese zvuk kopyt a tobě nejde do hlavy, jak se tady mohl zaběhnout kůň. Místo toho se ale před tebou vzpíná na zadních šedý kentaur. Škoda, že v batohu zrovna nemáš jablíčko, abys ho mohl nenásilně zkrotit.",
+      "7": "Kavernu, do které jsi právě vstoupil(a), střeží temně se dívající kamenný trol. Evidentně má velkou radost z toho, že už konečně bude moci zase někoho zabít.",
+      "8": "Za tebou zapadne rezavá ocelová mříž a zkoumavě se na tebe zahledí strašnobýk. Vydechneš úlevou. Dneska na sobě naštěstí nemáš rudou zbroj! Strašnobýk kolem sebe začne mávat obří sekerou. Asi bude barvoslepý. ",
+      "9": "Šílený smích, který se náhle ozve za tvými zády, může značit jen jediné: Odstrašující démon tě vybízí k boji.",
+      "10": "Půda se ti najednou začíná otřásat pod nohama. Celý důl osvítí planoucí zlověstná rudá záře a z hlubin stoupá řev, z něhož tuhne krev v žilách. Vzduch se tetelí, jak jej zaplňuje dusné horko linoucí se z blížícího se hořícího ohňokláda. Nesmí projít!"
+    }
+  },
+  "3": {
+    "name": "Trosky Gnarku",
+    "description": "Tam, kde se potloukají grázlové...",
+    "floors": {
+      "1": "Ruiny působí zevnitř dost zanedbaně. Všude samý hmyz a vysavač to tu už pěknou dobu nevidělo. Vyběhla na tebe tlustá, škaredá krysa.",
+      "2": "Klidně si do tebe narazil prachopýr a je mu, zdá se, úplně jedno, že máš alergii na prach. Smrkajíc a pšíkajíc tasíš svou zbraň a chystáš se z té potvůrky nadělat fašírku.",
+      "3": "Vstupuješ do velkého sálu, který je kompletně posetý pavučinami. Od stropu visí obrovská chlupatá hrůzná tarantule. Jakmile tě spatří, vymrští se tvým směrem.",
+      "4": "Nad velkými železnými dveřmi sedí k smrti vyděšená ďábelská socha a hledí do dáli. Jak sáhneš po petlici, na rameno ti spadne hromádka prachu. Zakloníš hlavu a setkáš se se zářivýma očima šedého gargoyla, který na tebe upřeně hledí a vrhá se dolů.",
+      "5": "Zaútočil na tebe lstivý holomek. Drahocenný meč, který svírá, musel někde ukrást. Chamtivě si prohlíží tvoji výzbroj.",
+      "6": "Squatteři z místní ruiny očividně používají divoké vlky jako hlídací psy. Jeden zvlášť strašlivý kousek tě vyčenichal a blíží se s vrčením a prskáním k tobě.",
+      "7": "Najednou se všude rozhostilo podezřelé ticho. V očekávání dalšího útoku zezadu se opatrně rozhlížíš. Taky že ano, zlý bandita jde na tebe zpoza týla nožem.",
+      "8": "I když v pokladnicích už asi nezbývá jediný peníz, zabydlel se v téhle zaprášené místnosti medvěd brtník. Pochutnává si na posledním návštěvníkovi pokladnice a jak ustupuješ, něco ti zapraská pod nohama a to chlupaté monstrum si tě všimne.",
+      "9": "Nekontrolovatelně a s nespoutanou silou se na tebe nezadržitelně řítí divočák. V tu chvíli se to v tobě všechno podivně točí. Tvůj kručící žaludek se na nevyhnutelnou konfrontaci evidentně těší.",
+      "10": "Vnikl(a) jsi do soukromé komnaty vůdce loupežníků. Všichni, které jsi doposud odmetal(a) jako drobky, působí proti tomuto superkriminálníkovi jako rozverní školáci."
+    }
+  },
+  "4": {
+    "name": "Sluj hrdlořezů",
+    "description": "Boj se zločinem právě začal.",
+    "floors": {
+      "1": "Ukrytá v obří kamenné lebce na tebe čeká Sluj hrdlořezů. Uvítací výbor sestává z vodního glompfa, který už se těší, až okusí tvé končetiny.",
+      "2": "Vzduch je prosycený vůní slané vody proudící do jeskynního komplexu a každou chvíli ucítíš pronikavou vůni rumu, který je tu uložený ve starých sudech. Z vody vyskočil banditosaurus a zablokoval ti přístup k dřevěné stezce.",
+      "3": "Surový lupič si rychle domyslel, že hrdina jako vy musí být štědře odměňován, a už si brousí zuby na tučný lup. Potěšení je na obou stranách...",
+      "4": "Vedle mola, ke kterému je přidělaná loďka, plave ve vodě kmen stromu. Nebo tak ta věc alespoň vypadá. Nejednou se ale ten kmen vymrští a chňapne po tobě – Stínokodýl!",
+      "5": "Přístup k lodi se ti pokouší zatarasit statný pirát – sám proslulý Pepa Slavík. Neohroženě se pouštíš do boje s ním a jeho papouškem.",
+      "6": "Po palubě se prohání podivná stvůra. Když se ti ji konečně podaří trochu prohlédnout, zjistíš, že zíráš do očí zlovolnému hrůzokrálíkovi. Jeho kudla vypadá pěkně nabroušeně.",
+      "7": "Vydáváš se do podpalubí, odkud se ozývají podivné zvuky. Jen o vlásek tě minulo ostří meče – hrdlořez chtěl evidentně dostát svému jménu...",
+      "8": "V nákladním prostoru zahlédneš za jednou z beden přikrčeného zbabělého piráta Krvavého Nosa. Snažně sice prosí o slitování, ale jeho lstivá finta nikoho neobměkčila a okamžitě se strhává bitka.",
+      "9": "Najednou se ozvala rána a několik prken trupu lodi se prolomilo. Do lodi se valí slaná voda, když v tom najednou zahlédneš, gigantickou chobotnici, která loď prorazila v očekávání chutné přesnídávky.",
+      "10": "Sotva se ti podařilo vyšplhat se na palubu potápějící se lodi, zastoupil ti cestu napůl zmutovaný vůdce pirátů. Dává ti celou škodu za vinu a požaduje číslo tvého povinného ručení."
+    }
+  },
+  "5": {
+    "name": "Oltář smaragdové šupiny",
+    "description": "Život si žádá oběti...",
+    "floors": {
+      "1": "Chrastivý zvuk kobry tě zavádí až do katakomb pod oltářem. Takovéto hady považovaly dávné kultury za posvátné. V současnosti jsou považovány pouze za extrémně nebezpečné.",
+      "2": "Cestu ti přehradila zelená ještěrka. Jedná se o Saurus gladius, česky řezosaurus. Ti měli v dávných dobách za úkol chránit svatá místa před lidmi, jako jsi ty.",
+      "3": "Nedá se přeslechnout, že se v druhém patře dožaduje tvé pozornosti řvoucí raptor. Jako první rozladěně saháš po špuntech do uší, až potom po zbrani.",
+      "4": "Uprostřed místnosti se nachází velká posvátná křtitelnice, naplněná odporně páchnoucím bahnem, ze které najednou vyskočil čerstvě pokřtěný bažinný válečník.",
+      "5": "Další patro stráží obří zelený rex, který se zrovna oddává pokojnému spánku. Nešikovně se ti ale omylem podaří převrhnout stojící vázu, což obludu samozřejmě probudí.",
+      "6": "Z porostu Hustodžungle se do zářivých sálů Oltáře smaragdových šupin proplazil štír z džungle, aby otestoval své jedovaté bodnutí na vetřelcích, jako jsi ty.",
+      "7": "Bažinný drak by měl být uvázaný někde v kleci. Někomu to ale evidentně nedošlo, takže teď máš příležitost stát se krotitelem draků.",
+      "8": "Další patro je celé zatopené bahnitou vodou. Ze špinavé stoky se náhle vynořila vřískající gorgona. Automaticky jsi odvrátil(a) zrak a tasil(a) svou zbraň.",
+      "9": "Před velkými zamřížovanými dveřmi, za kterými jistě již musí být korunovační sál, čeká jedovatý drak, který už toužebně očekává tvou bolestivou smrt.",
+      "10": "Králosaurus nemá zrovna dvakrát radost z toho, že mu někdo jeho oltář smaragdové šupiny předělává z hrůzostrašného místa na neškodnou turistickou atrakci. Odpovídajícím způsobem proto také útočí."
+    }
+  },
+  "6": {
+    "name": "Nemocný strom",
+    "description": "Jeho kořeny sahají do pekelných hloubek.",
+    "floors": {
+      "1": "Nákaza, která strom postihla, proměnila vchod ve smrtelnou past. Než budeš moci vejít, bude potřeba osekat pár větví.",
+      "2": "Přerostlým labyrintem se pronikavě line omračující puch hniloby a rozkladu, takže si až teď všímáš, že tě už nějakou dobu pokradmu sleduje bažinný ghúl.",
+      "3": "V pokřiveném okolí stromu si našla celá řada zmutovaných variant nákazy nové hostitele. Vlk, který se ke stromu zatoulal, má teď vzteklinu a evidentně by si rád kousl.",
+      "4": "Zelenkavé bláto ze stromu je evidentně ideálním útočištěm pro blátohruda. Není tudíž divu, že po tobě jeden takový začal vrhat bláto. A ou!",
+      "5": "Zezadu útočícího zelenkavého gremlina by člověk v záři svítícího bláta samozřejmě snadno přehlédl. Jestlipak půjde stejně snadno odrovnat?",
+      "6": "V dálce se mihlo něco chlupatého – že by medvěd brtník? Jak ten se sem dostal? Náhle tě zavětřil a s řevem se po tobě sápe. Ani on samozřejmě nedokázal odolat nákaze.",
+      "7": "Ze stěn padají na podlahu obrovské kapky a ty máš co dělat, aby tě nezavalily. Z chodby se line ozvěna šíleného smíchu a ty spatříš zeleného gnolla, jak se k tobě bezstarostně valí tím hustým slizem. Utni jeho smích, než tě nakazí!",
+      "8": "Bažorost roste v tomto nehostinném prostředí hezky bujně. Bohužel ale roste přímo přes cestu vedoucí do srdce nemocného stromu. Obejít nikudy nejde.",
+      "9": "Z puklin a prasklin ve stromu se bez ustání hrne zelený sliz, který vytváří jezírka a malé pramínky, které osvětlují temnotu svojí nepřirozenou září. Než se ti podaří dostat do srdce stromu, začne se před tebou srdnatě prsit lesní gorila.",
+      "10": "Zrovna jsi přemýšlel(a) nad tím, že se gremlinové asi brzy dostanou do červené knihy ohrožených druhů, když v tom jsi zahlédl(a) jeden smrtící zmutovaný druh: krutého jedugremlina. A už o tobě také ví..."
+    }
+  },
+  "7": {
+    "name": "Lávový proud",
+    "description": "Začíná tu být horko.",
+    "floors": {
+      "1": "Na vyhřáté skalce odpočívá ohnivý štír, kterého tvá návštěva ani pramálo nepotěšila. Vypadá to, že mu nic nemůže zabránit v tom, aby si na tobě nevyzkoušel svůj žhavý, smrtící nervový jed.",
+      "2": "Jakmile se přiblížíš ke vstupu do podsvětí, vyřítí se z oblak dýmu nad lávovými jezírky náhle s hlasitým křikem ohnivý bazilišek. Střemhlavým letem na tebe vyrazil se svými drápy, ostrými jako břitva.",
+      "3": "Zrovna ses chystal(a) vstoupit do podsvětí, když v tom se něco vynořilo z lávového jezírka. Lávohrud po tobě mrská zářící sliz. Dalo by se utéci, ale boj je boj.",
+      "4": "Konečně ses dostal do jeskyně vedoucí do roztaveného jádra magmatického proudu. Přes žhnoucí kameny se k tobě kutálí malá chlupatá koule. Přímo před tebou se zarazí a natáhne své drobné končetiny. Špičaté zuby ohnivého glompfa by rády obemkly tvoji hlavu z obou stran najednou!",
+      "5": "S každým nádechem se ti plíce víc a víc plní žlutavými sirnými výpary. Lávové proudy se valí kamennými žilami tekutého ohně a zatímco se soustředíš, abys nešlápl do bublajícího proudu, zaslechneš za svými zády pekelné zasyčení tygra.",
+      "6": "Z jedné chodby se tvým směrem belhá pekelný kyklop, který má v podsvětí na starosti úklidové práce a údržbu. Zabíjení mu ale taky jde celkem dobře.",
+      "7": "Těsně uskakuješ před plameny, které se vyvalily z trhliny v podlaze skalní chodby, kterou jsi zrovna chtěl(a) překročit, když v tom se před tebou zjeví ohnivý elementál!",
+      "8": "Celkem nedůvěřivě si prohlížíš opodál ležící hromadu lávových kamenů. Nebude to lávový obr? Ne! Ten teď stojí přímo za tebou. Ohó!",
+      "9": "Konečně vstupuješ do míst, kudy proudí láva. Místo, odkud vytéká, musí být blízko. Cestu ti ale zastoupil obří drak, který svými gigantickými proporcemi rozhodně dostává svému jménu.",
+      "10": "Konečně jsi u ústí lávového proudu. Zrovna když sis chtěl(a) nasadit chňapu, abys mohl(a) otočit kohoutkem a lávu tak zastavit, ozvalo se za tebou temné dunění gigantického vulkanického ducha."
+    }
+  },
+  "8": {
+    "name": "Chrám zamrzlé krve",
+    "description": "Člověku tuhne krev v žilách.",
+    "floors": {
+      "1": "Jak v třeskuté zimě šplháš zamrzlou pěšinkou do chrámu, zahlédneš v dálce obrysy obrovského huňatého tvora – už tak nesnadnou cestu ti zastoupil yetti.",
+      "2": "Všiml(a) sis, že tě ze šera chrámových zdí nenápadně pozoruje někdo v kápi. Co je tento černý fantom zač a co po tobě chce? To volá po vhození rukavice!",
+      "3": "Drkotaje zuby stále hledáš cestu do chrámu, když v tom se na tebe vrhl obrovský drak. Prokřehlými prsty saháš po zbrani a připravuješ se k boji.",
+      "4": "Ledová brána Chrámu zamrzlé krve je pootevřená, takže se můžeš protáhnout dovnitř. Jsi chráněný před silnými větry, které se teď proměnily jen v jasně slyšitelnou meluzínu a v úžasu zíráš na impozantní vstupní halu chrámu. Abys mohl jít dál, musíš se nejprve vypořádat se sněžným lvem, který ve stínu konečně zavětřil svoji šanci.",
+      "5": "Opatrně obcházíš velký zamrzlý bazén. Jestlipak se tu v minulosti pořádaly mejdany? Pod podezřele praskající vrstvou ledu jsi zahlédl rychlý pohyb stínu. Zamrkal na tebe pár ledově modrých safírů, načež přímo pod tvýma nohama prorazil led Mrazokodýl.",
+      "6": "Náhle se otevírají dveře, ze kterých září jasné světlo. Přivíráš oslepené oči a rozpoznáváš stinnou postavu s velkou hlavou – mimozemec!",
+      "7": "Místní chladné podnebí dodalo šupinám draka šílenství nádherný lesk. Stejně tak se mu v očích leskne útočnost, když se na tebe vrhá.",
+      "8": "V šeru se něco pohnulo. Obluda, monstrum z jiného světa. Pološerý mimozemšťan. Počítáš, že citování pasáží z ETho tenhle problém asi nevyřeší...",
+      "9": "Náhle zaslechneš crvkotavý zvuk – tajnou řeč jinosvětáků! Někde tu ti mimozemšťané musí být a určitě už tě mají na mušce svých vyspělých zbraní.",
+      "10": "Hrůza, která tě prostoupí při pohledu na ten zabijácký stroj, je nepopsatelná. Dosud nebylo vynalezeno nic, co by dokázalo zabíjet tolika krutými způsoby."
+    }
+  },
+  "9": {
+    "name": "Pyramida šílenství",
+    "description": "Přijdeš nejen o rozum, ale taky o život!",
+    "floors": {
+      "1": "Co to, že by jeskynní kyklop? Tady venku? Tady něco nehraje. Rychle se s ním vypořádej a pokračujte v průzkumu.",
+      "2": "Z ničeho nic se v noci zvedá písečná bouře. Napřed klid, že by pírko k zemi přímou čarou spadlo, a teď – podívejme se na to. Nějak se s tím nečasem budeš muset popasovat.",
+      "3": "Konečně přicházíš k pyramidě. U její paty líně stojí popletený pekelný mimozemšťan a škrábe se na hlavě. Jakmile tě zahlédl, zpozorněl a zaútočil.",
+      "4": "Během stoupání na pyramidu narazíš na yettiho, který stále dokola zvedá kost a zase ji nechává spadnout k zemi, jako by se podivoval nad silou gravitace. Tebe naopak nepřekvapuje vůbec nic.",
+      "5": "S každým krokem ti pod nohama začvachtá bláto. Počkat... kde se tu ale vzalo bláto? A proč má ta ženská před tebou rohy? Bažinná nymfomanka prahne po nové úrovni vášně – chce do tebe hluboko zarazit své drápy, než s tebou třískne o zem. Radši si natáhni kšandy!",
+      "6": "Nasrobýk nesnáší posilování nohou, takže by nejradši rozmašíroval každičký schod toho schodiště. Tomu však brání mystická síla, kterou je pyramida obestřená, takže si svůj nespoutaný hněv vybije na tobě. Kterej tydýt mu prodal ty steroidy?",
+      "7": "Z vrcholu pyramidy se na tebe vrhl demoralizující démon. Zatímco do tebe buší sekerou, slyšíš, jak si pro sebe něco mumlá.",
+      "8": "Snažíš si udržet jasnou mysl, ale hlavou se ti neustále honí myšlenky na růžové králíčky. V případě jednoho zvlášť zlomyslného růžového hrůzokrálíčka se dokonce zdá, že se nezastaví ani před fyzickým násilím.",
+      "9": "Kdysi moudrý učenec se divoce dusí vlastním řehotem. Asi jsi objevil rodiště gnollů. Není to první gnoll, na kterého jsi natrefil, ale snad bude poslední. Tady pomůže jen rána z milosti.",
+      "10": "Na samotném vrcholu pyramidy stojí – zrcadlo. Kde se vzalo, tu se vzalo – zrcadlení – a už na tebe útočí. Tak to už je opravdu na hlavu postavené. Zvládneš porazit sebe sama?"
+    }
+  },
+  "10": {
+    "name": "Pevnost Černých lebek",
+    "description": "Hluboko uvnitř se nachází stánek se suvenýry.",
+    "floors": {
+      "1": "Cestu ti zastoupil temný jezdec a požaduje, aby ses vrátil(a). Tvé neuposlechnutí se jal pokárat svým mečem. Jako adekvátní trest se mu jeví tvá smrt.",
+      "2": "Na konci mrazivého mostu se zvedla těžká železná brána a v ústrety se ti horečně řítí Pekelopýr. Říkáš si, jestli se za bránou nemůže ukrývat tajný vchod do legendární netopýří jeskyně a temný rytíř. Netopýrovi se evidentně podařilo tě echolokalizovat.",
+      "3": "Za zády ti zapadla brána. K nohám ti neohroženě přihopkal zajíček a mrká na tebe svýma korálkovýma očkama. Chceš podrbat jeho načechraný kožíšek, ale jakmile ke králíčkovi příšeráčkovi natáhneš ruku, jeho obličej se zkřiví v příšernou grimasu. ",
+      "4": "Z temného rohu se vyvalil rozladěný noční trol, který se tě pokusil tupým předmětem přetáhnout přes hlavu. První ránu naštěstí minul. Už se ale napřahuje k další.",
+      "5": "Náhle se před tebou zvedne mříž. Nebezpečný tvor, který za ní byl chycený, je najednou volný. Z temného stínu, který tě delší dobu sledoval, se vyklubal hladový panter.",
+      "6": "Bestii se ti tak tak podařilo zneškodnit, ale jakoby tě někdo pozoroval. Nebo něco. Zpozorujete strašlivého lidožrouta, jemuž jsi právě zabil(a) domácího mazlíčka.",
+      "7": "Co tady dělá ten Šedý drak? Jeho jméno patrně odráží jeho stáří, protože kvůli svému šedému zákalu a pokročilé demenci fluše oblaka sazí na všechny strany, jen ne na tebe. Ušetři ho toho trápení.",
+      "8": "Cestou na hlavní věž se ti do cesty postavil válečník Černé lebky, který je odhodlaný tvému dalšímu postupu za každou cenu zabránit. Asi tam bude něco důležitého.",
+      "9": "Hlavní věž obývá velikánský drak temnot. Ten vzhledem ke své velikosti místnost ve věži vlastně nikdy nemohl opustit, což mu na dobré náladě moc nepřidává.",
+      "10": "Při pohledu z okna ve věži vidíš, že na tebe na hradním nádvoří čeká jakási veliká, temná postava. Je to sám rytíř Černé lebky, který tě vyzývá k poslednímu, epickému duelu."
+    }
+  },
+  "11": {
+    "name": "Cirkus hrůzy",
+    "description": "Lidé, zvířata, obludy...",
+    "floors": {
+      "1": "Těžce poznamenán(a) útrapami protrpěného dobrodružství vzpomínáš na své bezstarostné dětství. Najednou se tvá tvář rozjasní a z dálky se ozývá veselá hudba. Do města přijel cirkus!",
+      "2": "Klaun ani náhodou nepředváděl směšná čísla. Přesto se u další atrakce cítíš ještě hůř. Maník vyzbrojený ostrými noži vyhrožuje, že předvede svoje pochybné umění – kryj se!",
+      "3": "Jen taktak jsi unikl(a) břitům tohoto vrhače nožů a málem jsi při tom šlápl(a) na následující hvězdu manéže. Ten je ale kouzelný! Přesto se ti tenhle útočný pohled vůbec nelíbí...",
+      "4": "Na svých cestách jsi viděl(a) spoustu podivných, děsivých věcí. Jsi zvyklý(-á) vídat odporná hrozivá monstra. Nebezpečí se běžně díváš poklidně do očí. Při tomto pohledu se ti ale tají dech.",
+      "5": "Á, programem provází žonglér! Jen se podívej, co ten všechno dokáže! Otázka je: Dokážeš to taky? Na! Zkuste si to!",
+      "6": "Ti dva chlapi, kteří proti tobě teď stojí, žijí od svého značně komplikovaného narození stále pohromadě. Nijak zvlášť dobře spolu tihle bratři nevychází, ale naučili se vylévat si svou agresi na ostatních.",
+      "7": "Teď přichází klaun, který děsí nejenom děti, ale i dospělé! A také zvířata, rostliny, smrt a ďábla. Potlesk pro šprýmaře Bronka, člověka s údernými gagy a nejbrutálnějšími pointami, hluboko pod úrovní pasu.",
+      "8": "Někdy se člověk musí trochu ohnout, aby se v životě pohnul dopředu. To dotáhl tvůj další protivník k dokonalosti. Díky bizarnímu natočení svého těla je na tebe schopen zaútočit ze čtyř stran současně.",
+      "9": "Křišťálová koule nikdy nelže, v tom má stará hrbatá dáma jasno. A pro tebe budoucnost přichystala pouze smrt. Svému osudu neunikneš. Můžeš se s ním tak akorát co nejurputněji poprat.",
+      "10": "Ten vypadá ale srandovně! Pravda, jeho smích působí taky trochu ďábelsky a ty balónky, které drží, už byly mnohokrát spatřeny ve spojitosti s nevyjasněnými vraždami. Sotva se ale najde komičtější způsob bolestivé smrti."
+    }
+  },
+  "12": {
+    "name": "Peklo",
+    "description": "Zdráhám se věřit, že to může být TAK hrozné...",
+    "floors": {
+      "1": "Takže věříš, že už je všem hrůzám konec? Jo, houby! Belzeboss rád přijme tvou výzvu. S tlumeným rachotem se otevírá brána do podsvětí a vystupuje neklidná duše, aby tě přivítala.",
+      "2": "Pravděpodobně si nevzpomínáš na každého jednotlivého nepřítele, kterému jsi na svých cestách pomohl(a) na Onen svět. Ale oni si všichni pamatují na tebe. A mnozí z nich jsou na tebe pořád ještě strašlivě nahněvaní.",
+      "3": "Na tomto světě je koneckonců všem kvůli svému neustálému reptání a nadávání na obtíž. Na tom se nic nezměnilo. Na průbojnosti jeho plácačky na mouchy ovšem ano.",
+      "4": "Co se vlastně stane, když otravného malého kluka sežere vlkodlak? To se hned dozvíš.",
+      "5": "Teď zavětřily i ostatní ztracené duše váš příchod. Těžko lze očekávat, že ti přichystají náležité přijetí.",
+      "6": "Aby bylo peklo pro své obyvatele skutečně pekelné, jsou v něm specialisti. Šéfy herních vývojářských studií často verbují specializovaní náboráři vedoucích pracovníků. Tenhle byl obzvlášť úspěšný.",
+      "7": "Jé, ten je sladký! Kouše? – Ale ovšem!",
+      "8": "Před tebou se kupí odporně páchnoucí hromada. Roste do znepokojivé velikosti, živena hloupou masou duší a nekonečným proudem slovního průjmu. Dokážeš zadržet zhoubného vousatce?",
+      "9": "Každému viníkovi ještě dopomohl k jeho křivdě. Když pokladna cinká, vždycky najde nějaký způsob. Skrupule, svědomí, dokonce duše? Neprofesionální! Chceš svoji pravdu? Musíš zaplatit!",
+      "10": "Tady je, Belzeboss. Smrt a ďábel v jedné osobě. Temný pán podsvětí. No... představoval jsem si ho většího."
+    }
+  },
+  "13": {
+    "name": "13. patro",
+    "description": "Vstup, pokud si troufáš!",
+    "floors": {
+      "1": "Aby sis postěžoval(a) na nízkou úroveň obtížnosti podzemí, podnikl(a) jsi nebezpečnou cestu do 13. patra. Dveře výtahu se pomalu otevírají, z temnoty na tebe vyskakuje malá, ošklivá stvůra.",
+      "2": "Po zásahu od drápů Hellgora se tvoje tvář viditelně rozjasní, když se objeví dobrá víla. Určitě jde na pomoc! Ale moment – to přece není ten druh víl, co plní přání…",
+      "3": "Je slyšet nějaký zvuk z jedné ze zdevastovaných kanceláří. Opatrně se rozhlížíš… určitě to nic není… ale najednou na tebe vyskočí Tryskáč Panty Raider. Chce se ti dostat na kůži – minimálně!",
+      "4": "Už při poslední bitvě bylo zřejmé, že tě celou dobu někdo sleduje. Najednou se objeví obávaný Klacek van Hellsing, který je z nějakého důvodu ozbrojený štětcem. S červenou barvou. Nebo něčím, co tak vypadá.",
+      "5": "Rozhodla ses obrátit se se svou stížností na komunitní podporu a skončil(a) jsi u KOma KOmandéra, který se tvé záležitosti rád osobně ujme.",
+      "6": "Ve velkolepé kanceláři za mohutným stolem sedí temná postava přepočítávající peníze, které by se daly investovat do obtížnějších podzemí. Teda spíš měly. Musí!",
+      "7": "Ztraceni v pekelném účetnictví? Přečetl si každou smlouvu a vštípil si každé drobné písmo. Jeho přesné předpovědi tebou otřesou. Každý, kdo se tu objeví bez poukazu, bude nemilosrdně zavřen do hořících excelových buněk... na věčné časy.",
+      "8": "Konečně si na tebe někdo najde čas! Generální ředitel je ochoten tě osobně vyslechnout. Stačí podepsat tenhle malý dokument. Krví.",
+      "9": "Odmítl(a) jsi podepsat neškodnou standardní smlouvu o prodeji duše. To ti má za zlé hlavně jedna osoba: Motu s obuškem miluje duše hráčů.",
+      "10": "Konečně jsi narazil(a) na charismatického partnera pro vyjednávání, který je ochotný přistoupit na kompromisy. Ano, upravíme úroveň obtížnosti. Stvrdíme to kladivem… teda… podáním ruky.",
+      "11": "Dokázal jsi to! Podzemí je čisté! Ale co to? Ta budova má ještě jedno křídlo? Někdo se dvěma křídly se rozhodl, že ti pořádně zatopí. Dokážeš uhasit Thesin oheň?",
+      "12": "To bylo těsné. Plížíš se chodbou. Teď jen nevzbudit ničí pozornost. Po-ma-lič-ku otevíráš dveře od kanceláře, kde ti smrtonoš hlasitě vysvětluje tvůj konec!",
+      "13": "Jak ti tak zvoní v uších, říkáš si, že by ta live verze snesla pár zvukových úprav. Chystáš se přednést pár návrhů a Gert se na ně evidentně už těší, protože na tebe zeširoka mává svou sekerou.",
+      "14": "Po téhle vynucené hudební přednášce se díváš na popsaný svitek. Stojí na něm: „Přeložit do včerejška!“ Dumáš nad smysluplností takového výroku, když v tom před tebou stane Pán Lží a slibuje ti modré z nebe... teda vlastě... z pekla.",
+      "15": "Pořádek dělá přátele. Všichni to známe z domova, ze školy, z práce – a pro peklo to platí dvojnásob. Tam panuje všudypřítomný bordel. Dobře, že tam s tím trochu vypomáhá sestra Peklošmaha Uhlíkáče. I když to není ani tak sestra, jako spíš dcera... smrti.",
+      "16": "Jak tak přemítáš, že by si tu měli udržovat pořádek, vejdeš do zničené kuchyně, která je naštěstí prázdná. Ale co to? Někdo si dělá pizzu? Ha, ani omylem! Někdo se schovává v do ruda rozpálené troubě! Pro dva je té pizzy málo – budeš o ní muset bojovat!",
+      "17": "Nacpal ses pizzou a začínáš hledat odpovědi. Zdá se, jakoby každého poraženého protivníka vystřídal někdo nový. To se ale snad stává jenom laciných fantasy béčkách! Po pár krocích se těsně za tebou s tupým zvukem zarazil do zdi sekáček na maso.",
+      "18": "Tvoji pozornost upoutá tiché klapání. Jdeš po zvuku, který stále sílí. Vidíš, jak u rozpáleného počítače sedí nějaký druh kobolda – že by kódbold? Tenhle 20prstý systém vyvíjí celou řadu nových funkcí! Najednou si tě všimne a udělá překlep. Je to jenom tvoje vina!",
+      "19": "Nestalo se nic, co by nepřekryla trocha vápna. Kde ale v pekle najít dobrého malíře? Jako na zavolanou se objevil malý mužík se štětci. No to snad ne! Drží je mezi prsty jako drápy a sápe se po tobě!",
+      "20": "Vcházíš do poslední kanceláře a tam na tebe čeká boss! Pán temnot, Kníže pekel, Princ ohavnosti, Císař všeho zla, Vládce chaosu, Arcidémon agónie, Hrabě ze Stvůrova, Baron ohavnosti, Služebník Satana... ale kámoši mu říkaj prostě Marv."
+    }
+  },
+  "14": {
+    "name": "Východeros",
+    "description": "Za zdí země volá…",
+    "floors": {
+      "1": "Ocitl ses na druhé straně zdi a blíží se k tobě těžkotonážní chlapík s křivě nasazenou korunou. Budeš se muset bít jako lítý kanec!",
+      "2": "Válečník k tobě natahuje ruku, jež je neobvykle chladná. Že by letos přicházela zima předčasně? Ukaž tomu cizinci, že i ty dokážeš být jako led!",
+      "3": "Co je tohle za chlapa? A proč jsou jeho dvě společnice po zuby ozbrojené?!",
+      "4": "Holundor!",
+      "5": "Vrhl se na tebe řvoucí cizinec s dlouhou kšticí. Ať už má za lubem cokoli, nejlepší bude pokusit se ho zatahat za vlasy…",
+      "6": "Další protivník k tobě přistoupil s opovržlivým úšklebkem a to lze těžko chápat jinak než jako hrozbu.",
+      "7": "To zvláštní kosočtvercové gesto nevěstí nic dobrého… Ostatně ani ti dva vyzbrojení obři ve zlatém brnění nepůsobí zrovna přátelsky.",
+      "8": "Tomu říkám jizva! Jak se máš soustředit na boj, když má protivník na obličeji něco takového? Není to náhodou proti pravidlům?",
+      "9": "Člověk by se nad tím obrem skoro slitoval. V takové velikosti se snad nic nešije.",
+      "10": "Tvůj další protivník je veskrze čestný bojovník. Jistě by kuší neprošpikoval někoho, kdo leží na zemi.",
+      "11": "Tenhle působí obzvlášť „mrazivě“. Kde se tu vůbec vzal? Nenechal jsi ve velké zdi otevřené dveře?",
+      "12": "Cestou k průsmyku jsi narazil na tuto ozbrojenou rusovlásku. Proč ji ksakru tak rozhodilo, že jsi zamordoval její dva společníky?",
+      "13": "Na tvého dalšího protivníka padl stín… obřího vlka. A ten se teď vrhne na tebe. A jéje!",
+      "14": "Najedou je ve sněhu nepříjemné horko… příliš horko na noční postrach, jako jsi ty?",
+      "15": "Tvůj další protivník chce férový souboj? Inu, děvenka prohraje! Cha!",
+      "16": "Rozhodně nechceš vědět, co se snaží naznačit těmi nůžkami a tou druhou věc, kterou třímá.",
+      "17": "Nechť ukáže svou pravou tvář. A nechť zanechá té podivné mluvy.",
+      "18": "Není to vrah? Musí to být on! To se pozná z toho nevinného laního pohledu!",
+      "19": "Ty mě chceš zastavit? Chachá! Ty a královská garda? No… ehm, TAHLE královská garda. Aha…",
+      "20": "Ne, já se obřích draků nebojím. Proč bych měl? Ještě nikdy jsem… áááááá!"
+    }
+  },
+  "15": {
+    "name": "Věž",
+    "description": "Žil byl jeden dobrodruh a ten měl tři kumpány...",
+    "floors": {
+      "1": "Na prvním podlaží potkáš přátelského, aromatického Perníčka. Jaká je tvoje pozice v potravním řetězci?",
+      "2": "Anýz, pelyněk a magická směs jsou připravené. Pitilka ti nabízí kořalku, která tě nakopne... Pokud tedy nekopneš jako první!",
+      "3": "Chudinka! Ve skutečnosti jenom hledá velkou lásku, je ale zraněný - nyní máš šanci zaútočit!",
+      "4": "Není schopný ti nějak vážně ublížit, ale vesele ti mává, zatímco blokuje cestu. Ukaž mu!",
+      "5": "Malá květinářka tě dělí od tvého cíle. Nejlepší by bylo, kdyby ses oddělil od ní!",
+      "6": "Byla to ona, kdo ti ukradl tvé mléčné zuby a dal ti za ně odměnu. Nastal čas na odplatu!",
+      "7": "Modelová agentůra ho odmítla, ale stejně to vypadá, že má velké ambice. Tak je to, pokud ho nezastavíš ihned!",
+      "8": "Ten hluk je nesnesitelný! Někdo by mu měl pořádně oškubat peří!",
+      "9": "Ano, máme přání - vypadni nám z cesty!",
+      "10": "Příběh o tomto dětství se zdá být velmi přetažený za uši. Jsem zvědavý, zda mu techniky k přežití v džungli pomohou proti tobě? ",
+      "11": "Už žádný zpěv! Je to tak složité na pochopení? Ale no tak, přeměň ten knedlík na ovesnou kaši!",
+      "12": "Předstírá, že je tak přátelský, ale použije stejnou ruku na hraní samotného Ďábla. Je načase ho vyhodit, podvodníka!",
+      "13": "Vždy je tak nadutá! Nemusíš se smířit s tímto postojem.",
+      "14": "Chce být princem... Slyšels ten příběh tolikrát, že jsi tomu uvěřil!",
+      "15": "Ten, co sedí na jeho obličeji říká, že by to už nikdy nezopakoval.",
+      "16": "Každý si přeje přání a potom každý útočí!",
+      "17": "Smrad kořalky a kůže od bod a také velké sliby bohatství a jmění k tomu... Kdo by neuvěřil.",
+      "18": "Ta zlodějka bot. Měla by se vrátit tam, odkud přišla!",
+      "19": "Johnny je zodpovědný za díry v ozonově vrstvě, protože vždy hleděl na nebe.",
+      "20": "Jeden se nestydatě předvádí, druhý je podvodník bez zábran. Oba musí být potrestáni ve jménu měsíce! ",
+      "21": "Divoké husy jsou chráněná zvířata. Každý, kdo nějakou ukradne, s tím musí počítat!",
+      "22": "Dokonce i rozverný duch je bezbožný a musí ho jednou potkat konec. Vyměť duchy, dobré i ty zlé!",
+      "23": "To, co udělala se spolupachateli tomu vlku, je týrání zvířat a měla by být potrestána!",
+      "24": "Léto přichází. A proto je obleva.",
+      "25": "Podezřelý byl poprvé spatřen nahý pod širým nebem. Později byly u této osoby objeveny finanční prostředky pochybného původu.",
+      "26": "Chudé, neškodné stvoření trpí nezaslouženě. Každý, kdo tady pokračuje v hraní, bude mít na Vánoce špatné svědomí.",
+      "27": "Těší se na to, až tě bude držet v náručí, dokud nezemřeš ledovou smrtí.",
+      "28": "Skvělý příklad toho, jak úžasně funguje neautoritativní výchova.",
+      "29": "Každý, kdo vypadá tak mile a smutně, si zaslouží být ušetřen toho trápení.",
+      "30": "Nazýván tak, nebo nějak podobně, alespoň to tak každý říká. Fanatik anti-větrné energie, nejspíš zastánce jaderné.",
+      "31": "Čuchal k olejové lampě tolikrát, že teď trpí halucinacemi... Ušetřete ho někdo toho trápení.",
+      "32": "Od doby, co utekl její králík, trpí přeludy. Kdo ví, čeho je schopna? Pryč s její hlavou!",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
+      "34": "Vždy dělá, že nestárne. Vidíme tvé vrásky, Petře, a známe tvé slabiny!",
+      "35": "Mělo by být snadné ji porazit. Koneckonců, skočí na každý hloupý trik. Jen se ujistěte, že je skutečně mrtvá!",
+      "36": "Žádná výmluva k oslavě pro něj není hloupá. Vždy něco oslavuje. Udělej správnou věc a ukonči tuto nekonečnou party!",
+      "37": "Kdo ví přesně odkud pochází, ale vždy se snaží proniknout do vysokých společenských kruhů s pomocí pochybných kompliců.",
+      "38": "Všude můžeš najít něco lepšího, než předčasný odchod do důchodu!",
+      "39": "Čekajíc na stěně s knížkou gramatiky vysedává vejce. Co by se stalo, kdybys ji srazil?",
+      "40": "Kdyby by jeho vousy nebyly tak nakřivo a pokud by skoncoval s jeho pokusy naučit mladé ženy způsobům, mohli byste k němu mít nějaké sympatie. ",
+      "41": "Každý, kdo se v noci plíží do dětských pokojů a hází písek do očí, nemá místo v civilizované společnosti.",
+      "42": "...nebo něco takového. Zeptej se Ďábla, možná on ví.",
+      "43": "Preferovaný způsob předávání kufříků s hotovostí v politice. Prevence proti korupci je ušlechtilá snaha.",
+      "44": "Zneužívá své svobody tím, že odráží pravdu. Může společnost strpět něco takého?",
+      "45": "Budou potřebovat něco víc než cihlový domeček, aby před tebou byla v bezpečí.",
+      "46": "Pokud dostane pořádný výprask, možná tě vymění s Hansem?",
+      "47": "Hodně se toho povídá o jeho pěstírně fazolí. Možná po nich vyšplhal až do téhle věže.",
+      "48": "Vyšla z Molwanských lesů a našla útočiště v téhle věži. Před tebou se ale neukryje!",
+      "49": "Podle nepotvrzených zvěstí disponuje kouzelnými silami. Tady pomůže jedině hrubá síla!",
+      "50": "Druhý nejtragičtější milostný příběh, pokud tedy zapracuješ na jeho závěru.",
+      "51": "Geniální maskování, snad to prokoukneš!",
+      "52": "Převracet sociální poměry naruby, to je politicky nepřípustné.",
+      "53": "Dveře za ním jsou zavalené kamením. Heslo z něj budeš muset vymlátit.",
+      "54": "Raději mu neříkejte, že v těch nových šatech vypadá tlustě. Také mu visí nový meč na novém opasku.",
+      "55": "Za tuhle zlatou husu by lepidlový průmysl zaplatil milióny. Radši se do toho vložte sami!",
+      "56": "Předkrm: Drobky z lesní pěšinky. Hlavní chod: Dušení usoplení spratci. Zákusek: Perníkové variace.",
+      "57": "Vetřelec zničí nábytek a krade jídlo. Nemějte slitování!",
+      "58": "Nevymyslela ona to čekankové písmo a nedostala za to dolarovou minci? Dost bylo, stojí ti v cestě! ",
+      "59": "Kdo plácá mouchy, plácne taky jednou dobrodruhy. Raději mu ty hrátky zatrhněte.",
+      "60": "Mluví se zvířaty, tvrdí, že ji doma šikanují. Chce se účastnit velkého castingu. Tu botu jí nenazouvej.",
+      "61": "Ta blondýnka z televize byla lepší. Kdo by si taky chtěl něco přát od obtloustlého modrého mužíka.",
+      "62": "Vždycky je napřed. Přátelství je kouzlo! A odplata je salám, protože je nejlepší ji podávat chladnou.",
+      "63": "Natřes nám postýlku! Jinak budeme muset přejít na polštářovou válku!",
+      "64": "Na konci duhy je hrnec plný... mizerných halířů? Hmm, to je jedno, stejně zaútočíme. Taková mizérie...",
+      "65": "Jeho pepřová bambitka je výsměch oproti tomu, co šňupou znalí hromotluci tvého kalibru - popel ze svých nepřátel!",
+      "66": "Určitě je moc milý, ale taková výmluva u tebe, hádám, neprojde. Dobře, že už je poraněný!",
+      "67": "Ta ví, jak se s těmi dvěma mušlemi zachází. Mnoho námořníků očarovala tak, že najeli přímo na útes.",
+      "68": "Zahanbující šarmantní šarlatán se z toho pokusí vymluvit. Necháš si mazat med kolem huby? ",
+      "69": "Dřívější legenda, která teď už jen bojuje s lidmi, kteří se o něm snaží natáčet hrozné filmy. To se dá pochopit, ale prostě stojí v cestě.",
+      "70": "...jestlipak bude tak nevypočitatelný jak vypadá? Napřed zabít, pak se vyptávat!",
+      "71": "Budete muset ukázat zázraky, jestli ji chcete vy, lehkomyslníci, nějak okouzlit...",
+      "72": "Evidentně nikdy nehrál Slender... a nikdy se s tebou nesetkal.",
+      "73": "Pohádkový les byl vykácen, takže se teď protloukají jako kluboví maskoti a postávají jako reklama na hranolky.",
+      "74": "Chtěl bys mrkvičku?",
+      "75": "S tím obřím špízem zřejmě hledá svatý gril. Oroštuj toho omezence!",
+      "76": "V pití mešního vína si s ním nikdo nezadá. Možná tě ale napadají i jiné techniky boje.",
+      "77": "Pryč s monarchií.",
+      "78": "Chtěl být drakobijcem, ale nehodil se na to. Stal se z něj tedy Mistr Univerzum.",
+      "79": "Příšerní tvorové, kteří chtějí tančit na tuto melodii. Snad na to dojedou!",
+      "80": "Konečně se má ten lev čeho bát! Přicházíš totiž ty a hodláš se probít žlutě vydlážděným poschodím!",
+      "81": "Doufám, že proběhly řádné přípravy i navzdory jeho zavádějící přezdívce...",
+      "82": "Happy Hanukkah!",
+      "83": "Tisíce včel se musely ohánět, aby se tenhle medvěd jednou ohnal tlapou a namlsal se! Kdo pomstí včelí královnu?",
+      "84": "Neříkal ten osel z vesnice něco o zeleném obrovi? Určitě nám vyplatí peníze za jeho hlavu.",
+      "85": "Ještě by si měl trochu pohovět, zatímco ty si trochu vyzkoušíš své zbraně.",
+      "86": "Povýšen z počítače hrachu? Inu, kdo míří vysoko, může spadnout hluboko. Například z okna ve věži.",
+      "87": "Kdo jedl z tvého talířku? Někdo, kdo už dneska nepovečeří! Na ně!",
+      "88": "Prostě budeš tvrdit, že jsi je chtěl(a) zachránit před vlkem a nějak se zrovna dostali do palebné linie.",
+      "89": "Nejsou to ti, co unesli tu důvěřivou princeznu? Za sedmero kopci bylo nalezeno jejich DNA...",
+      "90": "Má smůlu, že nejste draci!",
+      "91": "Připravte projímadlo a jsme boháči! Ale pozor, jeden nikdy neví, co je v tom pytli!",
+      "92": "Její způsob počítání je možná sice trochu nekonvenční, ale zase ví, jak správně klečet na hrachu.",
+      "93": "Asi zrovna zbaštil zbytky nějakého samozvaného drakobijce. Chopte se své šance!",
+      "94": "Na rozdíl od svého bratra Petra byl chytrý a nechal si patentovat účes afro.",
+      "95": "Co asi bude říkat na babičku plamenomet? Určitě bude nadšením tát.",
+      "96": "Díky párovému algoritmu platformy pro vytváření dvojic, zvané PairPlex, jsou tito dva příliš zaneprázdění sami sebou, než aby se bránili!",
+      "97": "Každý rok se objeví nová filmová adaptace. Ducha asi zabít nelze... nebo ano?",
+      "98": "Možná tě napadne „romantický“ způsob, jak ji probudit...",
+      "99": "Fenomén yellow-beige-goo ve vší své kráse!",
+      "100": "Asi se nedá vyhnout tomu, abyste si s touhle paní nevjeli do vlasů."
+    }
+  },
+  "16": {
+    "name": "Starodávná škola magie",
+    "description": "Přístupné z nástupiště 9 a 3/4!",
+    "floors": {
+      "1": "Tenhle starý klobouk někdo musel nacpat hluboko do šuplíku a teď je celý zmamlaný. A to samé teď udělá s tebou! Takže, která kolej to bude? Nebelknír? Zmijožer? Mrvymor? Vrabcospár?",
+      "2": "Jeho pohled je tak pronikavý… nepochybuješ, že na tebe může mrknutím oka seslat krutou kletbu. Naštěstí pro tebe nemá vůbec žádné magické schopnosti.",
+      "3": "Jeden pes, tři hlavy – jedna kousavější než třetí!",
+      "4": "To jediné, čeho má ještě víc než nohou… jsou jeho potomci…",
+      "5": "Jeho hrdinské činy by zaplnily knihovnu. A každičký z jeho velkých příběhů se zakládá na (alternativních) faktech!",
+      "6": "V případě hrozícího nebezpečí bude asi lepší dívat se jinam. Ovšem... když se na něj budeš dívat jenom v zrcadle, měl bys být relativně v bezpečí, ne?",
+      "7": "Kdo by si byl pomyslel, kolik zla může způsobit taková létající hromádka kostí?",
+      "8": "Tohle bude snadná krádež.",
+      "9": "Pokřivená láska ke zvířatům by ho určitě nikdy nepřiměla vychovat nějaké monstrum.",
+      "10": "Jsou tu jisté vizuální a etymologické signály svědčící o tom, že tento druh spadá do kategorie padouchů.",
+      "11": "Všichni jsou šokováni tím, jak tento učitel zachází s ředitelem!",
+      "12": "To jediné, co je ještě nebezpečnější než mocná horda šílených superkouzelníků, jsou tři školáci.",
+      "13": "Moje dvojče je obézní a žije s několika soby na severním pólu.",
+      "14": "Tenhle okouzlující a pohledný idol musí jistě mít čestný a rovný charakter.",
+      "15": "Tohle ztělesnění čajového dýchánku bude jistě dokonalým učitelem obrany proti temné magii, že?",
+      "16": "V dnešní době se už žádné důstojné podzemí neobejde bez hordy zombíků… teda vlastně Inferi.",
+      "17": "Ona prostě miluje ta neodpustitelná prokletí. Ale kdo by jí to neodpustil?",
+      "18": "Rada od odborníka: Každému, kdo se honosí tím, že má „čistou krev“, vždycky vyšvihni hodně hlubokou poklonu.",
+      "19": "Neboj, tenhle slaďoušek určitě nekouše!",
+      "20": "TOHLE se stane, když vám někdo jako malému ukradne nos a nikdy vám ho nevrátí! Prostě si nemůžete pomoct a vyroste z vás čiré ztělesnění ZLA."
+    }
+  },
+  "17": {
+    "name": "Hemorridor",
+    "description": "Zlo přebývá na Popelavé Hoře světa",
+    "floors": {
+      "1": "Kdo to tady bloudí ve tmě? Tupý Orc na Velké šelmě.",
+      "2": "Prosím nekrmit!",
+      "3": "Jen mezi skřety je jeho žezlo největší.",
+      "4": "Šmi Šmilášek!",
+      "5": "Správci sítí v akci.",
+      "6": "Jeho krása je to poslední co uvidíte.",
+      "7": "Říkají mu bezruč",
+      "8": "Dokáže pořádně zatopit pod kotlem.",
+      "9": "Dobrý den, kontrola jízdenek.",
+      "10": "Zákaz plavání bez plavek.",
+      "11": "Démon z polyfyletické skupiny bičíkovců.",
+      "12": "Není jasné jak to ten ork dělá, ale na každé fotce mu to sluší.",
+      "13": "I dobrá rada může mít špatný konec.",
+      "14": "Obrátil se na Temnou Stranu... jaj, špatný film.",
+      "15": "Doufám že nemáš alergii na arašídy.",
+      "16": "Ve skutečnosti nejsou tak mrtví jak vypadají.",
+      "17": "Tak je tady konečně ten velký, zlý a jedovatý správce sítě. . . patrně admin",
+      "18": "Máte krásného koníčka, mohu si vás pohladit.",
+      "19": "Hlásí se tu někdo na dentální hygienu?",
+      "20": "Tajemství jeho moci musí být skryto v obřím meči. Proto se mu říká \"Pan Pícháček\""
+    }
+  },
+  "18": {
+    "name": "Dlouhá řada idolů",
+    "description": "Bojuj po boku se svými společníky proti idolům z jiného světa.",
+    "floors": {
+      "1": "Porazit ho může jedině pořádný grázl!",
+      "2": "Před očima se ti rozbliká odpočítávání: 3... 2... 1... LIVE! Jsi uprostřed jeho streamu... a tedy i uprostřed svého dalšího boje.",
+      "3": "Jakmile vstoupíš do místnosti, ozve se křik! Zatímco ti ještě zvoní v uších, on už začíná fyzicky útočit.",
+      "4": "Prasátko na rameni se může zdát roztomilé, ale nedej se zmást, nebo tě to bude stát život.",
+      "5": "Nejdisciplinovanější a nejobávanější mág, postrach Jana Kladiváře. Chodící kalkulačka, která je připravena strhnout tebe na svou skibidi stranu! Jsi na něj připraven?",
+      "6": "Ten modrovlasáč se bojí pavouků, ale ty osm nohou nemáš, takže asi budeš žrát hlínu! A tímto tě vítám na cestě k tvému skonu!",
+      "7": "Současný trend napovídá, že nabubřelé hrdiny lze těmito chytrými triky snadno porazit!",
+      "8": "Pod silnou vrstvou kůže se schovává dobré srdce. Když mu přineseš koblihy, možná tě i pustí.",
+      "9": "Oslní tě svojí dokonale oholenou hlavou a pak ti vyrazí dech stylovými pohyby. Tenhle tanec nepřežiješ!",
+      "10": "Přiblížíš se k dalšímu monitoru a stream se okamžitě spustí. Všechny oči jsou upřeny na tebe. Dokážete pod tímto tlakem vyhrát?",
+      "11": "Mladý a pohledný, ale nedej se okouzlit jeho vzhledem. Nic ho nedrží zpátky. Útok!",
+      "12": "A pozdravy všem hrdinům od slavného francouzského mistra baget a mistra světa v Minecraftu! I když je na mol, nepovažuje tě za hrozbu.",
+      "13": "S širokým úsměvem tě vítá ve svém pokoji. Jeho humor a dobrá nálada jsou nakažlivé, ale když polevíš v ostražitosti, brzy se ti to stane osudným!",
+      "14": "Klopýtáš nápadně pixelovou místností, když se náhle objeví stín s průvodcem v ruce. Už dávno zvládl život v kostičkovém světě a nyní tě naučí pár věcí v boji.",
+      "15": "Pokud ti přijde, že měl při posledním setkání jinou barvu vlasů, možná se nepleteš.",
+      "16": "Proslýchá se, že se tahle příšera narodila se třemi nohami a vyrostla v popelníku. Sundej si ponožky, než mu věnuješ pohled!",
+      "17": "Tenhle kříženec zebry a člověka se s chutí směje vlastním vtipům a tomu, čím si procházíš v bojích.",
+      "18": "Neuniklo mu, že máš teď hranaté oči. Smůla, že se ti právě rozbilo tlačítko pauzy.",
+      "19": "Král neschopných přece není králem jen tak pro nic za nic, takže koukej pokleknout!",
+      "20": "Informatik, pomoc! Dávej si majzla. Když získá přístup k rootu, nafragmentuje tě do posledního bitu. Prostě NP-úplný protivník.",
+      "21": "Moin moin, zdravíčko, vítej na svém výprasku. „Teď tě vypráším jak zvířecí kůže,“ řičí na tebe vítězoslavně a těmi svými rádoby vtipnými slovními hříčkami a neustálými přívlastky do tebe buší jako do nějaké interiérové dekorace.",
+      "22": "Varování: hyperaktivně střílí memy jako projektily, když tě převálcuje v bouři nepředvídatelného chaosu. Tento GIGACHAD žije pro zábavu. Dopřej mu pořádnou show!",
+      "23": "Slabý šum moře... a pak tě zasáhne jeho vlna strategických znalostí. Zatímco během bitvy přátelsky a trpělivě odpovídá na tvé otázky, máš pocit, že tě pomalu vyplavuje z podzemí.",
+      "24": "Jeho znalosti jsou hlubší než toto podzemí a jeho sarkasmus ostřejší než tvoje tasená zbraň. Nenechává žádné otázky nezodpovězené... kromě toho, jak přežít tento souboj.",
+      "25": "Díváš se na telku a zahlédneš průkopníka legend, štíhlý idol všech mužů a žen. Je mu úplně jedno, že se kolem něj chceš dostat živý.",
+      "26": "V tomto monitoru se basový buldozer rozšířil dokonce i mimo Azeroth! Dokážeš s tím něco udělat?",
+      "27": "K uchu ti dolehne příjemně klidný hlas a ty si všimneš, jak tě opouští veškeré napětí. Následující záběr tě krutě vrátí do reality.",
+      "28": "Před tebou stojí démonický veterán – jeho hlas se jako hrom ozývá virtuálními stěnami. Na rameni mu sedí pavoukovitá bytost a neustále něco šeptá. Mohou i démoni... mít vnitřní démony?",
+      "29": "Tento bojovník čas od času vypne mozek, aby tě zmátl šílenými bláboly. A pak přijde ta nejdůležitější věta: Pokud ho chceš porazit, musíš správně surfovat na vlně!",
+      "30": "Dvoumetrový, fanoušky jmenovaný generální ředitel stojí kolosálně před tebou. Nenuceně usrkává ze svého poháru s parním elixírem života a touží po pátečním kebabu. Jsi jeho poslední překážkou... a on má mocný hlad."
+    }
+  },
+  "19": {
+    "name": "Severská božstva",
+    "description": "Z představy, že tě budou až do Ragnaröku tlouct, člověku běhá Bifröst po zádech.",
+    "floors": {
+      "1": "Jestli řekneš něco proti jeho matce, automaticky urazíš i jeho devět sester.",
+      "2": "Ódinovi poslové mají dnes jenom jednu zásilku... tebe na věčnost.",
+      "3": "Má pro tebe vyhrazené útulné místečko v podsvětí.",
+      "4": "Jeho palác s 540 síněmi je ten největší, jaký kdy kdo v Ásgardu postavil. Pro tebe tu dneska není místo.",
+      "5": "Nabízí ti okamžitou kremaci, aby se tvá duše zbavila toho otravného těla.",
+      "6": "Je krásnější než ty, zlejší než ty a překoná tě v chytrosti i jakékoli lstivosti.",
+      "7": "Syn a dcera povstali z potu v jeho levém podpaží. Asi si dokážeš představit, co se stane, když tvým směrem prskne.",
+      "8": "Náladové zvířátko, které by objalo celý svět a kouše si vlastní ocas.",
+      "9": "Právě přetrhl své nezničitelné magické okovy a hladově na tebe zírá.",
+      "10": "Obr, který zapálí svět, rozsévá do všech směrů plameny a zničí všechen život... a začne u tebe."
+    }
+  },
+  "20": {
+    "name": "Hora Olymp",
+    "description": "Cesta na vrchol se může proměnit v opravdový maraton.",
+    "floors": {
+      "1": "Dá se tomuhle ještě říkat zpěv, nebo je to spíš ublížení na zdraví?",
+      "2": "Oko za oko!",
+      "3": "Kerberos nepustí do podsvětí smrtelníky. Víš, co to pro tebe znamená.",
+      "4": "Kdyby vzhled zabíjel...",
+      "5": "Proti bohyni taktiky budeš potřebovat novou strategii.",
+      "6": "Vypadá to, že tě čeká herkulovský úkol.",
+      "7": "Tvá poslední slova: „Bůh války, konečně pořádný protivník!\"",
+      "8": "Kamarádi už z vás nebudou. Jeho kamarádku Medúzu a jeho syna Polyféma jsi už „potkal“.",
+      "9": "Po tomhle boji bude král smrti i tvým králem.",
+      "10": "Rada: při bouřce se příště drž buku jako klíště."
+    }
+  },
+  "21": {
+    "name": "Hospoda temných dvojníků",
+    "description": "Ze starých přátel se stávají noví nepřátelé",
+    "floors": {
+      "1": "Vypadá celkem dopáleně.",
+      "2": "Sami si říkají zběhové, ale byli vyhozeni kvůli nekompetentnosti. Každopádně tebe porazí i ve spánku!",
+      "3": "Je to pro tebe čest! Jeho podpultový arzenál normálně spatří jenom šejdíři.",
+      "4": "Tahle hra se hraje podle tajných temných pravidel. Stačí jenom vsadit vlastní život.",
+      "5": "Má na výběr z celé řady zbraní... ale nějak ne a ne odložit to kladivo.",
+      "6": "Kotlík je zahřátý a dneska výjimečně můžeš být přísadou ty.",
+      "7": "Umně tě pošle na onen svět a ještě za to asi budeš muset zaplatit.",
+      "8": "Jenom on ví, kde se kolo zastaví. Tentokrát tě jistě žádné štěstí nečeká.",
+      "9": "Doteď vždy způsobil nějakou pohromu omylem. Tentokrát to je záměrné.",
+      "10": "Vždycky měl ideální velikost na rozdávání zákeřných ran pod pás."
+    }
+  },
+  "22": {
+    "name": "Dračí poklad",
+    "description": "Zabalil sis hasicí přístroj?",
+    "floors": {
+      "1": "Pomník důsledků chatrné péče o chrup.",
+      "2": "Pravděpodobně poslední svého druhu!",
+      "3": "Nejen na velikosti záleží!",
+      "4": "Nějaký archeologický nekňuba zase poskládal špatně kosti. To se musí napravit!",
+      "5": "Splní ti přání, pokud se bude týkat tvé záhuby.",
+      "6": "Rychle se s ním vypořádej, než se vrátí jeho maminka.",
+      "7": "Štěstí je dnes na jeho straně.",
+      "8": "PetDex záznam 006: „Tenhle mazlíček dokáže svým ohnivým dechem roztavit vosk. Příležitostně to zapálí dům.“",
+      "9": "Chamtivě zírá na drahokamy ve tvojí zbroji a hrne se na tebe.",
+      "10": "Pokud se jí teď nezbavíš, mohl by se z ní později vyklubat značný problém."
+    }
+  },
+  "23": {
+    "name": "Dům hrůzy",
+    "description": "Oni se tě bojí víc než ty jich!",
+    "floors": {
+      "1": "Moderní výklad ideálu krásy. Pokud se ti nelíbí, dostaneš čenichovku!",
+      "2": "Člověk, který ho vytvořil, je skutečné monstrum, ale s tím člověkem naštěstí bojovat nemusíš.",
+      "3": "Pro něj jsi jen nohatá zásobárna krve.",
+      "4": "Á, nezvoní ti telefon?",
+      "5": "Jen si s tebou chtějí zahrát hru!",
+      "6": "Nabízí balónek a ty jej s chutí přijímáš.",
+      "7": "Tím, že se tě pokouší odpravit, ti jen chce pomoct vrátit tvůj život do zajetých kolejí.",
+      "8": "Skutečnost, že tě pronásleduje, i když jsi vzhůru, si žádá potrestání!",
+      "9": "Jen si na tobě chce vytříbit svůj filetovací um.",
+      "10": "Už mnoho netrpělivých dobrodruhů jí padlo za oběť."
+    }
+  },
+  "24": {
+    "name": "Třetí liga superhrdinů",
+    "description": "Tady by se měla nutně kontrolovat oficiální licence hrdiny...",
+    "floors": {
+      "1": "Každého protivníka porazí tisícem úderů.",
+      "2": "Noční můra každé dámské šatny, ale s tebou bude raději bojovat se zavřenýma očima.",
+      "3": "Vždycky na cestě na další záchod a cestou tam musí projít kolem tebe.",
+      "4": "Žehlí košile protivníků bez ohledu na ztráty.",
+      "5": "Nikdy se nemusí ptát na telefonní číslo.",
+      "6": "Dokáže se zneviditelnit, ale jenom když se nikdo nedívá.",
+      "7": "Po spořádání jedné z jeho pochybných sladkostí jsi už pro něj snadná kořist.",
+      "8": "Po jediném šálku kávy má účinek 100 šálků.",
+      "9": "Má tu nejsilnější superschopnost ze všech, kdyby si jen dokázal vzpomenout jakou...",
+      "10": "Má chronickou opici a pomáhá na to jediná věc: dobrá bitka!"
+    }
+  },
+  "25": {
+    "name": "Dojo hrdinů z dětství",
+    "description": "Země velkých očí a krvavých nosů",
+    "floors": {
+      "1": "Rychle ji poraz, než se dopřevlékne!",
+      "2": "Sní o tom, že se stane starostou a ty mu stojíš v cestě.",
+      "3": "Jeden z těch hrozně vtíravých sousedů.",
+      "4": "Asi si něco kompenzuje...",
+      "5": "Jeho švýcarské hodinky představují vážné nebezpečí.",
+      "6": "V hlavě má, žel, jen vzduch.",
+      "7": "Mistrovství vyžaduje čas.",
+      "8": "Ztělesnění toxické maskulinity.",
+      "9": "Čím blonďatější vlasy, tím větší moc.",
+      "10": "Jeho mantra jsou karetní triky."
+    }
+  },
+  "26": {
+    "name": "Sluj příšer",
+    "description": "Vždycky, když někdo z nich uprchne, nějaké město je v plamenech.",
+    "floors": {
+      "1": "Škoda, že mluvíš jenom velrybácky. Asi za sebe budeš muset nechat promluvit svoji zbraň.",
+      "2": "Přerušil jsi mu líbánky... a neboj – na velikosti opravdu nezáleží.",
+      "3": "Pro něj jsi jen mrňavoučké autíčko.",
+      "4": "Příležitostně si zakousne toho či onoho dobrodruha.",
+      "5": "Lepkavé, sladké a horké? Radši si utři z koutku slinu a skoncuj to s tímhle změkčilým polštářkem!",
+      "6": "Pozor, ať nešlápneš na jeho hrádek z písku.",
+      "7": "Jestli si myslíš, že můžeš vyhrát, jednou zatrub!",
+      "8": "To trojité bědování by šlo ukončit, kdyby jen věděl něco o svazování. Ona ale postačí i tvoje zbraň.",
+      "9": "Návštěva z Tokia se zlými úmysly, a ty narušuješ plánovanou vyhlídkovou trasu.",
+      "10": "Zvažuje zničení světa, pokud někdo ještě jednou vyřkne „expresso“"
+    }
+  },
+  "27": {
+    "name": "Město intrik",
+    "description": "Pokud chceš usednout na tenhle trůn, stačí jen zradit celou svoji rodinu a všechny přátele."
+  },
+  "28": {
+    "name": "Expres kouzelnické školy",
+    "description": "Supr děcka vždycky sedí vzadu."
+  },
+  "29": {
+    "name": "Popelavá hora",
+    "description": "Tady přebývá zlo"
+  },
+  "30": {
+    "name": "Playa HQ",
+    "description": "Vždy otevřen konstruktivní kritice"
+  },
+  "31": {
+    "name": "Výcvikový tábor",
+    "description": "Jeho nestabilní konstrukci korunuje maximální riziko rozštěpení.",
+    "floors": {
+      "1": "Jeho největším nepřítelem je náhlé poškození vodou. Shakes alespoň kladl důraz na recyklovatelnost.",
+      "2": "Nebude jen na plašení ptáků. Tenhle dobrák každopádně vypadá poněkud neživě.",
+      "3": "Neustále v pohybu... přinejmenším na jednom a tom samém místě. Chceš svézt? Tak na to zapomeň!",
+      "4": "Hlavně si připrav tu nejsilnější mast na puchýře!",
+      "5": "Na jednom dalším nárazu už nesejde.",
+      "6": "Hrozí velké nebezpečí, že se zapálí.",
+      "7": "Bzučí a potácí se vzduchem. Nouzové přistání je nevyhnutelné. Jeho skoky do zákrytu však trénují tvoje reflexy.",
+      "8": "Ještě ho třeští hlava od posledního šlehnutí. Byl již několikrát zničen a znovu smontován, takže má možná o kolečko navíc.",
+      "9": "Tam, kde selhává přesnost jejího pilového kotouče, přichází na řadu dělo pro hrubou práci!",
+      "10": "Tady se použilo všechno, co Shakes dokázal někde splašit. Jeho všestrannost se hodí jak pro kempování, tak pro finální otestování hrdinů začátečníků."
+    }
+  },
+  "32": {
+    "name": "Písečná bouře",
+    "description": "Nejen, že s tebou víří ve vzduchu s tisícovkou příšer, ale také ti do očí fouká velká zrnka písku."
+  },
+  "33": {
+    "name": "Arkáda oldschoolových pixelových ikon",
+    "description": "Kde je highscore mnohem důležitější než důkladná hygiena.",
+    "floors": {
+      "1": "Na blikajících obrazovkách se míhotají světla, přerušovaná jen rytmickým mlaskáním, které se podezřele blíží. Pro tohoto nenasytného žrouta jsi mnohem víc než jen malé ovoce – jde mu o tvou duši! Nasaď tomu míči dietu!",
+      "2": "Před tebou se zrodí nespokojený jezevec, vyrazí k tobě a nechá vybuchnout vše, co mu stojí v cestě. Tento šílenec už má dost ovoce, a proto si s tebou teď rozšíří své kulinářské chuťové obzory. Škoda, že tvůj poslední checkpoint byl před několika hodinami...",
+      "3": "Cvak! Kde se vzal tenhle talíř? Před tebou přistane nájezdnice se špičatými mnohoúhelníkovými prsy, ostřejšími než její pohled. Hodnotí tě jako vzácný artefakt a zuří, že jsi jejího sluhu zase zavřel do mrazáku. To je vše, co se týče britské zdvořilosti. Teď zaprší olovo!",
+      "4": "Silné, tak trochu jiskřící kabely se táhnou popraskanou a ulepenou podlahou herny. U nohou se ti kutálí malá kovová koule – plop! Objeví se mezigalaktická bojovnice. Její pohlaví bylo překvapením. Dnes tě překvapí jen to, jak rychle střílí její zbraň.",
+      "5": "Z netěsnícího stropu se k tobě neúprosně blíží řada pixelových příšerek. Je jich mnoho. Ty jsi sám. Ale třetí rozměr by mohl být tvoje záchrana!",
+      "6": "Z jednoho z nablýskaných pinballových automatů vyskočí modrá zubatá koule. Jeho nadměrná konzumace kroužků mu pravděpodobně zničila nejen zuby. Ve svém šílenství se spěšně snaží snížit tvůj ukazatel životů na nulu.",
+      "7": "Vtom se ozve rána a stěny se rozpadnou a polovina hracího automatu odletí. Raději za ním nestůj, až naklade další výbušné vejce. Ať se snažíš sebevíc, vždycky má výbušnou náladu... pokud se ovšem nevyhodí do vzduchu sám.",
+      "8": "Rezavé dveře za tebou vyletí ze skřípajících pantů a v jejich rámu stojí svalnatý bojovník s červenou čelenkou. Než tě pošle do vzduchu, slyšíš jen: „Jistě, že jsi Ken...“ ačkoli se ani nejmenuješ Ken? Možná dokáže provádět ta nejsložitější komba, ale tupé mačkání tlačítek ti bude stačit.",
+      "9": "Prázdnou hernou se rozléhá tlumená osmibitová hudba a ze stropu se řítí masivní Z-dílek, který je připraven s chirurgickou přesností zničit jakoukoli dokonalou konstrukci. Najdi vhodnou mezeru a zbav se toho patvaru!",
+      "10": "V rohu jsou naskládané kazety a konzole. Obklopen retro kousky na památku vytáhne poslední boss svůj ovladač. Překonal všechna highscore a neštítí se použít cheaty pro tvůj game over. Nahoru, nahoru, dolů, dolů, doleva, doprava, doleva, doprava, B, A, start!"
+    }
+  },
+  "34": {
+    "name": "Serverovna",
+    "description": "Pípající terminál blikajících stavových kontrolek.",
+    "floors": {
+      "1": "U vchodu do serverovny sedí pověstný našeptávač prasat z oddělení QA. Obklopen svítícími kabely vrčí: „Žádný bug. Featura.“ a v klidu se mazlí se svým prasetem. Vytas zbraň! Tohle rozhodně není test!",
+      "2": "Tento mistr grilování nikdy nenechá nic spálit, nebo se o to alespoň vždycky snaží. Jeho herní testy jsou v nejlepším případě jen napůl propečené. Rozhodně mu však budeš naservírován krvavý a zalitý jeho výpisem reprodukovatelných chyb!",
+      "3": "Najednou k tobě v zatuchlé serverovně dolehne heavy metal. Sleduješ hluk a zahlédneš rozervaného vedoucího týmu QA v havajské košili, která se třepotá ve větru ventilátorů. Myslíš, že ho dokážeš prohlédnout? Chyba nalezena... ve tvých očekáváních! Tohle bude mimořádně náročná kontrola kvality!",
+      "4": "Chodbami se valí kouř, ale nepanikař – obsluha na frontě právě zapnula mlhový stroj. Serverovna se promění v jeviště a Simon obratně tančí přes zamotané kabely. Jeho kód je stejně plynulý jako jeho pohyby. Dokážeš držet krok s jeho rytmem?",
+      "5": "Když se v pekelném fóru ztratí klid, DarkwingDang přiletí, stačí zazvonit! Protože jediné, co rád vidí napěněné, je jeho vychlazené pivo. Se svými pomocníky z podpory funguje jako mluvčí mezi hrdiny a vedením pekla. Tvé přání vyčistit podzemí však nepadá na úrodnou půdu.",
+      "6": "Mezi bzučícími stroji se ti zjeví démonický technický kněz, krotitel serverů. Káže v zapomenutých programovacích jazycích, zatímco datové proudy se podřizují jeho vůli. Uvnitř slyšíš hlas: „Špagetový kód tě otestuje! Nech se vykoupit!“",
+      "7": "Neonová světla blikají a ventilátory běží na plné obrátky, aby se ubránily rychle stoupajícímu teplu. Jako frontový bojovník ve vrcholné formě se před tebou vztyčí a prohne své zocelené tělo. Serverovnu náhle zahalí planoucí aura a Taha zařve: „Kaaaa-meeee-haaaa-meeee-TAHA!!!“",
+      "8": "Zrovna když přemýšlíš, jestli ta nekonečná serverovna někdy skončí, vynoří se z mihotavé polotmy přátelsky vyhlížející zaměstnanec frontendového oddělení. Zhluboka se nadechne, popadne klávesy a spustí sólo, které tě odrovná. Tohle bude všechno, jen ne příjemná jam session!",
+      "9": "Když spojení selhávají a pekelná zařízení se spiknou proti svým uživatelům, Kevin zasáhne a nenechá žádný problém nevyřešený. Rychle se na tebe podívá, zatímco jeho dcera už se chichotá a ukazuje na tebe. Hrdě ji pokývnutím hlavy poplácá po hlavě a uchýlí se k nejstaršímu ze všech obřadů: k tvému restartu.",
+      "10": "Konečně vidíš konec serverovny, ale na posledních metrech zakopneš o hustou síť kabelů. Padne na tebe obrovský stín a ty vzhlédneš. Před tebou se rýsuje pekelný pán říše kvality, připravený nemilosrdně otestovat tvé nervy a každý řádek kódu!"
+    }
+  },
+  "35": {
+    "name": "Dílna lovců nemrtvých",
+    "description": "Oživlí jsou zde odborně rozebíráni na jednotlivé části.",
+    "floors": {
+      "1": "Právě jsi unikl nemrtvým a ocitl ses v dílně. U pracovního stolu pracuje muž s šíleným smíchem a motorovou pilou místo ruky. Tady rozřízne tvoji minulost i budoucnost na dvě části. Super!",
+      "2": "Před stojanem se zbraněmi vyrábí zachmuřený muž improvizované pasti, zatímco dospívající dívka si nahlas čte z knihy špatných vtipů. Pocity? V tomhle zničeném světě je nepotřebují, ale pokud neutečeš, budeš potřebovat doktora!",
+      "3": "Mezi děrovanými sudy s olejem vystoupí žena v krátkých šatech. S vytasenou zbraní akrobaticky přiskočí k tobě a ty si všimneš, jak se všechno kolem tebe výrazně zpomalilo. Stvořila ji Umbrella. Nyní si můžeš ve zpomaleném záběru vyzkoušet, zda to byla chyba!",
+      "4": "Za tebou se třepotá kabát. Otočíš se a uvidíš svůj odraz v jeho brýlích. Mohutný upír se posměšně šklebí, s chutí zvedá pistole a těší se na tvůj pokus ho pobavit. Jsi na jeho seznamu a budeš potřebovat víc než jen střelné zbraně, abys ho zastavil.",
+      "5": "Myslíš si, že jsi sám, dokud ti kolem ucha nesviští šíp. V rohu dílny nasedá mlčenlivý lovec na kolo a vede ho, kuši má pevně namířenou na tebe. Tohoto málomluvného přeživšího nezpomalíš zbytečným tlacháním.",
+      "6": "Najednou cítíš, jak na tebe zpoza police s klíči zírají jasné ledově modré oči. Mrkneš a už stojí před tebou. Přemýšlíš, jestli jsou těsné kožené oblečky standardním oblečením všech lovkyň. Pak si připraví pistole. Boj s tebou jí nebude stát ani za vzpomínku.",
+      "7": "Do uší ti dolehnou tóny banja. Kovboj s neukojitelným hladem po starých dobrých časech před apokalypsou se nenuceně opře o vrata garáže. Pravidlo č. 42: Nikdy se nestav mezi něj a jeho zlaté koláče! Možná nejsi sladké pečivo jeho touhy, ale jsi dostatečně měkký a křehký!",
+      "8": "Ze stropu něco kape. Voda? Červená, železem páchnoucí tekutina se náhle přelévá přes rozstřikovače dílny. Pochází z doby, kdy se upíři netřpytili. Jediné, co se tu třpytí, je jeho vražedný chtíč za slunečními brýlemi.",
+      "9": "Dva pochybní zloději se poflakují u baru, který je poskládaný z pneumatik a sudů od oleje, a opovržlivě se na tebe dívají. Ve skutečnosti chtěli jen panáka tequily, ale teď jsi na jídelním lístku ty. Příště ti ukradnou chuť do života!",
+      "10": "Vstupuješ do růžově zářící části dílny. Z reproduktoru se ozývá popová hudba, následovaná skřípotem motorové pily. Kolem proletí polovina zombie a hned za ní roztleskávačka v minisukni. V jednom kuse zbyla už jen její láska k příteli!"
+    }
+  },
+  "36": {
+    "name": "Retro TV Legendy",
+    "description": "Zapni blikající telku a podívej se na program plný nostalgických kultovních postaviček.",
+    "floors": {
+      "1": "Z rámu blikající televizní relikvie visí mechem porostlé liány. Stiskneš dálkový ovladač a ozve se tropický rytmus. Pak uvidíš, jak z obrazovky vystoupí pohodový soukromý detektiv v havajské košili a vystopuje každý případ, ale ten tvůj bude vyřešen rychle.",
+      "2": "Přepneš na jiný kanál a uvidíš dva ostrovy v moři. Počkat... to je plavčice, která cvičí plavání pozpátku! Následuje rychlý střih na pláž, kde zpomaleně běží směrem k vám. Obvykle zachraňuje životy, ale dnes ti ten tvůj zmaří celým svým tělem.",
+      "3": "Před tebou se zhmotní podivně bezcitný chlapík se špičatýma ušima. Zvedne obočí a s chladnou přesností spočítá pravděpodobnost tvojí smrti. Logiku milující poloviční mimozemšťan zná definici \"milosrdenství\", ale nemá v úmyslu ji použít.",
+      "4": "Stiskneš dálkový ovladač – a šup! Útulný obývací pokoj, na jehož pohovce si drzý chomáč chlupů s chutí pochutnává na sendviči. Na jeho vkus nemáš dost chlupů, ale on není vybíravý a stejně má v plánu si tě okusovat jako dezert.",
+      "5": "Znovu přepneš na jiný kanál. Na pohovce se povaluje žena s natupírovanými vlasy, těsnými legínami a lascivním pohledem. Chvíli si tě prohlíží a pak ji napadne, jak z tebe nejlépe udělat otroka své nákupní mánie!",
+      "6": "Dálkové ovládání má zřejmě nevysvětlitelně uvolněné spojení, protože mění kanály bez tvého přičinění. Dva zvláštní agenti na tebe udiveně zírají – jsou odhodláni tvůj spis uzavřít! Pokud je porazíš, bude to jejich dosud největší paranormální úkaz!",
+      "7": "Obrovské exploze! Na obrazovce létají pneumatiky a klíče. Z kouře se vynoří svalnatý muž se zlatým řetězem a čírem. Jsi ve špatném týmu a drzé řeči na něj neplatí! Jedinou šancí na útěk je nasednout do letadla...",
+      "8": "Rozcuchaný údržbář, který způsobuje víc chaosu než pořádku, se k tobě vrhne s hlasitým „Uuhhhhhhgggg?“. Rozbije všechno včetně tebe. Křičí „Větší výkon!“ a rozhořčeně chrčí v očekávání.",
+      "9": "Řítí se k tobě černý sportovní vůz se skřípějícími pneumatikami. Než stihneš zareagovat, proskenuje tě jeho červené světlo a označí tě za hrozbu. V jeho kokpitu sedí pohledný muž. Společně bojují za spravedlnost a bohužel i proti tobě!",
+      "10": "Poslední kanál bliká šumivými barvami a následuje hrdinské intro. Pak uvidíš muže, který vytáhne svou ultimátní zbraň: kancelářskou sponku. Ale rozhodně ho nepodceňuj! Jeho nejsilnější zbraní je improvizace. A ty? Jsi jeho další řemeslný projekt."
+    }
+  },
+  "37": {
+    "name": "Zasedací místnost",
+    "description": "Místnost plná hlasitých názorů a točících se hlav.",
+    "floors": {
+      "1": "Jakmile vstoupíš do místnosti, divoce křičící hlasy utichnou. „Hod na přežití!“ uslyšíš z konce dlouhého stolu. Vládce rovnováhy sedí před rituálním kruhem deskových her. Chystá se tě zničit nepříjemným číselným zvratem!",
+      "2": "Tvůrčí vichřice rozbíjí tísnivé ticho. Když skočí do kruhu rozhraní, víří pixely jako démoni v mosh pitu. Každá její hláška do sebe dokonale zapadá jako mocný dropkick. Cokoli, co neodpovídá její estetice, je nemilosrdně vyhozeno z kobky – a ty pochoduješ v jiném rytmu!",
+      "3": "Do zad tě bodne chrastící šavle. Vyzbrojen mapou drsného moře herního designu pluje těmi nejzrádnějšími vodami. Tento pirát si umí poradit s každým trikem a unáší koncepty, aby odhalil jejich poklad. Evidentně potřebuješ obzvlášť bolestivé přepracování!",
+      "4": "Po místnosti se jako prokleté pergameny třepotají nástěnky s náladami a v jejich středu stojí elektrizovaný hlavní umělec. Mezi bláznivými koncepty a nedokončenými ikonami řídí pekelný výtvarný tým. Každý tah štětcem podléhá jeho uměleckému zraku. V jeho šílených očích jsi prvkem ve špatném formátu!",
+      "5": "Stálé škrábání ostrého brku tě nutí nastražit uši. Paní slov ti píše osud včetně tvého trapného konce. S maniakálním smíchem naplní tvůj příběh dvojsmysly a hloupými podrazy kolen. Dokážeš se odtrhnout od jejích vypravěčských nitek a napsat svůj vlastní příběh?",
+      "6": "Otevřou se dveře a dovnitř vpadne na svém kouřícím skateboardu dobromyslná manažerka, vyzbrojená usmiřovacími donuty, které ti drží pod nosem! S úsměvem ukáže na kalendář a oznámí: „Je čas na aktualizaci!“ Nejsi si jistý, jestli máš utéct, nebo si dát donut.",
+      "7": "Udržuje pořádek ocelovými drápy. Za jejím půvabným leskem se skrývá disciplína a ti, kdo na serveru způsobí chaos, se setkají s jasnou strukturou a důsledností. Jako postrach trollího pekla tě elegantně vyžene do propasti. Tiše oddechuje: « Bonne chance, petit héros ! »",
+      "8": "Za ohnivými kulisami pekla pracuje tichý démon, který mluví pouze temnými jazyky kódu. Ale tento zadák na chvíli unikl z chrastících a pípajících spárů serverovny, aby mohl konečně opravit tu úpornou chybu, kterou má před sebou!",
+      "9": "Už několik dní nechává svítit klávesy svého notebooku. Obklopena horami prázdných energetických nápojů bojuje s nezvladatelným kódem a základní potřebou spánku, kterou považuje za zbytečnou. Stále píše na klávesnici, upírá na tebe oči a šklebí se: „Potřebuju víc... víc kofeinu!“ Cítí kofein ve tvé krvi!",
+      "10": "Mariam navrhuje kampaně pro dokonalý branding pekla a vládne sféře dosahu, čímž donutí ke konverzi i ty nejtvrdší bojovníky. V jejím čele však sedí skutečná královna démonického úřadu: Jules. Raději se jí ukloň... nebo spontánně přines její oblíbený tenisový míček!"
+    }
+  },
+  "100": {
+    "name": "Neochvějný cech válečníků",
+    "description": "Meče a štíty definují tento hrdý cech.",
+    "floors": {
+      "1": "Kamenná pevnost, která se před tebou tyčí pevná a nezdolná, nechá svou masivní bránu s rachotem padnout k zemi. Jakmile se zvířený prach usadí, spatříš ležérně vyhlížejícího vikinga, který s úšklebkem tasí své zbraně.",
+      "2": "Když vstoupíš na nádvoří, pohlédneš k obloze a spatříš modrý objekt, který se na tebe řítí přímo z nebes. Uskočíš jen tak tak, když těsně před tebou dopadne rytíř poskakující na lopatě. Jámu ti vykope s chutí a k tomu ti ještě hodlá způsobit pořádnou bolest hlavy.",
+      "3": "Wee-woo, wee-woo, kouzelnická policie je tu! Z ničeho nic se zhmotní magický strážce zákona za doprovodu kvílení sirény. Tvůj zločin? Vniknutí do neochvějného cechu válečníků! Vzdej se policii, svému nepříteli a žalářníkovi!",
+      "4": "Jak sestupuješ po schodech, prsty ti kloužou po chladné zdi. Od stěn se odráží pravidelné řinčení mečů. V této zatuchlé temnotě číhá zmutovaný želví vůdce, jehož pizzové šílenství má zpečetit tvůj osud. Tohle že má být teenager?!",
+      "5": "S hlasitým řevem, který ti proniká až do morku kostí, pozvedá tento skotský válečník svůj meč a štít, jakmile tě spatří. Jeho vzdušná sukýnka mu hravě povlává kolem holých, chlupatých lýtek. Tuto ani žádnou jinou svobodu si od tebe vzít nenechá!",
+      "6": "Na konci schodů dorazíš do přestavěného žaláře, v jehož středu stojí provazy ohraničený zápasnický ring. V něm stojí samuraj, jehož katana znuděně krájí nejrůznější ovoce. Pokyne ti, abys šel blíž, a uchopí svůj meč oběma rukama – za chvíli se bude podávat ovocný salát!",
+      "7": "Z klenutého schodiště za tebou se s hřmotem bleskově něco blíží. Kulaťoučký důležitkář před tebou prudce zabrzdí a beze slova ti strčí pod nos svůj průkaz. Chytil tě při krádeži kousku pizzy a teď tě hodlá zatknout!",
+      "8": "Před tebe se staví – ne, spíš poskakuje – černý rytíř bez jakýchkoli končetin. Jeho odhodlání vyzvat tě na souboj moc dlouho nezkoumáš, protože skáče nahoru a dolů a snaží se ti plivnout do oka. Když nechce uskočit stranou, tak se holt naučí létat!",
+      "9": "Cestou k vedení cechu tě zastaví kupa na sobě naskládaných chlapů. Jakmile na ni začneš lézt, zjistíš, že se všichni jmenují „Bill“. Na samém vrcholku pak narazíš na odhodlaného anděla pomsty, který udělá výjimku i přes tvé jméno!",
+      "10": "Konečně stojíš tváří v tvář šéfce cechu válečníků. Neúprosná síla a neohrožené odhodlání v boji je to, co tato svalnatá matriarcha staví nade vše. Dokážeš učinit přítrž drtivé dominanci této generálky? Ona totiž zajatce nebere…"
+    }
+  },
+  "101": {
+    "name": "Zvídavý cech kouzelníků",
+    "description": "Když moudrost a šílenství konají zázraky.",
+    "floors": {
+      "1": "Za rozraženými dveřmi si jeden pohledný kouzelník zrovna s chutí cpe do chřtánu botu. Ještě než se ho stihneš zeptat, do jakého fetišistického doupěte jsi to vlastně vlezl, začne s plnou pusou mumlat útočné zaklínadlo – jde ti totiž taky po kůži!",
+      "2": "Koberec pod tebou se znenadání sroluje a pevně tě omotá svými zaprášenými vrstvami plnými drobků. Vtom před tebe předstoupí mladá čarodějnice. Její kočičí maňásek nespokojeně mručí, že tohle nebylo to správné kouzlo na vyklepání koberce. Jediný pohyb ruky a už na tebe sviští klepáč na koberce!",
+      "3": "Když procházíš kolem, zaslechneš žalostný pláč. Opatrně přiložíš ucho k pootevřeným dveřím a slyšíš, jak si nějaká žena vylévá srdce a probírá své trauma ze ztráty. Celý nesvůj chceš rychle zmizet, ale vtom tě za flígr čapne arkánová rukavice. Čas na skupinovou terapii!",
+      "4": "Z další komnaty stoupá hustý dým. Vrávoravě se odtud vznáší malé zahalené stvoření a poněkud malátně ti vypráví o prastaré magii z planety Země, které se říká „sláma“. Jelikož má podezření, že toho máš u sebe víc, začne skládat rýmované zaklínadlo.",
+      "5": "Přilákán popovým zpěvem, v němž interpretka volá, že jsou potřeba hrdinové, vstupuješ do velkého sálu. Hudební přání neplní, místo toho ti slibuje bídný konec, který ti sama vykouzlí, takže na nějaké „šťastně až do smrti“ můžeš rovnou zapomenout!",
+      "6": "Po zdlouhavém bloumání chodbami, které snad nikde nekončí, narazíš na kouzelníka sedícího na pobíhající truhle, který tě bedlivě pozoruje. Správný směr sice očividně zná, ale raději vezme nohy svého zavazadla na ramena a okamžitě vyrazí na útěk. Honem za ním!",
+      "7": "Nasládlá vůně šeříku a angreštu ti pošimrá nos, když jen na vteřinu mrkneš a rázem se ocitneš v elegantní ložnici. Uprostřed místnosti stojí vycpaný jednorožec – a na něm mocná, a přitom podmanivá čarodějka. Bude ti stačit výdrž na tuhle jízdu?",
+      "8": "Další dveře jdou zpočátku stěží otevřít, ale nakonec se ti to podaří a vyvalí se na tebe zlaté olejové lampy. Uprostřed hromady lamp tře jak pominutý jakýsi druhořadý orientální kouzelník jednu za druhou. Nedívej se jeho kobří holi do očí, jinak tě má v hrsti!",
+      "9": "Jakmile vstoupíš do knihovny, hned se krčíš před poletujícími knihami a košťaty a nevěřícně zíráš na ten divoký chaos. Najednou všechno bleskově zamrzne a v potemnělém srdci magického vědění vyjde obrovský úplněk. Tahle loutková čarodějka pro tebe sype z rukávů jedno eso za druhým!",
+      "10": "Vystoupáš po posledním dlouhém schodišti a vstoupíš do věže cechu. Místo starého arcimága tě vítá v řetězech spoutaný iluzionista, který hlavou dolů bublá ve vodní nádrži. Poraz ho dřív, než se osvobodí – nebo mu čmajzni klíč!"
+    }
+  },
+  "102": {
+    "name": "Akrobatický cech průzkumníků",
+    "description": "Něco se šustlo v křoví? Aha, už uskočil.",
+    "floors": {
+      "1": "Těsně u lesa ční k obloze věže cechu postaveného elfy. Při otevření detailně vyřezávané brány tě k zemi srazí plechový ještěr. Zrzavá jezdkyně si od nikoho nenechá nic diktovat – a nejméně ze všeho kecy o svém make-upu nebo chloupků na tváři!",
+      "2": "Cítíš se nějak lehčí – jéminánku, kam se poděla tvá kupa zlaťáků? Obklíčen tančící skupinou mužných mužů v těsných punčocháčích posloucháš, jak zpívají o tom, že tvé úspory prostě rozdají. Jediné milodary, o které by se měli starat, jsou ale pořádné široké kalhoty!",
+      "3": "Příliš horlivě sprintuješ prázdnou chodbou, když vtom náhle zábleskne ostré světlo. Jakmile ti před očima přestane tančit i ta poslední barevná hvězdička, spatříš kouzelníka, který na tebe upřeně hledí. Dokážeš ho ukecat, aby ti nezapisoval trestný bod ve Flákačově?",
+      "4": "Kouzelník, který se cpe botami, a teď stojíš před slavnou lukostřelkyní, která líbá kamennou hlavu. Každý z těchto cechů tříd má své podivíny. Možná si jen spletla kamennou tvář? Cílem jejího šípu jsi ale zcela jistě ty.",
+      "5": "Tvůj další krok tě zavede do skleníku plného obřích stromů a světélkujících rostlin. Na větvi sedí vysoká modrá postava, která si pojem „hledat připojení“ vyložila až příliš doslovně. Chybu v připojení, k níž vzápětí dojde, si bohužel spojí s tebou.",
+      "6": "Když stoupáš po jemně opracovaném dřevěném schodišti, tvou pozornost upoutá panikařící goblin. Je napnutý v luku a dotyčný lukostřelec má pocit, že se musí sám nerfnout, abys měl aspoň malou šanci na vítězství.",
+      "7": "Na dalším mezipatře ti stojí v cestě kouzelník, který by tvůj dosavadní poprask i poražené členy cechu klidně přehlédl, kdybys měl s sebou pohodlnou skládací židli.",
+      "8": "Nad tebou se na kdákající opeřené spolujízdě pohupuje hrdina na důležité vedlejší misi. Působí na tebe uvolněným dojmem a dorozumívá se výhradně řetězcem za sebou jdoucích „Hyah“. Pokud trefíš jeho drůbež, poletíte oba dolů!",
+      "9": "Odnikud na tebe letí šípy, a přestože se jim o vlásek vyhneš, explodují a roztříští dlouhé schodiště pod tvýma nohama. Jejich střelec sice nemá žádné superschopnosti, ale jeho rány mají přímo výbušnou úspěšnost!",
+      "10": "Vcházíš na nádvoří, které slouží jako cvičiště cechu průzkumníků. Se zasvištěním ti přímo u nohou přistane šíp a donutí tě proskenovat okolí. Tvůj zrak spočine na lehkonohé elfce, která na zádech nese přítulného trpaslíka."
+    }
+  },
+  "103": {
+    "name": "Živý cech nekromantů",
+    "description": "Profesionální recykloři kdysi živých schránek.",
+    "floors": {
+      "1": "Prokletý věčným životem, v sobě místo orgánů hostí motýly, kteří vyvolávají brnění v jeho rozkládajícím se těle. Myslí si, že vypadáš nádherně.",
+      "2": "Pán tajemství, vládce intrik – a pověstně neschopný najít svou ztracenou ruku. Tito nekromanti mají opravdový problém udržet si své orgány či končetiny, ale i tak tě rozčtvrtí!",
+      "3": "Číhá na nedbalé opozdilce, aby je uvrhl do zoufalství. Ať už jde o jezdecká zvířata, létající košťata, nebo tvé zde špatně zaparkované půlky – pokuta je teď opravdu tvůj nejmenší problém!",
+      "4": "Káže lásku, ochotu obětovat se a dobrovolnou nucenou práci – ať už jako čistič exkrementů, kuchař nebo dělník na poli. Jako odměnu je každému dovoleno propadnout hříchu. Vzpíráš se? Neboj, má pro tebe rituál… ale nejdřív tě osobně konvertuje ke svému kultu!",
+      "5": "Pohřby jsou pro něj čiré networkingové akce, ale nezdráhá se ani domácích návštěv. Máte chvilku na rozhovor o jeho pánu a spasiteli, bohu smrti?",
+      "6": "Preferuje nosit oděvy z říše mrtvých a odsuzuje smrtelníky, kteří nenosí návrhářské oděvy. Podezíravě tě pozoruje, aby odhadla tvé míry… pro tvůj pohřební rakev!",
+      "7": "Někdo ti poslal sladké překvapení. Policista pokapaný dortovou polevou provokativně vlní boky a svléká se do rytmu erotické hudby. Nejen jeho kouzelná hůlka přímo dychtí po tom, aby mohla stříkat magii, tak pošli tuhle zásilku zpátky odesílateli!",
+      "8": "Zase chystá něco velkého. Svým andělským hlasem a hlasitostí zkušeného městského hlásného na tebe řve jeden ze svých narcistických monologů.",
+      "9": "Mezi masovou nekromancií a cílem dobýt svět neustále hledá nejbližšího ortopeda, zatím marně. Dřív než si sám poláme kosti, sáhne po tobě!",
+      "10": "Považuje se za strážce rovnováhy, ale bohužel všechno váží ve prospěch smrti. Neboj se, po smrti tě vzkřísí pro své vlastní účely."
+    }
+  },
+  "104": {
+    "name": "Třídní portál zrůdností",
+    "description": "Hrdí, moudří, hbití a vzkříšení? Svým způsobem ano, ale taky tak nějak dost zkažení..."
+  }
+}

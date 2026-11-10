@@ -1,0 +1,752 @@
+{
+  "1": {
+    "name": "Desecrated Catacombs",
+    "description": "The dead are surprisingly alive.",
+    "floors": {
+      "1": "Immediately upon entering the dusty vault, you are met by a spooky creature. A wailing ghost is trying fiercely to scare you away.",
+      "2": "As you clear your face from the last slimy remnants of ectoplasm and carefully feel your way along the cold vault wall, a snarling four-legged friend approaches you slowly but purposefully. Now it is too late for rabies injections.",
+      "3": "You have already noticed that the buried corpses aren't as dead as they are supposed to be, so you are not overly surprised as an ugly zombie blocks your way.",
+      "4": "You hear something fluttering in the distance. Is it a tiny moth or perhaps a bat? As it comes closer you realize that the creature ahead is something much bigger - a devious vampire!",
+      "5": "A terrifying roar is shaking the catacombs - and gives you the shivers. Bravely you venture on and confront the night ghoul that is blocking your way.",
+      "6": "With every step you take, you come across increasingly dense cobwebs and thick silk cocoons. Finally you come to a halt, your limbs tangled in the sticky webs. Your fidgeting summons a hungry Giant Spider to her longed-for feast.",
+      "7": "In the shadows of flickering torches, a dark figure clad in a monk's robe appears. At first motionless, then suddenly at a smart pace, it storms towards you with a flying cloak, a bloody dagger drawn. This Unholy Monk has left peaceful praying behind.",
+      "8": "You pass through the gate and enter a large corridor, where you notice mysterious runes on the wall. Before you can investigate them any further, a voodoo master attacks you.",
+      "9": "Sparkling red eyes flash at you from the darkness. Small fragments of stone crumble from the ceiling above you, revealing a gaping hole. In the corner of your eye, you think you catch a glimpse of the white fur of an Albino Rat. Either he is very fast or he is not alone...",
+      "10": "Finally you enter the main crypt. You feel a cold wind that almost extinguishes all the torches. You hear malicious laughter... a true master of evil is waiting for you."
+    }
+  },
+  "2": {
+    "name": "The Mines of Gloria",
+    "description": "Hi-Ho, Hi-Ho, it's off to work we go.",
+    "floors": {
+      "1": "Overcome by the feeling of being watched, you look around frantically and manage to spot a Mountain Lion crouching and preparing to attack his prey. Time to turn the tables on the hunted.",
+      "2": "Hissing, the Spittle Cobra slithers up the impressive pillars of a forgotten civilization, ready to inject you with her venom and make you hallucinate about helpless ladies in distress. Unfortunately, daydreaming will have to wait. Instead, you could perfect your knotting skills with her.",
+      "3": "The light is focussed above a stone altar. A lightly clad demonic woman is reclining on it, beckoning you closer with an inviting gesture. This Bride from Hell is probably planning to go straight to the honeymoon, but you suddenly notice something sharp. She jumps towards you with a knife.",
+      "4": "You keep going, but suddenly something small jumps at your neck and starts to bite. You manage to shake it off - it's a gremlin, ready to strike again!",
+      "5": "Looks like a dead end - the tunnel has probably collapsed. But something is not right here. Suddenly the rocks are moving and a giant creature forms in front of you.",
+      "6": "The sound of galloping hooves echoes through the quiet halls and you wonder how a horse got lost here. But instead, a Gray Centaur rears up in front of you, standing on his hind legs. If only you had a crunchy apple in your luggage, you might be able to tame him peacefully.",
+      "7": "You enter a cavern inhabited by a grim stone troll. He seems to be genuinely happy about your company - it's been way too long since he killed his last houseguest.",
+      "8": "Behind you, a rusty steel grid slams to the ground and the Evil Taurus scrutinizes you briefly. You breathe a sigh of relief. Luckily, you're not wearing red armor today! The Evil Taurus starts swinging his large axe around. He seems to be colorblind anyway.",
+      "9": "The maniacal laughter that suddenly erupts from behind you can only mean one thing: A hideous demon is challenging you to a fight.",
+      "10": "The earth suddenly begins to tremble beneath your feet. Fiery red light bathes the entire mine in an ominous glow as a bloodcurdling roar rises from the depths. The air seems to shimmer, filled with the oppressive heat spread by the approaching Firelog. Don't let him pass!"
+    }
+  },
+  "3": {
+    "name": "The Ruins of Gnark",
+    "description": "Frequented by criminal elements.",
+    "floors": {
+      "1": "These ruins could use a good cleaning. When was the last time someone vacuumed this place? There are bugs and vermin everywhere. A big ugly rat is chasing you.",
+      "2": "A dust bat attacks without the least bit of consideration for your dust allergy. Coughing and sniffing, you draw your weapon to exterminate the beast.",
+      "3": "You enter a great hall full of spider webs. You have never seen so many webs... not to mention such big ones. The giant tarantula that was waiting on the ceiling drops down to welcome you...",
+      "4": "A devilish statue sits petrified above the large iron door, gazing into the distance. As you reach for the handle, some dust trickles onto your shoulder. You tilt your head back and meet the glowing eyes of the Gray Gargoyle which stares at you urgently and starts to swoop.",
+      "5": "A scoundrel attacks you with a valuable sword that is probably stolen. With a greedy look, he examines your equipment... oh no, not your shoes!",
+      "6": "It seems that the squatters are keeping wild wolves to guard the ruins. Wishing they had chosen Chihuahuas instead, you get ready for battle...",
+      "7": "All of a sudden it’s suspiciously quiet. Awaiting another ambush, you sneak around carefully. Unexpectedly there are steps behind you – a bad bandit is trying hard to knife you.",
+      "8": "Although there doesn't seem to be a single gold coin left in the treasure chambers, a Brown Bear has made himself at home in this dust-covered room. He is eating the last visitor to the chamber and as you take a step backwards, a bone cracks beneath you, and the hairy monster notices you.",
+      "9": "Completely out of control and with unbridled vigor, a Wild Boar charges towards you unchecked. At this moment, you feel a strange stirring inside you. Your rumbling stomach seems to rejoice at the impending confrontation.",
+      "10": "You see a wooden door and open it. It leads to the private chambers of the robber chief. All previous opponents seem like small fry compared to this senior criminal."
+    }
+  },
+  "4": {
+    "name": "The Cutthroat Grotto",
+    "description": "The fight against piracy has just begun.",
+    "floors": {
+      "1": "Hidden inside a gigantic skull rock, the Cutthroat Grotto awaits you. The welcoming committee consists of a Water Glompf that is looking forward to tasting your limbs.",
+      "2": "The air is filled with the scent of the salt water that flows into the cave system, and every now and then, you can smell the pungent aroma of rum, which is stored here in old barrels. A Saurus Rogue jumps out of the water, blocking your path to the wooden walkway.",
+      "3": "A hero like you must have collected enormous amounts of gold for all your questing. At least that's what this mugger is thinking... and now he wants his share.",
+      "4": "There is something floating in the water, probably a large tree trunk. As you move closer, the 'trunk' snaps at you... It turns out to be a hungry shadow alligator.",
+      "5": "A sturdy swashbuckler wants to bar you from entering an old ship that is docked here. Fearlessly you start a fight with the pirate... and his parrot!",
+      "6": "A mysterious creature dashes across the deck. When you finally get a good look at it, you stare in the mad eyes of a deranged monster rabbit. It is holding a knife that looks uncomfortably sharp!",
+      "7": "You are on your way below deck when you are startled by a strange noise from the cargo area. The attacking cutthroat obviously wants to live up to his name.",
+      "8": "Pirate Blood Nose is hiding behind a crate in the cargo area. He is begging for mercy but you don't fall for his tricks and attack him immediately.",
+      "9": "Suddenly there’s a big crash; several planks are bursting and seawater is flooding the cargo area. A gigantic octopus is destroying the ship – and eyeing you as a welcome snack.",
+      "10": "As the ship is slowly sinking, you meet the mutated pirate captain on the main deck. He is blaming the damage on you, and asks about your insurance coverage."
+    }
+  },
+  "5": {
+    "name": "The Emerald Scale Altar",
+    "description": "Life is full of sacrifice.",
+    "floors": {
+      "1": "The rattling sound of a cobra leads you into catacombs below the altar. In the ancient culture, snakes like this are regarded as holy animals. In today’s culture, they are regarded as bloody dangerous.",
+      "2": "A green reptile blocks your way. If you had paid more attention in school, you would recognize it as a slashing saurus. Fun fact: Its task is to protect sacred altars from intruders such as yourself.",
+      "3": "Neither peace nor quiet can be found here. The roaring raptor lives up to its name. You grab your earplugs first, then your weapon, to bring silence to this sacred place.",
+      "4": "A giant baptismal font is set in the middle of the room. It is filled with mud that reeks of death and decay.  Suddenly a newly baptized Swamp Warrior jumps out of the mud and tries to convince you of his belief... that intruders must die!",
+      "5": "A giant Rex guards next location. It is sleeping peacefully and you are trying your best to sneak around it... until you trip over an empty soda can and awaken the beast.  Littering is really a nuisance.",
+      "6": "The Jungle Scorpion has ended up from the bushes of the Sprawling Jungle in the glistening green halls of the Emerald Scale Altar to test his poisonous sting on intruders like you.",
+      "7": "The swamp dragon supposed to be locked away safely in a cage. Unfortunately, someone forgot about the ‘locking up’ part. Well, you’ve always wanted to be a dragon tamer, haven’t you?",
+      "8": "This next area is flooded with foul-smelling, muddy water. All of a sudden a shrieking gorgon appears from the deep. You avert your gaze and feel for your weapon.",
+      "9": "The throne room must be behind this ancient gate. A giant toxic dragon - who is looking forward to ending your life in the most painful way - stands in front of it.",
+      "10": "King Saurus is not that happy to see you. Privacy is really important to him, and he doesn’t want his ancient temple to become a tourist attraction. What else is he supposed to do but attack you?"
+    }
+  },
+  "6": {
+    "name": "The Toxic Tree",
+    "description": "Its roots reach down into infernal deeps.",
+    "floors": {
+      "1": "The plague that has befallen the tree turns the entrance into a death trap. You’ll have to do some trimming and pruning before you can walk in.",
+      "2": "The overwhelming stench of decay and decomposition pervades relentlessly through the overgrown labyrinth so that you only now notice the Swamp Ghoul that has been slowly following you.",
+      "3": "Mutated variations of the plague have befallen other creatures that came too close to the tree. The wolf that snarls at you seems to have some sort of rabies.",
+      "4": "The green ooze from the tree turns out to be the perfect environment for the Blob species, so it comes as little surprise that a slimy blob starts wobbling towards you. Yuck!",
+      "5": "It would have been easy to overlook the greenish gremlin that is lurking in the ooze. You spot him just in time for his attack and start to fight for your life.",
+      "6": "You see something furry from a distance. A brown bear? What is this fellow doing in here? He is affected by the plague and charges at you with a mighty roar.",
+      "7": "Large drops fall from the wooden walls to the floor and you struggle not to be buried under them. Mad laughter echoes through the corridor as you catch sight of a Green Gnoll carelessly rolling in the thick goo in front of you. Stop his laughing before he infects you!",
+      "8": "If only the flowers in your front yard would grow as impressively as this member of the Muncher family. Unfortunately the plant blocks your access to the heart of the tree. Time for a little gardening...",
+      "9": "The green slime relentlessly seeps through cracks and crevices in the tree, forming pools and small streams that light up the darkness with an unnatural glow. Before you can reach the heart of the tree, an intimidating Forest Gorilla stands before you with his chest out.",
+      "10": "The terrible toxic gremlin is the deadliest mutation ever. He snarls as you approach his hideout. The root of all evil must die..."
+    }
+  },
+  "7": {
+    "name": "The Magma Stream",
+    "description": "It's getting hot in here.",
+    "floors": {
+      "1": "A fire scorpion is sitting on the warm rock formation. It has been itching to inject its surprisingly deadly poison into the bloodstream of another foolish tourist.",
+      "2": "As you approach the entrance to the underworld, something emerges from the smoke clouds above the lava ponds. This must be the fire basilisk you have been reading so much about.",
+      "3": "You are just entering the underworld when something emerges from a lava pond. Is it a lava lamp? No, simply an annoying lava blob... might as well fight it.",
+      "4": "Finally, you find yourself in the cave that leads to the melting core of the magma flow. A small, furry ball rolls over the glowing stones straight towards you and bounces up in front of you, stretching out small limbs. The pointed teeth of the Fire Glompf want to close around your head!",
+      "5": "With every breath your lungs fill a little more with the yellowish sulphur vapors. Streams of lava run through the volcanic rock-like veins of liquid fire, and while you focus on avoiding stepping into the bubbling streams, you hear the infernal hissing of the tiger behind you.",
+      "6": "A cyclops scuffles in your direction. He looks cute in his janitor uniform. Underworld management has assigned him to cleaning and maintenance tasks. But he's also pretty good at killing unwelcome visitors.",
+      "7": "You jump back from the flames that burst through the giant crack in the floor that you were just about to cross. They belong to the fire elemental that is about to attack.",
+      "8": "You examine a suspicious pile of lava rocks carefully. Could it be a lava giant? No, it isn't. Whew! But a real lava giant is standing right behind you. Boo!",
+      "9": "Finally you enter the area through which the magma stream is flowing. You are getting closer to its source... and to the giant dragon that is guarding the passageway.",
+      "10": "You are at the source of the magma stream! Just as you are about to equip your oven mitts in order to switch it off, the ghost of the volcano rises with a rumbling growl."
+    }
+  },
+  "8": {
+    "name": "The Frost Blood Temple",
+    "description": "Will make your blood run cold.",
+    "floors": {
+      "1": "The cold wind whips in your face as you climb up the icy path to the temple. You see something big and furry heading your way. Could this be a fearsome yeti?",
+      "2": "You become aware of a hooded figure that has been stalking you, hidden in the shadows of the temple walls. Who is this dark phantom and what does he want from you? You should challenge him to a duel!",
+      "3": "Shivering from the cold, you are still searching for the temple entrance when a giant dragon swoops down on you. With almost frozen fingers, you reach for your weapon.",
+      "4": "The icy gate of the Frost Blood Temple is ajar, allowing you to slip inside. Protected from the strong winds that you now only perceive as a bright howl, you marvel at the imposing entrance hall of the temple. Before you can go any further, you have to take care of the Snow Lion which finally senses his chance out of the shadows.",
+      "5": "You carefully pass a large frozen pool. Were wild splash parties held here in the past? Under the suspiciously cracking layer of ice you see a quick shadow scurrying by. A pair of ice-blue sapphires glitter towards you before a Frost Alligator shatters the ice beneath you.",
+      "6": "Suddenly a door opens and bright light streams into the temple. You are blinded for a moment and hardly able to make out what's coming through the door... a creature with a really big head.",
+      "7": "What a beauty: The dragon of madness has really flourished in the cold surroundings. He is standing right in front of you with a belligerent twinkle in his eyes.",
+      "8": "Something is moving in the twilight - a monstrosity from another world! You have the odd feeling that reciting some dialogue from E.T. is not going to solve this conflict.",
+      "9": "Suddenly a chirping sound - the language of the extraterrestrials! Another one of those aliens must be nearby... and you are probably already in the sights of its superior weapon technology.",
+      "10": "The horror that takes hold of you as you encounter this bizarre murder machine is beyond words. Its sole purpose is to kill and destroy in an impressive multitude of creative ways."
+    }
+  },
+  "9": {
+    "name": "The Pyramid of Madness",
+    "description": "Don't lose your sanity (or your life).",
+    "floors": {
+      "1": "What's that, a cave cyclops? How did he get here? Something must be wrong. You should just beat him up quickly and keep on exploring this strange place.",
+      "2": "It has been calm and windless, but all of a sudden a sand storm blows up. Slightly irritated about the reliability of the local forecast, you are trying to deal with this weather situation.",
+      "3": "Finally you reach the pyramid. An alien is sitting at its foot. It is scratching its head and enjoying the warm sun. But its relaxed posture changes quickly as soon as it spots you.",
+      "4": "During your ascent on the pyramid stairs, you come across the yeti. It is throwing a bone down the stairs, thrilled by the effects of gravity. How much more fun would it be playing this little game with you?",
+      "5": "The mud smacks under your feet with every step. Wait...why is there mud here? And why does the woman in front of you have horns? The Swamp Nymphomaniac longs for new heights of passion, wanting to sink her claws into you before she sends you crashing to the ground. Better tighten your belt!",
+      "6": "The Sulky Taurus hates leg training, which is why he would love to smash every single step of the stairs. Because the mystical powers of the pyramid prevent this, he will take his unbridled rage out on you. I wonder which idiot sold him the steroids?",
+      "7": "A terrible demon appears at the top of the pyramid and comes charging towards you. It is muttering to itself while madly swinging an axe.",
+      "8": "You try to keep a clear head but all you can think of are pink rabbits. A really malicious pink monster rabbit stops at nothing...even physical abuse.",
+      "9": "What was once a wise scholar is gasping wildly for air here in order not to choke on his own laughter. You seem to have discovered the birthplace of the gnolls. Not the first mad gnoll you've encountered, but hopefully the last. Only the finishing stroke will do.",
+      "10": "On top of the pyramid you find... a mirror? Suddenly your mirror image steps out of it and attacks you. The situation is getting a little bit crazy. Are you able to defeat yourself?"
+    }
+  },
+  "10": {
+    "name": "Black Skull Fortress",
+    "description": "Deep inside there's even a gift shop.",
+    "floors": {
+      "1": "A dark rider steps in your way and demands that you turn back. As you ignore his order, he draws his sword to teach you some discipline. And kill you, of course.",
+      "2": "The heavy iron gate at the end of the frosty bridge is raised and a Bat out of Hell flutters frantically in your direction. You wonder whether the secret entrance to the legendary bat cave and the dark knight are hidden behind it. The bat seems to have located you.",
+      "3": "The gate crashes down behind you. A bunny hops fearlessly to your feet and looks at you with beady eyes. You feel the urge to pet the fluffy fur, but when you reach out your hand to the monster rabbit, his face contorts into a horrible grimace.",
+      "4": "From out of a dark corner a bad-tempered night troll tries to crack your skull with a blunt object. Fortunately, he misses. Unfortunately, he's getting ready for another swing...",
+      "5": "All of a sudden a grate is opened. The dangerous beast that was kept captive behind it is now enjoying its newfound freedom. The dark shadow that is stalking you turns out to be a hungry panther.",
+      "6": "You've barely managed to slay the beast, but someone seems to be watching you. The owner of the panther is not pleased with what you did to his pet kitty and wants to have a word.",
+      "7": "What is the Gray Dragon doing here? His name seems to refer to his age because his cataracts and dementia mean he is just spewing clouds of soot in all directions except yours. Free him from his earthly misery.",
+      "8": "As you try to enter the main tower, a black skull warrior blocks your way. Something really significant must be hidden there, considering how desperately he wants to stop your progress.",
+      "9": "A gigantic dragon of darkness inhabits the main tower. Due to his enormous size, he hasn't been able to leave the tower for many years. It's no wonder he’s so crabby...",
+      "10": "Looking through a tower window, you notice a dark powerful figure waiting just in bailey. It is the Knight of the Black Skull himself who is challenging you to the final duel."
+    }
+  },
+  "11": {
+    "name": "Circus of Terror",
+    "description": "Humans, animals, monsters!",
+    "floors": {
+      "1": "Sorely marked by the stress and strain of the adventures you have suffered, you think back to your carefree childhood. Suddenly, your face brightens as cheerful music sounds from the distance. The circus is in town!",
+      "2": "The clown was certainly no laughing matter. But somehow, the next attraction leaves you feeling even worse. A figure armed with sharp knives threatens to demonstrate his questionable skills - incoming!",
+      "3": "Escaping the knife thrower's blades by the skin of your teeth, you almost stepped on the next star in the arena. Isn't he cute! But there's something about that belligerent look you really don't like...",
+      "4": "You've seen a lot of strange and terrible things on your journeys. You're accustomed to the sight of the vilest, snarling monsters. You laugh in the face of danger. But this sight leaves you speechless.",
+      "5": "Oh, a juggler is up next! Look at what all he can do! The question is, can you do it, too? Here! Give it a try!",
+      "6": "The two guys you're facing now have lived closely together ever since their very complicated birth. The brothers don't particularly like each other, but they've learned to let out their aggressions on others.",
+      "7": "Next up is the clown, who frightens not only children, but adults, too! Along with animals, plants, death, and the devil. Let's have a round of applause for Bronco the Joker, the man with the hardest hitting gags and the most brutal punchlines, all way below the belt.",
+      "8": "Sometimes, you have to bend a little to get ahead in life. Your next opponent has perfected this art. With his bizarre contortions, he can attack you from four sides at once.",
+      "9": "The crystal ball never lies, the hunchbacked old woman is sure of that. And for you, the future holds nothing but death and destruction. You cannot escape your fate. All you can do is fight to the bitter end.",
+      "10": "Doesn't he look funny? Sure, his laugh has something diabolical about it, and the balloons he's carrying have been seen in connection with several unsolved murders. But there's no zanier way to die an agonizing death."
+    }
+  },
+  "12": {
+    "name": "Hell",
+    "description": "It can't be THAT bad...",
+    "floors": {
+      "1": "So, you think you've beaten Death and the Devil? Think again. Beelzeboss will be glad to accept your challenge. With a dull rumble, the door to the underworld opens, and a restless soul rises to bid you welcome.",
+      "2": "You probably don't remember every single enemy you've sent to the great beyond on your journeys. But they all remember you. And some of them are still really ticked off.",
+      "3": "While alive, he ended up being a burden to everyone, thanks to his constant nagging and ranting. Nothing has changed in that regard. Except for his flyswatter's power.",
+      "4": "What happens when an annoying little boy is eaten by a werewolf? You're about to find out.",
+      "5": "Now the rest of the lost souls have got wind of your arrival. They can hardly wait to give you a proper reception.",
+      "6": "Hell has specialized workers to make sure it is truly hellish for the inmates. Often, the bosses of game developer studios are lured by specially trained headhunters. This one was particularly successful.",
+      "7": "Oooh, how sweet! Does he bite? - Of course!",
+      "8": "A disgusting, stinking pile rises up in front of you. It grows to an alarming size, fed by an addled mass of souls and an endless stream of verbal diarrhea. Can you stop the baleful mustached one?",
+      "9": "He'll help any guilty party get what they're after. If the price is right, he always finds a way. Scruples, a conscience, even a soul? Unprofessional! You want your just dues? You have to pay!",
+      "10": "There he is, Beelzeboss. Death and the Devil rolled into one. The dark lord of the underworld. Hmmm... I expected him to be taller."
+    }
+  },
+  "13": {
+    "name": "The 13th Floor",
+    "description": "Get in if you dare!",
+    "floors": {
+      "1": "You have embarked on the dangerous journey to the 13th floor to complain about the dungeon’s low difficulty level. The elevator door slowly opens and a small, nasty beast jumps out at you from the darkness.",
+      "2": "After getting torn up by the Hellgore’s claws, you’re visibly cheered by the appearance of a good fairy. She’s bound come to your aid! But wait a minute - that isn’t the kind of fairy that makes wishes come true...",
+      "3": "You heard a sound from one of the devastated office spaces. You cautiously take a peek... it’s probably nothing... but suddenly Jet the Panty Raider jumps out at you. He’s trying to get in your face - if not more!",
+      "4": "Even during the last battle you felt that someone was watching you the entire time. Suddenly the dreaded Clapper van Hellsing appears, and for some reason he’s armed with a paint brush. With red paint. Or something that looks just like it.",
+      "5": "You decide to contact community support about your complaint and wind up with the KOma KOmmander, who is all too happy to take care of you personally.",
+      "6": "Behind a massive desk inside an enormous office sits a sinister character, counting money that could have been invested in more difficult dungeons. Would have been. Should have been!",
+      "7": "Lost in hellish accounting? He has read every contract and internalized every small print. His accurate predictions will shake you. Anyone who turns up here without a voucher will be mercilessly locked up in burning Excel cells...for all eternity.",
+      "8": "Finally, someone has time for you! The CEO himself is willing to grant you an audience. You just have to sign this one little document. In blood.",
+      "9": "You refused to sign a perfectly harmless standard sales slip for your soul. One person in particular isn’t too pleased about that: Motu with the Club loves players’ souls.",
+      "10": "Finally, you’re approached by a charismatic representative who is ready to compromise. Yes, we’ll adjust the difficulty level. Let’s seal it with a hammer... uh... handshake.",
+      "11": "You did it! You’ve cleared the dungeon! But what’s that? Is there a second wing in the building? Somebody wants to give you hell with two wings immediately. Are you strong enough for Thesi?",
+      "12": "That was close. You are sneaking along the hallway. Don’t arouse any attention. You open an office door veeeeery slowly, where a tester of death loudly explains your demise!",
+      "13": "Your ears are still ringing while you are thinking about the look of the Remastered Version. You really want to address one or two things…Gert is looking forward to your suggestions, but only after beating you with his axe!",
+      "14": "After this forced musical education you look at a singed scroll. It reads \"Translate it by yesterday!\" You are wondering what this means when suddenly the Master of Lies steps forward to promise you a pie in the sky…um…in hell.",
+      "15": "Organization is everything. What everybody knows from home, school or work is even more true in hell. There’s chaos everywhere. It’s a good thing that Hellgore the Hellish’s sister lends a hand here. Actually, she isn’t his real sister but his sister in suffering.",
+      "16": "You think they should organize everything themselves. You enter the devastated kitchen and fortunately, it is empty. But what’s that? Is someone baking a pizza? Far from it! Somebody’s hiding in the 200 °C hot oven! As this pizza is not enough for two, you will have to fight for your slice!",
+      "17": "You’ve had enough pizza and begin to search for answers. It seems as if three new opponents would appear for everyone you defeat. This should only happen in trashy fantasy novels! You are taking some steps forward when suddenly a pickaxe flies past you and gets stuck in a wall, vibrating.",
+      "18": "Soft tapping draws your attention. You follow the sound which gets louder and louder. There’s some kind of kobold sitting at a burning computer, maybe a codebold? Here many new features are developed in the 20-finger system! Suddenly, he hears you and mistypes something. It’s all your fault!",
+      "19": "Nothing has happened that can’t be covered with some paint. Where can you find a good painter in hell? As if on cue, a small man with brushes appears. No, this can’t be real. He holds them between his fingers like a claw and attacks you!",
+      "20": "You enter the very last office with the floating boss in it! Duke of Darkness, Herald of Hell, Prince of Perdition, Emperor of Evilness, Commander of Chaos, Archdemon of Agony, Beast of Bane, Viscount of Vileness, Stewart of Satan…but his friends just call him Marv."
+    }
+  },
+  "14": {
+    "name": "Easteros",
+    "description": "Behind the wall a land doth call ...",
+    "floors": {
+      "1": "You arrive on the other side of the wall and an overweight guy runs towards you, crown askew on his head. You'll have to fight with the strength of a ferocious boar!",
+      "2": "A warrior extends you his hand, but his skin is noticeably colder than normal. Is winter coming again so soon? Show this stranger that you can be cold as ice, too!",
+      "3": "Who's that dude? And why are the two women with him armed to the teeth?!",
+      "4": "Holundor!",
+      "5": "A stranger with a long mane of hair charges at you screaming. Whatever he wants, your best course of action is to try and pull his hair ...",
+      "6": "With a scornful laugh, your next opponent approaches with what can only be considered a rather threatening stance.",
+      "7": "The strange, diamond-shaped gesture doesn't bode well ... and neither do the two heavily armed giants in gold plate armor.",
+      "8": "Phew, that's some scar! How are you supposed to focus on fighting with that on your opponent’s face? Isn't it against the rules?",
+      "9": "You almost take pity on this giant. He just can't find shirts his size!",
+      "10": "Your next opponent is an honorable fighter through and through. He would certainly never kill someone lying on the ground with a crossbow.",
+      "11": "This one here seems to be particularly \"frosty\". Where does he come from, anyway? Did you leave a door open in the great wall?",
+      "12": "Approaching the pass you encounter this red-haired vigilante. Why the heck is she so upset with you for killing her two companions?",
+      "13": "Your next enemy is being shadowed ... by a giant wolf, as it turns out. And now that beast also turns on you. Oh dear!",
+      "14": "It's suddenly uncomfortably hot in the snow ... too hot for a Night Terror like you?",
+      "15": "Your next opponent wants a fair fight? Now that's a girl who's gonna lose! Ha!",
+      "16": "Whatever he's trying to say with those scissors and that thing in his other hand ain't something you want to know.",
+      "17": "May he show his true face. And may he desist from using such curious speech.",
+      "18": "Is he the murderer? He must be the murderer! You can tell by that doe-eyed, innocent look!",
+      "19": "You want to stop me? Ha! You and what Queen's Guard? Oh ... uhm, THAT Queen's Guard. I see ...",
+      "20": "No, I'm not scared of giant dragons. Why would I be scared of that? I've never met ... ahhhh!"
+    }
+  },
+  "15": {
+    "name": "Tower",
+    "description": "Once upon a time there was an adventurer and three companions...",
+    "floors": {
+      "1": "On the first level you meet a friendly, aromatic cake man. What's your place in the food chain?",
+      "2": "Anise, wormwood, and the magic brew is ready. Drinkerbell offers you a schnapps that can knock you out... Unless you strike first!",
+      "3": "The poor thing! He's actually only looking for his great love, but he's wounded - now's your chance to attack!",
+      "4": "He might not be able to really hurt you, but while he's cheerfully waving he's blocking your way. Let him have it!",
+      "5": "A small flower girl is separating you from your goal. It's best if you separate yourself from her!",
+      "6": "It was her who stole your milk teeth in exchange for a pittance. The time for revenge has come!",
+      "7": "A top-model casting reject. It still seems to have big beauty ambitions. That is, unless you stop it now!",
+      "8": "That noise pollution is unbearable! Someone should give the beast a good plucking!",
+      "9": "Yeah, we've got a wish - get out of the damn way!",
+      "10": "The story of his childhood seems very overwrought. I wonder if the survival techniques from the jungle will help him against you?",
+      "11": "There'll be no more singing! Is that too hard to understand? Come on, turn that dumpling into porridge!",
+      "12": "He pretends to be so friendly, but he'll use the same hand to play the Devil himself. It's time to hand him his walking papers, the fraud!",
+      "13": "She's always so haughty! You don't have to put up with that kind of attitude.",
+      "14": "Wannabe prince... You've heard the story too many times to still believe it!",
+      "15": "The whatsit on his face says he's up to no good again.",
+      "16": "Everyone take a turn to make a wish, then everyone take a turn to attack!",
+      "17": "The stink of booze and boot leather and great promises of wealth and fortune on top... Who would believe it.",
+      "18": "That shoe thief. She should go back where she came from!",
+      "19": "Jonny! Many hold him responsible for the hole in the ozone layer because he used to always stare up at the sky.",
+      "20": "One is a shameless show off, the other an uninhibited fraudster. Both should be punished, in the name of the moon!",
+      "21": "Wild geese are protected animals. Anyone who steals one has you to reckon with!",
+      "22": "Even the most cheerful ghost is unholy and has to meet its end some time. Exorcise the ghosts, the good and the bad!",
+      "23": "What she and her accomplices did to that wolf is animal cruelty and needs punishing!",
+      "24": "Summer is coming. And so is the thaw.",
+      "25": "The suspect was first spotted naked beneath the open sky. Later, financial resources of dubious origin were discovered near her person.",
+      "26": "A poor, harmless creature suffering undeservedly. Anyone who keeps playing here will have a bad conscience at Christmas.",
+      "27": "She's looking forward to holding you in her arms, until you die an icy death.",
+      "28": "A wonderful example of how well anti-authoritarian parenting works.",
+      "29": "Anyone who looks this cute and sad deserves to be put out of their misery.",
+      "30": "Called that, or something like that, at least that's how everyone says it. Anti-wind power fanatic, probably a nuclear power lobbyist.",
+      "31": "Sniffed his oil lamp too much and now suffers from hallucinations... Put him out of his misery.",
+      "32": "Ever since her rabbit ran off she's suffered from delusions. Who knows what she's capable of? Off with her head!",
+      "33": "Sanctum Peter Cottium, Deus in re unium, hippitus hoppitus reus Domine!",
+      "34": "He always like he never ages. We see your wrinkles, Peter, and we know your weaknesses!",
+      "35": "She should be easy to beat. After all, she falls for any stupid trick. But just make sure she really is dead!",
+      "36": "No excuse to party is too silly for him. He's always celebrating something. Do the right thing and put an end to his endless revels!",
+      "37": "Who knows exactly where she comes from, but she's always trying to creep into high society circles with the help of dubious accomplices.",
+      "38": "You can find something better than early retirement everywhere!",
+      "39": "Sitting pretty on the wall with his grammar book. What would happen if you knocked him off?",
+      "40": "If his beard wasn't so lopsided and if he stopped trying to teach young women manners, it might be possible to have some sympathy for him. ",
+      "41": "Anyone who creeps into children's bedrooms at night and throws sand in their eyes has no place in civilized society.",
+      "42": "...or something like that. Ask a witch, she will know.",
+      "43": "A preferred method in politics for handing over briefcases of cash. Preventing corruption is a noble endeavor!",
+      "44": "He abuses his freedom by mirroring the truth. Can a civil society suffer such a thing?",
+      "45": "They'll need more than a brick house to be safe from you.",
+      "46": "If your give her a good thrashing, maybe she'll swap you Hans?",
+      "47": "Rumors have sprouted up around his bean growing enterprise. Perhaps he's followed them all the way up into the Tower?",
+      "48": "She emerged from the forest of Molwania and found shelter in the Tower. But not from you!",
+      "49": "According to unconfirmed rumors, he possesses magic powers. Pure brute force is needed here!",
+      "50": "The second most tragic love story ever. That is, if you rework the ending.",
+      "51": "An ingenious disguise. I hope you see through it!",
+      "52": "Upsetting the social balance like that can't be popular with politicians.",
+      "53": "The door behind him is blocked by rocks. You'll have to beat the password out of him.",
+      "54": "Better not tell him that those clothes make him look fat. He's also carrying a new sword on his new belt.",
+      "55": "The glue industry would pay millions for that golden goose. You'd better lend a hand!",
+      "56": "Appetizer: Bread crumbs from the forest floor. Main course: Braised snotty brats. Dessert: Selection of gingerbread cakes.",
+      "57": "The intruder breaks in, destroys furniture, and steals food. Show no mercy!",
+      "58": "Didn't she invent the Chicory font and get paid a dollar coin for it? That's gotta be enough. Plus, she's standing in your way! ",
+      "59": "Anyone who swats flies will do the same to adventurers at some point. Better stop him now.",
+      "60": "Talks to animals. Claims she's being bullied at home. Wants to go to the casting show. It's time to put the shoe on the other foot.",
+      "61": "The blonde woman from the TV show was better. Who wants to wish anything from a tubby blue guy?",
+      "62": "Always on the cutting edge. Friendship is magic! And revenge is salami - because it's best served cold.",
+      "63": "Shake your bed for us! Otherwise, we'll have to move on to the pillow fight!",
+      "64": "At the end of the rainbow there is a pot full of... measly dimes? Hmm, never mind, attack anyway. It all adds up.",
+      "65": "His pepper gun is a joke compared to what you seasoned berserkers snort - the ashes of your enemies!",
+      "66": "He's probably quite nice, but that excuse won't fly with you. Just be glad he's wounded!",
+      "67": "She knows how to use those two shells. Many seafarers have been so entranced that they've sailed straight onto the reef.",
+      "68": "That shamefully suave charmer will try and sweet talk his way out of it. The question is, will you fall for it? ",
+      "69": "A former legend who now mainly fights people who make terrible films about him. That's understandable, but unfortunately, he's in the way.",
+      "70": "...A guy like this looks as unpredictable as he is. Kill first, ask questions later!",
+      "71": "You'll have to perform miracles if you rogues want to impress her...",
+      "72": "He's obviously never played Slender... And he's never met you.",
+      "73": "After Fairy Tale Forest was cut down, the sisters set themselves up as soccer club mascots and ketchup and mayonnaise promoters.",
+      "74": "Hungry for carrots?",
+      "75": "With that giant skewer, he's probably on the hunt for the holy grill. Time to barbecue the hick!",
+      "76": "No one can keep up with him when it comes to drinking the communion wine. But perhaps you've got some other tricks up your sleeves.",
+      "77": "Time to dispose of the monarchy.",
+      "78": "He wanted to be a dragon slayer, but didn't make the cut. So he became Mister Universe instead.",
+      "79": "Horrible beasts that want to dance to his piping...it shall become their doom!",
+      "80": "The lion finally has a reason to be scared! Because you've come to fight it through the yellow-bricked level!",
+      "81": "Hopefully you're adequately prepared despite the misleading nickname...",
+      "82": "Happy Hanukkah!",
+      "83": "Thousands of bees had to work very hard just for that villain to come and help himself! Who will avenge the queen of bees?",
+      "84": "Didn't the village donkey say something about a green ogre? He's sure to pay a bounty!",
+      "85": "He should keep trying to get comfortable while you keep trying out your weapons.",
+      "86": "Promoted from bean counter? Well, the higher they climb, the harder they fall. From a tower window, for example.",
+      "87": "Who's been eating your food? Someone who's not going to be granted a last meal! Get her!",
+      "88": "Just say that you wanted to save them from the wolf's clutches and they somehow got caught up in the crossfire.",
+      "89": "Didn't they kidnap that gullible princess? Well, their DNA was found behind Seven Hills...",
+      "90": "Tough luck for him that you're not dragons!",
+      "91": "Keep the laxatives ready for maximum wealth! But be careful, you never know what's in the sack!",
+      "92": "Her counting methods may be unconventional, but at least she knows how to lie on peas the right way.",
+      "93": "He's probably just eaten the leftovers of one of those self-proclaimed dragon slayers. This is your chance!",
+      "94": "In contrast to his brother Peter, he was clever and patented the Afro hairstyle.",
+      "95": "Let's see what he has to say about Mama Flamethrower? He's sure to just melt in rapture.",
+      "96": "Thanks to the dating platform PairPlex and its matchmaking algorithm, these two are too busy with each other to defend themselves!",
+      "97": "Every year there's a new film adaptation. It's just impossible to kill the ghost...or is it?",
+      "98": "Perhaps you can come up with a \"romantic\" way to wake her?",
+      "99": "The yellow-beige-goo phenomenon in all its glory!",
+      "100": "Getting tangled up in this woman's hair is probably unavoidable."
+    }
+  },
+  "16": {
+    "name": "Time-honored School of Magic",
+    "description": "Accessible from Platform 9 3/4!",
+    "floors": {
+      "1": "Someone must have stuffed this old hat in a pigeonhole where it got crumpled and grumpy. Now it’s putting you in one, too! So, which house shall it be? Grippindoor? Slipperin? Hubblepus? Ravenslawn?",
+      "2": "His stare is so penetrating you fear he might vilely curse you at any moment. Lucky for you, he doesn’t have any kind of magic ability.",
+      "3": "One dog, three heads – and each one snappier than the last!",
+      "4": "The only thing he’s got more of than legs is... offspring ...",
+      "5": "His heroic deeds could fill volumes. And every single one of his grand stories is based on (alternative) facts!",
+      "6": "When danger’s afoot, you might want to look the other way! On the other hand... you should be fairly safe if you only look at him in the mirror. Right?",
+      "7": "Who woulda thunk that so much evil can come from a flying bag of bones?",
+      "8": "Should be easy to steal the clutch.",
+      "9": "I’m sure a misguided love for animals would never lead him to breed some kind of monster!",
+      "10": "There are some subtle visual and etymological clues that this one belongs in the villain category.",
+      "11": "What this teacher does to the headmaster shocks everyone!",
+      "12": "The only thing more dangerous than a powerful cabal of evil super sorcerers is three schoolkids.",
+      "13": "His twin brother is obese and cohabits with a couple of reindeer at the North Pole.",
+      "14": "This charming, handsome role model must surely be a fine and upstanding character.",
+      "15": "The personification of a tea party should be perfectly capable of teaching Defense Against the Dark Arts, right?",
+      "16": "These days, no respectable dungeon comes without a horde of zombi... uhm, Inferi.",
+      "17": "She simply loves those Unforgivable Curses. And who wouldn’t forgive her?",
+      "18": "Note to self: Give anyone who brags about being “pure blood” a really wide berth.",
+      "19": "Don’t worry, this cutie won’t bite!",
+      "20": "THAT’S what happens when an uncle steals your nose as a kid and never gives it back! You really can’t help but grow up to be the ultimate incarnation of EVIL."
+    }
+  },
+  "17": {
+    "name": "Hemorridor",
+    "description": "Evil dwells on the Ash Mountain of the world.",
+    "floors": {
+      "1": "Who rides so late across the land so dark? It's an Orc on his Warg.",
+      "2": "Please do not feed!",
+      "3": "Among the Goblins the Goblin King is King.",
+      "4": "Shmy Shrecious!",
+      "5": "Obviously there's a network everywhere...",
+      "6": "Beauty is in the eye of the beholder. So is his mace.",
+      "7": "Fast and loose!",
+      "8": "Rhymes with burnt shoulder, hard as boulder and fire holder.",
+      "9": "Perhaps Nazgullses-ses?",
+      "10": "No swimming.",
+      "11": "Horror Demon, how bad can he be?",
+      "12": "Because Orcs aren't terrible enough...",
+      "13": "Badly counseled means half poisoned.",
+      "14": "He has been converted to the Dark Side...oops, wrong film.",
+      "15": "Hopefully, you do not have a peanut allergy.",
+      "16": "They aren't that dead.",
+      "17": "Finally, a really big, bad and poisonous spider again.",
+      "18": "His mount looks really cute.",
+      "19": "In your face!",
+      "20": "The secret behind his power must be his giant sword! That's why you say \"Lord of the Stings\"."
+    }
+  },
+  "18": {
+    "name": "Continuous Loop of Idols",
+    "description": "Fight together with your companions against your idols from another world.",
+    "floors": {
+      "1": "Only a true bully can defeat him!",
+      "2": "A countdown flickers before your eyes: 3... 2... 1... LIVE! You're in - in the middle of his stream... and therefore also in the middle of your next fight.",
+      "3": "As soon as you enter the room, you are met with a scream! While your ears are still ringing, he is already starting a physical attack.",
+      "4": "The pig on the shoulder may seem cute, but don't be fooled or you will be booped out of existence.",
+      "5": "The most disciplined and feared mage, the terror of Jack the Hammerer. A walking calculator who is ready to pull you on his skibidi side! Are you ready for it?",
+      "6": "The blue-haired guy is afraid of spiders, but since you don't have eight legs, you'll have to bite the dust! Welcome to your demise!",
+      "7": "According to the current trend cocky heroes can be easily defeated with these clever tricks!",
+      "8": "Underneath the thick layer of skin hides a good heart. If you bring him a packet of donuts, he might even let you pass.",
+      "9": "He will blind you with his perfectly shaved head, and then then blow you away with his stylish moves. You won't survive this dance!",
+      "10": "You approach the next monitor and the stream starts immediately. All eyes are on you. Can you win under this pressure?",
+      "11": "Young and handsome, but don't let his looks bewitch you. Nothing holds him back. Charge!",
+      "12": "And hello to all heroes from the famous French baguette master and Minecraft World Champion! Even drunk he does not see you as a threat.",
+      "13": "He welcomes you to his room with a broad grin. His humor and good mood are infectious, but letting your guard down will soon be your doom!",
+      "14": "You are stumbling through a conspicuously pixelated room when suddenly a shadow appears with a guide in its hand. He has long since mastered life in the block world and will now teach you a thing or two in battle.",
+      "15": "If you think he had a different hair color the last time you saw him, you may be right.",
+      "16": "Rumor has it this monster was born with three legs and raised in an ashtray. Remove your socks before looking at it!",
+      "17": "This zebra-human hybrid loves to laugh at its own jokes and your combat challenge.",
+      "18": "Your already square-shaped eyes haven't escaped his notice. It's inconvenient that your pause button has just broken.",
+      "19": "The King of the Incompetent is not a king for nothing, so you'd better kneel down!",
+      "20": "Help! A computer scientist! Be careful. If he gets root access, he'll fragment you to the last bit. This opponent is NP-hard.",
+      "21": "Moin moin and welcome to your beating! \"You're ripe for the picking, like a bruised fruit!\" he triumphantly yells, for with his terrible puns and clumsy similes, he'll remodel your face, like an avant-garde sculptor with a sledgehammer.",
+      "22": "Warning: He hyperactively shoots memes like projectiles as he rolls you over in a storm of unpredictable chaos. This GIGACHAD lives for entertainment. Give him a good show!",
+      "23": "A slight sound of the sea...then his wave of strategic expertise hits you. While he answers your questions in a friendly and patient manner during the battle, you feel that you are slowly being washed out of the dungeon.",
+      "24": "His knowledge is deeper than this dungeon, his sarcasm sharper than your drawn weapon. He leaves no questions unanswered... except how to survive this duel.",
+      "25": "You look at the tube and catch sight of the pioneer of legends, the slim idol of all men and women. He doesn't give a damn that you want to get past him alive.",
+      "26": "In this monitor, a bass-heavy bulwark has spread even outside of Azeroth! Can you do anything about it?",
+      "27": "A pleasantly calm voice reaches your ear, and you notice how all tension leaves your body. The shot that follows brings you back to reality brutally.",
+      "28": "A demonic veteran stands before you - his voice echoes like thunder through the virtual walls. A spider-like creature sits on his shoulder, whispering incessantly. Can even demons... have inner demons?",
+      "29": "This warrior turns off his brain from time to time to confuse you with crazy drivel. And then comes the most important sentence: To defeat him, you should surf the wave properly!",
+      "30": "The two-meter tall, fan-appointed CEO stands colossally in front of you. He casually sips from his steaming elixir of life cup and longs for his Friday kebab. You're his last obstacle... and he's mighty hungry."
+    }
+  },
+  "19": {
+    "name": "Nordic Gods",
+    "description": "The thought of you getting beaten up till Ragnarök sends shivers down one's Bifröst.",
+    "floors": {
+      "1": "If you say something against his mother, you automatically insult his nine sisters as well.",
+      "2": "All Odin's messengers send today is just you...to kingdom come.",
+      "3": "She has reserved you a cosy place in the underworld.",
+      "4": "His palace with 540 halls is the biggest in Asgard ever built. No vacancies for you today.",
+      "5": "Offers you cremation here and now to free your soul from your irksome body.",
+      "6": "He is more beautiful than you, more evil than you and outshines you in cleverness and any kind of deception.",
+      "7": "Son and daughter have arisen from the sweat under his left arm. You can imagine what will happen when he coughs in your direction.",
+      "8": "A moody animal that could hug the whole world and bites its own tail.",
+      "9": "Has just torn his indestructible magic chains and eyes you hungrily.",
+      "10": "A giant who sets the world on fire, flings flames in all directions and annihilates all life...beginning with you."
+    }
+  },
+  "20": {
+    "name": "Mount Olympus",
+    "description": "The path to the top could become a real marathon.",
+    "floors": {
+      "1": "Can you still call this singing or is it rather battery?",
+      "2": "An eye for an eye!",
+      "3": "This hellhound does not let mortals in the underworld. You know what this means for you.",
+      "4": "If looks could kill...",
+      "5": "You need a new strategy against the Goddess of Tactics.",
+      "6": "Looks like a Herculean task for you.",
+      "7": "Your last words: \"the God of War, finally a worthy enemy!\"",
+      "8": "You won’t become friends anymore. You already “met” his friend Medusa and his son Polyphemus.",
+      "9": "After this fight the King of the Dead will also be your king.",
+      "10": "Hint: in a thunderstorm you should cling to a beech like a leech."
+    }
+  },
+  "21": {
+    "name": "Tavern of the Dark Doppelgangers",
+    "description": "Old friends become new enemies",
+    "floors": {
+      "1": "He looks quite teed off.",
+      "2": "They call themselves deserters but actually, they were sacked because they lacked competence. Anyway, they still defeat you in their sleep!",
+      "3": "Feel honored! Normally, only bill-dodgers get to see the arsenal under his counter.",
+      "4": "The game is played according to secret shadow rules. All you have to bet is your life.",
+      "5": "He would have a lot of weapons to choose from...but he just doesn't want to put his hammer down.",
+      "6": "The cauldron is preheated and as an exception, you may be today's ingredient.",
+      "7": "Gesticulating skillfully, he sends you to kingdom come and you probably still pay for it.",
+      "8": "Only he knows where the wheel will stop. You certainly won't have any luck this time.",
+      "9": "So far, he has always triggered disasters accidentally. Now he does it on purpose.",
+      "10": "He has always had the ideal height to deal vile low blows."
+    }
+  },
+  "22": {
+    "name": "Dragon's Hoard",
+    "description": "Did you pack your fire extinguisher?",
+    "floors": {
+      "1": "A memorial to the consequences of poor dental care.",
+      "2": "Probably the last of his kind!",
+      "3": "It's not just the size that matters!",
+      "4": "What archaeologist has put these bones together wrong again? This must be corrected!",
+      "5": "Grants you a wish as long as it has to do with your demise.",
+      "6": "Defeat it quickly before its mommy comes back.",
+      "7": "Luck is on his side today.",
+      "8": "PetDex entry 006: \"This Pet can melt wax with its fire breath. It occasionally causes house fires.\"",
+      "9": "He looks greedily at the gems in your armor and rushes towards you.",
+      "10": "If you don't get rid of her now, she could turn into a big problem."
+    }
+  },
+  "23": {
+    "name": "House of Horrors",
+    "description": "They are more afraid of you than you are of them!",
+    "floors": {
+      "1": "A modern interpretation of the ideal of beauty. If you don't like it, you'll get punched in the face!",
+      "2": "The person that created him is the real monster, but fortunately, you don't have to fight that person.",
+      "3": "To him you're just banked blood on two legs.",
+      "4": "Oh, is that your phone ringing?",
+      "5": "They just want to play a game with you!",
+      "6": "He offers you a balloon and you grab it in anticipation.",
+      "7": "By trying to snuff you, he just wants to help you get your life back on track.",
+      "8": "The fact that he now pursues you even when you are awake must be punished!",
+      "9": "He just wants to refine his filleting skills on you.",
+      "10": "Many impatient adventurers have fallen victim to her."
+    }
+  },
+  "24": {
+    "name": "The 3rd League of Superheroes",
+    "description": "The official hero license should be checked urgently here...",
+    "floors": {
+      "1": "Defeats each of his opponents with 1,000 blows.",
+      "2": "The horror of every woman's locker room, but he'd rather fight you with his eyes closed.",
+      "3": "Always on his way to the next toilet, and he has to pass you to get there.",
+      "4": "Irons his opponents' shirts at any sacrifice.",
+      "5": "Never has to ask for a phone number.",
+      "6": "Can turn invisible, but only when no one is looking.",
+      "7": "After eating one of his dubious sweets, you are easy game for him.",
+      "8": "Has the effect of 100 cups of coffee after one cup.",
+      "9": "Has the strongest superpower of them all if only he could remember it...",
+      "10": "Has a chronic hangover and there's only one thing that helps: a good beating!"
+    }
+  },
+  "25": {
+    "name": "Dojo of Childhood Heroes",
+    "description": "Land of big eyes and bleeding noses",
+    "floors": {
+      "1": "Defeat her quickly before she finishes changing her clothes!",
+      "2": "Has the big dream of becoming a mayor, and you stand in his way.",
+      "3": "Is one of those particularly intrusive neighbors.",
+      "4": "Probably has to compensate for something...",
+      "5": "A serious danger with his Swiss wristwatch.",
+      "6": "Unfortunately, only has air in his head.",
+      "7": "Becoming the very best takes time.",
+      "8": "The epitome of toxic masculinity.",
+      "9": "The more blonde the hair, the greater the power.",
+      "10": "Believes in the heart of card tricks."
+    }
+  },
+  "26": {
+    "name": "Monster Grotto",
+    "description": "Every time one of them escapes, some city is on fire.",
+    "floors": {
+      "1": "It's a pity you only speak Whalish. You probably will have to let your weapon speak for you.",
+      "2": "You're interrupting his honeymoon... and don't worry - size really does not matter.",
+      "3": "To him you are nothing more than a small car.",
+      "4": "Occasionally nibbles on one or the other adventurer.",
+      "5": "Sticky, sweet and hot? Better wipe the drool from your mouth and finish off this wobbly dumpling!",
+      "6": "Be careful not to step on his little sand castle.",
+      "7": "Honk once if you think you can win!",
+      "8": "The triple clamor could be stopped if you knew something about knotting. But your weapon will do too.",
+      "9": "Visiting from Tokyo with bad intentions, and you intrude the planned sightseeing tour.",
+      "10": "Considers destroying the world, should anyone say \"expresso\" again"
+    }
+  },
+  "27": {
+    "name": "City of Intrigues",
+    "description": "To sit here on the throne, all you have to do is betray your entire family and all your friends."
+  },
+  "28": {
+    "name": "School of Magic Express",
+    "description": "The cool kids always sit in the back."
+  },
+  "29": {
+    "name": "Ash Mountain",
+    "description": "Evil dwells here."
+  },
+  "30": {
+    "name": "Playa HQ",
+    "description": "Always open for constructive criticism."
+  },
+  "31": {
+    "name": "Training Camp",
+    "description": "Its unstable designs are followed by the greatest risk of splintering.",
+    "floors": {
+      "1": "Sudden water damage is his greatest enemy. At least Shakes made sure to value recyclability.",
+      "2": "Should not only scare crows. However, this good guy looks rather lifeless.",
+      "3": "Always on the move...at least in one and the same place. Wanna have a ride? Forget it!",
+      "4": "Just have your most potent blistering ointment ready!",
+      "5": "One more bump no longer matters.",
+      "6": "Is in great danger of setting himself on fire.",
+      "7": "Buzzes and staggers through the air. A crash landing is unavoidable. Trains your reflexes when jumping into cover though.",
+      "8": "His skull is still throbbing from the last whiplash injury. He has already been destroyed and reassembled several times, which is why some of his screws are loose.",
+      "9": "Where the precision of her saw blade fails, the cannon comes into play for the rough work!",
+      "10": "Everything Shakes could find was used here. His versatility makes him suitable for camping as well as a final test for beginner heroes."
+    }
+  },
+  "32": {
+    "name": "Sandstorm",
+    "description": "Not only whirls you through the air with 1,000 monsters, but also blows thick grains of sand into your eyes."
+  },
+  "33": {
+    "name": "Arcade of the Old Pixel Icons",
+    "description": "Where highscores are far more important than solid hygiene.",
+    "floors": {
+      "1": "Flashing lights are twitching across flickering tube screens, interrupted only by the rhythmic smacking sound that approaches suspiciously. To this greedy glutton, you are much more than just a little fruit - he's after your soul! Put the ball on a diet!",
+      "2": "A disgruntled badger spawns in front of you, whirls towards you and lets everything in his path explode. This madman has had enough of fruits, which is why he will now expand his culinary taste horizons with you. Too bad your last checkpoint was hours ago...",
+      "3": "Click! Where did this plate come from? A raider with pointed polygonal breasts, sharper than her gaze, lands in front of you. She appraises you like a rare artifact and is furious that you've locked her butler in the freezer again. That's it for British politeness. Now it's raining lead!",
+      "4": "Thick, partly sparking cables snake through the cracked and sticky tiled floor of the arcade. A small metal ball rolls at your feet - plop! An intergalactic warrior appears. Her gender used to surprise. Today, the only thing that surprises you is how fast her cannon shoots.",
+      "5": "A row of pixelated creatures moves inexorably towards you from the leaking ceiling. There are many of them. You are alone. But the 3rd dimension could be your salvation!",
+      "6": "A blue jagged ball pops out of one of the flashy pinball machines. His excessive consumption of rings has probably ruined more than just his teeth. In his madness he hurriedly tries to reduce your life bar to zero.",
+      "7": "A bang makes the walls crumble and a half of an arcade machine is sent flying. Better not stand behind him when he lays the next explosive egg. No matter what you try, he's always in an explosive mood...unless he blows himself up.",
+      "8": "The rusty door behind you is punched out of its squeaky hinges and a muscular fighter with a red headband stands in the frame. All you hear is \"Sure you're Ken\" before you are sent flying...although your name isn't even Ken? He may be able to pull off the most complex combos, but blunt buttonmashing will do for you.",
+      "9": "Muffled 8-bit music is blasting through the empty arcade and a massive Z-block crashes out of the ceiling, ready to destroy any perfect structure with surgical imprecision. Find a suitable gap to get rid of this aberration!",
+      "10": "Cartridges and consoles are piled up in the corner. Surrounded by retro memorabilia, the final boss pulls out his controller. He has broken every highscore and doesn't shy away from using cheat codes for your game over. Up, up, down, down, left, right, left, right, B, A, start!"
+    }
+  },
+  "34": {
+    "name": "The Server Room",
+    "description": "A beeping terminal of flashing status lights.",
+    "floors": {
+      "1": "At the entrance to the server room sits QA's notorious pig whisperer. Surrounded by glowing cables, he growls: \"No bug. Feature.\" while leisurely petting his pig. Draw your weapon! This is definitely not a test!",
+      "2": "This master griller never lets anything scorch or at least he always tries his best. At best, his game tests are only half-baked. But you will definitely be served to his superior rare including a reproducible error log!",
+      "3": "Suddenly, heavy metal blasts towards you in the stuffy server room. You follow the ruckus and catch sight of the ripped QA Team Lead wearing a Hawaiian shirt flapping in the breeze of the fans. You think you can see through him? Error found...in your expectations! This is going to be an extra tough quality inspection!",
+      "4": "Smoke billows through the corridors, but don't panic - a frontend operator has just switched on the fog machine. The server room becomes a stage as Simon skillfully dances over the tangled cables. His code is as smooth as his moves. Can you keep up with his groove?",
+      "5": "When there's trouble in the forums of hell, DarkwingDang comes flying, just ring the bell! Because the only thing he likes to see bubbling over is his cold beer. With his support sidekicks, he acts as a mouthpiece between heroes and hell management. However, your wish to clean up the dungeon falls on deaf ears.",
+      "6": "The demonic tech priest, the tamer of servers, reveals himself to you among the whirring machines. He preaches in forgotten programming languages while data streams bend to his will. Inside you hear a voice: \"The spaghetti code will test you! Let yourself be redeemed!\"",
+      "7": "The neon lights flicker, and the fans run at full speed to defy the rapidly rising heat. As a frontend warrior in top form, he rears up in front of you and flexes his steeled body. Suddenly, the server room is enveloped in a blazing aura and Taha roars: \"Kaaaa-meeee-haaaa-meeee-TAHA!!!\"",
+      "8": "Just as you are wondering whether the endless server room will ever come to an end, a friendly-looking frontend employee emerges from the flickering semidarkness. He takes a deep breath, grabs the keytar and unleashes a solo that knocks you out. This is going to be anything but a nice jam session!",
+      "9": "When connections falter and infernal devices conspire against their users, Kevin steps in and leaves no problem unsolved. He takes a quick look at you while his daughter is already giggling and pointing at you. He proudly pats her head with a nod and resorts to the oldest of all rites: your reboot.",
+      "10": "You can finally see the end of the server room, but on the last few meters you trip over the dense network of cables. A huge shadow falls over you and you look up. The infernal lord of the quality realm looms before you, ready to test your nerves and every line of code mercilessly!"
+    }
+  },
+  "35": {
+    "name": "Workshop of the Hunters of the Undead",
+    "description": "The reanimated are expertly disassembled into their individual parts here.",
+    "floors": {
+      "1": "You have just escaped the undead out there and find yourself in a workshop. A man with a crazy laugh and a chainsaw for a hand is working at a workbench. This is where he will saw your past and future in two. Groovy!",
+      "2": "In front of a gun rack, a grim-faced man is making improvised traps while a teenage girl is reading aloud from a bad joke book. Feelings? They don't need them in this broken world, but you will need a doctor if you don't run away!",
+      "3": "A woman in a short dress steps out from between perforated oil drums. With her weapon drawn, she leaps acrobatically towards you, and you notice how everything around you slows down considerably. Umbrella has created her. Now you can test in slow motion whether that was a mistake!",
+      "4": "A coat is fluttering behind you. You turn around and see your own reflection in his glasses. The mighty vampire grins mockingly, raises his pistols with relish and looks forward to your attempt to entertain him. You're on his hit list, and you will need more than firearms to stop him.",
+      "5": "You think you're alone until a bolt whizzes right past your ear. In the corner of the workshop, the taciturn hunter gets on his bike and leadfoots it, his crossbow firmly aimed at you. You won't slow this monosyllabic survivalist down with pointless small talk.",
+      "6": "Behind a shelf of wrenches, you suddenly feel how bright ice-blue eyes stare at you. You blink, and now she's standing in front of you. You wonder if skin-tight leather outfits are the standard dress for all huntresses. Then she makes her pistols ready. The fight with you won't be even worth a flashback to her.",
+      "7": "Banjo sounds reach your ears. The cowboy with an insatiable hunger for the good old days before the apocalypse casually leans against the garage door. Rule #42: Never get between him and his gold cakes! You may not be the sweet pastry of his desire, but you are soft and fragile enough!",
+      "8": "Something is dripping from the ceiling. Water? A red, iron-smelling liquid suddenly pours over the workshop's sprinklers. He comes from a time when vampires didn't glitter. The only thing that sparkles here is his murderous lust behind his sunglasses.",
+      "9": "Two dubious thieves are loitering around at the bar which has been cobbled together from tires and oil drums, and give you disdainful looks. All they really wanted was a shot of tequila, but now you're on the menu. Next, they are going to steal your will to live!",
+      "10": "You enter a pink-glowing workshop section. Pop music is blasting from a loudspeaker, followed by the screech of a chainsaw. A zombie's half flies past, immediately followed by a cheerleader in a miniskirt. Only her love for her boyfriend remains whole here!"
+    }
+  },
+  "36": {
+    "name": "Retro TV Legends",
+    "description": "Turn on the flickering tube for a program full of nostalgic cult figures.",
+    "floors": {
+      "1": "Moss-covered vines hang from the frame of the flickering TV relic. You press the remote control and a tropical beat plays. Then you see the laid-back private detective in a Hawaiian shirt step out of the screen and track down every case, but yours will be solved quickly.",
+      "2": "You change the channel and see two islands in the sea. Wait...that's the lifeguard doing her backstroke exercises! This is followed by a quick cut to the beach where she is running towards you in slow motion. Normally she saves lives, but today she will snuff out yours with her whole body.",
+      "3": "A strangely emotionless guy with pointed ears materializes in front of you. He raises an eyebrow and calculates the probability of your death with cold precision. The logic-loving half-alien knows the definition of \"mercy\", but has no intention to apply it.",
+      "4": "You press the remote control - zap! A cozy living room on whose sofa a cheeky bundle of fur is eating a sandwich with relish. You don't have enough fur for his liking, but he's not picky and plans to nibble at you for dessert anyway.",
+      "5": "You change channels again. A woman with teased hair, tight leggings and a lascivious look is lolling on the sofa. She looks at you for a moment, then has an idea of the best way to make you a slave to her shopping mania!",
+      "6": "The remote control seems to have an inexplicable loose connection because it changes channels without your input. Two special agents stare at you in amazement - they are determined to close your file! If you defeat them, it will be their biggest paranormal phenomenon yet!",
+      "7": "Huge explosions! Tires and wrenches fly through the screen. A muscular man with a gold chain and mohawk emerges out of the smoke. You're on the wrong team, and cheeky back talk won't work for him! Your only chance of escape is to get on a plane...",
+      "8": "A disheveled handyman, who causes more chaos than he creates order, falls towards you with a loud \"Uuhhhhhhgggg?\". He breaks everything including you. He yells \"More power!\" and grunts manly in indignant anticipation.",
+      "9": "A black sports car is racing towards you with screeching tires. Before you can react, you are scanned by its red light and classified as a threat. A handsome man sits in his cockpit. Together they fight for justice and unfortunately against you!",
+      "10": "The last channel flickers with noisy colors followed by a heroic intro. Then you see a man pulling out his ultimate weapon: a paper clip. But don't underestimate him! Improvisation is his strongest weapon. And you? You're his next craft project."
+    }
+  },
+  "37": {
+    "name": "The Meeting Room",
+    "description": "A room full of loud opinions and spinning heads.",
+    "floors": {
+      "1": "The wildly shouting voices fall silent as you enter the room. \"Roll for survival!\" you hear from the end of the long table. The ruler of balancing sits in front of a ritual circle of board games. He's going to nerf you with transposed numbers!",
+      "2": "A creative whirlwind shatters the oppressive silence. When she jumps into the interface ring, she whirls up pixels like demons in a mosh pit. Each of her lines fits perfectly like a powerful dropkick. Anything that doesn't match her aesthetics is mercilessly thrown out of the dungeon - and you march to a different drummer!",
+      "3": "A rattling saber stabs you in the back. Armed with a map of the rough game design sea, he sails the most treacherous waters. This pirate is up to every trick and hijacks concepts to reveal their treasure. You could really use a particularly painful rework!",
+      "4": "Mood boards flutter around the room like cursed parchments, and in their middle, there is the electrified lead artist. Between wacky concepts and unfinished icons, he manages the infernal art team. Every brushstroke is subject to his artistic sight. In his insane eyes, you are an asset in the wrong format!",
+      "5": "The steady scratching of a sharp quill makes you prick up your ears. The mistress of words scripts your fate including your embarrassing demise. Laughing maniacally, she fills your story with ambiguities and stupid knee-slappers. Can you tear yourself away from her narrative threads and write your own story?",
+      "6": "The door swings open and the good-humored manager rushes in on her smoking skateboard, armed with appeasement donuts which she holds under your nose! Grinning, she points to the calendar and announces: \"Time for an update!\" You're not sure whether you should flee or have some donuts.",
+      "7": "She maintains order with claws of steel. Behind her graceful glow lies discipline, and those who cause chaos on the server will encounter clear structures and consistency. As the terror of troll hell, she will elegantly banish you to the abyss. She breathes softly: « Bonne chance, petit héros ! »",
+      "8": "Behind the fiery scenes of hell, a silent demon is at work, speaking only in dark tongues of code. But this backend dev has escaped the rattling and beeping clutches of the server room for the moment so he can finally fix that stubborn bug in front of him!",
+      "9": "She has been letting the keys of her laptop glow for days. Surrounded by mountains of empty energy drinks, she fights against unruly code and the basic need for sleep which she considers unnecessary. Still typing, she fixes her eyes on you and grins: \"I need more...more caffeine!\". She smells the caffeine in your blood!",
+      "10": "Mariam designs campaigns for the perfect hell branding and reigns over the realm of reach, forcing even the toughest warriors into conversion. On her head, however, sits the true queen of the demonic office: Jules. You better take a bow... or spontaneously retrieve her favorite tennis ball!"
+    }
+  },
+  "100": {
+    "name": "Unwavering Warrior Guild",
+    "description": "Swords and shields define this proud guild.",
+    "floors": {
+      "1": "Towering, robust and unshakeable before you, the stone fort drops its massive gate with a deafening crash. As the dust settles, you are greeted by a nonchalant Viking drawing his weapons with a grin.",
+      "2": "Entering the courtyard, you look up at the sky and spot a blue object hurtling straight toward you. You jump back just in time as a knight balancing on a shovel crashes down right in front of you. He's more than happy to dig your grave and give you a massive headache while he's at it.",
+      "3": "Wee-woo, wee-woo, the Mage Police are here! Out of nowhere, a magical law enforcer materializes, accompanied by the blaring sound of a siren. Your crime? Trespassing in the Unwavering Warrior Guild! Surrender to the police, your enemy and jailer!",
+      "4": "As you descend the stairs, your fingers slide along the cold wall. The rhythmic clashing of swords echoes off the walls. In this musty darkness lurks a mutated leader turtle whose pizza obsession is meant to be your doom. He's supposed to be a teenager?!",
+      "5": "With a deafening roar that chills you to the bone, this Scottish Warrior raises his sword and shield the moment he spots you. His breezy little kilt playfully flutters around his bare, hairy calves. He won't let you take this or any other freedom away from him!",
+      "6": "At the bottom of the stairs, you reach the converted dungeon, in the center of which stands a roped-off fighting ring. Inside stands a samurai whose katana is lazily slicing up various fruits. He beckons you over and grips his sword with both hands – time to make some fruit salad!",
+      "7": "A loud clattering rapidly approaches from the vaulted stairs behind you. A spherical busybody screeches to a halt right in front of you, silently shoving his badge under your nose. He caught you stealing a slice of pizza and is taking you into custody!",
+      "8": "Before you stands - actually, hops - a black knight with absolutely no limbs. You don't spend long questioning his determination to challenge you, because he's already bouncing up and down, trying to spit in your eye. If he refuses to hop aside, he'll just have to learn to fly!",
+      "9": "On your way to the guild headquarters, you come to a halt in front of a towering pile of men. Climbing the heap, you realize they are all named \"Bill\". At the top, you meet a highly motivated avenging angel who is willing to make an exception, despite your name!",
+      "10": "You finally step before the head of the Warrior Guild. This muscular matriarch prizes ruthless strength and fearless determination in battle above all. Will you be able to halt the overwhelming dominance of this general? Either way, she takes no prisoners…"
+    }
+  },
+  "101": {
+    "name": "Inquisitive Mage Guild",
+    "description": "When wisdom and madness work wonders.",
+    "floors": {
+      "1": "Behind the flung-open door, an attractive Mage is savoring a boot. Before you can ask him what sort of fetish dungeon you've stumbled into, he starts mumbling a spell with his mouth full - he's after your hide, too!",
+      "2": "Unexpectedly, the carpet rolls up beneath you, wrapping you tightly in its crumbly, dusty layers. A young witch steps forward. Her cat hand puppet grumbles that this was the wrong spell for beating the rug. With a wave of her hand, a carpet beater comes flying right at you!",
+      "3": "Passing by, you catch the sound of bitter sobbing. Eavesdropping at a door left ajar, you hear a woman pouring her heart out about her trauma of loss. Feeling deeply uncomfortable, you try to make a quick exit, but an arcane gauntlet grabs you by the collar. Looks like it's time for group therapy!",
+      "4": "Heavy clouds of smoke pour out of the next room. A small, cloaked creature floats out, swaying dizzily, and sluggishly tells you of an ancient magic from planet Earth called \"hay\". Sensing that you might have some more of it, he begins to mumble a rhyming spell.",
+      "5": "Led into a vast hall by a catchy pop tune about needing a hero, you find yourself drawn into a large hall. She doesn’t take requests for other songs. Instead, she promises to conjure up your tragic death and give you an unhappily ever after!",
+      "6": "After wandering through seemingly endless corridors for a while, you notice a wizard sitting atop a walking chest, sizing you up. He probably knows the right way, but he puts his luggage’s legs to good use and makes a beeline out of there. After him!",
+      "7": "The sweet scent of lilac and gooseberries caresses your nose as you blink and suddenly find yourself in an elegant bedroom. A stuffed unicorn stands in the center of the room - and atop it, a powerful yet bewitching sorceress. Do you have enough stamina for this ride?",
+      "8": "The next door is tough to open at first, but once you force it, golden oil lamps tumble out toward you. Amidst the stacked lamps, a second-rate wizard of the Orient is rubbing them like a man possessed. Don't look his cobra staff in the eyes, or he'll have you under his spell!",
+      "9": "Stepping into the library, you duck under flying books and brooms, marveling at the bustling chaos. Suddenly, everything freezes over as a giant full moon rises the now-darkened center of magical knowledge. This doll-witch pulls all the aces out of her sleeves for you!",
+      "10": "You climb the final long staircase and enter the guild tower. Instead of an ancient archmage, you are greeted by a chained escape artist bubbling away upside down in a water tank. Defeat him before he breaks free – or swipe his key!"
+    }
+  },
+  "102": {
+    "name": "Acrobatic Scout Guild",
+    "description": "Is that trouble rustling in the underbrush? Oh, already leaped away!",
+    "floors": {
+      "1": "Bordering a forest, the towers of the elven-built guild rise into the sky. As you open the delicately carved gate, a tin lizard knocks you to the ground. The red-haired rider doesn't take orders from anyone, least of all opinions on makeup or her peach fuzz!",
+      "2": "You feel lighter – wait, where did all your gold go? Surrounded by a dancing troupe of manly men in tight tights, they sing about giving away your life savings. The only alms they should be worried about are baggy pants!",
+      "3": "Overzealously, you sprint down an empty corridor when suddenly a bright light flashes. Once the last colorful star fades from before your eyes, you notice a Mage locking his eyes on you. Can you talk him out of giving you a penalty point in Slouchburg?",
+      "4": "A Mage who eats boots, and now you're facing a famous archer making out with a rock. Every class guild has its share of oddballs. Perhaps she just got the wrong stone face? One thing is for sure: her arrow is aimed right at you.",
+      "5": "Your path takes you into a greenhouse of colossal trees and bioluminescent plants. High on a branch sits a large, blue figure who seems to have taken \"getting connected\" a little too literally. Sadly, she connects the subsequent connection error directly to you.",
+      "6": "As you climb the finely crafted wooden stairs, a panicked goblin catches your eye. He is nocked in a bow, and the archer responsible seems to think he needs to nerf himself just so you stand a fighting chance.",
+      "7": "A Mage blocks your path on the next landing. He might have turned a blind eye to your recent rampage and the defeated guild members, if only you'd had a comfortable folding chair with you.",
+      "8": "A hero on an important side quest dangles above you from a clucking rideshare. He seems pretty relaxed and communicates exclusively through a series of chained \"Hyah!\"s. If you hit his feathered friend, you're both going down!",
+      "9": "Out of nowhere, arrows fly toward you, and despite your hairsbreadth dodge, they explode, shattering the long staircase beneath your feet. Their sender may not have any superpowers, but his shots have an explosive hit rate!",
+      "10": "You reach the courtyard used as the training ground for the Scout Guild. An arrow lands with a hiss right at your feet, prompting you to scan your surroundings. Your eyes lock onto a light-footed elf carrying a clingy dwarf on her back."
+    }
+  },
+  "103": {
+    "name": "Lively Necromancer Guild",
+    "description": "Professional recyclers of once-living vessels.",
+    "floors": {
+      "1": "Cursed to eternal life, he houses butterflies instead of organs, which cause tingling sensations in his rotten body. He thinks you look lovely.",
+      "2": "Master of secrets, lord of intrigues - and notoriously bad at finding his misplaced hand. These necromancers have a real problem keeping their organs or limbs with them, but he'll still dismember you!",
+      "3": "Lies in wait for sloppy latecomers to plunge them into despair. Whether it's mounts, flying brooms, or your illegally parked butt cheeks – a fine is really the least of your worries now!",
+      "4": "Preaches love, willingness to sacrifice and voluntary forced labor, whether as a feces cleaner, cook or field worker. As a reward, everyone is allowed to indulge in sin. Rebellious? Don't worry, he has a ritual for you... but first, he personally converts you to his cult!",
+      "5": "Funerals are pure networking events for him, but he doesn't shy away from home visits either. Do you have a moment to talk about his lord and savior, the God of Death?",
+      "6": "Prefers to wear death couture and condemns mortals who don't wear designer clothes. She eyes you suspiciously to estimate your measurements...for your coffin!",
+      "7": "Someone has sent you a sugary surprise. Splattered in cake glaze, this policeman provocatively shakes his hips as he strips to some erotic music. It's not just his wand that's eager to spray some magic, so send this delivery right back to the sender!",
+      "8": "He's planning something big again. With his angelic voice and the volume of a practiced market crier, he bellows one of his narcissistic monologues at you.",
+      "9": "Between mass necromancy and the goal of conquering the world, he is constantly looking for the nearest orthopaedic surgeon, so far without success. Before he cracks his own bones, he is going to lay hands upon you!",
+      "10": "Regards himself as the keeper of balance, but unfortunately, he weighs everything in favor of death. Don't worry, after death he will resurrect you for his own purposes."
+    }
+  },
+  "104": {
+    "name": "Class Portal of Aberrations",
+    "description": "Proud, wise, agile, and revived? Sort of, but also pretty twisted..."
+  }
+}

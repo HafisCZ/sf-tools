@@ -1,0 +1,752 @@
+{
+  "1": {
+    "name": "Zbezczeszczone Katakumby",
+    "description": "Martwi są tu wyjątkowo żywi.",
+    "floors": {
+      "1": "Gdy tylko stawiasz pierwszy krok wewnątrz zakurzonej krypty, w ciemności przed tobą materializuje się potępiona dusza. Obrzydliwa zjawa próbuje napędzić ci stracha.",
+      "2": "Oczyszczasz twarz z oślizgłych resztek ektoplazmy i idziesz ostrożnie przed siebie, dotykając zimnej ściany krypty. Powoli, lecz z jasnym zamiarem zbliża się do ciebie warczący czworonożny przyjaciel. Za późno na zastrzyk przeciwko wściekliźnie.",
+      "3": "Dotarło już do ciebie, że martwi mieszkańcy tych katakumb nie są wcale aż tak martwi. Więc gdy pojawia się przed tobą obrzydliwy ożywieniec, udajesz zaskoczenie, by nie poczuł się dotknięty.",
+      "4": "W oddali słyszysz łopotanie. Czyżby nietoperz? Jednak zbliżające się stworzenie jest znacznie większe. Nic dziwnego. To podstępny wampir!",
+      "5": "Całymi katakumbami wstrząsa mrożący krew w żyłach krzyk. Odetchnąwszy głęboko, ruszasz w stronę ghula nocy, który staje ci na drodze.",
+      "6": "Z każdym krokiem napotykasz coraz gęstsze pajęczyny i grube jedwabne kokony, aż w końcu lepkie sieci oplątują twoje kończyny tak szczelnie, że nie możesz iść dalej. Wiercąc się, przyciągasz uwagę wygłodniałego pająka olbrzymiego, który czeka na ucztę.",
+      "7": "Spośród cieni tworzonych przez migoczące pochodnie wyłania się mroczna postać odziana w szaty mnicha. Staje nieruchomo, lecz nagle, dobywszy zakrwawionego sztyletu, rusza szybkim krokiem w twoją stronę. Ten upadły mnich w trzepoczącej pelerynie już dawno porzucił modły.",
+      "8": "Kroczysz wzdłuż wysokiego korytarza. Ściany są zapisane tajemniczymi runami. Czyżby czarna magia? Z ciemności wyłaniają się świecące na czerwono oczy szamana voodoo.",
+      "9": "Błyszczące czerwone oczy wpatrują się w ciebie w mroku. Z sufitu spadają na ciebie małe fragmenty skał, odsłaniając wielką dziurę. Kątem oka dostrzegasz białą sierść szczura albinosa. Albo jest bardzo szybki, albo ma towarzystwo…",
+      "10": "Przekraczasz próg najgłębszej krypty. Lodowaty powiew przenika cię aż do szpiku kości i o mało nie gasi twojej pochodni. Po nim rozlega się piekielny śmiech. Spójrz! Oto zatrważający Książę Ciemności!"
+    }
+  },
+  "2": {
+    "name": "Kopalnie Glorii",
+    "description": "Hej-ho! Hej-ho! Do pracy by się szło!",
+    "floors": {
+      "1": "Masz wrażenie, że ktoś cię obserwuje, więc gorączkowo rozglądasz się dokoła i zauważasz lwa górskiego, który szykuje się do skoku na ofiarę. Czas, aby to zwierzyna stała się myśliwym.",
+      "2": "Sycząc, kobra plująca pełźnie po imponujących filarach zapomnianej cywilizacji, gotowa wstrzyknąć do twoich żył jad wywołujący halucynacje o damach w opałach. Niestety, sny na jawie muszą poczekać. Zamiast tego możesz poćwiczyć na tej gadzinie zawiązywanie węzłów.",
+      "3": "O skąpany w świetle kamienny ołtarz opiera się skąpo odziana demoniczna kobieta, gestem przywołując cię do siebie. Wygląda, jakby planowała przejść prosto do miesiąca miodowego, lecz nagle zauważasz coś ostrego. Piekielna oblubienica rzuca się na ciebie z nożem!",
+      "4": "Znienacka wskakuje ci na plecy mała, zwinna kreatura. Udaje ci się ją strząsnąć. To paskudny gremlin, gotów do ponownego ataku.",
+      "5": "Chodnik przed tobą blokuje sterta kamieni. Czyżby zawał? Coś jednak nie pasuje. Nagle głazy formują się w postać kamiennego olbrzyma.",
+      "6": "Gdy ciche korytarze wypełniają się stukotem kopyt, zastanawiasz się, skąd wziął się w nich galopujący koń. Nagle tuż przed tobą staje dęba szary centaur.. Szkoda, że nie masz przy sobie apetycznego jabłka – może wtedy dałby się ujarzmić.",
+      "7": "Wkraczasz do groty, której strzeże posępnie spoglądający, kamienny troll. Gdy cię widzi, trochę się rozpromienia. W końcu ktoś do zgładzenia!",
+      "8": "Zardzewiała stalowa krata za twoimi plecami opada z impetem, a podły minotaur mierzy cię wzrokiem. Wzdychasz z ulgą – na szczęście nie masz dziś na sobie czerwonego pancerza! Gdy jednak minotaur zaczyna wymachiwać wielkim toporem, dochodzisz do wniosku, że nie rozróżnia kolorów.",
+      "9": "Charakterystyczny, drwiący śmiech za plecami może znaczyć tylko jedno - odrażający demon wyzywa cię na pojedynek.",
+      "10": "Nagle pod twoimi stopami trzęsie się ziemia. Cała kopalnia rozświetla się złowieszczo ognistym blaskiem, a z głębin dochodzi mrożący krew w żyłach ryk. Powietrze zdaje się falować pod wpływem bijącego od bestii przytłaczającego żaru. Nadchodzi rogacz ognisty. Nie daj mu przejść!"
+    }
+  },
+  "3": {
+    "name": "Ruiny Gnark",
+    "description": "Gdzieś na dzikim zachodzie.",
+    "floors": {
+      "1": "Wchodząc do wnętrza ruin nie możesz oprzeć się wrażeniu rażącego zaniedbania. Wszędzie roi się od robali. Do tego w twoją stronę biegnie obrzydliwie tłusty szczur.",
+      "2": "Nie zważając na twoją alergię, nietoperz pylisty zaczyna łopotać ci skrzydłami nad głową. Naprzemian kaszląc, krztusząc się i kichając, wyciągasz broń, by pośrednio zaradzić alergii.",
+      "3": "Wkraczasz do ogromnej komnaty, której sklepienie tworzy gruba warstwa pajęczyny. W jej rogu przycupnęła gigantyczna, owłosiona, okrutna tarantula. Zauważa cię i zeskakuje, by cię powitać.",
+      "4": "Nad wielkimi żelaznymi drzwiami siedzi skamieniały diabelski posąg, który wpatruje się w dal. Gdy wyciągasz rękę, aby złapać za klamkę, na barki spada ci pył. Odchylasz głowę i widzisz świecące oczy szarego gargulca szykującego się do ataku.",
+      "5": "Parszywy drań czai się na ciebie z bogato zdobionym mieczem. Na pewno komuś go podwędził. Z nieskrywanym zainteresowaniem lustruje twój ekwipunek.",
+      "6": "Zdarza się, że bezprawni mieszkańcy ruin trzymają w nich wilki w roli psów stróżujących. Wspaniały okaz tegoż właśnie oblizuje się na twój widok.",
+      "7": "Nagle robi się wokół podejrzanie cicho. Wyostrzasz zmysły, gotując się na kolejną zasadzkę. Za sobą słyszysz ciche kroki. Rozbójnik próbował cię skrycie zasztyletować!",
+      "8": "Choć w żadnej z komnat skarbów nie została już ani jedna złota moneta, w tym zakurzonym pomieszczeniu zadomowił się niedźwiedź brunatny. Widzisz, że zajada ostatniego gościa komnaty, więc postanawiasz się wycofać. Niestety nadeptujesz na kość i włochata bestia cię zauważa.",
+      "9": "Dzik jest dziki, dzik jest zły, dzik ma bardzo ostre kły – i pędzi szaleńczo wprost na ciebie. W tym momencie czujesz w trzewiach coś dziwnego. Twój burczący brzuch cieszy się na nieuchronną konfrontację z tym odyńcem.",
+      "10": "Otwierasz drzwi do komnat herszta rabusiów. W porównaniu do tego typa, wszyscy rzekomo wielcy mafiozi i kryminaliści to zwykłe płotki."
+    }
+  },
+  "4": {
+    "name": "Grota Korsarzy",
+    "description": "Szemrane typy w szemranym miejscu.",
+    "floors": {
+      "1": "Przed tobą ukryta w gigantycznej skale w kształcie czaszki Grota Korsarzy. Komitet powitalny składa się z glompfa wodnego, który ma chrapkę na twoje kończyny.",
+      "2": "W powietrzu unosi się woń wpływającej do jaskiń słonej wody przeplatana od czasu do czasu nutą cuchnącego rumu, który leżakuje tutaj w starych beczkach. Nagle z wody wyskakuje jaszczurzy rozbójnik. To by było na tyle, jeśli chodzi o bezproblemowe dotarcie do drewnianej kładki.",
+      "3": "Napotykasz rąbniętego rabusia. Tłumaczy ci swój tok logicznego rozumowania. Skoro jesteś sławnym bohaterem, to z pewnością masz pełen złota mieszek. Ergo, to on - rabuś - może wejść w jego posiadanie. Cieszysz się, idąc tym samym tokiem rozumowania w odniesieniu do rabusia.",
+      "4": "Przechodząc przez most, zauważasz duży pień drzewa zachowujący się dziwnie względem nurtu rzeki. Po oględzinach z bliska okazuje się on wygłodniałym aligatorem cienistym!",
+      "5": "Drogę do statku zagradza ci krępy korsarz. Zaraz... Przecież go znasz! Toż to sławny John Pasat-Monsun! Rozpoczynasz walkę z nim i jego papugą.",
+      "6": "Po pokładzie kica przedziwna maszkara. Nagle zatrzymuje się grzbietem do ciebie, obraca głowę o 180 stopni i wbija w ciebie obłędny wzrok. Następnie potworny zając wyjmuje ostry nóż.",
+      "7": "Wchodzisz pod pokład. W ładowni słyszysz jakiś hałas. Znikąd pojawia się zawszony korsarz, atakując cię zarówno wszami, jak i nieprzyjemnie wyglądającym kordelasem.",
+      "8": "Za ścianą skrzyń zauważasz nieustraszonego pirata Krwawonosa. Błaga o litość, ale nie dajesz się nabrać i natychmiast go atakujesz.",
+      "9": "Idąc dalej przez ładownię, słyszysz trzask łamanych desek. Statek zaczyna nabierać wody. Chwilę później zauważasz przyczynę - gigantyczna ośmiornica, najwyraźniej ludojad, wywęszyła w tej drewnianej puszce smakowity kąsek.",
+      "10": "Ledwo udaje ci się uciec z tonącej ładowni, a natrafiasz na kapitana korsarzy. Obwinia cię o szkody, a nawet o to, że musi opuścić statek ostatni. Ergo, ty pierwszy musisz wylecieć za burtę."
+    }
+  },
+  "5": {
+    "name": "Ołtarz Szmaragdowej Łuski",
+    "description": "Żąda ofiar...",
+    "floors": {
+      "1": "Syk kobry grzechoczącej naprowadza cię na wejście do podziemi pod ołtarzem. W wielu starożytnych kulturach, węże uważano za święte i nietykalne. Natomiast w dzisiejszej kulturze - za niesamowicie niebezpieczne.",
+      "2": "Zielony, jaszczurowaty stwór zagradza ci drogę. Jego nazwa gatunkowa po łacinie to saurus gladius, a po polsku - jaszczurzy siepacz. W starożytnej kulturze, ich zadaniem było zasiekać każdego, kto spróbuje zbezcześcić swą obecnością święte miasto.",
+      "3": "Choć jest jeszcze daleko, od razu słychać, że to raptor ryczący. Szybko przeszukujesz plecak i z ulgą stwierdzasz, że jednak są tam zatyczki do uszu. Umieszczając je na miejscu przeznaczenia, postanawiasz zwrócić spokój temu świętemu miejscu.",
+      "4": "W centrum kolejnej komnaty stoi duża chrzcielnica. Podchodząc zauważasz, że jest wypełniona mułem. Nagle wynurza się z niej świeżo ochrzczony jaszczur z bagien.",
+      "5": "Na kolejnym poziomie napotykasz zielonego tyranozaura. Na szczęście T-Rex śpi jak dziecko. Próbujesz przemknąć po cichu dalej, ale niechcący kopiesz pustą puszkę po piwie. Pamiętasz swój bojkot akcji „Sprzątanie świata”?",
+      "6": "Leśny skorpion przybył z gąszczu Puszczy Zarośląskiej aż do połyskujących korytarzy Ołtarza Szmaragdowej Łuski, aby przetestować swoje trujące żądło na intruzach takich jak ty.",
+      "7": "Jesteś jednym z tych, którzy postulują o zamknięcie bagiennych smoków w mocnych klatkach. Na tym okazie masz szansę udowodnić, że walka trwa!",
+      "8": "Następny poziom zalany jest błotnistą wodą. Nagle wodę mąci wynurzająca się meduza. Odruchowo odwracasz wzrok i wyciągasz oręż.",
+      "9": "Domyślasz się, że za tymi wielkimi wrotami jest komnata tronowa. Sprawdzisz to, jak tylko poradzisz sobie z tym jadowitym smokiem, którego nowym marzeniem jest w bardzo bolesny sposób ukrócić twój żywot.",
+      "10": "Król-jaszczur jest zdecydowanie przeciwny zamienieniu jego komnaty oraz znajdującego się w niej Ołtarza Szmaragdowej Łuski w atrakcję turystyczną. W takim wypadku, naturalnie, musi dojść do rękoczynów."
+    }
+  },
+  "6": {
+    "name": "Toksyczne Drzewo",
+    "description": "Jego korzenie sięgają czeluści piekielnych.",
+    "floors": {
+      "1": "Już sama zaraza, która dopadła to drzewo, jest śmiercionośną pułapką. Zanim ruszysz dalej, musisz spiłować kilka gałęzi.",
+      "2": "W porośniętym dzikim gąszczem labiryncie unosi się tak przytłaczający smród rozkładu, że dopiero teraz zauważasz ghula bagiennego, który przez cały ten czas powoli cię śledził.",
+      "3": "Najwyraźniej zaraza dopadła też inne stworzenia lasu. Ten wilk, który w jakiś sposób zgubił się w skażonym drzewie, z pewnością ma wściekliznę.",
+      "4": "Zielona maź drzewa stworzyła wspaniałe warunki życia dla oślizłego bloba. Również ta bezmózga zagadka ewolucji postanawia cię skrzywdzić. Fuj!",
+      "5": "Bardzo łatwo przegapić zgniłozielonego gremlina wśród całej tej zgniłozielonej mazi. Myślisz, że równie łatwo będzie go ukatrupić?",
+      "6": "W oddali kroczy jakaś góra futra. Czyżby niedźwiedź? Niee! Niedźwiedź w lesie?! A jednak! Naturalnie wściekły i dziki jak wściekły dzik.",
+      "7": "Z drewnianych ścian na podłogę kapią wielkie krople, a ty robisz wszystko, aby nie spadły ci na głowę. Po korytarzu niesie się obłąkańczy rechot – tuż przed tobą zielony gnoll tarza się beztrosko w gęstej mazi. Załatw go, zanim zarazi cię śmiechem!",
+      "8": "W tych żyznych dla skażonych roślin warunkach wyrosła naturalistycznie piękna, okazała rosiczka bagienna. I to dokładnie w przejściu do serca drzewa. Czas wyrwać chwasta!",
+      "9": "Zielony szlam sączy się nieprzerwanie ze szczelin w drzewie, tworząc kałuże i strumyki rozświetlające mrok nienaturalnym blaskiem. Idziesz w stronę serca drzewa, gdy na twojej drodze staje, dumnie prezentując swoją klatę, groźny leśny goryl.",
+      "10": "Pozostał jeszcze jeden morderczy, zmutowany okaz: okrutnie jadowity gremlin. Stój! Za późno! Już cię zauważył."
+    }
+  },
+  "7": {
+    "name": "Strumień Lawy",
+    "description": "Gorąca imprezka.",
+    "floors": {
+      "1": "Na najgorętszym głazie wygrzewa się ognisty skorpion. Raczej nie jest zadowolony z wizyty. Sycząc melodię „Podaruj mi trochę słońca”, jadowity pajęczak atakuje cię!",
+      "2": "Zaraz za wejściem do podziemi natrafiasz na chmury dymu unoszące się znad jezior lawy. Z jednej z nich wyłania się ognisty bazyliszek. Jego płomienne spojrzenie przykuwa uwagę. Na szczęście to jeden z tych nie zamieniających w kamień... tylko w kupkę popiołu.",
+      "3": "Z jednego z kipiących jezior wyłania się jakaś niekształtna forma. Blob wulkaniczny pozostawia za sobą śliczny, lśniący żarem ślad. Uważaj! Możesz się na nim sparzyć!",
+      "4": "Nareszcie docierasz do jaskini prowadzącej do topniejącego rdzenia – źródła lawy. Zauważasz tam toczącą się po rozjarzonych kamieniach kulkę futra. Gdy jest już tuż przed tobą, podskakuje, wyciągając małe kończyny. To glompf ognisty. Chce chapsnąć twoją głowę ostrymi zębiskami!",
+      "5": "W wulkanicznych skalnych żyłach płynie lawa. Stąpasz ostrożnie, starając się nie wpaść do bulgoczących strumieni, a z każdym oddechem do twoich płuc dostaje się coraz więcej żółtawych oparów siarki – gdy wtem za plecami słyszysz piekielny syk tygrysa.",
+      "6": "Spotykasz piekielnego cyklopa. Mówi, że pełni tu głównie rolę ciecia i złotej rączki, ale jak zajdzie potrzeba, to zabija też nieproszonych gości.",
+      "7": "Próbujesz właśnie przeskoczyć nad szczeliną w chodniku, gdy bucha z niej płomień na wysokość kilku metrów. Ostrożnie zaglądasz w dół. Aha! To legowisko żywiołaka ognia.",
+      "8": "Nauczony doświadczeniem, podchodzisz ostrożnie do każdej sterty kamieni wulkanicznych. Czyżby wulkaniczny olbrzym? Na szczęście nie. Zresztą one są większe od tej sterty. Spójrz chociażby na tego za sobą. Akuku!",
+      "9": "Czujesz, że źródło strumienia lawy jest coraz bliżej. Zupełnie jak źródło siarczanego zapachu, czyli olbrzymi smok.",
+      "10": "Nareszcie! Przed tobą źródło strumienia lawy. Zakładasz rękawicę kuchenną i już masz zakręcić kurek, aż tu nagle rycząc wściekle, materializuje się przed tobą gigantyczny duch wulkanu!"
+    }
+  },
+  "8": {
+    "name": "Świątynia Zimnej Krwi",
+    "description": "Zachowaj jej nazwę.",
+    "floors": {
+      "1": "Przedzierając się przez przeszywający mróz, w końcu dochodzisz do murów świątynnych. Kto by pomyślał, że ich strażnikiem jest sam legendarny yeti we własnej, futrzastej osobie!",
+      "2": "Pozostając w cieniu murów świątynnych, doznajesz nieodpartego wrażenia, że ktoś cię obserwuje. Kim jest ten czarny upiór i czego od ciebie chce? Postanawiasz dowiedzieć się tego, wyzywając go na pojedynek.",
+      "3": "Trzęsąc się z zimna, nadal szukasz wejścia do świątyni. Przydałby się przewodnik. Bo z tym ogromnym smokiem, który zastąpił ci drogę, się nie dogadasz. Zesztywniałymi z zimna rękami wyciągasz swój oręż.",
+      "4": "Lodowe wrota Świątyni Zimnej Krwi są uchylone, więc wślizgujesz się do środka. Silne wichry, które smagały cię na zewnątrz, tutaj zdają się tylko lekką bryzą. Hol wejściowy świątyni robi na tobie wielkie wrażenie, lecz zanim zapuścisz się dalej, musisz się uporać ze śnieżnym lwem, który nareszcie ma okazję wyłonić się z cienia.",
+      "5": "Ostrożnie przechodzisz obok dużej zamarzniętej sadzawki. Czy dawniej odbywały się tu imprezy? Kątem oka zauważasz, że coś przemyka pod podejrzanie pękającą skorupą. Nagle dostrzegasz parę błękitnych ślepi, a w następnej chwili spod lodu wyłania się mroźny aligator.",
+      "6": "Z wrót, które się przed tobą otwierają, bije oślepiające światło. Mrużysz oczy i po chwili dostrzegasz postać z ogromną głową. To istota pozaziemska!",
+      "7": "W tym mroźnym otoczeniu smok obłędu najwyraźniej czuje się doskonale. Cóż za błysk w oku! Szkoda, że za chwilę któreś z was sczeźnie.",
+      "8": "W półmroku coś się porusza! To jakieś pozaziemskie monstrum! Mroczny obcy! Z gracją wyłania się z mroku, by, zapewne z równą gracją, pourywać ci członki.",
+      "9": "W oddali słyszysz ten przedziwny język w wysokim rejestrze. To pewnie kolejny przybysz z kosmosu. Masz nieodparte wrażenie, że trzyma cię na muszce swojej futurystycznej flinty.",
+      "10": "Na widok piekielnej maszyny do zabijania ogarnia cię groza. Jedyną misją tego robota na tym łez padole jest niszczyć materię organiczną w najbardziej wyrafinowany, sadystyczny sposób!"
+    }
+  },
+  "9": {
+    "name": "Piramida Szaleństwa",
+    "description": "Nie trać głowy.",
+    "floors": {
+      "1": "Jaskiniowy cyklop? W tych okolicach? Coś tu nie gra. Trzeba złoić mu skórę i ruszać dalej.",
+      "2": "Nagle znajdujesz się w samym środku burzy piaskowej. Wyrosła jak z pod ziemi! Co na to meteorolodzy?! Cóż, trzeba sobie z nią poradzić.",
+      "3": "W końcu docierasz do piramidy. U jej podnóża stoi piekielny obcy i drapie się po głowie. Gdy cię spostrzega, przybiera pozę, będącą chyba najdoskonalszą ilustracją drapieżności.",
+      "4": "Wchodząc po stopniach piramidy, zauważasz legendarną wielką stopę. Rzucając w dół piszczelami, stwór wydaje się zafascynowany zjawiskiem grawitacji. Do kolejnego eksperymentu wyznaczył ciebie.",
+      "5": "Błoto z każdym krokiem chlapie ci na buty. Ale zaraz… skąd w ogóle się wzięło? I dlaczego tamta kobieta ma rogi? Bagienna nimfomanka tęskni za nowymi miłosnymi uniesieniami i pragnie zatopić w tobie swoje szpony, a potem cisnąć tobą o ziemię. Lepiej zapnij pasy!",
+      "6": "Nadęty minotaur nie cierpi treningu nóg, dlatego z chęcią rozwaliłby wszystkie schody. Uniemożliwiają mu to jednak mistyczne moce piramidy, dlatego wyżywa się na tobie. Co za idiota sprzedał mu sterydy?",
+      "7": "Ze szczytu piramidy leci w twoją stronę szkaradny demon. To paranormalne monstrum wywija toporem, a dodatkowo szepcze do siebie jakieś sprośności.",
+      "8": "Próbujesz odzyskać jasność umysłu, ale nie chce opuścić cię myśl o różowych zajączkach. Potwornie różowy zajączek nie cofnie się przed niczym, nawet przemocą.",
+      "9": "Kiedyś był mądrym uczonym, a teraz rozpaczliwie łapie oddech, próbując nie udusić się ze śmiechu. Zdaje się, że właśnie stąd pochodzą gnolle. Nie jest to pierwszy szalony gnoll, który stanął na twojej drodze, ale oby był ostatnim. Musisz tylko go wykończyć.",
+      "10": "Na szczycie piramidy stoi lustro. Z jego tafli wynurza się twój sobowtór i wyzywa cię na pojedynek. Po powrocie obiecujesz sobie wizytę u psychiatry. Tymczasem, musisz popełnić swego rodzaju samobójstwo."
+    }
+  },
+  "10": {
+    "name": "Twierdza Posępnego Czerepu",
+    "description": "W jej czeluściach kryje się sklep z pamiątkami.",
+    "floors": {
+      "1": "Zatrzymuje się przed tobą jeździec mroku i nakazuje ci zawrócić. Po namyśle odmawiasz. Jeździec wyciąga miecz, by dać ci lekcję. Tę ostatnią.",
+      "2": "Ciężkie żelazne wrota na końcu lodowego mostu podnoszą się, uwalniając monstrualnego nietoperza, który rozpoczyna szaleńczą szarżę w twoim kierunku.. Zastanawiasz się, czy to tam kryje się wejście do legendarnej jaskini nietoperzy i Mroczny Rycerz. Skrzydlata bestia chyba już cię zlokalizowała.",
+      "3": "Wrota za tobą zamykają się z impetem, a w twoją stronę kica nieustraszony zwierzak o świdrującym wzroku. Chcesz pogłaskać jego puchate futerko, lecz gdy wyciągasz rękę, pysk potwornego zająca wykrzywia się w okropnym grymasie.",
+      "4": "Z ciemnego kąta twierdzy leci w twoją stronę ciężki przedmiot. To nocny troll! Tym razem chybił, ale już znalazł kolejny głaz i bierze zamach.",
+      "5": "Najpierw słyszysz, a następnie widzisz podnoszącą się kratę. Uwolniona pantera nie ukrywa podniecenia z odzyskanej wolności. Na początek zamierza ją wykorzystać na porządny obiad z bohatera.",
+      "6": "Jeszcze dyszysz po ostatniej walce, a już słyszysz, jak ktoś dyszy wespół z tobą. Lub przeciw tobie. Odwracasz się. Przed tobą stoi wielce zdenerwowany ludojad, któremu właśnie ubito zwierzątko domowe.",
+      "7": "Co tu robi szary smok? Jego nazwa nawiązuje chyba do jego wieku – staruszek ma zaćmę, demencję i pluje chmurami sadzy wszędzie, tylko nie w ciebie. Ukróć jego męki na tym świecie.",
+      "8": "Przed wejściem do głównej wieży stoi wojownik Posępnego Czerepu. Zważywszy zacięcie na jego minie, musi tam być coś godnego uwagi.",
+      "9": "Jedną z komnat głównej wieży zamieszkuje smok ciemności. Zważywszy, że rozmiar uniemożliwia mu opuszczenie swego więzienia, jest i tak w całkiem niezłym humorze.",
+      "10": "Ze szczytu wieży spoglądasz na dziedziniec twierdzy, który wydaje się jakby mroczniejszy. Stoi na nim czarna, mrożąca krew w żyłach postać. To Rycerz Posępnego Czerepu! Wyzywa cię na ostateczny, epicki pojedynek!"
+    }
+  },
+  "11": {
+    "name": "Cyrk grozy",
+    "description": "Ludzie, zwierzęta, potwory!",
+    "floors": {
+      "1": "Napiętnowany ciężkimi przygodami wspominasz swe beztroskie dzieciństwo. Nagle słyszysz dobiegającą z dala wesołą muzykę. Zmarszczka zmartwień na chwilę znika z twego czoła. Cóż to może być? Cyrk zjechał do miasta!",
+      "2": "Klaun nigdy nie był twoim ulubionym punktem programu. Ale następna atrakcja zdaje się być jeszcze bardziej nieprzyjemna. Jakiś chojrak uzbrojony w ostre noże zapowiada, że zademonstruje swoje wątpliwe umiejętności. Kryj się!",
+      "3": "Ledwo udało ci się uniknąć ostrzy nożownika, a już pałęta ci się pod nogami kolejna gwiazda tej rewii. Ależ on słodki! Coś ci jednak nie gra w tym gniewnym spojrzeniu...",
+      "4": "Wiele dziwnych i przerażających zjawisk umilało twoje liczne podróże. Widok odrażających monstrów szczerzących kły to dla ciebie chleb powszedni. Z zimną krwią spoglądasz w ich paszcze. Niemniej na ten widok ciarki przechodzą ci po plecach.",
+      "5": "A cóż to? Żongler! Zobacz, jaki utalentowany! A ty? Umiesz tak? Spróbuj! Łap!",
+      "6": "Ci dwaj goście przeżyli niezwykle trudny poród. Od tamtej pory muszą się bez przerwy znosić. Nie jest im łatwo. Na szczęście dla obu, nauczyli się wyładowywać frustracje na innych.",
+      "7": "Tego klauna boją się dzieci... jak również dorośli, zwierzęta, rośliny, diabeł i śmierć. Oklaski dla Żartownisia Bronka! Jego niewybredne gagi trafiają do serca, a bolesne pointy - poniżej pasa.",
+      "8": "W życiu trzeba być elastycznym. Ten tutaj wziął sobie tę sentencję zbytnio do serca. Nawet gdy stoi przed tobą, musisz uważać, żeby nie ugryzł cię w plecy.",
+      "9": "Kryształowa kula nigdy nie kłamie. Dla tej garbatej damy to pewne. Przepowiada ci lawinę cierpień zakończonych bolesną śmiercią. Nie możesz umknąć losowi. Ale możesz spróbować spuścić mu lanie.",
+      "10": "Cóż za wesoły ancymon! Choć faktycznie ma coś diabolicznego w uśmiechu, a baloniki, które dzierży, miały związek z dziesiątkami niewyjaśnionych morderstw. Na tobie również chciałby sprawdzić, czy da się kogoś zabić w bardzo bolesny, a mimo to zabawny sposób."
+    }
+  },
+  "12": {
+    "name": "Piekło",
+    "description": "Na pewno nie jest AŻ TAK źle...",
+    "floors": {
+      "1": "Być może sama śmierć i szatan we własnej osobie mieliby kłopot z pokonaniem ciebie. Być może. Mimo to, Pan BelzeBoss chętnie przyjmie od ciebie wyzwanie. Z głuchym hukiem otwierają się przed tobą wrota do świata podziemi. Witającym cię odźwiernym jest tu potępiona dusza.",
+      "2": "Pewnie nie pamiętasz wszystkich wrogów, których udało ci się wysłać na tamten świat . Za to każdy z nich pamięta ciebie... A ten nadal jest wkurzony.",
+      "3": "Na ziemi stał on się uciążliwy przez swe ciągłe zrzędzenie i ględzenie. Po śmierci niewiele się zmieniło... tylko jakoś lepiej włada laską.",
+      "4": "Czy wiesz, co się dzieje, gdy małego, denerwującego rozrabiakę pożre wilkołak? Nie wiesz? Spokojnie. Zaraz się przekonasz.",
+      "5": "Pozostałe dusze potępionych wiedzą już o twoich odwiedzinach. Już z oddali słyszysz ich ponurą piosnkę: „Diabelski orszak niech twą duszę przyjmie!”",
+      "6": "Aby piekło było miejscem iście piekielnym, potrzebuje wyspecjalizowanych kadr. Najlepsi headhunterzy BelzeBossa często biorą na cel szefów firm developerskich. Ten tu dostał szczególnie gorącą posadkę.",
+      "7": "Do nogi, Azorku! Chyba nie ugryziesz pańcia, co?... KŁAP!",
+      "8": "Przed Tobą odrażająca, cuchnąca masa, która nabiera niewiarygodnych rozmiarów, zasilana ogłupiałymi masami dusz i propagandowym bełkotem. Czy zdołasz powstrzymać tę zgraję niskiego wzrostu brodaczy?",
+      "9": "Niejednego kryminalistę oczyścił z wszelkich zarzutów, czyniąc go Kawalerem Orderu Uśmiechu. Pytanie tylko, czy masz dość pieniędzy, by zapłacić mu i kilku podstawionym świadkom. A etyka, skrupuły, sumienie, dusza? Toż to jakieś bzdury! Sprawiedliwość będzie po twojej stronie... Jeśli zapłacisz!",
+      "10": "Oto i on! BelzeBoss we własnej osobie! Unia personalna diabła ze śmiercią! Imperator krainy wiecznego potępienia!... W sumie to nie jest wcale taki duży."
+    }
+  },
+  "13": {
+    "name": "13. piętro",
+    "description": "Odważysz się wkroczyć?!",
+    "floors": {
+      "1": "Marudząc na niski poziom trudności lochów, ruszasz na karkołomną wyprawę na 13. piętro podziemi. Winda sunie powoli, a tryby kołowrotu turkoczą złowrogo. Nagle drzwi się otwierają, a z mroku wyskakuje mała, zaciekła bestia.",
+      "2": "Zza truchła Licha Piekielnego wylatuje męska wróżka. Bardzo chce ci pomóc! Chwileczkę, chyba jednak nie jest to jeden (jedna?) z tych, co spełniają życzenia...",
+      "3": "Idąc przez opustoszałe pomieszczenia biurowe, słyszysz szmer. Nagle z jednego z boksów wyskakuje Dymik Majciarz! Wygląda na to, że chce ci spuścić łomot!",
+      "4": "Już podczas poprzedniej walki nie opuszczało cię wrażenie, że ktoś cię obserwuje. Nagle zza winkla wyłania się owiany złą sławą Kołek van Hellsing. W ręku ma pędzel umoczony w czerwonej farbie... Lub czymś podobnym.",
+      "5": "Nie pozwolisz się tak traktować. Postanawiasz złożyć zażalenie. Jednak KOmendant KOma bierze to trochę za bardzo do serca. Rwie księgę życzeń i zażaleń, po czym rusza w twoją stronę.",
+      "6": "Monumentalny gabinet oświetla tylko rozproszone światło zmierzchu. Za olbrzymim biurkiem siedzi ponura postać i po raz kolejny liczy złoto, które mogła przecież zainwestować w innych lochach. Może by tak... Jasne! Śmiało!",
+      "7": "Nie możesz znaleźć drogi wśród piekielnych ksiąg rachunkowych? Ten jegomość przeczytał każdą umowę i zapoznał się z każdym drobnym druczkiem. Jego trafne prognozy wstrząsną całym twoim ciałem. Ten, kto ośmieli się tu przyjść bez potwierdzenia zapłaty, niech nie liczy na litość – zostanie zamknięty wśród płonących arkuszy kalkulacyjnych… na wieki.",
+      "8": "Nareszcie twoja kolej! Dyrektor zgodził się udzielić ci audiencji. Pan Wacław prosi cię tylko o jeden zamaszysty podpis. Własną krwią, proszę!",
+      "9": "Uchylić się od podpisania zwykłej, ramowej umowy o leasing duszy?! Szczególnie jedna osoba ma ci to za złe: Motu ze swoim nieodłącznym pobijakiem lubi się bawić duszyczkami.",
+      "10": "W końcu dane ci jest ponegocjować z charyzmatycznym prezesem. Jest gotów na kompromisy! W porządku, odpowiednio dostosujemy poziom trudności. Umowę wieńczy uścisk młota... Znaczy dłoni.",
+      "11": "Udało ci się! Maszkary z lochu zostały pokonane! Ale chwileczkę… Cóż to? Drugie skrzydło budynku? Jakiś dwuskrzydły stwór czai się tam, by cię zgładzić. Czy uda ci się pokonać Thesi?",
+      "12": "O mały włos! Skradasz się wzdłuż korytarza, starając się nie zwracać na siebie uwagi. Powoluuutku otwierasz drzwi do biura, gdzie tester śmierci głośno wyjaśnia Twój upadek!",
+      "13": "Choć wciąż dzwoni ci w uszach, to myślisz już o zmianach w wersji zremasterowanej. Idziesz przekazać jedną czy dwie sugestie… Gert chętnie ich wysłucha, ale najpierw zamierza rozpłatać ci czaszkę toporem!",
+      "14": "Po tej przymusowej lekcji muzyki twój wzrok pada na nadpalony zwój. Widzisz na nim polecenie: „Przetłumaczyć na wczoraj!”. Zastanawiasz się, co to może znaczyć, gdy wtem pojawia się Lżący Łgarz, obiecując ci gruszki na wierzbie… w piekle!",
+      "15": "Sprawna organizacja to klucz do sukcesu. Czy to w domu, czy w szkole, czy w pracy, a tym bardziej w piekle. Wszak tutaj chaos znaleźć można w każdym kącie. Jak to dobrze, że w ogarnianiu sytuacji pomaga siostra licha piekielnego. Właściwie to nie jest jego prawdziwą siostrą, tylko towarzyszy mu w cierpieniu.",
+      "16": "Niech sami sobie tu wszystko organizują! Wkraczasz do zdewastowanej kuchni. Na szczęście nikogo tu nie ma. Ale cóż to? Czy to zapach pieczonej pizzy? Ależ nie! Ktoś ukrywa się w piekarniku rozgrzanym do 200°C! Tej pizzy nie wystarczy dla dwóch osób, więc musisz zawalczyć o swój kawałek!",
+      "17": "Masz już dość pizzy. Zaczynasz szukać odpowiedzi. Wygląda na to, że na miejsce każdego pokonanego wroga pojawia się trzech nowych. Nie możesz w to uwierzyć. Coś takiego zdarza się tylko w kiczowatych opowiadaniach fantasy! Po kilku kolejnych krokach koło ucha przelatuje ci kilof, wbijając się w ścianę obok.",
+      "18": "Dobiega cię ciche klikanie. Idziesz w jego stronę. Robi się coraz głośniejsze. Przy płonącym komputerze siedzi jakiś kobold. Czyżby to kodbold? Dwudziestopalczasty system pozwala na zaprogramowanie zupełnie nowych funkcji! Nagle kodbold słyszy cię i robi literówkę. To twoja wina!",
+      "19": "Nic takiego się nie stało. Trochę farby i będzie jak nowe. Tylko gdzie w piekle znaleźć dobrego malarza? Jak na zawołanie pojawia się człowieczek z pędzlami. Ale… Nie! To nie może być prawda! Wkłada je między palce i z pędzlowymi szponami rzuca się na ciebie!",
+      "20": "Wkraczasz do ostatniego biura. Lewituje w nim ostateczny boss! Demoniczny Diuk, Herald Cholery, Książę Konających, Arcydemon Agonii, Bestialska Bestia, Apostoł Apostazji, Szelma Szatana, Chan Chaosu, Markiz Martwicy… choć znajomi wołają na niego Marv."
+    }
+  },
+  "14": {
+    "name": "Easteros",
+    "description": "A za murem z kamieni będzie bezkres ziemi...",
+    "floors": {
+      "1": "Gdy przechodzisz na drugą stronę muru, dostrzegasz spaślaka pędzącego w twoim kierunku. Jego głowę zdobi przekrzywiona korona. Staw mu czoła i walcz niczym lew!",
+      "2": "Wojownik wyciąga do ciebie rękę, ale jego skóra jest zdecydowanie chłodniejsza niż u innych. Czyżby zima znowu wszystkich zaskoczyła? Pokaż mu, że ty też masz zimną krew!",
+      "3": "Co to za koleś? I o co chodzi z dwiema babkami uzbrojonymi po same... zęby?!",
+      "4": "Holundor!",
+      "5": "Nieznajomy z lwią grzywą włosów naciera na ciebie, wrzeszcząc. Nie wnikaj, o co mu chodzi: po prostu złap go za kudły...",
+      "6": "Gdy Twój kolejny przeciwnik zbliża się do ciebie, zanosi się pełnym pogardy śmiechem. Sądząc po jego zachowaniu i postawie, ma raczej wrogie zamiary.",
+      "7": "Ten dziwny gest nie wróży niczego dobrego... Niewiele większą pociechę oferują dwaj ciężkozbrojni giganci obwieszeni złotymi zbrojami płytowymi.",
+      "8": "To ci dopiero blizna! Takie świństwo na gębie rozproszy najbardziej skupionego przeciwnika! Należy się dyskwalifikacja za sam wygląd!",
+      "9": "Właściwie jest ci żal tego giganta. Nie znajdzie koszuli nawet w sklepie dla puszystych!",
+      "10": "Twój kolejny rywal jest honorowy do bólu. Z pewnością nawet by mu przez myśl nie przeszło, aby strzelić z kuszy do leżącego przeciwnika.",
+      "11": "Ten tutaj jest wyjątkowo „sztywny”. Skąd on się w ogóle wziął? Czy ktoś zostawił otwarte drzwi w wielkim murze?",
+      "12": "Dochodząc do przejścia, zauważasz rudowłosą kobietę z ewidentnie mściwymi zamiarami. Czyżby dlatego, że jej dwóch towarzyszy zginęło z twojej ręki?",
+      "13": "Okazuje się, że twój następny wróg stoi w cieniu... gigantycznego wilka. Uważaj, bo za chwilę i ciebie przyćmi ta bestia... Jeju!",
+      "14": "Czy jak na kogoś, kto stoi po pas w śniegu, nie jest ci za ciepło? Może nawet przerażająco ciepło...?",
+      "15": "Twój kolejny wróg chce uczciwej walki? Dziewczyno, szykuj się na bolesną klęskę! Ha!",
+      "16": "Może i ten ktoś – z nożycami w jednej, i tym czymś w drugiej ręce – chce ci coś powiedzieć, ale prawdopodobnie nic, co chcesz usłyszeć.",
+      "17": "Niech pokaże swą prawdziwą twarz. I niech da sobie spokój z tą dziwną gadaniną.",
+      "18": "Czy to on jest mordercą? Musi nim być! Te sarnie oczy i niewinny wygląd mówią same za siebie!",
+      "19": "Chcesz mnie zatrzymać? Ha! Że niby ty i Straż jakiejś Królowej? Aha, Straż TEJ Królowej... Rozumiem...",
+      "20": "Nie, nie boję się gigantycznych smoków. Niby dlaczego miałyby mnie przerażać? Jeszcze nigdy nie zdarzyło mi się... Aaaaa!"
+    }
+  },
+  "15": {
+    "name": "Wieża",
+    "description": "Dawno, dawno temu był sobie poszukiwacz przygód i jego trzech towarzyszy...",
+    "floors": {
+      "1": "Na pierwszym poziomie trafiasz na starego suchara, który raczej nie zamierza stąd spierniczać. Czaisz? Spierniczać! LOL",
+      "2": "Anyż, wermut i magiczna mikstura gotowa! Po czymś takim Dzwoneczek lubi się grzmocić, ale nie w tym sensie, co myślisz.",
+      "3": "Biedaczysko! Właściwie to szuka tylko swojej wielkiej miłości. Ale jest ranny, więc trzeba wykorzystać szansę.",
+      "4": "Na pewno nie szuka zwady. Niestety jego uśmiechnięta buźka stoi na twojej drodze. Huzia więc na niego!",
+      "5": "Małe dziecko-kwiat stoi na drodze do celu. Wyrwij hipisiątko!",
+      "6": "To ona zabierała wasze mleczaki i zostawiała jakieś marne grosze. Znów posypią się zęby! Nadszedł czas zemsty!",
+      "7": "Odrzucane we wszystkich kastingach, nagromadziło ogrom frustracji. Czas dać jej upust!",
+      "8": "Ten ciągły trel jest nie do zniesienia! Czas oskubać terrorystę!",
+      "9": "Tak, mamy życzenie: z drogi, jędzo!",
+      "10": "W dzieciństwie przeżył niezłe jajca! Czy tamten surwiwal pomoże mu przetrwać i tym razem?",
+      "11": "Dość tych śpiewów! Zapchaj się tym!",
+      "12": "Udaje niewiniątko, ale ta ręka to diabeł wcielony. Czas wy-ręczyć blagiera!",
+      "13": "Ciągle się szczerzy. Nie można mu pozwolić na takie zuchwalstwo!",
+      "14": "Zaklęty książę? Jasne! Słyszeliście to tyle razy, że trudno w to nie wierzyć!",
+      "15": "Połączenie drewnianej skóry, siły Popeye'a i szpilki w twarzy nie może oznaczać nic dobrego.",
+      "16": "Każdy może sobie coś życzyć, ale spełnia tylko życzenia śmierci (3)!",
+      "17": "Zalatuje od niego gorzałą i starą skarpetą. Obiecuje ci bogactwo i szczęście, ale kto by wierzył żulowi.",
+      "18": "Kradnie w obuwniczym. Lepiej niech wraca, skąd przyszła!",
+      "19": "Winiony za dziurę ozonową, bo kiedyś gapił się w niebo. Capi rybą.",
+      "20": "Jeden zadufany w sobie impertynent, a drugi niecny oszust. Obu należy dać nauczkę!",
+      "21": "Dzikie gęsi są pod ochroną. Kto je wykorzystuje, będzie miał z nami do czynienia!",
+      "22": "Każdą zjawę, choćby nie wiem jak przyjazną, należy przepędzić!",
+      "23": "To co wraz ze wspólnikiem uczyniła wilkowi, to znęcanie się nad zwierzętami! Czas wykonać wyrok!",
+      "24": "Nadchodzi wiosna. Czas, żeby spływała!",
+      "25": "Podejrzana obnażała się w miejscu publicznym. Znaleziono również przy niej dużą sumę pieniędzy niewiadomego pochodzenia.",
+      "26": "Bezbronne, niesłusznie cierpiące biedaczysko! Kto zdecyduje się ją zgnoić, dostanie od Mikołaja rózgę i wyrzuty sumienia.",
+      "27": "Czeka na swojego bałwana, którego będzie mogła uściskać na śmierć.",
+      "28": "Wspaniały przykład skuteczności bezstresowego wychowywania.",
+      "29": "Są tak słodziutkie i smutne, że ciężko nie mieć litości i nie zakończyć ich mąk.",
+      "30": "Czy jakoś tak... Ciągle atakuje wiatraki. Pewnie lobbysta sprzeciwiający się alternatywnym źródłom energii.",
+      "31": "Nawąchał się oparów ze swojej lampy olejowej i cierpi na halucynacje. Trzeba mu pomóc.",
+      "32": "Odkąd uciekł jej królik, wyobraża sobie różne niestworzone historie. Może być niebezpieczna. Lepiej ją uśpić.",
+      "33": "Klątwę wielkiego, nocnego ludojada należy zdjąć za wszelką cenę!",
+      "34": "Udaje, że się nie starzeje, ale widzimy jego zmarszczki i znamy słabości.",
+      "35": "Nie powinna być trudnym przeciwnikiem, bo daje się nabrać na wszystko, choćby na zatrute jabłko czy jabola. Trzeba tylko upewnić się, że naprawdę nie żyje.",
+      "36": "Nie przepuści żadnej okazji do imprezowania. Czas potraktować go tak, jakby to zrobił sfrustrowany organ porządkowy!",
+      "37": "Nie pamięta, skąd pochodzi, ale z pomocą szemranych typów stara się wejść w kręgi salonowe.",
+      "38": "Zawsze można załatwić ten kłopot lepiej, niż wysyłając je na wcześniejszą emeryturę.",
+      "39": "Wańka Wstańka na murze siadł. Wańka Wstańka z wysoka spadł. I wszyscy konni i wszyscy dworzanie, złożyć do kupy nie byli go w stanie.",
+      "40": "Gdyby nie ta nierówna broda i ciągłe strofowanie białogłowych, można by mu współczuć.",
+      "41": "Ktoś, kto wślizguje się nocą do dziecięcych sypialni, żeby sypać im w oczy piaskiem, nie jest mile widziany w cywilizowanym społeczeństwie.",
+      "42": "Ostatnio nie dosypia, bo diabeł go czymś nastraszył.",
+      "43": "Wykorzystywany w polityce do przekazywania walizek z pieniędzmi. Czas zmniejszyć trochę korupcję!",
+      "44": "Nadużywa swojego prawa do odzwierciedlania prawdy. W społeczeństwie obywatelskim coś takiego jest niedopuszczalne.",
+      "45": "Z wielkim złym wilkiem sobie poradziły. Czas na was.",
+      "46": "Może jeśli ściśnie się ją dostatecznie mocno, to zniesie złote jajo?",
+      "47": "Troglodyta i kurokrad. Sporo mówi się o jego plantacji zmutowanej fasoli. Może to po niej wdrapał się do Wieży?",
+      "48": "Przeprowadziła się z lasów Molwanii, aby ukryć się w Wieży. Przed wami się nie udało.",
+      "49": "Słuch głosi, że czaruje magią. W takim wypadku może pomóc jedynie nieokrzesana brutalność.",
+      "50": "Druga najbardziej tragiczna historia miłosna w historii. No chyba że zmienicie jej zakończenie.",
+      "51": "Czy przenikniesz przez ten genialny kamuflaż?",
+      "52": "Ostatnio niedojda nie dojada, bo swoim socjalistycznym nastawieniem wkurzył wielu polityków.",
+      "53": "Sezam za jego plecami blokują skały. Hasło do nich musicie z niego wycisnąć siłą.",
+      "54": "Lepiej nie mówcie mu, że pogrubiają go, bo ma też u pasa nowy miecz.",
+      "55": "Branża produkcji klejów dała by miliony za jego złotą gęś. Lepiej pomóżcie im!",
+      "56": "Przystawka: okruszki z runa leśnego. Danie główne: duszone wścibskie bachory. Deser: selekcja pierników.",
+      "57": "Włamywaczka, chuliganka, do tego kradnie jedzenie. Nie czas na litość!",
+      "58": "Czy to nie ona nagrywała kiedyś z tym znanym magikiem? Zresztą nie ważne, bo stoi wam na drodze. ",
+      "59": "Kto łyka muchy w końcu weźmie się za podróżników. Lepiej od razu wybić mu zęby.",
+      "60": "Gada ze zwierzętami, twierdzi, że jest ofiarą przemocy domowej i chce wziąć udział w największym kastingu w królestwie. Czas, żeby zgubiła drugi pantofelek.",
+      "61": "Lepsza w tej roli była ta blondyna z tego serialu... Ale czego oczekiwać po takim niebieskim tłuściochu?",
+      "62": "Jak zawsze popularny! Przyjaźń to magia! A zemsta to salami ...- najlepiej smakuje na zimno.",
+      "63": "Zimna jak katafalk! Trzeba ją z nim bliżej zapoznać.",
+      "64": "Na końcu tęczy stoi garniec pełen... Dwugroszówek? Nie ważne, załatwmy go. I tak się opyla.",
+      "65": "Jego jednostrzałowa pukawka może co najwyżej rozśmieszyć takich wojów jak wy!",
+      "66": "Z pewnością jest milusiński, nawet z cierniem w łapie. W sumie to dobrze, że jest ranny.",
+      "67": "Wie jak korzystać z dwóch muszli, aby zakryć tylko to, co najbardziej pożądane. Niejeden wilk morski zagapił się na nią i wprowadził łajbę na mieliznę.",
+      "68": "Szarmancki fircyk będzie próbował wykręcić się z tej kabały. Dacie się nabrać na jego gładką gadkę? ",
+      "69": "Były bohater legendy. Ostatnio wojuje z ludźmi, którzy robią o nim marne filmy. Trzeba go zrozumieć, ale trzeba też usunąć z drogi.",
+      "70": "Może mieć wściekliznę. Lepiej najpierw zabić, a potem zadawać pytania.",
+      "71": "Chyba musicie dokonać cudów, żeby zaimponować tej paniusi.",
+      "72": "Najwyraźniej nigdy nie grał w \"Slender\"... Ani nie trafił na was.\"",
+      "73": "Odkąd wycięto w pień zaczarowany las, została cheerleaderką polskiej reprezentacji.",
+      "74": "Ktoś ma ochotę na marchewkę?",
+      "75": "Dzierży ogromny szpikulec do szaszłyka, zapewne w poszukiwaniu Świętego Grilla. Czas nadziać go na rożen!",
+      "76": "Przeor nadał mu to imię, bo wina mszalnego odmawia rzadziej niż modlitwy. Pamiętajcie, że walka z nim to nie przelewki.",
+      "77": "Czas wprowadzić republikę!",
+      "78": "Chciał zostać pogromcą smoków, ale się nie udało. Został więc Misterem Uniwersum.",
+      "79": "Okrutne bestie chcą tańczyć do jego muzyki - czeka je zagłada!",
+      "80": "Teraz dopiero lew ma powód do strachu! Czas przejąć kontrolę nad drogą z żółtej cegły!",
+      "81": "Mam nadzieję, że podczas przygotowań nie wprowadził was w błąd jego zwodniczy przydomek.\"",
+      "82": "Wszystkiego najlepszego z okazji Chanuki!",
+      "83": "Tysiące pszczół uwija się jak w ukropie, a on przychodzi jak do siebie i się częstuje! Naprzód w imieniu królowej pszczół!",
+      "84": "Czy gadający osioł w osadzie nie wspominał coś o zielonym ogrze? Na pewno jest nagroda za jego głowę!",
+      "85": "Niech sobie mości wygodną miejscówkę, podczas gdy wy przygotujecie oręż.",
+      "86": "Awansowany z liczykrupy? Cóż, im wyżej wzlecisz, tym niżej upadniesz. Z okna wieży jest dosyć wysoko.",
+      "87": "Kto jadł z mojej miseczki? Ktoś, dla kogo była to ostatnia wieczerza! Na nich!",
+      "88": "Powiecie, że ratowaliście ich z paszczy wilka i weszli na linię ognia.",
+      "89": "Czy to nie oni porwały tę łatwowierną księżniczkę? Wiadomo tylko, że to ślady jej DNA odnaleziono za siedmioma górami.",
+      "90": "Ma pecha, bo nie jesteście smokami.",
+      "91": "Wydala dukaty! Środki na rozwolnienie mogą przynieść ci bogactwo! Ale ostrożnie! Nikt nie wie, co się tam może jeszcze kryć.",
+      "92": "Jej metoda płatności może i jest nieco niekonwencjonalna, ale nigdy się nie myli się co do ilości.",
+      "93": "Zapewne właśnie zjada resztki jakiegoś samozwańczego pogromcy. To wasza szansa!",
+      "94": "W odróżnieniu od swojego brata Stasia był cwany i opatentował fryzurę afro.",
+      "95": "Ciekawe co powie na miotacz ognia babuni? Na pewno rozpłynie się w jej namiętnościach.",
+      "96": "Genialny algorytm serwisu randkowego dobrał ich doskonale. Są zbyt zajęci sobą, żeby się bronić.",
+      "97": "Każdego roku wychodzi o nich nowy film. Zjaw nie da się przepędzić. Czy da się?",
+      "98": "Przychodzi ci do głowy jakiś „romantyczny” sposób, żeby ją obudzić?",
+      "99": "Żółtobeżowy stwór szlamiasty w całej swej okazałości.",
+      "100": "Raczej nie unikniecie zaplątania się w jej kołduny."
+    }
+  },
+  "16": {
+    "name": "Uświęcona tradycją Szkoła Magii",
+    "description": "Wejście tylko z peronu 9 i 3/4!",
+    "floors": {
+      "1": "Ten kapelusz wygląda zupełnie jakby spędził parę tygodni w zapomnianej przez los dziurze. Teraz pora na Ciebie, załóż go! Do którego z domów trafisz? Grypindor? Slyperin? Hubblepus? Ravenslawn?",
+      "2": "Wpatruje się w Ciebie jakby miał zaraz rzucić najstraszniejszą klątwę. Na szczęście nie posiada żadnych magicznych zdolności.",
+      "3": "Jeden pies, a głowy trzy – jedna groźniejsza od drugiej!",
+      "4": "Mnóstwo nóg i jeszcze więcej... potomstwa...",
+      "5": "Opowieściami o jego czynach można by zapełnić wiele stronic. Na każdej z nich historie oparte na faktach (alternatywnych!).",
+      "6": "Gdy zbliża się niebezpieczeństwo, czasem lepiej odwrócić wzrok. Z drugiej strony... nic nie powinno Ci grozić, jeśli spojrzysz tylko na jego odbicie w lustrze, prawda?",
+      "7": "Któż by pomyślał, że taki latający worek kości może narobić aż tyle zła?",
+      "8": "Kradzież jajek to będzie pestka.",
+      "9": "Kocha zwierzątka... nieco inaczej, ale nigdy nie wyhodowałby żadnego potwora!",
+      "10": "Pewne elementy wizualne i etymologiczne pozwalają zaklasyfikować tego osobnika do kategorii drani.",
+      "11": "To, co ten nauczyciel zrobił z dyrektorem ZASZOKOWAŁO WSZYSTKICH!",
+      "12": "Jedyną rzeczą bardziej niebezpieczną niż potężna koteria złych czarnoksiężników jest trzech uczniaków.",
+      "13": "Jego brat bliźniak cierpi na nadwagę i zamieszkuje na biegunie północnym razem z parą reniferów.",
+      "14": "Ten uroczy i miły osobnik na pewno musi mieć też piękne wnętrze i niezłomny charakter.",
+      "15": "Nikt nie nadaje się lepiej do nauczania obrony przed czarną magią niż ucieleśnienie ploteczek przy kawce, prawda?",
+      "16": "Żaden szanujący się nowoczesny loch nie obejdzie się bez hordy zomb... to jest Inferiusów.",
+      "17": "Ona nigdy nie ma dość Zaklęć Niewybaczalnych. W sumie kto by się jej dziwił?",
+      "18": "Zanotować: jeśli ktoś chwali się swoją „czystą krwią” – omijać z daleka.",
+      "19": "Bez obaw, to maleństwo nie ugryzie!",
+      "20": "OTO do czego może doprowadzić mały wypadek przy dmuchaniu nosa w dzieciństwie! Nie ma innego wyjścia, po czymś takim można zostać jedynie osobowym ucieleśnieniem ZŁA."
+    }
+  },
+  "17": {
+    "name": "Hemorridor",
+    "description": "Zło spoczywa na Górze Popiołów tego świata",
+    "floors": {
+      "1": "A któż to gna przez pola w istnych ciemnościach? Toż to ork na swoim wierzchowcu. ",
+      "2": "Nie karmić!",
+      "3": "Pośród goblinów znajdziesz i ich króla. ",
+      "4": "Takie, takie... smaaaakowiiiite!",
+      "5": "Sieć na sieci, siecią poganiana...",
+      "6": "W oczach można ujrzeć piękno... albo odblask berła.",
+      "7": "Szybko, ale na luzie!",
+      "8": "Rymy... wypalone w ogniu, twarde jak głaz, skrzące niczym stal w mroku.",
+      "9": "Być może upiorni jeźdźcy?",
+      "10": "Zakaz kąpieli.",
+      "11": "Przerażający demon? Chyba nie może być aż tak źle?",
+      "12": "Jakby orkowie nie byli już wystarczająco przerażający...",
+      "13": "Źle dobrana dawka to jakby w połowie otrucie.",
+      "14": "Przeszedł na Ciemną Stronę... oops, nie ten film.",
+      "15": "Mam nadzieję, że nie masz alergii na orzeszki.",
+      "16": "Aż tak umarli to oni nie są.",
+      "17": "I na koniec naprawdę wielki, wściekły i do tego jadowity pająk... znowu. ",
+      "18": "Jego wierzchowiec jest naprawdę uroczy.",
+      "19": "Prosto w twarz!",
+      "20": "Sekretem jego mocy jest jego wielki miecz! Dlatego właśnie nazywają go \"Władcą Żądeł\". "
+    }
+  },
+  "18": {
+    "name": "Karuzela z idolami",
+    "description": "Walcz razem z towarzyszami przeciwko idolom z innego świata.",
+    "floors": {
+      "1": "Tylko prawdziwy łobuz jest w stanie go pokonać!",
+      "2": "Przed twoimi oczami migają liczby. 3… 2… 1… ZACZYNAMY! Znajdujesz się właśnie w jego transmisji… a to oznacza, że musisz stoczyć z nim walkę.",
+      "3": "Od razu po wejściu do pomieszczenia słyszysz krzyk! Jeszcze nie przestało ci dzwonić w uszach, a on już przygotowuje się do ataku.",
+      "4": "Świnka na jego ramieniu może się wydawać urocza, ale nie daj się jej zwieść, bo zakwiczysz z bólu.",
+      "5": "Najbardziej zdyscyplinowany i najgroźniejszy mag, zmora Jacka the Hammerera. Chodzący kalkulator, który przeciągnie cię na swoją stronę skibidi! Chcesz się przekonać, jak to jest?",
+      "6": "Ten niebieskowłosy gość boi się pająków, ale skoro ty nie masz ośmiu nóg, musisz kopnąć w kalendarz! Przygotuj się na zagładę!",
+      "7": "Zarozumiali bohaterowie tego nienawidzą! Zobacz, jak łatwo można ich pokonać, stosując te przebiegłe sztuczki!",
+      "8": "Pod tą grubą warstwą skóry kryje się dobre serce. Przynieś mu kartonik pączków, a może nawet pozwoli ci przejść.",
+      "9": "Oślepi cię swoją doskonale ogoloną głową, a potem zaskoczy cię kocimi ruchami. Tego tańca nie przeżyjesz!",
+      "10": "Podchodzisz do kolejnego monitora, na którego ekranie natychmiast rozpoczyna się transmisja. Wszystkie oczy skierowane są na ciebie. Czy zdołasz wygrać pod taką presją?",
+      "11": "Jest młody i przystojny, ale nie daj się zwieść pozorom. Nic go nie powstrzyma. Do ataku!",
+      "12": "Słynny specjalista od francuskich bagietek i mistrz świata w grze Minecraft wita wszystkich bohaterów! Nawet gdy jest pijany, nie uważa cię za zagrożenie.",
+      "13": "Zaprasza cię do swojego pokoju z szerokim uśmiechem na ustach. Jego poczucie humoru i dobry nastrój są zaraźliwe, ale nie trać czujności, bo szybko spotka cię zagłada!",
+      "14": "Przemierzasz ostentacyjne, rozpikselowane pomieszczenie, gdy nagle pojawia się przed tobą cień z poradnikiem w ręku. Ten ktoś doskonale sobie radzi w świecie zbudowanym z bloków, a teraz postanowił nauczyć cię tego i owego o walce.",
+      "15": "Jeżeli myślisz, że podczas waszego ostatniego spotkania jego włosy miały inny kolor, to możesz mieć rację.",
+      "16": "Według legendy ten potwór urodził się z trzema nogami i wychował w popielniczce. Zanim na niego spojrzysz, zdejmij skarpety!",
+      "17": "Ta hybryda zebry i człowieka uwielbia śmiać się z własnych żartów i twojej chęci do walki.",
+      "18": "Twoje niebieskie od ekranu oczy nie umknęły jego uwadze. Trochę to niefortunne, że właśnie zepsuł ci się przycisk pauzy.",
+      "19": "Król Niekompetentnych nie bez powodu jest królem, więc lepiej się mu pokłoń!",
+      "20": "Pomocy! To informatyk! Uważaj, bo jeżeli uzyska dostęp administratora, zrobi ci taką fragmentację, że nie zostanie po tobie ani jeden bit. To przeciwnik NP-trudny.",
+      "21": "Moin moin, dzień dobry, cześć – zapraszamy na łomot! „Teraz ci się dostanie jak naleśnikom na śniadanie” – ryczy triumfalnie na ciebie, ponieważ swoimi kiepskimi rymami i porównaniami zamierza ci dowalić jak jakiemuś celebrycie w oktagonie.",
+      "22": "Uwaga! Ten nadpobudliwy gość miota memami jak pociskami, a jego nawałnica nieprzewidywalnego chaosu przetoczy się po tobie niczym walec. To GIGACHAD, który żyje dla rozrywki. Zafunduj mu porządne widowisko!",
+      "23": "Słyszysz cichy odgłos morza… po czym zmywa cię fala strategicznego doświadczenia. Choć podczas walki ten gość odpowiada na twoje pytania miłym i spokojnym głosem, masz wrażenie, że woda powoli wymywa cię z lochu.",
+      "24": "Jego wiedza jest głębsza niż ten loch, a jego sarkazm – ostrzejszy niż twoja broń. Odpowie na każde pytanie… chyba że spytasz go, jak wyjść cało z tego pojedynku.",
+      "25": "Zerkasz na monitor i widzisz owianego legendą pioniera, szczupłego idola mas. Wcale go nie obchodzi, że ze spotkania z nim chcesz wyjść w jednym kawałku.",
+      "26": "Jakaś potężna, basowa siła rozszerzyła swoje wpływy poza krainę Azeroth i granice tego monitora! Co z tym zrobisz?",
+      "27": "Słyszysz przyjemny, spokojny głos, i czujesz, jakby całe napięcie ulatywało z twojego ciała. Wtem otrzymujesz cios, który brutalnie sprowadza cię z powrotem na ziemię.",
+      "28": "Staje przed tobą demoniczny weteran, którego głos odbija się od wirtualnych ścian niczym grom. Na jego ramieniu siedzi jakiś pająkopodobny stwór, który nieprzerwanie szepcze mu coś do ucha. Czy demony mogą mieć… własne demony?",
+      "29": "Ten wojownik od czasu do czasu wyłącza myślenie, żeby zdezorientować cię swoimi szalonymi bredniami. Wśród nich wybrzmiewa jednak najważniejsze zdanie: aby go pokonać, musisz surfować jak zawodowiec!",
+      "30": "Przed tobą dumnie stoi wysoki na dwa metry, mianowany przez fanów prezes. Nonszalancko sączy parujący eliksir życia ze swojego kielicha i z utęsknieniem wyczekuje piątkowego kebaba. Jesteś jego ostatnią przeszkodą… a on jest potwornie głodny."
+    }
+  },
+  "19": {
+    "name": "Nordyccy bogowie",
+    "description": "Myśl o zbieraniu cięgów aż do nadejścia Ragnaröku sprawia, że zimny pot spływa ci po Bifröście.",
+    "floors": {
+      "1": "Powiedz złe słowo o jego matce, a równocześnie obrazisz jego wszystkie dziewięć sióstr.",
+      "2": "Posłańcy Odyna ogłoszą dziś tylko jedno – twoją zgubę.",
+      "3": "Zarezerwowała ci miejsce VIP w podziemnym świecie.",
+      "4": "Jego pałac 540 komnat jest największym w Asgardzie. Nie ma w nim dziś dla ciebie miejsca.",
+      "5": "Oferuje ci natychmiastową kremację, aby uwolnić twoją duszę z męczącego jarzma ciała.",
+      "6": "Przystojniejszy od ciebie, o niebo bardziej złowrogi i stokroć bardziej szczwany w knowaniach.",
+      "7": "Jego syn i córka zrodzili się z potu spod jego lewej pachy. A teraz wyobraź sobie, co się wydarzy, gdy kichnie w twoim kierunku.",
+      "8": "Rozkapryszona bestyjka, która chce uścisnąć cały świat i ugryźć się w ogon.",
+      "9": "Właśnie zerwał się z niezniszczalnego magicznego łańcucha i spogląda na ciebie łapczywie.",
+      "10": "Miotający ogniem olbrzym, który ma zajawkę, by zniszczyć wszelkie życie na świecie. Zacznie od ciebie."
+    }
+  },
+  "20": {
+    "name": "Góra Olimp",
+    "description": "Droga na szczyt może okazać się istnym maratonem.",
+    "floors": {
+      "1": "Czy to nadal śpiew, czy już chłosta?",
+      "2": "Oko za oko!",
+      "3": "Ten ogar piekieł nie wpuszcza żywych do świata podziemi. Wiesz, co to dla ciebie oznacza.",
+      "4": "Gdyby spojrzenie mogło zabijać…",
+      "5": "W starciu z boginią taktyki potrzebujesz nowej strategii.",
+      "6": "Może się okazać, że będzie to dla ciebie herkulesowy trud.",
+      "7": "„Bóg wojny? W końcu godny przeciwnik!” – twoje ostatnie słowa.",
+      "8": "Nie zostaniecie przyjaciółmi. Skumałeś się już z jego przyjaciółką Meduzą i synem Polifemem.",
+      "9": "Po tej walce władca krainy umarłych będzie też twoim władcą.",
+      "10": "Wskazówka: gdy gromi gromów grad, trzymaj się ziemi niczym głaz."
+    }
+  },
+  "21": {
+    "name": "Karczma mrocznych sobowtórów",
+    "description": "Starzy druhowie to teraz nowi wrogowie",
+    "floors": {
+      "1": "Chyba jest trochę zirytowany.",
+      "2": "Nazywają się dezerterami, ale tak naprawdę wylano ich za brak umiejętności. Mimo to pokonają cię we śnie!",
+      "3": "Uznaj to za zaszczyt. Zwykle arsenał spod jego lady widują tylko zwolennicy zakupów na zeszyt.",
+      "4": "Gra odbywa się według tajemniczych zasad mroku. Jedyne, co musisz zrobić, to postawić na szali własne życie.",
+      "5": "Ma z czego wybierać, ale młot to jego ulubiona broń, z którą nie lubi się rozstawać.",
+      "6": "Kociołek stoi już na ogniu. W drodze wyjątku możesz zostać dzisiejszym składnikiem.",
+      "7": "Wykonuje zgrabne ruchy dłońmi, po czym odsyła cię w zaświaty. Pewnie i tak zażąda za to kasy.",
+      "8": "Tylko on wie, kiedy zatrzyma się koło fortuny. Ma pewność, że tym razem los będzie dla Ciebie niełaskawy.",
+      "9": "Dotychczas katastrofy wywoływał niechcący. Teraz robi to celowo.",
+      "10": "Zawsze miał idealny wzrost do zadawania ciosów poniżej pasa."
+    }
+  },
+  "22": {
+    "name": "Smoczy Skarbiec",
+    "description": "Masz przy sobie gaśnicę?",
+    "floors": {
+      "1": "Takie są skutki słabej opieki dentystycznej.",
+      "2": "To chyba ostatni żyjący przedstawiciel tego gatunku!",
+      "3": "Nie tylko rozmiar się liczy!",
+      "4": "Który archeolog znowu źle złożył te kości? Trzeba to poprawić!",
+      "5": "Spełni twoje życzenie, ale tylko jeśli pragniesz zginąć.",
+      "6": "Pokonaj go szybko, zanim jego mama wróci.",
+      "7": "Szczęście mu dziś dopisuje.",
+      "8": "PupilDex – wpis nr 006: „Ten pupil potrafi topić wosk ognistym oddechem. Od czasu do czasu może też wzniecić pożar”.",
+      "9": "Łypie łapczywie na klejnoty w twoim pancerzu i rusza w twoją stronę.",
+      "10": "Lepiej szybko się jej pozbądź, bo narobi sporych problemów."
+    }
+  },
+  "23": {
+    "name": "Dom Strachu",
+    "description": "Boją się ciebie bardziej niż ty ich!",
+    "floors": {
+      "1": "Nowoczesna interpretacja ideału piękna. Jak ci się nie podoba, to dostaniesz w papę!",
+      "2": "Prawdziwym potworem jest człowiek, który go stworzył, ale na szczęście z nim akurat nie musisz walczyć.",
+      "3": "Dla niego jesteś tylko chodzącym workiem krwi.",
+      "4": "Ej, telefon ci dzwoni?",
+      "5": "Chcą się tylko z tobą pobawić!",
+      "6": "Daje ci balonik, a ty chwytasz go z niecierpliwością.",
+      "7": "Usiłując cię wykończyć, chce ci pomóc naprowadzić życie na właściwe tory.",
+      "8": "To karygodne, że ściga cię nawet teraz, gdy nie śpisz!",
+      "9": "Chce tylko poćwiczyć na tobie filetowanie.",
+      "10": "Wielu niecierpliwych poszukiwaczy przygód padło jej ofiarą."
+    }
+  },
+  "24": {
+    "name": "3. Liga Superbohaterów",
+    "description": "Należy tutaj pilnie sprawdzić ważność oficjalnej licencji bohatera…",
+    "floors": {
+      "1": "Pokonuje przeciwników, uderzając ich tysiąc razy.",
+      "2": "Postrach wszystkich damskich szatni – choć podczas walki z tobą wolałby mieć zamknięte oczy.",
+      "3": "Nieustannie chodzi od jednej toalety do drugiej, a żeby się do niej dostać, musi minąć ciebie.",
+      "4": "Z wielkim poświęceniem prasuje koszule przeciwników.",
+      "5": "Nigdy nie musi nikogo pytać o numer telefonu.",
+      "6": "Zyskuje niewidzialność, gdy nikt nie patrzy.",
+      "7": "Gdy zjesz jedną z jego podejrzanych słodkości, staniesz się dla niego łatwym celem.",
+      "8": "Ma moc stu filiżanek kawy.",
+      "9": "Ma największą supermoc ze wszystkich – problem w tym, że nie może jej sobie przypomnieć…",
+      "10": "Cierpi na przewlekłego kaca i tylko jedno może mu pomóc: solidny łomot!"
+    }
+  },
+  "25": {
+    "name": "Dojo Bohaterów z Dzieciństwa",
+    "description": "Kraina wielkich oczu i krwawiących nosów",
+    "floors": {
+      "1": "Pokonaj ją szybko, zanim zdąży się przebrać!",
+      "2": "Jego największym marzeniem jest objęcie posady burmistrza, a ty mu w tym przeszkadzasz.",
+      "3": "To jeden z tych szczególnie wścibskich sąsiadów.",
+      "4": "Pewnie chce sobie coś zrekompensować…",
+      "5": "Groźna persona ze szwajcarskim zegarkiem.",
+      "6": "Niestety, w głowie nie ma nic oprócz powietrza.",
+      "7": "Aby zostać mistrzem, trzeba dużo ćwiczyć.",
+      "8": "Szczyt toksycznej męskości.",
+      "9": "Im bardziej blond są włosy, tym większa jest moc.",
+      "10": "W głębi serca wierzy w sztuczki z kart."
+    }
+  },
+  "26": {
+    "name": "Grota Potworów",
+    "description": "Za każdym razem, gdy któryś z nich ucieka, jakieś miasto staje w płomieniach.",
+    "floors": {
+      "1": "Szkoda, że mówisz tylko po wielorybiemu. Twoja broń będzie chyba musiała przemówić za ciebie.",
+      "2": "Zakłócasz jego miesiąc miodowy… I bez obaw – rozmiar naprawdę nie ma znaczenia.",
+      "3": "Dla niego jesteś tylko małym samochodzikiem.",
+      "4": "Od czasu do czasu skubnie tego czy tamtego poszukiwacza przygód.",
+      "5": "Lepki, słodki i gorący? Lepiej się tak nie śliń, tylko wykończ tę rozdygotaną kluchę!",
+      "6": "Uważaj, aby nie rozdeptać jego małego zamku z piasku.",
+      "7": "Zatrąb raz, jeśli myślisz, że z nim wygrasz!",
+      "8": "Aby móc powstrzymać ten potrójny jazgot, najlepiej jest znać się na wiązaniu węzłów. Ale twoja broń też powinna się nadać.",
+      "9": "Przybywa z Tokio ze złymi zamiarami, a ty utrudniasz zwiedzanie.",
+      "10": "Jeśli jeszcze raz usłyszy, jak ktoś mówi „ekspresso” zamiast „espresso”, zniszczy świat."
+    }
+  },
+  "27": {
+    "name": "Miasto Intryg",
+    "description": "Aby zasiąść na tym tronie, wystarczy tylko zdradzić całą rodzinę i wszystkich przyjaciół"
+  },
+  "28": {
+    "name": "Ekspres do Szkoły Magii",
+    "description": "Najfajniejsi zawsze siedzą z tyłu"
+  },
+  "29": {
+    "name": "Góra Popiołów",
+    "description": "To siedlisko zła"
+  },
+  "30": {
+    "name": "Siedziba główna firmy Playa Games",
+    "description": "Nigdy nie mają nic przeciwko konstruktywnej krytyce"
+  },
+  "31": {
+    "name": "Obóz szkoleniowy",
+    "description": "Te niestabilne projekty wiążą się z wielkim ryzykiem wystąpienia drzazg",
+    "floors": {
+      "1": "Nagłe obrażenia od wody to jego najgorszy wróg. Shakes zadbał o możliwość recyklingu.",
+      "2": "Nie tylko wróble będą się bać. Dobry facet, ale nieco bez życia.",
+      "3": "Zawsze w ruchu… choć tylko w jednym i tym samym miejscu. Chcesz wskoczyć na jego grzbiet? Zapomnij!",
+      "4": "Po prostu miej pod ręką swoją najmocniejszą maść na pęcherze!",
+      "5": "Jeszcze jedno bum nie ma już znaczenia.",
+      "6": "Stanowi jedno wielkie niebezpieczeństwo pożarowe. Dla samego siebie.",
+      "7": "Bzyczy i chybocze się w powietrzu niczym gigantyczny chrabąszcz majowy. Lądowanie awaryjne jest każdorazowo nieuniknione, ale przynajmniej poćwiczysz swój refleks, wskakując za osłony.",
+      "8": "Jego czaszka wciąż pulsuje po ostatnim urazie. Już kiedyś został zniszczony i poskładany kilka razy, dlatego niektóre z jego śrub są poluzowane.",
+      "9": "Gdy zawodzi precyzja ostrza jej piły, armata wkracza do gry, aby zająć się brudną robotą!",
+      "10": "Składa się ze wszystkiego, co Shakes mógł znaleźć. Dzięki swojej wszechstronności nadaje się na biwakowanie, a także na ostateczny sprawdzian dla początkujących bohaterów."
+    }
+  },
+  "32": {
+    "name": "Burza Piaskowa",
+    "description": "Nie dość, że poniesie Cię trąba powietrza z tysiącem potworów, to jeszcze w oczy wlecą Ci grube ziarna piachu."
+  },
+  "33": {
+    "name": "Salon gier starych pikselowych ikon",
+    "description": "Rekordy są tu o wiele ważniejsze niż porządna higiena",
+    "floors": {
+      "1": "Ekrany monitorów kineskopowych migają jaskrawymi światłami przerywanymi tylko przez rytmiczne uderzenia czegoś, co podejrzanie zbliża się do ciebie. Dla tego chciwego żarłoka jesteś czymś więcej niż zwykłym owockiem – on chce twojej duszy! Wyślij tę kulę na dietę!",
+      "2": "Zupełnie niespodziewanie na twojej drodze staje poirytowany borsuk, który zaczyna się do ciebie zbliżać, wirując i detonując wszystko, czego dotknie. Temu szaleńcowi przejadły się już owoce, dlatego chce poszerzyć swoje kulinarne horyzonty i posmakować ciebie. Pech chciał, że już od dłuższego czasu na twojej drodze nie pojawił się żaden punkt kontrolny…",
+      "3": "Klik! Skąd się wzięła ta płyta naciskowa? Na ziemi tuż przed tobą ląduje łupieżczyni o spiczastych, wielokątnych piersiach ostrzejszych niż jej spojrzenie. Patrzy na ciebie jak na jakiś rzadki artefakt i wścieka się, że przez ciebie jej kamerdyner znów utknął w chłodni. To by było na tyle, jeśli chodzi o brytyjską uprzejmość. Zaraz posmakujesz ołowiu!",
+      "4": "Po popękanej i klejącej, wyłożonej kafelkami podłodze salonu gier wiją się grube, iskrzące się kable. U twoich stóp ląduje tocząca się mała metalowa kula. Plum! Nagle zjawia się międzygalaktyczna wojowniczka, choć nic nie wskazywało na to, że to kobieta. Zaraz się przekonasz, jak szybko strzela ze swojego działka.",
+      "5": "Z przeciekającego sufitu wyłaniają się ustawione w szereg pikselowe stwory, które nieuchronnie zbliżają się do ciebie. Jest ich całe mnóstwo, a ty możesz liczyć tylko na siebie. Ale bez obaw, trzeci wymiar może być twoim wybawieniem!",
+      "6": "Z jednego ze świecących flipperów nagle wyskakuje kolczasta niebieska kula. Obsesja tego stwora na punkcie pierścieni, które pochłania jeden za drugim, zniszczyła pewnie nie tylko jego zęby. W swym szaleństwie próbuje jak najszybciej opróżnić twój pasek zdrowia.",
+      "7": "Słyszysz głośny wybuch, pod którego wpływem kruszą się ściany. Tuż obok twojej głowy przelatuje pół automatu do gier. Lepiej nie stój za tym kolesiem, gdy będzie składał kolejne wybuchające jajo. Możesz próbować wszystkiego, ale on zawsze ma wybuchowy nastrój… chyba że sam siebie wysadzi w powietrze.",
+      "8": "Zardzewiałe, skrzypiące drzwi za twoimi plecami nagle wylatują z zawiasów, a w progu staje umięśniony wojownik z czerwoną opaską na głowie. „Ha, to Ken!” – słyszysz, po czym jegomość posyła cię w powietrze. Ale przecież ty wcale nie nazywasz się Ken. Facet może i potrafi trzaskać najbardziej zaawansowane kombosy, ale tobie wystarczy naciskanie przycisków na oślep.",
+      "9": "W opustoszałym salonie gier rozbrzmiewa przytłumiona ośmiobitowa muzyka, gdy nagle przez sufit wpada blok Z. Jest gotowy z chirurgiczną niedokładnością zniszczyć każdą doskonałą konstrukcję. Znajdź jakąś szczelinę i pozbądź się tego wynaturzenia!",
+      "10": "W rogu leży sterta kartridżów i konsol. Otoczony retropamiątkami finałowy boss wyciąga kontroler. Pobił wszystkie rekordy i zrobi wszystko, żeby dla ciebie ta gra już się skończyła – nie zawaha się nawet użyć kodów. Góra, góra, dół, dół, lewo, prawo, lewo, prawo, B, A, start!"
+    }
+  },
+  "34": {
+    "name": "Serwerownia",
+    "description": "Pikający terminal z migającymi diodami",
+    "floors": {
+      "1": "Przy wejściu do serwerowni, otoczony świecącymi kablami, siedzi okryty złą sławą zaklinacz świń z zespołu ds. zapewniania jakości. „To nie żaden błąd, tylko dodatkowa funkcjonalność” – warczy, delikatnie głaszcząc swoją świnkę. Wyciągaj broń! To nie jest test!",
+      "2": "Ten mistrz grillowania nigdy niczego nie przypala – a przynajmniej zawsze stara się tego nie robić. Jego testy gier są w najlepszym przypadku tylko trochę niedopieczone. Możesz mieć pewność, że przyrządzi cię jak krwisty stek i w tej postaci poda swojemu przełożonemu razem z raportem o błędach.",
+      "3": "Duszna serwerownia nagle wypełnia się głośnymi dźwiękami heavy metalu. Idziesz w kierunku, z którego dochodzi to rzępolenie, i widzisz napakowanego lidera ds. zapewniania jakości, którego hawajska koszula powiewa na wiaterku z wentylatorów. Myślisz, że przejrzysz go na wylot? W takim razie twój tok myślenia jest… błędny! Zapowiada się wyjątkowo trudna kontrola jakości!",
+      "4": "Korytarze wypełniają się kłębami dymu, ale nie panikuj – to tylko jeden z marketingowców włączył maszynę do wytwarzania mgły. Serwerownia zmienia się w scenę, na której Simon tańczy zwinnie między poplątanymi kablami. Ten gość programuje i rusza się tak samo płynnie. Nadążysz za jego kocimi ruchami?",
+      "5": "Gdy ktoś na piekielnych forach pianę z ust toczy, DarkwingDang wnet do akcji wkroczy! Bo pianę to on toleruje jedynie w kuflu z zimnym piwem. Z pomocą swoich asystentów pełni funkcję pośrednika między bohaterami a zarządem piekła. Jednak twoją prośbę o posprzątanie tego lochu wszyscy mają w nosie.",
+      "6": "Wśród brzęczących maszyn ujawnia ci się demoniczny kapłan technologii, poskramiacz serwerów. Głosząc kazania w zapomnianym języku programistów, nagina strumienie danych do swojej woli. Nagle słyszysz głos. „Kod spaghetti wystawi cię na próbę! Pozwól się ocalić!”",
+      "7": "Neony mrugają, a wentylatory pracują na pełnych obrotach, walcząc z szybko rosnącą temperaturą. Staje przed tobą Taha – zaprawiony w boju marketingowiec w szczytowej formie, który zaczyna prężyć twarde jak stal muskuły. Nagle w serwerowni buchają płomienie, a on krzyczy: „Kaaaa-meeee-haaaa-meeee-TAHA!”.",
+      "8": "Zastanawiasz się, czy uda ci się kiedyś wydostać z tej nieprzemierzonej serwerowni, gdy nagle z półmroku wyłania się przyjaźnie wyglądający marketingowiec. Bierze głęboki oddech, chwyta za instrument klawiszowy i gra nokautujące solo. To bynajmniej nie będzie przyjemne jam session!",
+      "9": "Gdy kontakty zawodzą, a piekielne urządzenia buntują się przeciwko ich użytkownikom, do akcji wkracza Kevin, który upora się z każdym problemem. Szybko mierzy cię wzrokiem, podczas gdy jego córka wskazuje cię palcem, chichocząc. Kevin z dumą klepie ją po głowie, przytakuje i przygotowuje się do najstarszego ze wszystkich rytuałów – szykuj się na reset.",
+      "10": "Twoim oczom nareszcie ukazuje się wyjście z serwerowni, ale na ostatnim odcinku potykasz się o plątaninę kabli. Zauważasz, że pada na ciebie czyjś ogromny cień, więc podnosisz głowę. Stoi przed tobą piekielny władca krainy jakości, gotowy sprawdzić twoje nerwy i każdą linijkę kodu. Nie będzie litości!"
+    }
+  },
+  "35": {
+    "name": "Warsztat Łowców Nieumarłych",
+    "description": "Wskrzeszeni do życia są tutaj rozczłonkowywani przez najlepszych ekspertów",
+    "floors": {
+      "1": "Uciekłszy przed nieumarłymi, trafiasz do warsztatu, gdzie przy stole pracuje śmiejący się opętańczo mężczyzna z piłą łańcuchową zamiast ręki. Za chwilę przepiłuje twoją przeszłość i przyszłość na pół. Jazda!",
+      "2": "Przy stojaku na broń jakiś ponury facet robi prowizoryczne pułapki, a towarzysząca mu małolata czyta na głos kiepskie żarty z książki. W tym zepsutym świecie uczucia nie są im potrzebne, za to ty będziesz potrzebować lekarza, jeśli szybko nie uciekniesz!",
+      "3": "Spomiędzy przedziurawionych beczek na ropę wyłania się kobieta w krótkiej sukience. Dobywszy broni, rzuca się na ciebie z akrobacką zwinnością. Wszystko wokół ciebie jakby zwolniło. To korporacja Umbrella stworzyła tę kobietę. Teraz możesz w zwolnionym tempie przekonać się, czy to był jej błąd.",
+      "4": "Za twoimi plecami trzepocze czyjś płaszcz. Odwracasz się i widzisz swoje odbicie w okularach jakiegoś mężczyzny. Potężny wampir uśmiecha się drwiąco, z zadowoleniem unosi pistolety i już nie może się doczekać, aż spróbujesz go rozbawić. Jesteś na jego liście, a żeby go powstrzymać, nie wystarczy ci sama broń palna.",
+      "5": "Myślisz, że oprócz ciebie nie ma tu nikogo, gdy nagle obok twojego ucha ze świstem przelatuje bełt. W narożniku warsztatu małomówny łowca wsiada na motocykl, przekręca manetkę gazu do oporu i celuje do ciebie z kuszy. Tego oschłego surwiwalisty nie spowolnisz bezsensowną gadką o niczym.",
+      "6": "Zza półki, na której leżą klucze do nakrętek, gapi się na ciebie para błękitnych, zimnych niczym lód oczu. Mrugasz i nagle pojawia się przed tobą kobieta. Zastanawiasz się, czy wszystkie łowczynie ubierają się w obcisłe skórzane wdzianka, gdy wtem babeczka dobywa pistoletów. Walka z tobą nie będzie warta, by zapisać się w jej wspomnieniach.",
+      "7": "Do twoich uszu dociera dźwięk banjo. O drzwi garażu nonszalancko opiera się kowboj, który z nostalgią wspomina czasy sprzed apokalipsy. Zasada numer 42: nigdy nie stawaj mu na drodze do jego złocistych ciasteczek! Może i nie jesteś jego ulubioną słodką przekąską, ale twoje ciało jest dość miękkie i delikatne!",
+      "8": "Coś kapie z sufitu. Czy to woda? Nie, z zamontowanych w warsztacie zraszaczy tryska czerwona ciecz o zapachu żelaza. Facet, którego widzisz, pochodzi z czasów, kiedy wampiry nie błyszczały – za to w jego skrytych za okularami przeciwsłonecznymi oczach na pewno zobaczysz błysk żądzy zabijania.",
+      "9": "Przy skleconym z opon i beczek na ropę barze sterczy dwóch podejrzanych złodziei, którzy patrzą na ciebie z pogardą. Chcieli tylko napić się tequili, ale teraz mają chrapkę na ciebie. Zaraz pozbawią cię woli życia!",
+      "10": "Wchodzisz do oświetlonego różową poświatą warsztatu, gdzie słyszysz wydobywającą się z dudniącego głośnika muzykę pop, a chwilę później – warkot piły łańcuchowej. Wtem przelatuje obok ciebie pół zombiaka, a zaraz potem – cheerleaderka w miniówce. Jedyne, co uchowało się tutaj w całości, to jej miłość do chłopaka!"
+    }
+  },
+  "36": {
+    "name": "Legendarne klasyki telewizji",
+    "description": "Włącz telewizor z migającym ekranem i obejrzyj program pełen słynnych, nostalgicznych postaci",
+    "floors": {
+      "1": "Z obudowy migającego, starego telewizora zwisają porośnięte mchem pnącza. Naciskasz przycisk na pilocie i słyszysz tropikalną melodię. Po chwili z ekranu wyłazi jakiś wyluzowany prywatny detektyw w hawajskiej koszuli, który rozwiązuje jedną sprawę po drugiej. Z twoją też szybko się upora.",
+      "2": "Zmieniasz kanał i widzisz dwie wyspy na morzu. Ale zaraz… Toż to żadne wyspy – to ratowniczka ćwiczy styl grzbietowy! Po chwili przenosisz się na plażę i widzisz, jak kobieta w zwolnionym tempie biegnie w twoją stronę. Zwykle ratuje życie, ale dzisiaj zdusi je w tobie całym swoim ciałem.",
+      "3": "Przed twoim obliczem materializuje się jakiś pozbawiony emocji dziwak o spiczastych uszach. Unosi jedną brew i z zimną precyzją oblicza prawdopodobieństwo twojej śmierci. Ten uwielbiający logikę półkosmita wie, czym jest litość, ale nie ma zamiaru jej okazywać.",
+      "4": "Naciskasz przycisk na pilocie – i bzzt! Widzisz przytulny salon. Na kanapie siedzi jakiś zawadiacki futrzak, który z przyjemnością zajada się kanapką. Ty co prawda raczej nie przypadniesz mu do gustu, bo masz za mało owłosienia na ciele, ale on nie jest wybredny i mimo wszystko planuje skubnąć cię na deser.",
+      "5": "Raz jeszcze zmieniasz kanał. Na kanapie wyleguje się ubrana w obcisłe legginsy kobieta z natapirowanymi włosami. Patrzy na ciebie przez chwilę, po czym wpada na pewien pomysł – zrobi z ciebie niewolnika i będzie cię ciągać po sklepach!",
+      "6": "W pilocie chyba coś nie styka, bo w niewyjaśniony sposób kanały zmieniają się same. Nagle zauważasz, że wpatruje się w ciebie dwoje zdumionych agentów specjalnych, którzy chcą wreszcie zamknąć twoją sprawę! Jeśli ich pokonasz, będzie to dla nich zjawisko paranormalne, jakiego jeszcze nigdy nie widzieli!",
+      "7": "Bum, bum, bum! Przez ekran przelatują opony i klucze do nakrętek, a z dymu wyłania się mięśniak z irokezem na głowie i złotym łańcuchem na szyi. Jesteś nie w tej drużynie co trzeba, a pyskówka na niego nie zadziała! Jeśli chcesz uciec, musisz dostać się na pokład samolotu…",
+      "8": "Słyszysz głośne „Hmmm?” i nagle widzisz przed sobą rozczochranego majsterkowicza, który więcej niszczy, niż naprawia. Rozwala wszystko na swojej drodze, więc ciebie też to czeka. „Więcej mocy!” – krzyczy, a następnie wydaje z siebie oburzone, godne prawdziwego mężczyzny burknięcie w oczekiwaniu na dalszy rozwój wydarzeń.",
+      "9": "W twoją stroną z piskiem opon pędzi czarny sportowy samochód. Zanim zdążasz zareagować, jego czerwone światło skanuje cię i klasyfikuje jako zagrożenie. Za kierownicą siedzi jakiś przystojniak. Ten duet człowieka i auta walczy z niesprawiedliwością – i, niestety, z tobą też!",
+      "10": "To już ostatni kanał. Ekran miga, a z głośników wydobywa się motyw muzyczny godny prawdziwego bohatera. Po chwili pojawia się mężczyzna, który dobywa swojej najgroźniejszej broni: spinacza. Nie lekceważ tego gościa! Jego najmocniejszą stroną jest improwizacja, a ty jesteś jego kolejnym projektem."
+    }
+  },
+  "37": {
+    "name": "Sala konferencyjna",
+    "description": "Pomieszczenie pełne głośnych opinii i obracających się głów",
+    "floors": {
+      "1": "Gdy wchodzisz do pomieszczenia, wszystkie krzyki milkną. „Rzuć kośćmi i błagaj o życie!” – mówi do ciebie postać po drugiej stronie długiego stołu. To władca zbalansowania siedzi przed rytualnym kręgiem z gier planszowych. Osłabi cię swoimi przestawionymi liczbami!",
+      "2": "Przytłaczającą ciszę przerywa huragan kreatywności. Gdy ta kobieta wskakuje na interfejsowy ring, rzuca pikselami jak demonami w pogo pod sceną. Każda napisana przez nią linijka jest idealna niczym potężny kopniak, a wszystko, co nie jest w jej guście, zostaje bezlitośnie wyrzucone z lochu. A tak się składa, że ty w ogóle nie wpisujesz się w jej schemat!",
+      "3": "Ktoś wbija ci w plecy kołatającą szablę. To pirat, który przemierza najbardziej zdradzieckie wody, posiłkując się mapą wzburzonego morza projektów gier. Ucieka się do wszelkich sztuczek i porywa cudze pomysły, aby odkryć kryjące się w nich skarby. Czekają cię wyjątkowo bolesne poprawki!",
+      "4": "Kartki z inspirującymi ilustracjami fruwają po pomieszczeniu niczym przeklęte pergaminy. W samym środku tego bałaganu siedzi porażony prądem główny artysta, który oprócz tworzenia zwariowanych szkiców i ikon, których nigdy nie udaje mu się dokończyć, zarządza też piekielnym systemem graficznym. Każde pociągnięcie pędzlem poddawane jest jego artystycznej ocenie. Dla tego szaleńca jesteś po prostu zasobem w nieodpowiednim formacie!",
+      "5": "Nadstawiasz uszu i słyszysz miarowe drapanie ostrego pióra. To pani słów zapisuje twoje przeznaczenie, nie omieszkując uwzględnić w nim żenującego końca. Śmiejąc się histerycznie, wzbogaca twoją historię o różne dwuznaczne i zabawne sytuacje. Czy zdołasz wyrwać się z oplatających cię nici dziejów i napisać własną wersję wydarzeń?",
+      "6": "Drzwi otwierają się z hukiem, a przez próg wjeżdża na dymiącej deskorolce radosna kierowniczka, nęcąc cię apetycznymi pączkami. „Pora na aktualizację!” – ogłasza, szczerząc zęby i zerkając na kalendarz. Nie wiesz, czy masz uciekać, czy poczęstować się słodkościami.",
+      "7": "Utrzymuje porządek dzięki swoim stalowym pazurom, a pod jej pełną wdzięku poświatą kryje się dyscyplina. Ci, którzy na serwerze sieją zamęt, dowiedzą się, czym są jasna struktura i spójność. Ta zmora wszystkich piekielnych trolli z gracją wygna cię do otchłani. Bierze delikatny oddech i mówi: «Bonne chance, petit héros!»",
+      "8": "Za kulisami piekielnych ogni pracuje cichy demon posługujący się wyłącznie mrocznym językiem kodu. Tak się jednak składa, że chwilowo wyrwał się z brzęczącej i pikającej serwerowni, żeby uporać się z tym upartym błędem, który ma przed oczami – czyli tobą!",
+      "9": "Klawisze na jej laptopie nie gasną już od kilku dobrych dni. Otoczona stertami pustych puszek po napojach energetycznych, walczy z niesfornym kodem i podstawową potrzebą snu, który uważa za zbędny. Nie odrywając palców od klawiatury, kieruje wzrok na ciebie i szczerzy zęby. „Potrzebuję więcej… kofeiny!”. Wyczuła ją w twojej krwi!",
+      "10": "Mariam projektuje doskonałe piekielne kampanie i rządzi w krainie zasięgów, gdzie nawet najpotężniejszych wojowników przekabaca na swoją stronę. Jednak to na tronie na jej głowie zasiada prawdziwa królowa demonicznego biura – Jules. Lepiej się pokłoń… albo będziesz ganiać za jej ulubioną piłeczką!"
+    }
+  },
+  "100": {
+    "name": "Niezłomna Gildia Wojowników",
+    "description": "Miecze i tarcze definiują tę dumną gildię.",
+    "floors": {
+      "1": "Przed Tobą wyrasta potężny, niewzruszony kamienny fort, którego masywna brama opada z głośnym łomotem. Kiedy opada chmura kurzu, Twoim oczom ukazuje się wyluzowany wiking, szczerzący zęby i dobywający broni.",
+      "2": "Wchodząc na dziedziniec, spoglądasz w niebo i dostrzegasz niebieski obiekt pędzący prosto na Ciebie. Odskakujesz w ostatniej chwili, gdy tuż przed Tobą ląduje rycerz balansujący na łopacie. Chętnie wykopie pod Tobą dołek, a na dodatek przyprawi Cię o ból głowy.",
+      "3": "I-o, i-o, Policja Magów już tu jest! Znikąd materializuje się magiczny stróż prawa, któremu towarzyszy dźwięk ryczącej syreny. Twoja zbrodnia? Wtargnięcie do Niezłomnej Gildii Wojowników! Poddaj się policji, swojemu wrogowi i temu, który Cię przymknie!",
+      "4": "Schodząc po schodach, przesuwasz palcami po zimnej ścianie. Rytmiczny szczęk mieczy odbija się echem od ścian. W tych stęchłych ciemnościach czai się zmutowany żółw-przywódca, którego pizzowe szaleństwo ma przynieść Ci zgubę. I to ma być nastolatek?!",
+      "5": "Wydając z siebie ryk przenikający do szpiku kości, ten szkocki Wojownik wznosi miecz i tarczę, gdy tylko Cię dostrzega. Przewiewna spódniczka igra wesoło wokół jego nagich, włochatych łydek. Tej i żadnej innej wolności nie da sobie odebrać!",
+      "6": "Na dole schodów docierasz do przebudowanego lochu, na którego środku stoi otoczony linami ring. Stoi w nim samuraj, znudzony krojeniem różnych owoców swoją kataną. Przywołuje Cię gestem i chwyta miecz oburącz – zaraz będzie tu sałatka owocowa!",
+      "7": "Zza sklepienia schodów za Tobą z głośnym łomotem nadjeżdża coś w zawrotnym tempie. Okrągły jak kula strażnik-ważniak zatrzymuje się z piskiem opon tuż przed Tobą i bez słowa podtyka Ci pod nos swoją odznakę. Przyłapał Cię na kradzieży kawałka pizzy i zaraz zaaresztuje Cię na miejscu!",
+      "8": "Staje przed tobą – nie, zaraz, podskakuje – czarny rycerz pozbawiony wszelkich kończyn. Nie zastanawiasz się długo nad jego wolą walki, bo ten już skacze wściekle w górę i w dół, próbując splunąć Ci w oko. Jeśli nie chce odskoczyć na bok, to po prostu nauczy się latać!",
+      "9": "W drodze do kwatery gildii zatrzymujesz się przed stosem ułożonych na sobie mężczyzn. Wspinając się na tę stertę, orientujesz się, że wszyscy mają na imię \"Bill\". Na samym szczycie spotykasz zmotywowanego anioła zemsty, który robi dla Ciebie wyjątek – mimo Twojego imienia!",
+      "10": "W końcu stajesz przed przywódczynią Gildii Wojowników. Ta muskularna matriarchini nade wszystko ceni bezwzględną siłę i niezachwianą determinację w walce. Czy zdołasz powstrzymać przytłaczającą dominację tej generał? Tak czy inaczej, jeńców nie bierze…"
+    }
+  },
+  "101": {
+    "name": "Gildia Żądnych Wiedzy Magów",
+    "description": "Gdy mądrość i obłęd czynią cuda.",
+    "floors": {
+      "1": "Za szeroko otwartymi drzwiami atrakcyjny Mag zajada się butem. Zanim zdążysz zapytać, do jakiego rodzaju dziwacznego lochu z fetyszami trafiłeś, zaczyna mamrotać zaklęcie z pełnymi ustami - wygląda na to, że na Twoją skórę też ma ochotę!",
+      "2": "Niespodziewanie dywan pod tobą zwija się i owija Cię ciasno w swoje zakurzone, pełne okruchów warstwy. Staje przed Tobą młoda Wiedźma. Jej kocia pacynka burczy, że to nie było właściwe zaklęcie do trzepania dywanu. Jeden ruch ręki i już pędzi w Twoją stronę trzepaczka do dywanów!",
+      "3": "Mijając jedno z pomieszczeń, słyszysz rzewny płacz. Ostrożnie nadsłuchujesz przy uchylonych drzwiach i dociera do Ciebie kobiecy głos dzielący się całą swoją traumą po stracie. Pełen niepokoju chcesz szybko pójść dalej, ale nagle magiczna rękawica łapie Cię za fraki. Czas na terapię grupową!",
+      "4": "Z kolejnego pomieszczenia unoszą się gęste chmury dymu. Mała, zakapturzona istota dryfuje chwiejnie w Twoją stronę, opowiadając ospale o pradawnej magii z planety Ziemia o nazwie \"sianko\". Licząc na to, że masz przy sobie więcej tego towaru, zaczyna rymować zaklęcie.",
+      "5": "Do ogromnej sali prowadzi Cię wpadająca w ucho piosenka o tym, że potrzebny jest bohater. Gdy wchodzisz do środka, dostrzegasz ją przy fortepianie. Nie przyjmuje jednak zamówień na inne utwory. Zamiast tego obiecuje wyczarować Ci tragiczną śmierć i zapewnić Ci \"nieszczęśliwe zakończenie\"!",
+      "6": "Po dłuższym błąkaniu się po korytarzach, które zdają się ciągnąć w nieskończoność, zauważasz czarodzieja siedzącego na biegającym kufrze i taksującego Cię wzrokiem. Pewnie zna właściwą drogę, ale woli wziąć nogi swojego bagażu za pas i czym prędzej uciekać. Ruszaj w pogoń!",
+      "7": "Słodkawy zapach bzu i agrestu muska Twój nos, gdy mrugasz na ułamek sekundy i nagle znajdujesz się w eleganckiej sypialni. Na środku pokoju stoi wypchany jednorożec, a na nim potężna i zarazem kusząca czarodziejka. Czy starczy Ci kondycji na tę przejażdżkę?",
+      "8": "Kolejne drzwi z początku ledwo chcą się otworzyć, ale gdy w końcu Ci się udaje, wysypują się z nich złote lampy oliwne. Pośród stert lamp jakiś drugorzędny czarnoksiężnik Orientu pociera je jak opętany. Nie patrz w oczy kobrze na jego kosturze, bo natychmiast znajdziesz się pod jej urokiem!",
+      "9": "Wchodząc do biblioteki, uchylasz się przed fruwającymi księgami i miotłami, podziwiając panujący tu gwar i chaos. W ułamku sekundy wszystko zamienia się w lód, a w spowitym mrokiem sercu magicznej wiedzy wschodzi gigantyczny księżyc w pełni. Lalczana wiedźma wytrząsa dla Ciebie asy ze wszystkich swoich rękawów!",
+      "10": "Wchodzisz po ostatnich długich schodach i wkraczasz do wieży Gildii. Zamiast starego arcymaga wita Cię zakuty w łańcuchy iluzjonista, który bulgocze głową w dół w zbiorniku z wodą. Pokonaj go, zanim się uwolni – albo podwędź mu klucz!"
+    }
+  },
+  "102": {
+    "name": "Akrobatyczna Gildia Zwiadowców",
+    "description": "Coś tu w trawie piszczy? O, już zrobił unik.",
+    "floors": {
+      "1": "Na skraju lasu pną się w górę wieże elfickiej Gildii. Gdy otwierasz kunsztownie rzeźbioną bramę, blaszany jaszczur powala cię na ziemię. Rudowłosa jeźdźczyni nie daje sobie niczego narzucić – a już na pewno nie zniesie komentarzy o swoim makijażu czy meszku na twarzy!",
+      "2": "Czujesz się lżejszy – ojej, gdzie podziało się całe Twoje Złoto? Otoczony przez tańczącą grupę męskich mężczyzn w obcisłych rajtuzach, słyszysz, jak śpiewają o tym, by po prostu rozdać Twoje oszczędności. Jedyna jałmużna, o którą powinni się martwić, to szerokie spodnie!",
+      "3": "Pędzisz nadgorliwie pustym korytarzem, gdy nagle błyska jasne światło. Kiedy przed Twoimi oczami znika ostatnia kolorowa gwiazdka, dostrzegasz wpatrującego się w Ciebie Maga. Ciekawe, czy zdołasz wyperswadować mu wlepienie Ci punktu karnego we Flęzburgu?",
+      "4": "Najpierw Mag pożerający buty, a teraz stoisz oko w oko ze słynną łuczniczką, która namiętnie całuje kamienny łeb. Wygląda na to, że każda gildia profesji ma swoich dziwaków. Może po prostu pomyliła tę kamienną twarz? Tak czy siak, celem jej strzały jesteś bez wątpienia Ty.",
+      "5": "Twój kolejny krok prowadzi cię do szklarni pełnej gigantycznych drzew i świecących roślin. Na gałęzi siedzi wielka, niebieska postać, która chyba zbyt dosłownie wzięła sobie do serca \"nawiązywanie połączeń\". Niestety, za powstały błąd połączenia obwinia bezpośrednio Ciebie.",
+      "6": "Gdy wchodzisz po kunsztownie wykonanych drewnianych schodach, Twoją uwagę przykuwa spanikowany goblin. Jest napięty na łuku niczym strzała, a odpowiedzialny za to łucznik uznał najwyraźniej, że musi sam siebie znerfić, aby dać Ci choć cień szansy na wygraną.",
+      "7": "Na kolejnym półpiętrze drogę zastępuje ci Mag, któremu twój dotychczasowy raban i pokonani członkowie gildii w ogóle by nie przeszkadzali, gdybyś tylko miał przy sobie wygodne składane krzesło.",
+      "8": "Bohater w trakcie ważnej misji pobocznej zwisa nad Tobą z gdaczącego środka transportu. Wygląda na całkiem spokojnego i porozumiewa się wyłącznie za pomocą serii połączonych ze sobą okrzyków \"Hyah!\". Jeśli trafisz jego pierzastego przyjaciela, obaj runiecie w dół!",
+      "9": "Nagle znikąd lecą w Twoją stronę strzały. Choć cudem udaje Ci się ich uniknąć, eksplozja rozrywa długie schody pod Twoimi stopami. Ich nadawca może i nie posiada żadnych nadprzyrodzonych mocy, ale jego strzały trafiają w cel z iście wybuchową skutecznością!",
+      "10": "Docierasz na dziedziniec, który służy jako plac treningowy Gildii Zwiadowców. Ze świstem strzała ląduje tuż przed Twoimi stopami, zmuszając Cię do przeskanowania otoczenia. Twój wzrok przykuwa lekkonoga elfka, niosąca na plecach niezwykle przylepnego krasnoluda."
+    }
+  },
+  "103": {
+    "name": "Tętniąca Życiem Gildia Nekromantów",
+    "description": "Profesjonalni recyklerzy niegdyś żywych powłok.",
+    "floors": {
+      "1": "W wyniku klątwy jest skazany na życie wieczne, a zamiast narządów ma w brzuchu motyle, które wywołują w jego zgniłym ciele uczucie mrowienia. Uważa, że uroczo wyglądasz.",
+      "2": "Ten władca tajemnic i pan intryg notorycznie gubi swoją rękę, której potem nie może znaleźć. Tak to już jest u nekromantów, że często mają problemy z utrzymaniem przy sobie narządów i kończyn – ale jemu nie przeszkodzi to w rozczłonkowaniu twojego ciała!",
+      "3": "Poluje na spóźnialskich flejtuchów, by doprowadzić ich do rozpaczy. Czy to wierzchowce, latające miotły, czy Twoje zaparkowane tu na dziko cztery litery – mandat to teraz naprawdę Twój najmniejszy problem!",
+      "4": "Głosi kazania o miłości, ofiarności i dobrowolnej pracy przymusowej – czy to przy sprzątaniu odchodów, czy to w kuchni, czy to na polu. W nagrodę każdy może oddać się grzesznym czynom. A dla tych, którzy mu się sprzeciwiają, przygotował specjalny rytuał… Ale najpierw osobiście nawróci cię na wiarę swojej sekty!",
+      "5": "Pogrzeby są dla niego okazją do nawiązania nowych znajomości, ale nie stroni też od odwiedzin w domach. Masz może chwilę, żeby porozmawiać z nim o jego panu i zbawcy – Bogu Śmierci?",
+      "6": "Uwielbia nosić się na modłę śmierci i gardzi śmiertelnikami, którzy nie ubierają się w markowe ciuchy. Podejrzanie mierzy cię wzrokiem od stóp do głów, żeby sprawdzić, czy zmieścisz się… w trumnie!",
+      "7": "Ktoś podrzucił Ci wyjątkowo słodką niespodziankę. Umazany lukrem policjant prowokacyjnie kręci biodrami, rozbierając się przy erotycznej muzyce. Nie tylko jego czarodziejska różdżka aż rwie się do tryskania magią, więc odeślij tę przesyłkę z powrotem do nadawcy!",
+      "8": "Ten typ znów coś kombinuje. Niczym doświadczony sprzedawca na targu wykrzykuje do ciebie donośnym, anielskim głosem jeden ze swoich narcystycznych monologów.",
+      "9": "Gdy akurat nie zajmuje się nekromancją na masową skalę i nie próbuje podbić świata, szuka dobrego chirurga ortopedy – jak dotąd bezskutecznie. Zanim nastawi swoje kości, położy swoje łapska na tobie!",
+      "10": "Uważa się za strażnika równowagi, lecz niestety oddaje wszystko w ręce śmierci. Ale nic się nie bój – gdy zginiesz, wskrzesi cię i wykorzysta do własnych celów."
+    }
+  },
+  "104": {
+    "name": "Portal Zmutowanych Profesji",
+    "description": "Dumni, mądrzy, zwinni i wskrzeszeni? Niby tak, ale też jakoś tak mocno wypaczeni..."
+  }
+}

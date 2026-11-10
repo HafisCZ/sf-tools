@@ -68,6 +68,13 @@ module Synchronize
   REGEXP_DEED_SHELF = /^deed_shelf_\d+$/
   REGEXP_TROPHY_TIER = /^trophy_(bronze|silver|gold)$/
 
+  REGEXP_DUNGEON_TITLE = /^dungeon_(\d+)_title$/
+  REGEXP_DUNGEON_FLOOR = /^dungeon_(\d+)_level_(\d+)_text$/
+  REGEXP_QUOTES = /\A[\s"„“”«»]+|[\s"„“”«»]+\.?\z/
+
+  DUNGEON_NAMES = { 15 => 'tower_name' }.freeze
+  DUNGEON_DESCRIPTIONS = { 15 => 'tower_overview_description', 18 => 'yt_dungeon_overview_description', 32 => 'sandstorm_overview_description' }.freeze
+
   LANGUAGE_LIST = {
     'en' => 'en',
     'de' => 'de',
@@ -144,6 +151,32 @@ module Synchronize
       end.to_h
 
       File.write("lang/#{sftools_language}/general.json", JSON.pretty_generate(general))
+
+      dungeons = {}
+
+      strings.each do |key, text|
+        next unless (match = key.match(REGEXP_DUNGEON_TITLE))
+
+        id = match[1].to_i
+        title = text.split('|', 2)
+        description = DUNGEON_DESCRIPTIONS[id] ? strings[DUNGEON_DESCRIPTIONS[id]] : (title[1] || strings["dungeon_#{match[1]}_comment"])
+
+        dungeons[id] = {
+          name: DUNGEON_NAMES[id] ? strings[DUNGEON_NAMES[id]] : title.first,
+          description: description&.gsub(/(?:<br>)+/, ' ')&.gsub(REGEXP_QUOTES, '')
+        }.compact
+      end
+
+      strings.each do |key, text|
+        next unless (match = key.match(REGEXP_DUNGEON_FLOOR))
+
+        floors = (dungeons[match[1].to_i][:floors] ||= {})
+        floors[match[2].to_i] = text.gsub(/(?:<br>)+/, ' ')
+      end
+
+      dungeons.each_value { |dungeon| dungeon[:floors] = dungeon[:floors].sort.to_h if dungeon[:floors] }
+
+      File.write("lang/#{sftools_language}/dungeons.json", JSON.pretty_generate(dungeons.sort.to_h))
     end
   end
 
