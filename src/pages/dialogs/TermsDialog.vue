@@ -1,7 +1,7 @@
 <template>
   <SFDialog :title="localize('title')" size="sm" width="420px">
     <div class="flex flex-col gap-4">
-      <SFParagraph>SF Tools is a free fan site, not affiliated with Playa Games. It is provided as is.</SFParagraph>
+      <SFParagraph>SFTools is a free fan site, not affiliated with Playa Games. It is provided as is.</SFParagraph>
       <SFParagraph>
         By using it you accept the
         <a href="terms.html" target="_blank" class="text-accent underline">Terms and Conditions</a>.<br />What data leaves your browser is described in <a href="privacy.html" target="_blank" class="text-accent underline">Privacy</a>.

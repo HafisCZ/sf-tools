@@ -6,22 +6,22 @@
         <SFParagraph type="muted">Last updated 11 November 2026</SFParagraph>
       </div>
 
-      <SFParagraph>SF Tools is a free fan site for Shakes & Fidget, run by mar21. It is not affiliated with Playa Games. By using SF Tools you accept these terms.</SFParagraph>
+      <SFParagraph>SFTools is a free fan site for Shakes & Fidget, run by mar21. It is not affiliated with Playa Games. By using SFTools you accept these terms.</SFParagraph>
 
       <section>
-        <SFHeading level="6" class="mb-2">Using SF Tools</SFHeading>
+        <SFHeading level="6" class="mb-2">Using SFTools</SFHeading>
         <SFList>
-          <li>SF Tools is provided as is, without any warranty. You use it at your own risk.</li>
+          <li>SFTools is provided as is, without any warranty. You use it at your own risk.</li>
           <li>Simulator and calculator results are estimates and can differ from the game.</li>
-          <li>Your data is saved only in your browser. Keep backups, SF Tools is not responsible for lost data.</li>
+          <li>Your data is saved only in your browser. Keep backups, SFTools is not responsible for lost data.</li>
           <li>
             Follow the Shakes & Fidget
             <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html" target="_blank" class="text-accent hover:underline">Terms and Conditions</a>.
           </li>
           <li>Keep data collection from the game to reasonable amounts.</li>
-          <li>Do not automate any part of SF Tools.</li>
+          <li>Do not automate any part of SFTools.</li>
           <li>Do not share HAR files. They can contain private data such as your IP address and cookies.</li>
-          <li>Links to other sites, such as the community tools, are not under SF Tools' control.</li>
+          <li>Links to other sites, such as the community tools, are not under SFTools' control.</li>
         </SFList>
       </section>
 
@@ -52,7 +52,7 @@
         <SFHeading level="6" class="mb-2">Code and game content</SFHeading>
         <SFList>
           <li>You can look at the code and run or change it on your own device.</li>
-          <li>You may not host a copy of SF Tools or any of its parts, or make money from anything built on SF Tools or its parts, without explicit approval.</li>
+          <li>You may not host a copy of SFTools or any of its parts, or make money from anything built on SFTools or its parts, without explicit approval.</li>
           <li>All Shakes & Fidget names, pictures and other game assets are property of Playa Games GmbH. Playa Games reserves the right to request their removal at any time.</li>
         </SFList>
       </section>
@@ -60,8 +60,8 @@
       <section>
         <SFHeading level="6" class="mb-2">Changes</SFHeading>
         <SFList>
-          <li>SF Tools can change or stop any feature at any time.</li>
-          <li>These terms can change. When they change in a meaningful way, SF Tools asks you to accept them again.</li>
+          <li>SFTools can change or stop any feature at any time.</li>
+          <li>These terms can change. When they change in a meaningful way, SFTools asks you to accept them again.</li>
         </SFList>
       </section>
 

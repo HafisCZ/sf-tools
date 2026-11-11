@@ -6,7 +6,7 @@
         <SFParagraph type="muted">Last updated 11 November 2026</SFParagraph>
       </div>
 
-      <SFParagraph>SF Tools has no accounts, no cookies and no ads. Your characters, settings and scripts are saved in your browser. The table below lists what gets sent elsewhere.</SFParagraph>
+      <SFParagraph>SFTools has no accounts, no cookies and no ads. Your characters, settings and scripts are saved in your browser. The table below lists what gets sent elsewhere.</SFParagraph>
 
       <SFTable>
         <template #header>
@@ -28,12 +28,12 @@
         </SFTableRow>
       </SFTable>
 
-      <SFParagraph>Netlify and Sentry are US companies covered by the EU-US Data Privacy Framework. SF Tools processes this data based on legitimate interest (GDPR Art. 6(1)(f)), to run the features you use and to fix errors.</SFParagraph>
+      <SFParagraph>Netlify and Sentry are US companies covered by the EU-US Data Privacy Framework. SFTools processes this data based on legitimate interest (GDPR Art. 6(1)(f)), to run the features you use and to fix errors.</SFParagraph>
 
       <section>
         <SFHeading level="6" class="mb-2">Log in to the game</SFHeading>
         <SFParagraph>
-          When you use the "Log in to the game" feature, your username and password go straight from your browser to Playa Games. SF Tools never sees them. Playa Games is responsible for that data, see their
+          When you use the "Log in to the game" feature, your username and password go straight from your browser to Playa Games. SFTools never sees them. Playa Games is responsible for that data, see their
           <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/privacy_en.html" target="_blank" class="text-accent hover:underline">Privacy Policy</a>.
         </SFParagraph>
       </section>
@@ -41,7 +41,7 @@
       <section class="flex flex-col gap-2">
         <SFHeading level="6">Contact and your rights</SFHeading>
         <SFParagraph>
-          SF Tools is run by mar21. Email
+          SFTools is run by mar21. Email
           <a href="mailto:support@mar21.eu" class="text-accent hover:underline">support@mar21.eu</a>
           if you want a copy of your data, want it corrected or deleted, want it kept but no longer used, or want it in a machine-readable format.
         </SFParagraph>
