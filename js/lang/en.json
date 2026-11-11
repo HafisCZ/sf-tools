@@ -286,7 +286,7 @@
         },
         "hydra": {
             "title": "Hydra Simulator",
-            "desc": "Simulate which guild pet class is best against current hydra."
+            "desc": "Simulate which guild pet class is best against current hydra"
         },
         "fortress": {
             "title": "Fortress Simulator",
