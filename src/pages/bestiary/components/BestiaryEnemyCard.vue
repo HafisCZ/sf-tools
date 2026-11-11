@@ -1,7 +1,8 @@
 <template>
   <article class="flex flex-col overflow-hidden rounded-lg border border-line bg-surface [contain-intrinsic-size:auto_640px] [content-visibility:auto]">
     <div class="relative aspect-[4/3] bg-dialog bg-cover bg-center" :style="{ backgroundImage: `url(/res/monsters/backgrounds/${background}.webp)` }">
-      <img :src="`/res/monsters/${props.boss.id}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 object-contain" />
+      <div class="absolute inset-0 bg-line backdrop-blur-sm mask-exclude mask-center mask-no-repeat [mask-image:linear-gradient(#000_0_0),linear-gradient(#000_0_0)] [mask-size:100%_100%,calc(69%_-_4px)_calc(92%_-_4px)]" />
+      <img :src="`/res/monsters/${props.boss.id}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 rounded-md border-2 border-line object-contain" />
       <span class="absolute top-2 left-2 min-w-6 rounded bg-dialog/85 px-1.5 py-0.5 text-center text-[13px] font-bold">{{ props.boss.pos }}</span>
     </div>
     <div class="flex flex-1 flex-col gap-0.5 bg-dialog/85 px-3 pt-2 pb-2.5">
