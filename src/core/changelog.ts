@@ -68,15 +68,20 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
     'Dungeon Break': [
       'Added new tool that shows the progress left in your dungeons'
     ],
+    Bestiary: [
+      'Added new tool that lists enemies of all dungeons and their stats'
+    ],
     Statistics: [
       'Added Deeds & Titles tab to player details',
       'Added headers for Glory and trophies',
-      'Updated player detail screen with more information and charts'
+      'Updated player detail screen with more information and charts',
+      'Fixed search suggestions not applying immediately'
     ],
     'Dungeon Simulator': [
       'Added runes and estimated mushroom cost to simulation results',
       'Added Copy as image',
-      'Updated layout'
+      'Updated layout',
+      'Fixed Abhorrent Demon showing as Lava Blob in The Mines of Gloria'
     ],
     'Fight Simulator': [
       'Added option to change win chance decimal places'
