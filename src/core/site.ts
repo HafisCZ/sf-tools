@@ -9,6 +9,7 @@ export type SiteMetadata = {
   name: string
   type?: string
   requires?: string[]
+  startupDialogs?: boolean
 }
 
 export type SiteEvent = 'april_fools_day' | 'winter' | 'halloween'

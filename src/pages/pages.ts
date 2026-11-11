@@ -26,7 +26,7 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
 const TERMS_VERSION = 2
 
 function openStartupDialogs(metadata: SiteMetadata) {
-  if (!StoreWrapper.isAvailable()) return
+  if (!StoreWrapper.isAvailable() || metadata.startupDialogs === false) return
 
   if (Site.options.terms_accepted !== TERMS_VERSION) {
     useDialog(TermsDialog, { version: TERMS_VERSION })
