@@ -2404,6 +2404,8 @@
             "class": "Class World"
         },
         "back": "Dungeons",
+        "switch_shadow": "Switch to Shadow World",
+        "switch_light": "Switch to Light World",
         "search": "Search",
         "search_placeholder": "Search #{name}",
         "level": "Level #{level}",

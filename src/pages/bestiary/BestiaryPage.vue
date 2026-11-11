@@ -28,8 +28,11 @@
           <SFHeading level="2">{{ getDungeonName(dungeon) }}</SFHeading>
           <SFParagraph v-if="description" type="muted">{{ description }}</SFParagraph>
         </div>
-        <div class="min-w-0 flex-[1_1_260px]">
-          <SFInput v-model="search" type="search" :label="localize('search')" :placeholder="localize('search_placeholder', { name: getDungeonName(dungeon) })" />
+        <div class="flex min-w-0 flex-auto flex-wrap items-end gap-3.5">
+          <SFButton v-if="twin" @click="dungeon = twin">{{ localize(groupKey === 'light' ? 'switch_shadow' : 'switch_light') }}</SFButton>
+          <div class="w-65 min-w-0 flex-auto">
+            <SFInput v-model="search" type="search" :label="localize('search')" :placeholder="localize('search_placeholder', { name: getDungeonName(dungeon) })" />
+          </div>
         </div>
       </div>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3.5">
@@ -44,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
@@ -80,25 +83,30 @@ const GROUP_ROWS = [[GROUPS[0]], [GROUPS[1]], GROUPS.slice(2, 6), [GROUPS[6]]]
 const dungeon = shallowRef<Dungeon | null>(null)
 const search = ref('')
 
-let scrollPosition = 0
-
 function open(target: Dungeon) {
-  scrollPosition = window.scrollY
   search.value = ''
   dungeon.value = target
 
   window.scrollTo(0, 0)
 }
 
-async function close() {
+function close() {
   dungeon.value = null
 
-  await nextTick()
-
-  window.scrollTo(0, scrollPosition)
+  window.scrollTo(0, 0)
 }
 
 const groupKey = computed(() => GROUPS.find((group) => dungeon.value !== null && group.dungeons.includes(dungeon.value))?.key)
+
+const twin = computed(() => {
+  const current = dungeon.value
+
+  if (current === null || current.id >= TOWER) {
+    return undefined
+  }
+
+  return DUNGEON_DATA[current.id < 100 ? current.id + 100 : current.id - 100]
+})
 
 const description = computed(() => {
   const key = `dungeons.${dungeon.value?.intl}.description`
