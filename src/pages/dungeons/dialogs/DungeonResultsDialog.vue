@@ -23,7 +23,16 @@
       <div class="flex items-center gap-3 pb-1 pl-2 text-xs font-bold text-white/50">
         <span class="flex-1" />
         <span class="w-[22%] text-center">{{ localize('win_chance') }}</span>
-        <span v-if="showMushrooms" class="w-[26%] text-center">{{ localize('mushrooms') }}</span>
+        <span v-if="showMushrooms" class="flex w-[26%] items-center justify-center gap-1">
+          {{ localize('mushrooms') }}
+          <SFTooltip>
+            <SFIcon name="circle-question" />
+            <template #content>
+              <div>{{ localize('mushrooms_info.average') }}</div>
+              <div>{{ localize('mushrooms_info.certain') }}</div>
+            </template>
+          </SFTooltip>
+        </span>
       </div>
       <div v-for="(result, index) in props.results" :key="index" tabindex="0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
         <img :src="getClassImageUrl(result.boss.class ?? props.playerClass)" alt="" class="size-[2.5em]" />

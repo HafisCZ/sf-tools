@@ -897,6 +897,10 @@
         "experience": "Total: #{experience} XP",
         "win_chance": "Win chance",
         "mushrooms": "Mushrooms",
+        "mushrooms_info": {
+            "average": "Left: mushrooms needed on average.",
+            "certain": "Right: mushrooms for a 90% chance to win."
+        },
         "show_mushrooms": "Show estimated mushroom cost",
         "copy_image": "Copy as image",
         "copy_image_toast": {

@@ -1,6 +1,7 @@
 // Font Awesome Free icons (https://fontawesome.com/license/free)
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
 import { faCalendarXmark } from '@fortawesome/free-regular-svg-icons/faCalendarXmark'
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQuestion'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import { faClone } from '@fortawesome/free-regular-svg-icons/faClone'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
@@ -141,6 +142,7 @@ export const ICONS = {
   'circle-exclamation': faCircleExclamation,
   'circle-half-stroke': faCircleHalfStroke,
   'circle-info': faCircleInfo,
+  'circle-question': faCircleQuestion,
   'circle-user': faCircleUser,
   clock: faClock,
   clone: faClone,
