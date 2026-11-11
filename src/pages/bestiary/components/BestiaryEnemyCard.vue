@@ -97,7 +97,7 @@ const rows = computed(() => {
     { label: localize.global('general.attribute4'), value: formatSpacedNumber(boss.con) },
     { label: localize.global('general.attribute5'), value: formatSpacedNumber(boss.lck) },
     { label: localize('health'), value: formatSpacedNumber(boss.health) },
-    { label: localize('damage'), value: `${formatSpacedNumber(boss.min)}-${formatSpacedNumber(boss.max)}` }
+    { label: localize('weapon_range'), value: `${formatSpacedNumber(boss.min)}-${formatSpacedNumber(boss.max)}` }
   ]
 
   if (boss.armor) {

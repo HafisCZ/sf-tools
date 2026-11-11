@@ -2408,6 +2408,6 @@
         "search_placeholder": "Search #{name}",
         "level": "Level #{level}",
         "health": "Health",
-        "damage": "Damage"
+        "weapon_range": "Weapon Range"
     }
 }
