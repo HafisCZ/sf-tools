@@ -39,6 +39,11 @@
           <li>If you want to contribute to this project it is recommend keeping ad blockers disabled for this site.</li>
         </SFList>
       </section>
+      <SFParagraph class="text-center">
+        See the
+        <a href="privacy.html" target="_blank" class="text-accent underline">Privacy</a>
+        page for what data leaves your browser and where it goes.
+      </SFParagraph>
     </div>
 
     <template #buttons>
@@ -54,6 +59,7 @@ import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFList from '@library/SFList.vue'
+import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
 import { Site } from '~/core/site'
 

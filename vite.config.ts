@@ -7,7 +7,7 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import { rustEngine } from './vite/plugins/rust-engine.ts'
 
-const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats', 'scrapbook', 'dungeon-break', 'build-planner', 'bestiary']
+const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats', 'scrapbook', 'dungeon-break', 'build-planner', 'bestiary', 'privacy']
 
 const LEGACY_DIRECTORIES = ['js', 'res', 'vendor', 'endpoint']
 const LEGACY_FILES = ['CNAME', 'sitemap.txt']

@@ -11,10 +11,14 @@
       </a>
       |
     </span>
-    <a href="mailto:support@mar21.eu" class="pointer-events-auto flex cursor-pointer items-center gap-1.5 hover:underline">
-      <SFIcon name="envelope" />
-      support@mar21.eu
-    </a>
+    <span class="flex items-center gap-1.5">
+      <a href="mailto:support@mar21.eu" class="pointer-events-auto flex cursor-pointer items-center gap-1.5 hover:underline">
+        <SFIcon name="envelope" />
+        support@mar21.eu
+      </a>
+      |
+    </span>
+    <a href="privacy.html" class="pointer-events-auto cursor-pointer hover:underline">Privacy</a>
   </span>
 </template>
 
