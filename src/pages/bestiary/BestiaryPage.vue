@@ -1,5 +1,12 @@
 <template>
   <Page>
+    <template v-if="dungeon" #nav-left>
+      <SFButton variant="ghost" @click="close">
+        <SFIcon name="arrow-left" />
+        {{ localize('back') }}
+      </SFButton>
+    </template>
+
     <div v-if="dungeon === null" class="flex flex-col gap-8">
       <div v-for="(row, rowIndex) in GROUP_ROWS" :key="rowIndex" class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-3.5 gap-y-8">
         <section v-for="group in row" :key="group.key" :aria-label="localize(`groups.${group.key}`)" class="flex flex-col gap-3.5">
@@ -14,12 +21,6 @@
     </div>
 
     <div v-else class="flex flex-col gap-5">
-      <div>
-        <SFButton variant="ghost" @click="close">
-          <SFIcon name="arrow-left" />
-          {{ localize('back') }}
-        </SFButton>
-      </div>
       <div class="flex flex-wrap items-center gap-x-5 gap-y-4 border-b border-white/30 pb-4">
         <img :src="`/res/dungeons/cards/${dungeon.id}.webp`" alt="" class="h-30 w-40 flex-none rounded-lg border border-line object-cover" />
         <div class="flex min-w-0 flex-[999_1_320px] flex-col gap-0.5">
