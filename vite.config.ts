@@ -125,6 +125,7 @@ export default defineConfig({
   plugins: [vue(), tailwindcss(), legacySite(), rustEngine()],
   define: {
     __BUILD_INFO__: JSON.stringify(readBuildInfo()),
+    __BUILD_ENVIRONMENT__: JSON.stringify(process.env.NETLIFY === 'true' ? 'beta' : 'production'),
     __ITEM_PICTURES__: JSON.stringify(readItemPictures())
   },
   resolve: {
