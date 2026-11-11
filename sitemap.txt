@@ -21,3 +21,4 @@ https://sftools.mar21.eu/scrapbook.html
 https://sftools.mar21.eu/build-planner.html
 https://sftools.mar21.eu/bestiary.html
 https://sftools.mar21.eu/privacy.html
+https://sftools.mar21.eu/terms.html

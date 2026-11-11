@@ -311,17 +311,8 @@
     },
     "terms": {
         "title": "Terms and Conditions",
-        "title2": "Usage",
         "button": {
-            "accept_full": "I understand & accept these terms",
-            "accept": "Accept",
-            "reject": "Reject"
-        },
-        "toast": {
-            "rejected": {
-                "title": "Terms not accepted",
-                "message": "You must accept the terms in order to continue"
-            }
+            "accept_full": "I understand & accept these terms"
         }
     },
     "stats": {
@@ -1276,7 +1267,7 @@
     },
     "integration": {
         "file": "File",
-        "game": "Endpoint",
+        "game": "Log in to the game",
         "search": "Search player...",
         "search_guild": "Search guild...",
         "search_world": "Search in #{world}...",

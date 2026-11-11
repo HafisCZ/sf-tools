@@ -23,7 +23,7 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
   Site.run()
 }
 
-const TERMS_VERSION = 2
+const TERMS_VERSION = 3
 
 function openStartupDialogs(metadata: SiteMetadata) {
   if (!StoreWrapper.isAvailable() || metadata.startupDialogs === false) return

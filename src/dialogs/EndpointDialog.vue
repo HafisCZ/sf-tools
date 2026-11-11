@@ -11,30 +11,7 @@
     >
       <iframe ref="iframe-ref" title="Endpoint" tabindex="-1" aria-hidden="true" class="pointer-events-none fixed opacity-0" />
 
-      <template v-if="step === 'terms'">
-        <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title') }}</SFHeading>
-        <SFList>
-          <li>Endpoint is an application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
-          <li>All data entered is sent directly to the game server without involvement of any 3rd party.</li>
-          <li>It is not possible to capture any other players than those explicitly stated within the application.</li>
-          <li>All data collection is done using normal means, without any use of forbidden actions.</li>
-        </SFList>
-        <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title2') }}</SFHeading>
-        <SFList>
-          <li>You can access your S&F Account using your username and password.</li>
-          <li>Ticking Remember me stores a token in your browser that can be later used to access your S&F Account. You can press Use another account to delete it.</li>
-        </SFList>
-        <div class="flex gap-2">
-          <SFButton block @click="rejectTerms">
-            {{ localize.global('terms.button.reject') }}
-          </SFButton>
-          <SFButton variant="primary" block @click="acceptTerms">
-            {{ localize.global('terms.button.accept') }}
-          </SFButton>
-        </div>
-      </template>
-
-      <form v-else-if="step === 'login'" class="flex flex-1 flex-col gap-4" @submit.prevent="submit">
+      <form v-if="step === 'login'" class="flex flex-1 flex-col gap-4" @submit.prevent="submit">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('login') }}</SFHeading>
         <SFInput ref="username-ref" v-model="username" :label="localize('username')" name="username" autocomplete="username" />
         <SFInput ref="password-ref" v-model="password" :label="localize('password')" name="password" type="password" autocomplete="current-password" />
@@ -114,7 +91,6 @@ import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFInput from '@library/SFInput.vue'
-import SFList from '@library/SFList.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import SFProgress from '@library/SFProgress.vue'
 import SFSelect from '@library/SFSelect.vue'
@@ -149,7 +125,7 @@ const emit = defineEmits<{
   close: [imported: boolean]
 }>()
 
-type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings' | 'error'
+type Step = 'login' | 'loading' | 'progress' | 'character' | 'warnings' | 'error'
 
 type Character = EndpointCharacter & {
   server: string
@@ -157,12 +133,9 @@ type Character = EndpointCharacter & {
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
-const TERMS_VERSION = 3
-
 const SSO_SERVER = 'sso.playa-games.com'
 
 const TITLE_KEYS: Record<Step, string> = {
-  terms: 'terms.title',
   login: 'endpoint.login',
   loading: 'endpoint.step4.title',
   progress: 'endpoint.step4.message',
@@ -175,7 +148,7 @@ const MODES: EndpointMode[] = ['own', 'guild', 'friends', 'hall_of_fame', 'guild
 
 const localize = useLocalize('endpoint')
 
-const step = ref<Step>(Site.options.endpoint_terms_accepted === TERMS_VERSION ? getStartStep() : 'terms')
+const step = ref<Step>(getStartStep())
 
 const storedMode = Store.shared.get('endpoint_mode', 'own', true)
 
@@ -223,22 +196,6 @@ onMounted(() => {
 
 function getStartStep(): Step {
   return Store.shared.has('endpoint_token') ? 'loading' : 'login'
-}
-
-function acceptTerms() {
-  Site.options.endpoint_terms_accepted = TERMS_VERSION
-
-  step.value = getStartStep()
-
-  if (step.value === 'loading') {
-    void loginRemembered()
-  }
-}
-
-function rejectTerms() {
-  useToast({ title: localize.global('terms.toast.rejected.title'), message: localize.global('terms.toast.rejected.message') })
-
-  close(false)
 }
 
 async function login() {

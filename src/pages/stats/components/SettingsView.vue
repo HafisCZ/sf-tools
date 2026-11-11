@@ -159,7 +159,7 @@ watch(unsafeDelete, (value) => {
   Site.options.unsafe_delete = value
 })
 
-const TERMS_VERSION = 2
+const TERMS_VERSION = 3
 
 watch(termsAccepted, (value) => {
   // The terms dialog saves its version number, which must not be replaced with true

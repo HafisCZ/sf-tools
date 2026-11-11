@@ -18,6 +18,10 @@
       </a>
       |
     </span>
+    <span class="flex items-center gap-1.5">
+      <a href="terms.html" class="pointer-events-auto cursor-pointer hover:underline">Terms</a>
+      |
+    </span>
     <a href="privacy.html" class="pointer-events-auto cursor-pointer hover:underline">Privacy</a>
   </span>
 </template>

@@ -31,9 +31,9 @@
       <SFParagraph>Netlify and Sentry are US companies covered by the EU-US Data Privacy Framework. SF Tools processes this data based on legitimate interest (GDPR Art. 6(1)(f)), to run the features you use and to fix errors.</SFParagraph>
 
       <section>
-        <SFHeading level="6" class="mb-2">Game login</SFHeading>
+        <SFHeading level="6" class="mb-2">Log in to the game</SFHeading>
         <SFParagraph>
-          When you log into the game through SF Tools, your username and password go straight from your browser to Playa Games. SF Tools never sees them. Playa Games is responsible for that data, see their
+          When you use the "Log in to the game" feature, your username and password go straight from your browser to Playa Games. SF Tools never sees them. Playa Games is responsible for that data, see their
           <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/privacy_en.html" target="_blank" class="text-accent hover:underline">Privacy Policy</a>.
         </SFParagraph>
       </section>

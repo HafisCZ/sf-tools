@@ -18,7 +18,6 @@ const SITE_OPTIONS = {
   advanced: false,
   hidden: false,
   terms_accepted: false as number | boolean,
-  endpoint_terms_accepted: false as number | boolean,
   endpoint_fetch_multiple: false,
   version_accepted: false as string | boolean,
   groups_hidden: false,
