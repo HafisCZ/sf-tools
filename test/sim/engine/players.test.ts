@@ -3,7 +3,8 @@ import { type PlayerModel } from '~/core/models/player'
 import { createPresetPlayers, preparePlayerData } from '~/sim/debug'
 import { loadEngine } from '~/sim/engine/engine'
 import { runPlayers } from '~/sim/engine/players'
-import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from '~/sim/workers/base'
+import { runLegacyPlayers } from '~/sim/legacy/players'
+import { CONFIG, resetState, SimulatorModel } from '~/sim/workers/base'
 
 const engine = await loadEngine()
 
@@ -45,34 +46,14 @@ function next() {
 function runTs(a: PlayerModel, b: PlayerModel, iterations: number, log: boolean) {
   resetState()
 
-  FLAGS.log(log)
-
   seed(SETUP_SEED)
 
   const attacker = SimulatorModel.create(0, a)
   const defender = SimulatorModel.create(1, b)
 
-  SimulatorModel.initializeFighters(attacker, defender)
-
   seed(FIGHT_SEED)
 
-  const simulator = new SimulatorBase()
-
-  let score = 0
-
-  for (let i = 0; i < iterations; i++) {
-    simulator.a = attacker
-    simulator.b = defender
-
-    attacker.resetHealth()
-    defender.resetHealth()
-
-    if (simulator.fight()) {
-      score++
-    }
-  }
-
-  return { score, logs: FIGHT_LOG.dump() }
+  return runLegacyPlayers(attacker, defender, { iterations, log })
 }
 
 function runRust(a: PlayerModel, b: PlayerModel, iterations: number, log: boolean) {

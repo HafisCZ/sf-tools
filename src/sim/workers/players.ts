@@ -1,5 +1,6 @@
 import { type Engine, loadEngine } from '~/sim/engine/engine'
 import { runPlayers } from '~/sim/engine/players'
+import { runLegacyPlayers } from '~/sim/legacy/players'
 import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FLAGS, resetState, SimulatorModel } from './base'
 
@@ -17,6 +18,7 @@ export type PlayersMessage = {
   mode: string
   iterations: number
   log?: boolean
+  legacy?: boolean
 }
 
 export type PlayersResponse<T extends PlayerEntry = PlayerEntry> = {
@@ -31,8 +33,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
   })
 }
 
-async function respond({ flags, config, player, target, mode, iterations, log }: PlayersMessage) {
-  const engine = await loadEngine()
+async function respond({ flags, config, player, target, mode, iterations, log, legacy }: PlayersMessage) {
+  const engine = legacy ? null : await loadEngine()
 
   resetState()
 
@@ -67,11 +69,11 @@ async function respond({ flags, config, player, target, mode, iterations, log }:
 }
 
 class FightSimulator {
-  engine: Engine
+  engine: Engine | null
   log: boolean
   logs: FightLog[] = []
 
-  constructor(engine: Engine, log: boolean) {
+  constructor(engine: Engine | null, log: boolean) {
     this.engine = engine
     this.log = log
   }
@@ -80,7 +82,7 @@ class FightSimulator {
     const attacker = SimulatorModel.create(0, source)
     const defender = SimulatorModel.create(1, target)
 
-    const { score, logs } = runPlayers(this.engine, attacker, defender, { iterations, log: this.log })
+    const { score, logs } = this.engine ? runPlayers(this.engine, attacker, defender, { iterations, log: this.log }) : runLegacyPlayers(attacker, defender, { iterations, log: this.log })
 
     for (const log of logs) {
       this.logs.push(log)

@@ -1,6 +1,6 @@
 import { compact, sequence, sum } from '@utils/utils'
 import { NEXT_DUNGEONS, PREVIOUS_DUNGEONS, type DungeonEntry, type DungeonResult } from './data/dungeons'
-import { saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
+import { isLegacyEngine, saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
 import { type FightLog, type SimulatorPlayerInput, type SimulatorRun } from './types'
 import { WorkerBatch } from './workers'
 import type { DungeonsMessage, DungeonsResponse } from './workers/dungeons'
@@ -41,6 +41,7 @@ export function useDungeonSimulator() {
           boss,
           config: simulatorConfig.value,
           log: !!log,
+          legacy: isLegacyEngine,
           iterations
         }
       )
@@ -74,7 +75,8 @@ export function useDungeonSimulator() {
           boss,
           iterations,
           hpcap: HEALTH_CAP,
-          config: simulatorConfig.value
+          config: simulatorConfig.value,
+          legacy: isLegacyEngine
         }
       )
     })
@@ -108,6 +110,7 @@ export function useDungeonSimulator() {
           iterations,
           hpcap: HEALTH_CAP,
           config: simulatorConfig.value,
+          legacy: isLegacyEngine,
           id: entry.dungeon.id
         }
       )
@@ -141,6 +144,7 @@ export function useDungeonSimulator() {
           iterations,
           hpcap: HEALTH_CAP,
           config: simulatorConfig.value,
+          legacy: isLegacyEngine,
           id: entry.dungeon.id
         }
       )

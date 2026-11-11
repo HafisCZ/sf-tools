@@ -15,6 +15,8 @@ export type SimulatorLogTarget = 'file' | 'broadcast'
 
 export { isSimulatorDebug }
 
+export const isLegacyEngine = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('engine') === 'legacy'
+
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 
 function addClassMultiplierDefaults(config: SimulatorConfig) {

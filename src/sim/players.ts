@@ -1,4 +1,4 @@
-import { saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
+import { isLegacyEngine, saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
 import { type FightLog, type SimulatorFlags, type SimulatorRun } from './types'
 import { WorkerBatch } from './workers'
 import type { PlayerEntry, PlayersMessage, PlayersResponse } from './workers/players'
@@ -29,6 +29,7 @@ export function usePlayerSimulator() {
           config: simulatorConfig.value,
           mode,
           log: !!log,
+          legacy: isLegacyEngine,
           iterations
         }
       )
