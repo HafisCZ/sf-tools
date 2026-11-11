@@ -128,7 +128,7 @@
     <InlineSelector v-else @select="selectCharacter" />
 
     <template #footer-right>
-      <PageFooterLinks tool="dungeon_break" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

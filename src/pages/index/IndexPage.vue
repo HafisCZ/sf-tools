@@ -24,15 +24,9 @@
       </template>
 
       <template #footer-right>
-        <span class="flex items-center gap-1.5">
-          <FooterLink icon="trophy" @click="toggleCredits">
-            {{ localize('toggle') }}
-          </FooterLink>
-          &bull;
-          <FooterLink icon="message" @click="openFeedback">
-            {{ localize('footer.report') }}
-          </FooterLink>
-        </span>
+        <FooterLink icon="trophy" @click="toggleCredits">
+          {{ localize('toggle') }}
+        </FooterLink>
         <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
           <span v-html="localize('footer.webshop#')" />
         </FooterLink>
@@ -56,12 +50,10 @@
 import { ref } from 'vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFParagraph from '@library/SFParagraph.vue'
-import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import IndexCredits from './components/IndexCredits.vue'
 import ToolCard from './components/ToolCard.vue'
 import { MODULE_VERSION_MAJOR, Site } from '~/core/site'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import Page from '~/pages/Page.vue'
@@ -134,9 +126,5 @@ function toggleCredits() {
 
 function formatDate(timestamp: number) {
   return new Date(timestamp).toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' }).replace(' at', '')
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, {})
 }
 </script>

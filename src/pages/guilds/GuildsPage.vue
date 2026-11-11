@@ -98,7 +98,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="guilds" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

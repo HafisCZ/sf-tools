@@ -5,13 +5,16 @@
       2019 - {{ currentYear }} | mar21 |
     </span>
     <span class="flex items-center gap-1.5">
-      <SFIcon name="discord" />
-      mar21 |
+      <a href="https://discord.gg/XWfSwe3" target="_blank" class="pointer-events-auto flex cursor-pointer items-center gap-1.5 hover:underline">
+        <SFIcon name="discord" />
+        mar21
+      </a>
+      |
     </span>
-    <span class="flex items-center gap-1.5">
+    <a href="mailto:support@mar21.eu" class="pointer-events-auto flex cursor-pointer items-center gap-1.5 hover:underline">
       <SFIcon name="envelope" />
       support@mar21.eu
-    </span>
+    </a>
   </span>
 </template>
 

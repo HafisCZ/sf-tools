@@ -41,7 +41,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="bestiary" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

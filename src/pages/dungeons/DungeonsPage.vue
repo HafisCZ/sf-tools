@@ -64,7 +64,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="dungeons" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

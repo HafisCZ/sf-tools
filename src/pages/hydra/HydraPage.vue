@@ -61,7 +61,7 @@
     </template>
 
     <template #footer-right>
-      <PageFooterLinks tool="hydra" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

@@ -75,7 +75,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="fortress" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

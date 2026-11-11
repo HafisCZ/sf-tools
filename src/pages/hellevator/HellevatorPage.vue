@@ -62,7 +62,7 @@
     </template>
 
     <template #footer-right>
-      <PageFooterLinks tool="hellevator" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

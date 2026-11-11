@@ -131,7 +131,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="simulator" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

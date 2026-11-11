@@ -20,7 +20,7 @@
     </template>
 
     <template #footer-right>
-      <PageFooterLinks tool="calendar" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

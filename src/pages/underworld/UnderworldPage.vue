@@ -109,7 +109,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="underworld" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

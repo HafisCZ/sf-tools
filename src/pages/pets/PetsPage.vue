@@ -47,7 +47,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="pets" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

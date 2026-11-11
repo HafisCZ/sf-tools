@@ -103,7 +103,7 @@
     </template>
 
     <template #footer-right>
-      <PageFooterLinks tool="raids" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

@@ -322,7 +322,7 @@
     </div>
 
     <template #footer-right>
-      <PageFooterLinks tool="attributes" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>

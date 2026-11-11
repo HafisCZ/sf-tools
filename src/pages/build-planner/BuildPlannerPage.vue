@@ -38,7 +38,7 @@
     </BuildTimeline>
 
     <template #footer-right>
-      <PageFooterLinks tool="build_planner" />
+      <PageFooterLinks />
     </template>
   </Page>
 </template>
