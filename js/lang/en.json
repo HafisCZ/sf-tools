@@ -234,7 +234,7 @@
         },
         "bestiary": {
             "title": "Bestiary",
-            "desc": "All dungeon information you might need"
+            "desc": "All dungeon and expedition enemies in one place"
         },
         "idle": {
             "title": "Arena Manager",
