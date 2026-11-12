@@ -1,15 +1,15 @@
 <template>
   <article class="flex flex-col overflow-hidden rounded-lg border border-line bg-surface [contain-intrinsic-size:auto_640px] [content-visibility:auto]">
-    <div class="relative aspect-[4/3] bg-dialog bg-cover bg-center" :style="{ backgroundImage: `url(/res/monsters/backgrounds/${background}.webp)` }">
+    <div class="relative aspect-[4/3] bg-dialog bg-cover bg-center" :style="{ backgroundImage: `url(${props.background})` }">
       <div class="absolute inset-0 bg-line backdrop-blur-sm mask-exclude mask-center mask-no-repeat [mask-image:linear-gradient(#000_0_0),linear-gradient(#000_0_0)] [mask-size:100%_100%,calc(69%_-_4px)_calc(92%_-_4px)]" />
-      <img :src="`/res/monsters/${props.boss.id}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 rounded-md border-2 border-line object-contain" />
-      <span class="absolute top-2 left-2 min-w-6 rounded bg-dialog/85 px-1.5 py-0.5 text-center text-[13px] font-bold">{{ props.boss.pos }}</span>
+      <img :src="`/res/monsters/${props.monster}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 rounded-md border-2 border-line object-contain" />
+      <span v-if="props.boss" class="absolute top-2 left-2 min-w-6 rounded bg-dialog/85 px-1.5 py-0.5 text-center text-[13px] font-bold">{{ props.boss.pos }}</span>
     </div>
     <div class="flex flex-1 flex-col gap-0.5 bg-dialog/85 px-3 pt-2 pb-2.5">
       <span class="text-base leading-5 font-bold text-white">{{ props.name }}</span>
       <span v-if="props.description" class="text-[13px] leading-[1.35] text-white/75">{{ props.description }}</span>
     </div>
-    <div class="flex flex-col gap-2.5 px-3.5 pt-3 pb-3.5">
+    <div v-if="props.boss" class="flex flex-col gap-2.5 px-3.5 pt-3 pb-3.5">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <img :src="getClassImageUrl(props.boss.class)" alt="" class="size-[22px] object-contain" />
@@ -32,7 +32,7 @@ import { computed } from 'vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
-import { TOWER, type Dungeon, type DungeonClassBoss } from '~/sim/data/dungeons'
+import { type DungeonClassBoss } from '~/sim/data/dungeons'
 import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
@@ -41,13 +41,13 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Dungeon the enemy belongs to, picks the background behind the enemy
+   * Picture behind the enemy
    */
-  dungeon: Dungeon
+  background: string
   /**
-   * Floor whose enemy and stats the card shows
+   * Monster whose picture the card shows
    */
-  boss: DungeonClassBoss
+  monster: number
   /**
    * Enemy name
    */
@@ -56,40 +56,20 @@ const props = defineProps<{
    * Text the game shows before the floor's fight
    */
   description?: string
+  /**
+   * Floor whose number and stats the card shows, without it the card is only the picture and name
+   */
+  boss?: DungeonClassBoss
 }>()
 
 const localize = useLocalize('bestiary')
 
-const BACKGROUNDS: Record<number, string> = {
-  14: 'easteros',
-  16: 'academy',
-  17: 'ring',
-  19: 'nordic',
-  20: 'greek',
-  21: 'birthday',
-  22: 'dragons',
-  23: 'horror',
-  24: 'superheroes',
-  25: 'anime',
-  26: 'giantmonsters',
-  27: 'easteros',
-  28: 'academy',
-  29: 'ring',
-  201: 'tower',
-  300: 'guild',
-  301: 'guild',
-  302: 'guild',
-  303: 'guild'
-}
-
-const background = computed(() => {
-  const id = props.dungeon.id
-
-  return BACKGROUNDS[id > 100 && id < TOWER ? id - 100 : id] ?? 'general'
-})
-
 const rows = computed(() => {
   const boss = props.boss
+
+  if (boss === undefined) {
+    return []
+  }
 
   const list = [
     { label: localize.global('general.attribute1'), value: formatSpacedNumber(boss.str) },

@@ -3,4 +3,4 @@ import '~/styles/main.css'
 import { createPage } from '~/pages/pages'
 import BestiaryPage from '~/pages/bestiary/BestiaryPage.vue'
 
-void createPage({ name: 'bestiary', requires: ['translations_monsters', 'translations_dungeons'] }, BestiaryPage)
+void createPage({ name: 'bestiary', requires: ['translations_general', 'translations_monsters', 'translations_dungeons'] }, BestiaryPage)
