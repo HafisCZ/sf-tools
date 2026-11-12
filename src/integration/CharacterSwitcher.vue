@@ -1,10 +1,16 @@
 <template>
   <SFButton ref="trigger-ref" variant="ghost" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
-    <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
-      <CharacterRenderer :data="props.player" />
-    </span>
-    <span class="max-w-40 truncate">{{ props.player.Name }}</span>
-    <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(props.player.Data.prefix) }}</span>
+    <template v-if="props.player">
+      <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
+        <CharacterRenderer :data="props.player" />
+      </span>
+      <span class="max-w-40 truncate">{{ props.player.Name }}</span>
+      <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(props.player.Data.prefix) }}</span>
+    </template>
+    <template v-else>
+      <img src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+      {{ localize('load.character') }}
+    </template>
   </SFButton>
   <Teleport to="body">
     <section
@@ -64,9 +70,9 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Character the page shows
+   * Character the page shows, the button reads "Load character" without one
    */
-  player: PlayerModel
+  player: PlayerModel | null
 }>()
 
 const emit = defineEmits<{

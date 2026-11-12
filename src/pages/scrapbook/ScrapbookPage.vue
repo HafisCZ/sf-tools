@@ -1,45 +1,49 @@
 <template>
   <Page>
-    <template v-if="player" #nav-left>
+    <template #nav-left>
       <CharacterSwitcher :player="player" @select="selectPlayer" />
+      <span class="mx-1.5 h-5 w-px bg-white/12" />
+      <SFButton variant="ghost" @click="clear">
+        <SFIcon name="recycle" />
+        {{ localize.global('analyzer.topbar.clear') }}
+      </SFButton>
       <span class="mx-1.5 h-5 w-px bg-white/12" />
       <SFTabs v-model="tab" :options="tabOptions" />
     </template>
 
-    <template v-if="player" #nav-right>
+    <template #nav-right>
       <span class="px-2 text-white/70">{{ filtered.collected }} / {{ filtered.total }}</span>
     </template>
 
-    <template v-if="player">
-      <SFParagraph v-if="!hasData" class="text-center">{{ localize('empty') }}</SFParagraph>
-      <div v-else class="flex flex-wrap items-start gap-6">
-        <aside ref="sidebar-ref" class="flex grow basis-75 flex-col gap-4 lg:sticky" :style="sidebarStyle">
-          <ScrapbookFilterPanel
-            v-model:search="filters.search"
-            v-model:status="filters.status"
-            v-model:worn-by="filters.wornBy"
-            v-model:item-classes="filters.itemClasses"
-            v-model:kinds="filters.kinds"
-            v-model:rarities="filters.rarities"
-            v-model:origins="filters.origins"
-            v-model:minimum-level="filters.minimumLevel"
-            v-model:maximum-level="filters.maximumLevel"
-            :book="tab"
-            :item-class-counts="itemClassCounts"
-            :kind-counts="kindCounts"
-            :rarity-counts="rarityCounts"
-            :origin-counts="originCounts"
-          />
-        </aside>
-        <ScrapbookView :kinds="filtered.kinds" class="min-w-0 grow-999 basis-140" @toggle="toggleMarked" />
-      </div>
-    </template>
-    <InlineSelector v-else @select="selectPlayer" />
+    <SFParagraph v-if="!hasData" class="text-center">{{ localize('empty') }}</SFParagraph>
+    <div v-else class="flex flex-wrap items-start gap-6">
+      <aside ref="sidebar-ref" class="flex grow basis-75 flex-col gap-4 lg:sticky" :style="sidebarStyle">
+        <ScrapbookFilterPanel
+          v-model:search="filters.search"
+          v-model:status="filters.status"
+          v-model:worn-by="filters.wornBy"
+          v-model:item-classes="filters.itemClasses"
+          v-model:kinds="filters.kinds"
+          v-model:rarities="filters.rarities"
+          v-model:origins="filters.origins"
+          v-model:minimum-level="filters.minimumLevel"
+          v-model:maximum-level="filters.maximumLevel"
+          :book="tab"
+          :item-class-counts="itemClassCounts"
+          :kind-counts="kindCounts"
+          :rarity-counts="rarityCounts"
+          :origin-counts="originCounts"
+        />
+      </aside>
+      <ScrapbookView :kinds="filtered.kinds" class="min-w-0 grow-999 basis-140" @toggle="toggleMarked" />
+    </div>
   </Page>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
+import SFButton from '@library/SFButton.vue'
+import SFIcon from '@library/SFIcon.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
@@ -49,7 +53,6 @@ import { type PlayerModel } from '~/core/models/player'
 import { DatabaseManager } from '~/data/database-manager'
 import CharacterSwitcher from '~/integration/CharacterSwitcher.vue'
 import { loadInlineSelectorPlayers } from '~/integration/inline-selector'
-import InlineSelector from '~/integration/InlineSelector.vue'
 import Page from '~/pages/Page.vue'
 import ScrapbookFilterPanel from '~/pages/scrapbook/components/ScrapbookFilterPanel.vue'
 import ScrapbookView from '~/pages/scrapbook/components/ScrapbookView.vue'
@@ -83,12 +86,14 @@ const tabOptions = computed<SelectOption<ScrapbookBook>[]>(() => [
 ])
 
 const hasData = computed(() => {
-  const bits = tab.value === 'items' ? player.value?.Scrapbook : player.value?.ScrapbookLegendary
+  if (!player.value) return true
+
+  const bits = tab.value === 'items' ? player.value.Scrapbook : player.value.ScrapbookLegendary
 
   return bits !== undefined && bits.length > 0
 })
 
-const kinds = computed(() => (player.value ? createScrapbookKinds(player.value, tab.value, marked.value) : []))
+const kinds = computed(() => createScrapbookKinds(player.value, tab.value, marked.value))
 
 const filtered = computed(() => filterScrapbookKinds(kinds.value, filters.value))
 
@@ -138,6 +143,11 @@ function selectPlayer(entry: PlayerModel) {
 
 function toggleMarked(key: string) {
   marked.value = toggleItem(marked.value, key)
+}
+
+function clear() {
+  player.value = null
+  marked.value = []
 }
 
 function createFilters(): ScrapbookFilters {

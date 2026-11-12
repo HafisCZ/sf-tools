@@ -337,10 +337,10 @@ const LEGENDARY_KINDS: [itemClass: number, type: number][] = [
   [0, 10]
 ]
 
-export function createScrapbookKinds(player: PlayerModel, book: ScrapbookBook, marked: string[]): ScrapbookKind[] {
+export function createScrapbookKinds(player: PlayerModel | null, book: ScrapbookBook, marked: string[]): ScrapbookKind[] {
   const source: ScrapbookSource = {
     book,
-    bits: (book === 'items' ? player.Scrapbook : player.ScrapbookLegendary) ?? [],
+    bits: (book === 'items' ? player?.Scrapbook : player?.ScrapbookLegendary) ?? [],
     marked: new Set(marked)
   }
 
