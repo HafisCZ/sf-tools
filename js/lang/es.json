@@ -177,7 +177,9 @@
         "companion3": "Kunigunde",
         "companion1_full": "Bert de #{player}",
         "companion2_full": "Mark de #{player}",
-        "companion3_full": "Kunigunde de #{player}"
+        "companion3_full": "Kunigunde de #{player}",
+        "dungeon_shadow": "Shadow",
+        "dungeon_yourself": "Yourself"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -195,7 +197,6 @@
             "kofi": "Dale a mar algunas setas",
             "crowdin": "Ayuda con las traducciones",
             "webshop#": "Usa el código <b class=\"text-white\">SFTOOLS</b> en la tienda web",
-            "report": "Enviar comentarios",
             "notice#": "Distribuido <b>AS IS</b>. Este sitio no está afiliado con <b>Playa Games</b> de ninguna manera."
         },
         "stats": {
@@ -226,6 +227,14 @@
         "dungeon_break": {
             "title": "Dungeon Break",
             "desc": "See progress left in your dungeons"
+        },
+        "build_planner": {
+            "title": "Build Planner",
+            "desc": "Plan your building upgrades step by step"
+        },
+        "bestiary": {
+            "title": "Bestiary",
+            "desc": "All dungeon and expedition enemies in one place"
         },
         "idle": {
             "title": "Director de Arena",
@@ -277,7 +286,7 @@
         },
         "hydra": {
             "title": "Simulador de Hidra",
-            "desc": "Simula que clase de mascota de gremio es mejor para la hidra actual."
+            "desc": "Simulate which guild pet class is best against current hydra"
         },
         "fortress": {
             "title": "Simulador de Fortaleza",
@@ -302,17 +311,8 @@
     },
     "terms": {
         "title": "Términos y Condiciones",
-        "title2": "Uso",
         "button": {
-            "accept_full": "Entiendo y acepto los términos",
-            "accept": "Aceptar",
-            "reject": "Rechazar"
-        },
-        "toast": {
-            "rejected": {
-                "title": "Términos no aceptados",
-                "message": "Debe aceptar los términos para continuar"
-            }
+            "accept_full": "Entiendo y acepto los términos"
         }
     },
     "stats": {
@@ -615,7 +615,8 @@
             "tabs": {
                 "overview": "Overview",
                 "attributes": "Attributes",
-                "items": "Items"
+                "items": "Items",
+                "deeds": "Deeds & Titles"
             },
             "columns": {
                 "attribute": "Attribute",
@@ -643,6 +644,21 @@
                 "total_level": "Total Level",
                 "rank": "Pet Rank",
                 "honor": "Pet Honor"
+            },
+            "toilet": {
+                "title": "Toilet",
+                "aura": "Aura",
+                "fill": "Fill"
+            },
+            "deeds": {
+                "glory": "Glory",
+                "points": "Points",
+                "trophies": "Trophies",
+                "titles": "Hero Titles",
+                "title": "Title",
+                "unlocked": "Unlocked",
+                "shelf": "Glory Shelf",
+                "required": "Required: #{value}"
             },
             "extras": {
                 "title": "Extras",
@@ -768,33 +784,6 @@
             "3": "Fuego",
             "4": "Agua"
         },
-        "locations": {
-            "0": "Bosque Negro",
-            "1": "Pantano de Aguas Negras",
-            "2": "Tierras Devastadas",
-            "3": "Erogenion",
-            "4": "Bosque nocturno",
-            "5": "Caldwell Inundado",
-            "6": "Gnarogrim",
-            "7": "Maerwynn",
-            "8": "Magmaron",
-            "9": "Bosque Mohoso",
-            "10": "Nevermoor",
-            "11": "Northrunt",
-            "12": "Llanuras de Oz'Kurr",
-            "13": "Tierras putrefactas",
-            "14": "Montaña de la sombra",
-            "15": "Isla calavera",
-            "16": "Cañón Dividido",
-            "17": "Jungla extendida",
-            "18": "Estepa Tropezante",
-            "19": "Desierto del Achicharre",
-            "20": "Montaña Colmillo",
-            "201": "Mina de gemas",
-            "202": "Armería",
-            "203": "Hechicero",
-            "204": "Retrete de los Dioses Arcanos"
-        },
         "bulk": {
             "not_possible": "Imposible",
             "toast": {
@@ -881,6 +870,10 @@
         "experience": "Total: #{experience} EXP",
         "win_chance": "Win chance",
         "mushrooms": "Mushrooms",
+        "mushrooms_info": {
+            "average": "Left: mushrooms needed on average.",
+            "certain": "Right: mushrooms for a 90% chance to win."
+        },
         "show_mushrooms": "Show estimated mushroom cost",
         "copy_image": "Copy as image",
         "copy_image_toast": {
@@ -1251,7 +1244,7 @@
     },
     "integration": {
         "file": "Archivo",
-        "game": "Endpoint",
+        "game": "Log in to the game",
         "search": "Search player...",
         "search_guild": "Search guild...",
         "search_world": "Search in #{world}...",
@@ -1501,29 +1494,6 @@
             "message": "Hola. Este es un recordatorio para que usted realice una copia de seguridad de sus datos regularmente.<br><br><i>Puedes desactivar o cambiar la frecuencia de este recordatorio en los ajustes.</i>",
             "close": "Cerrar",
             "save": "Descargar copia de seguridad"
-        },
-        "report": {
-            "title": "Comentarios",
-            "field": {
-                "type": "Tipo",
-                "description": "Descripción",
-                "tool": "Herramienta",
-                "email": "Email (opcional)"
-            },
-            "type": {
-                "issue": "Incidencia",
-                "suggestion": "Sugerencia"
-            },
-            "toast": {
-                "success": {
-                    "title": "Gracias por sus comentarios",
-                    "message": "Si has rellenado tu correo electrónico puedes recibir una respuesta en varios días hábiles"
-                },
-                "error": {
-                    "title": "Tu comentario no ha podido ser enviado.",
-                    "message": "Por favor, inténtalo de nuevo más tarde"
-                }
-            }
         },
         "manage_link": {
             "title": "Gestionar fusión de jugador / gremio",
@@ -1898,6 +1868,7 @@
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "TinctureReviveBug": "Copies a game bug: when the tincture poison kills an opponent who revives or uses Seal of Death, the normal attack after it keeps the tincture's damage.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
                 "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
                 "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",
@@ -2190,133 +2161,6 @@
             "invalid": "Por favor, introduzca un valor de atributo válido"
         }
     },
-    "dungeon_enemies": {
-        "shadow": "Sombra",
-        "1": {
-            "name": "Cacatumba Profanada"
-        },
-        "2": {
-            "name": "Las Minas de Gloria"
-        },
-        "3": {
-            "name": "Las ruinas de Gnark"
-        },
-        "4": {
-            "name": "La gruta del Cortacuellos"
-        },
-        "5": {
-            "name": "El altar de escama esmeralda"
-        },
-        "6": {
-            "name": "El árbol tóxico"
-        },
-        "7": {
-            "name": "El río de magma"
-        },
-        "8": {
-            "name": "El templo de la sangre helada"
-        },
-        "9": {
-            "name": "Las pirámides de la locura",
-            "10": "Tú mismo"
-        },
-        "10": {
-            "name": "La fortaleza de Cráneo oscuro"
-        },
-        "11": {
-            "name": "El circo del horror"
-        },
-        "12": {
-            "name": "El infierno"
-        },
-        "13": {
-            "name": "La 13ª planta"
-        },
-        "14": {
-            "name": "Esteros"
-        },
-        "16": {
-            "name": "Consagrada escuela de magia"
-        },
-        "17": {
-            "name": "Hemorridor"
-        },
-        "19": {
-            "name": "Dioses Nórdicos"
-        },
-        "20": {
-            "name": "Monte Olimpo"
-        },
-        "21": {
-            "name": "Taberna de los dobles oscuros"
-        },
-        "22": {
-            "name": "Tesoro del dragón"
-        },
-        "23": {
-            "name": "Casa del terror"
-        },
-        "24": {
-            "name": "3ª liga de los héroes"
-        },
-        "25": {
-            "name": "Dojo de héroes de la niñez"
-        },
-        "26": {
-            "name": "Gruta de los monstruos"
-        },
-        "27": {
-            "name": "Ciudad de las intrigas"
-        },
-        "28": {
-            "name": "Escuela de magia exprés"
-        },
-        "29": {
-            "name": "Montaña de la Ceniza"
-        },
-        "30": {
-            "name": "Sede central de Playa"
-        },
-        "31": {
-            "name": "Arcade of the Old Pixel Icons"
-        },
-        "32": {
-            "name": "The Server Room"
-        },
-        "33": {
-            "name": "Workshop of the Hunters of the Undead"
-        },
-        "34": {
-            "name": "Retro TV Legends"
-        },
-        "35": {
-            "name": "The Meeting Room"
-        },
-        "201": {
-            "name": "Torre"
-        },
-        "202": {
-            "name": "Bucle continuo de Ídolos"
-        },
-        "203": {
-            "name": "Tornado"
-        },
-        "204": {
-            "name": "Tormenta de arena"
-        },
-        "300": {
-            "name": "Unwavering Warrior Guild"
-        },
-        "301": {
-            "name": "Inquisitive Mage Guild"
-        },
-        "302": {
-            "name": "Acrobatic Scout Guild"
-        },
-        "303": {
-            "name": "Lively Necromancer Guild"
-        }
-    },
     "validations": {
         "empty": "This field is required",
         "number_min": "Value has to be at least #{min}",
@@ -2405,19 +2249,19 @@
         },
         "note": {
             "toilet": "Toilet",
-            "easter": "Easter",
-            "halloween": "Halloween",
-            "christmas": "Christmas",
-            "twister_100": "Requires Twister 100+",
-            "twister_250": "Requires Twister 250+",
-            "twister_500": "Requires Twister 500+",
-            "birthday": "S&F Birthday",
-            "valentines": "Valentines",
-            "football": "Football",
+            "easter": "Easter event",
+            "halloween": "Halloween event",
+            "christmas": "Christmas event",
+            "twister_100": "Twister 100+",
+            "twister_250": "Twister 250+",
+            "twister_500": "Twister 500+",
+            "birthday": "S&F Birthday event",
+            "valentines": "Valentines event",
+            "football": "Football event",
             "twitch": "Twitch drops",
-            "samurai": "Samurai",
-            "bbq": "BBQ",
-            "gloom": "Gloom"
+            "samurai": "Samurai event",
+            "bbq": "BBQ event",
+            "gloom": "Gloom event"
         },
         "filter": {
             "search": "Search",
@@ -2456,5 +2300,56 @@
         },
         "empty": "This character has no scrapbook data.",
         "nothing": "No items match these filters."
+    },
+    "build_planner": {
+        "tab": {
+            "fortress": "Fortress",
+            "underworld": "Underworld"
+        },
+        "reset": "Reset",
+        "add": "Add #{name}",
+        "insert": "Insert here",
+        "remove": "Remove step",
+        "build": "Build",
+        "skip": "Skip",
+        "resources": "Resources",
+        "max": "Max",
+        "needs": "Needs #{building} #{level}",
+        "removed": {
+            "title": "Steps removed",
+            "message": "#{count} steps can't be built anymore",
+            "message_one": "#{count} step can't be built anymore"
+        },
+        "copy_image": "Copy as image",
+        "save_image": "Save as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "link_error": {
+            "title": "Plan not loaded",
+            "message": "This link doesn't contain a Build Planner plan"
+        }
+    },
+    "bestiary": {
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "tower": "Tower",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm",
+            "class": "Class World",
+            "expeditions": "Expeditions"
+        },
+        "back": "Back",
+        "switch_shadow": "Switch to Shadow World",
+        "switch_light": "Switch to Light World",
+        "search": "Search",
+        "search_placeholder": "Search #{name}",
+        "level": "Level #{level}",
+        "health": "Health",
+        "weapon_range": "Weapon Range",
+        "footer#": "Special thanks to Milado"
     }
 }

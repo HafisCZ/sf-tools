@@ -177,7 +177,9 @@
         "companion3": "Diane",
         "companion1_full": "Bébert de #{player}",
         "companion2_full": "Marc de #{player}",
-        "companion3_full": "Diane de #{player}"
+        "companion3_full": "Diane de #{player}",
+        "dungeon_shadow": "Shadow",
+        "dungeon_yourself": "Yourself"
     },
     "index": {
         "toggle": "Afficher les crédits",
@@ -195,7 +197,6 @@
             "kofi": "Offrez des champis à Mar",
             "crowdin": "Aider à la traduction",
             "webshop#": "Utilisez le code <b class=\"text-white\">SFTOOLS</b> dans la boutique du jeu",
-            "report": "Envoyer un commentaire",
             "notice#": "Distribué <b>TEL QUEL</b>. Ce site n'est en aucun cas affilié à <b>Playa Games</b>."
         },
         "stats": {
@@ -226,6 +227,14 @@
         "dungeon_break": {
             "title": "Dungeon Break",
             "desc": "See progress left in your dungeons"
+        },
+        "build_planner": {
+            "title": "Build Planner",
+            "desc": "Plan your building upgrades step by step"
+        },
+        "bestiary": {
+            "title": "Bestiary",
+            "desc": "All dungeon and expedition enemies in one place"
         },
         "idle": {
             "title": "Manager d'arène",
@@ -277,7 +286,7 @@
         },
         "hydra": {
             "title": "Simulateur de l'hydre",
-            "desc": "Simulez quelle classe de familiers est la meilleure contre l'hydre actuelle"
+            "desc": "Simulate which guild pet class is best against current hydra"
         },
         "fortress": {
             "title": "Simulateur de forteresse",
@@ -302,17 +311,8 @@
     },
     "terms": {
         "title": "Conditions générales",
-        "title2": "Utilisation",
         "button": {
-            "accept_full": "Je comprends et accepte ces conditions",
-            "accept": "Accepter",
-            "reject": "Refuser"
-        },
-        "toast": {
-            "rejected": {
-                "title": "Conditions d'utilisation non acceptées",
-                "message": "Vous devez accepter les conditions pour continuer"
-            }
+            "accept_full": "Je comprends et accepte ces conditions"
         }
     },
     "stats": {
@@ -615,7 +615,8 @@
             "tabs": {
                 "overview": "Overview",
                 "attributes": "Attributes",
-                "items": "Items"
+                "items": "Items",
+                "deeds": "Deeds & Titles"
             },
             "columns": {
                 "attribute": "Attribute",
@@ -643,6 +644,21 @@
                 "total_level": "Total Level",
                 "rank": "Pet Rank",
                 "honor": "Pet Honor"
+            },
+            "toilet": {
+                "title": "Toilet",
+                "aura": "Aura",
+                "fill": "Fill"
+            },
+            "deeds": {
+                "glory": "Glory",
+                "points": "Points",
+                "trophies": "Trophies",
+                "titles": "Hero Titles",
+                "title": "Title",
+                "unlocked": "Unlocked",
+                "shelf": "Glory Shelf",
+                "required": "Required: #{value}"
             },
             "extras": {
                 "title": "Extras",
@@ -768,33 +784,6 @@
             "3": "Feu",
             "4": "Eau"
         },
-        "locations": {
-            "0": "Forêt-Noire",
-            "1": "Marais-Onoir",
-            "2": "Désert Naf-Nouf",
-            "3": "Erogénion",
-            "4": "Forêt-Nuitséternelles",
-            "5": "Île Scarpa",
-            "6": "Gnarogrim",
-            "7": "Maerwynn",
-            "8": "Magmaron",
-            "9": "Forêt-Pourrie",
-            "10": "Marécages-Sanretour",
-            "11": "Nordville",
-            "12": "Plaines d'Ozkorr",
-            "13": "Pays Troupis",
-            "14": "Montagne de la Roche Ombragée",
-            "15": "Île Tête-de-mort",
-            "16": "Canyon Baille-Baille",
-            "17": "Jungle Grossomme",
-            "18": "Steppe Trébucheuse",
-            "19": "Désert Koudsoleil",
-            "20": "Montagne Denquimord",
-            "201": "Mine de gemmes",
-            "202": "Armurier",
-            "203": "Apothicaire",
-            "204": "Toilette Arcanes"
-        },
         "bulk": {
             "not_possible": "Impossible",
             "toast": {
@@ -881,6 +870,10 @@
         "experience": "Total: #{experience} XP",
         "win_chance": "Win chance",
         "mushrooms": "Mushrooms",
+        "mushrooms_info": {
+            "average": "Left: mushrooms needed on average.",
+            "certain": "Right: mushrooms for a 90% chance to win."
+        },
         "show_mushrooms": "Show estimated mushroom cost",
         "copy_image": "Copy as image",
         "copy_image_toast": {
@@ -1251,7 +1244,7 @@
     },
     "integration": {
         "file": "Fichier",
-        "game": "Connexion",
+        "game": "Log in to the game",
         "search": "Search player...",
         "search_guild": "Search guild...",
         "search_world": "Search in #{world}...",
@@ -1501,29 +1494,6 @@
             "message": "Bonjour. Ceci est un rappel vous invitant à sauvegarder régulièrement vos données.<br><br><i>Vous pouvez désactiver ce rappel ou modifier sa fréquence dans les paramètres.</i>",
             "close": "Fermer",
             "save": "Télécharger une sauvegarde"
-        },
-        "report": {
-            "title": "Commentaires",
-            "field": {
-                "type": "Type",
-                "description": "Description",
-                "tool": "Outil",
-                "email": "E-mail (facultatif)"
-            },
-            "type": {
-                "issue": "Problème",
-                "suggestion": "Suggestion"
-            },
-            "toast": {
-                "success": {
-                    "title": "Merci pour votre commentaire",
-                    "message": "Si vous avez indiqué votre adresse e-mail, vous recevrez une réponse d'ici quelques jours ouvrables"
-                },
-                "error": {
-                    "title": "Votre commentaire n'a pas pu être envoyé",
-                    "message": "Veuillez réessayer plus tard"
-                }
-            }
         },
         "manage_link": {
             "title": "Manage player / guild merge",
@@ -1898,6 +1868,7 @@
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "TinctureReviveBug": "Copies a game bug: when the tincture poison kills an opponent who revives or uses Seal of Death, the normal attack after it keeps the tincture's damage.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
                 "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
                 "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",
@@ -2190,133 +2161,6 @@
             "invalid": "Veuillez insérer une valeur d'attribut valide"
         }
     },
-    "dungeon_enemies": {
-        "shadow": "Ombre",
-        "1": {
-            "name": "Les catacombes profanées"
-        },
-        "2": {
-            "name": "Les mines de Gloria"
-        },
-        "3": {
-            "name": "Les ruines de Gnark"
-        },
-        "4": {
-            "name": "Grotte des coupeurs de gorge"
-        },
-        "5": {
-            "name": "L'autel sacré en écaille d'émeraude"
-        },
-        "6": {
-            "name": "L'arbre malade"
-        },
-        "7": {
-            "name": "Coulée de magma"
-        },
-        "8": {
-            "name": "Le temple de sang-givré"
-        },
-        "9": {
-            "name": "La pyramide de la folie",
-            "10": "Vous-même"
-        },
-        "10": {
-            "name": "La forteresse des crânes noirs"
-        },
-        "11": {
-            "name": "Le cirque de l'horreur"
-        },
-        "12": {
-            "name": "L'enfer"
-        },
-        "13": {
-            "name": "13e étage"
-        },
-        "14": {
-            "name": "Easteros"
-        },
-        "16": {
-            "name": "École de magie ancestrale"
-        },
-        "17": {
-            "name": "Hémorridor"
-        },
-        "19": {
-            "name": "Dieux nordiques"
-        },
-        "20": {
-            "name": "Mont Olympe"
-        },
-        "21": {
-            "name": "Taverne des sombres sosies"
-        },
-        "22": {
-            "name": "Magot du dragon"
-        },
-        "23": {
-            "name": "Maison des horreurs"
-        },
-        "24": {
-            "name": "La 3e Ligue des super-héros"
-        },
-        "25": {
-            "name": "Dojo des héros de l'enfance"
-        },
-        "26": {
-            "name": "Grotte des monstres"
-        },
-        "27": {
-            "name": "Ville des complots"
-        },
-        "28": {
-            "name": "École de magie express"
-        },
-        "29": {
-            "name": "Montagne de cendres"
-        },
-        "30": {
-            "name": "QG de Playa"
-        },
-        "31": {
-            "name": "Salle des vieilles icônes pixelisées"
-        },
-        "32": {
-            "name": "La salle des serveurs"
-        },
-        "33": {
-            "name": "Atelier des chasseurs de revenants"
-        },
-        "34": {
-            "name": "Légendes de la TV"
-        },
-        "35": {
-            "name": "La salle de réunion"
-        },
-        "201": {
-            "name": "Tour"
-        },
-        "202": {
-            "name": "Idoles des jeunes"
-        },
-        "203": {
-            "name": "Tornade"
-        },
-        "204": {
-            "name": "Tempête de sable"
-        },
-        "300": {
-            "name": "Guilde des guerriers inébranlables"
-        },
-        "301": {
-            "name": "Guilde des mages curieux"
-        },
-        "302": {
-            "name": "Guilde des éclaireurs acrobatiques"
-        },
-        "303": {
-            "name": "Guilde animée des nécromanciens"
-        }
-    },
     "validations": {
         "empty": "Ce champ est obligatoire",
         "number_min": "La valeur doit être au moins #{min}",
@@ -2405,19 +2249,19 @@
         },
         "note": {
             "toilet": "Toilet",
-            "easter": "Easter",
-            "halloween": "Halloween",
-            "christmas": "Christmas",
-            "twister_100": "Requires Twister 100+",
-            "twister_250": "Requires Twister 250+",
-            "twister_500": "Requires Twister 500+",
-            "birthday": "S&F Birthday",
-            "valentines": "Valentines",
-            "football": "Football",
+            "easter": "Easter event",
+            "halloween": "Halloween event",
+            "christmas": "Christmas event",
+            "twister_100": "Twister 100+",
+            "twister_250": "Twister 250+",
+            "twister_500": "Twister 500+",
+            "birthday": "S&F Birthday event",
+            "valentines": "Valentines event",
+            "football": "Football event",
             "twitch": "Twitch drops",
-            "samurai": "Samurai",
-            "bbq": "BBQ",
-            "gloom": "Gloom"
+            "samurai": "Samurai event",
+            "bbq": "BBQ event",
+            "gloom": "Gloom event"
         },
         "filter": {
             "search": "Search",
@@ -2456,5 +2300,56 @@
         },
         "empty": "Ce personnage n'a pas de données d'album.",
         "nothing": "No items match these filters."
+    },
+    "build_planner": {
+        "tab": {
+            "fortress": "Fortress",
+            "underworld": "Underworld"
+        },
+        "reset": "Reset",
+        "add": "Add #{name}",
+        "insert": "Insert here",
+        "remove": "Remove step",
+        "build": "Build",
+        "skip": "Skip",
+        "resources": "Resources",
+        "max": "Max",
+        "needs": "Needs #{building} #{level}",
+        "removed": {
+            "title": "Steps removed",
+            "message": "#{count} steps can't be built anymore",
+            "message_one": "#{count} step can't be built anymore"
+        },
+        "copy_image": "Copy as image",
+        "save_image": "Save as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "link_error": {
+            "title": "Plan not loaded",
+            "message": "This link doesn't contain a Build Planner plan"
+        }
+    },
+    "bestiary": {
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "tower": "Tower",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm",
+            "class": "Class World",
+            "expeditions": "Expeditions"
+        },
+        "back": "Back",
+        "switch_shadow": "Switch to Shadow World",
+        "switch_light": "Switch to Light World",
+        "search": "Search",
+        "search_placeholder": "Search #{name}",
+        "level": "Level #{level}",
+        "health": "Health",
+        "weapon_range": "Weapon Range",
+        "footer#": "Special thanks to Milado"
     }
 }

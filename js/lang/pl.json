@@ -177,7 +177,9 @@
         "companion3": "Kunegunda",
         "companion1_full": "#{player} Barbar",
         "companion2_full": "#{player} Mariusz",
-        "companion3_full": "#{player} Kunegunda"
+        "companion3_full": "#{player} Kunegunda",
+        "dungeon_shadow": "Shadow",
+        "dungeon_yourself": "Yourself"
     },
     "index": {
         "toggle": "Pokaż/ukryj kontrybutorów",
@@ -195,7 +197,6 @@
             "kofi": "Daj Maro'owi kilka grzybów",
             "crowdin": "Pomoc przy tłumaczeniach",
             "webshop#": "Użyj kodu <b class=\"text-white\">SFTOOLS</b> w sklepie internetowym",
-            "report": "Wyślij feedback",
             "notice#": "Rozpowszechniono <b>TAK A NIE INACZEJ</b>. Ta strona nie jest w żaden sposób powiązana z <b>Playa Games</b>."
         },
         "stats": {
@@ -226,6 +227,14 @@
         "dungeon_break": {
             "title": "Dungeon Break",
             "desc": "See progress left in your dungeons"
+        },
+        "build_planner": {
+            "title": "Build Planner",
+            "desc": "Plan your building upgrades step by step"
+        },
+        "bestiary": {
+            "title": "Bestiary",
+            "desc": "All dungeon and expedition enemies in one place"
         },
         "idle": {
             "title": "Manager Areny",
@@ -277,7 +286,7 @@
         },
         "hydra": {
             "title": "Symulator hydry",
-            "desc": "Przesymuluj, aby dowiedzieć się jaka jest najefektywniejsza klasa przeciwko obecnej głowie hydry."
+            "desc": "Simulate which guild pet class is best against current hydra"
         },
         "fortress": {
             "title": "Symulator Twierdzy",
@@ -302,17 +311,8 @@
     },
     "terms": {
         "title": "Zasady i warunki użytkowania",
-        "title2": "Użycie",
         "button": {
-            "accept_full": "Rozumiem i akceptuję te warunki",
-            "accept": "Akceptuj",
-            "reject": "Odrzuć"
-        },
-        "toast": {
-            "rejected": {
-                "title": "Warunki nie zaakceptowane",
-                "message": "Musisz zaakceptować warunki, aby kontynuować"
-            }
+            "accept_full": "Rozumiem i akceptuję te warunki"
         }
     },
     "stats": {
@@ -615,7 +615,8 @@
             "tabs": {
                 "overview": "Overview",
                 "attributes": "Attributes",
-                "items": "Items"
+                "items": "Items",
+                "deeds": "Deeds & Titles"
             },
             "columns": {
                 "attribute": "Attribute",
@@ -643,6 +644,21 @@
                 "total_level": "Total Level",
                 "rank": "Pet Rank",
                 "honor": "Pet Honor"
+            },
+            "toilet": {
+                "title": "Toilet",
+                "aura": "Aura",
+                "fill": "Fill"
+            },
+            "deeds": {
+                "glory": "Glory",
+                "points": "Points",
+                "trophies": "Trophies",
+                "titles": "Hero Titles",
+                "title": "Title",
+                "unlocked": "Unlocked",
+                "shelf": "Glory Shelf",
+                "required": "Required: #{value}"
             },
             "extras": {
                 "title": "Dodatkowe",
@@ -768,33 +784,6 @@
             "3": "Ogień",
             "4": "Woda"
         },
-        "locations": {
-            "0": "Czarnolas",
-            "1": "Moczary Mary",
-            "2": "Ugór orków",
-            "3": "Kraina Erogenii",
-            "4": "Mroczne bory",
-            "5": "Miasto propolis",
-            "6": "Gnuśnogród",
-            "7": "Maerwyn",
-            "8": "Magmakaron",
-            "9": "Zmurszały las",
-            "10": "Nigdylandia",
-            "11": "Miasto teges",
-            "12": "Kraina ozkurr",
-            "13": "Trakt trędowatych",
-            "14": "Pogórze cienistej skały",
-            "15": "Wyspa trupiego łba",
-            "16": "Dziewiczy kanion",
-            "17": "Puszcza Zarośląska",
-            "18": "Step strapionych",
-            "19": "Pustynia przesłoneczna",
-            "20": "Góry koronkowe",
-            "201": "Kopalnia klejnotów",
-            "202": "Zbrojownia",
-            "203": "Gabinet Magii",
-            "204": "Tajemnicza toaleta"
-        },
         "bulk": {
             "not_possible": "Niemożliwe",
             "toast": {
@@ -881,6 +870,10 @@
         "experience": "Łącznie: #{experience} XP",
         "win_chance": "Win chance",
         "mushrooms": "Mushrooms",
+        "mushrooms_info": {
+            "average": "Left: mushrooms needed on average.",
+            "certain": "Right: mushrooms for a 90% chance to win."
+        },
         "show_mushrooms": "Show estimated mushroom cost",
         "copy_image": "Copy as image",
         "copy_image_toast": {
@@ -1251,7 +1244,7 @@
     },
     "integration": {
         "file": "Plik",
-        "game": "Endpoint",
+        "game": "Log in to the game",
         "search": "Search player...",
         "search_guild": "Search guild...",
         "search_world": "Search in #{world}...",
@@ -1501,29 +1494,6 @@
             "message": "Cześć. To jest przypomnienie o regularnej kopii zapasowej.<br><br><i>Możesz wyłączyć lub zmienić częstotliwość tego przypomnienia w ustawieniach.</i>",
             "close": "Zamknij",
             "save": "Pobierz kopię zapasową"
-        },
-        "report": {
-            "title": "Feedback",
-            "field": {
-                "type": "Typ",
-                "description": "Opis",
-                "tool": "Narzędzie",
-                "email": "Email (opcjonalnie)"
-            },
-            "type": {
-                "issue": "Problem",
-                "suggestion": "Sugestia"
-            },
-            "toast": {
-                "success": {
-                    "title": "Dziękujemy za podzielenie się opinią",
-                    "message": "Jeśli podano email, to możesz dostać odpowiedź w ciągu kilku dni roboczych"
-                },
-                "error": {
-                    "title": "Twoja opinia nie mogła zostać przesłana",
-                    "message": "Spróbuj ponownie później"
-                }
-            }
         },
         "manage_link": {
             "title": "Zarządzaj scaleniami graczy/gildii",
@@ -1898,6 +1868,7 @@
                 "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
                 "StanceInitial": "Stance at the start of the fight.",
                 "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "TinctureReviveBug": "Copies a game bug: when the tincture poison kills an opponent who revives or uses Seal of Death, the normal attack after it keeps the tincture's damage.",
                 "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
                 "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
                 "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",
@@ -2190,133 +2161,6 @@
             "invalid": "Wprowadź prawidłową wartość atrybutu"
         }
     },
-    "dungeon_enemies": {
-        "shadow": "Mrok",
-        "1": {
-            "name": "Zbezczeszczone Katakumby"
-        },
-        "2": {
-            "name": "Kopalnie Glorii"
-        },
-        "3": {
-            "name": "Ruiny Gnark"
-        },
-        "4": {
-            "name": "Grota Korsarzy"
-        },
-        "5": {
-            "name": "Ołtarz Szmaragdowej Łuski"
-        },
-        "6": {
-            "name": "Toksyczne Drzewo"
-        },
-        "7": {
-            "name": "Strumień Lawy"
-        },
-        "8": {
-            "name": "Świątynia Zimnej Krwi"
-        },
-        "9": {
-            "name": "Piramida Szaleństwa",
-            "10": "Lustrzane odbicie"
-        },
-        "10": {
-            "name": "Twierdza Posępnego Czerepu"
-        },
-        "11": {
-            "name": "Cyrk grozy"
-        },
-        "12": {
-            "name": "Piekło"
-        },
-        "13": {
-            "name": "13. piętro"
-        },
-        "14": {
-            "name": "Easteros"
-        },
-        "16": {
-            "name": "Uświęcona Tradycją Szkoła Magii"
-        },
-        "17": {
-            "name": "Hemorridor"
-        },
-        "19": {
-            "name": "Nordyccy bogowie"
-        },
-        "20": {
-            "name": "Góra Olimp"
-        },
-        "21": {
-            "name": "Karczma mrocznych sobowtórów"
-        },
-        "22": {
-            "name": "Smoczy Skarbiec"
-        },
-        "23": {
-            "name": "Dom Strachów"
-        },
-        "24": {
-            "name": "3. Liga Superbohaterów"
-        },
-        "25": {
-            "name": "Dojo Bohaterów z Dzieciństwa"
-        },
-        "26": {
-            "name": "Grota Potworów"
-        },
-        "27": {
-            "name": "Miasto Intryg"
-        },
-        "28": {
-            "name": "Ekspres do Szkoły Magii"
-        },
-        "29": {
-            "name": "Góra Popiołów"
-        },
-        "30": {
-            "name": "Siedziba główna firmy Playa Games"
-        },
-        "31": {
-            "name": "Salon gier starych pikselowych ikon"
-        },
-        "32": {
-            "name": "Serwerownia"
-        },
-        "33": {
-            "name": "Warsztat Łowców Nieumarłych"
-        },
-        "34": {
-            "name": "Legendarne klasyki telewizji"
-        },
-        "35": {
-            "name": "Sala konferencyjna"
-        },
-        "201": {
-            "name": "Wieża"
-        },
-        "202": {
-            "name": "Karuzela z idolami"
-        },
-        "203": {
-            "name": "Tornado"
-        },
-        "204": {
-            "name": "Burza Piaskowa"
-        },
-        "300": {
-            "name": "Unwavering Warrior Guild"
-        },
-        "301": {
-            "name": "Inquisitive Mage Guild"
-        },
-        "302": {
-            "name": "Acrobatic Scout Guild"
-        },
-        "303": {
-            "name": "Lively Necromancer Guild"
-        }
-    },
     "validations": {
         "empty": "This field is required",
         "number_min": "Value has to be at least #{min}",
@@ -2405,19 +2249,19 @@
         },
         "note": {
             "toilet": "Toilet",
-            "easter": "Easter",
-            "halloween": "Halloween",
-            "christmas": "Christmas",
-            "twister_100": "Requires Twister 100+",
-            "twister_250": "Requires Twister 250+",
-            "twister_500": "Requires Twister 500+",
-            "birthday": "S&F Birthday",
-            "valentines": "Valentines",
-            "football": "Football",
+            "easter": "Easter event",
+            "halloween": "Halloween event",
+            "christmas": "Christmas event",
+            "twister_100": "Twister 100+",
+            "twister_250": "Twister 250+",
+            "twister_500": "Twister 500+",
+            "birthday": "S&F Birthday event",
+            "valentines": "Valentines event",
+            "football": "Football event",
             "twitch": "Twitch drops",
-            "samurai": "Samurai",
-            "bbq": "BBQ",
-            "gloom": "Gloom"
+            "samurai": "Samurai event",
+            "bbq": "BBQ event",
+            "gloom": "Gloom event"
         },
         "filter": {
             "search": "Search",
@@ -2456,5 +2300,56 @@
         },
         "empty": "This character has no scrapbook data.",
         "nothing": "No items match these filters."
+    },
+    "build_planner": {
+        "tab": {
+            "fortress": "Fortress",
+            "underworld": "Underworld"
+        },
+        "reset": "Reset",
+        "add": "Add #{name}",
+        "insert": "Insert here",
+        "remove": "Remove step",
+        "build": "Build",
+        "skip": "Skip",
+        "resources": "Resources",
+        "max": "Max",
+        "needs": "Needs #{building} #{level}",
+        "removed": {
+            "title": "Steps removed",
+            "message": "#{count} steps can't be built anymore",
+            "message_one": "#{count} step can't be built anymore"
+        },
+        "copy_image": "Copy as image",
+        "save_image": "Save as image",
+        "copy_image_toast": {
+            "title": "Copy",
+            "message": "Image has been copied"
+        },
+        "link_error": {
+            "title": "Plan not loaded",
+            "message": "This link doesn't contain a Build Planner plan"
+        }
+    },
+    "bestiary": {
+        "groups": {
+            "light": "Light World",
+            "shadow": "Shadow World",
+            "tower": "Tower",
+            "idols": "Loop of Idols",
+            "twister": "Twister",
+            "sandstorm": "Sandstorm",
+            "class": "Class World",
+            "expeditions": "Expeditions"
+        },
+        "back": "Back",
+        "switch_shadow": "Switch to Shadow World",
+        "switch_light": "Switch to Light World",
+        "search": "Search",
+        "search_placeholder": "Search #{name}",
+        "level": "Level #{level}",
+        "health": "Health",
+        "weapon_range": "Weapon Range",
+        "footer#": "Special thanks to Milado"
     }
 }
