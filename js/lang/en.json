@@ -784,33 +784,6 @@
             "3": "Fire",
             "4": "Water"
         },
-        "locations": {
-            "0": "Black Forest",
-            "1": "Black Water Swamp",
-            "2": "Busted Lands",
-            "3": "Erogenion",
-            "4": "Evernight Forest",
-            "5": "Flooded Caldwell",
-            "6": "Gnarogrim",
-            "7": "Maerwyn",
-            "8": "Magmaron",
-            "9": "Moldy Forest",
-            "10": "Nevermoor",
-            "11": "Northrunt",
-            "12": "Plains Of Ozkorr",
-            "13": "Rotten Lands",
-            "14": "Shadowrock Mountain",
-            "15": "Skull Island",
-            "16": "Split Canyon",
-            "17": "Sprawling Jungle",
-            "18": "Stumble Steppe",
-            "19": "Sunburn Desert",
-            "20": "Tusk Mountain",
-            "201": "Gem Mine",
-            "202": "Weapon Shop",
-            "203": "Magic Shop",
-            "204": "Arcane Toilet"
-        },
         "bulk": {
             "not_possible": "Not possible",
             "toast": {
@@ -2372,9 +2345,10 @@
             "idols": "Loop of Idols",
             "twister": "Twister",
             "sandstorm": "Sandstorm",
-            "class": "Class World"
+            "class": "Class World",
+            "expeditions": "Expeditions"
         },
-        "back": "Dungeons",
+        "back": "Back",
         "switch_shadow": "Switch to Shadow World",
         "switch_light": "Switch to Light World",
         "search": "Search",

@@ -17,6 +17,14 @@ module Synchronize
   REGEXP_PET_REQUIREMENT = /^pet_requirements_(fire|water|earth|shadow|light)_(\d\d)(?:_new)?$/
   REGEXP_RAID_NAME = /^guild_raid_name_(\d+)$/
   REGEXP_ACHIEVEMENT = /^album_ach_(\d+)_title$/
+  REGEXP_LOCATION = /^location_\d+$/
+
+  LOCATION_NAMES = {
+    201 => 'fort_building_name_05',
+    202 => 'weapon_shop',
+    203 => 'magic_shop',
+    204 => 'toilet_of_arcane_gods'
+  }.freeze
 
   # Deed number used by trophy ids (deed n has trophies 3n-2 to 3n), number 36 is unused
   DEED_NUMBERS = {
@@ -151,7 +159,7 @@ module Synchronize
 
       File.write("lang/#{sftools_language}/items.json", JSON.pretty_generate(items))
 
-      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME, REGEXP_ACHIEVEMENT, REGEXP_DEED_NAME, REGEXP_DEED_DESCRIPTION, REGEXP_HERO_TITLE, REGEXP_DEED_SHELF, REGEXP_TROPHY_TIER].any? { key.match?(_1) } }
+      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME, REGEXP_ACHIEVEMENT, REGEXP_DEED_NAME, REGEXP_DEED_DESCRIPTION, REGEXP_HERO_TITLE, REGEXP_DEED_SHELF, REGEXP_TROPHY_TIER, REGEXP_LOCATION].any? { key.match?(_1) } }
       general = general.map do |key, text|
         parsed_key = case key
         when REGEXP_PET_REQUIREMENT
@@ -173,6 +181,8 @@ module Synchronize
           text.split('|').first.gsub(/<br>/, ' ')
         ]
       end.to_h
+
+      LOCATION_NAMES.each { |id, key| general["location_#{id}"] = strings[key] }
 
       File.write("lang/#{sftools_language}/general.json", JSON.pretty_generate(general))
 

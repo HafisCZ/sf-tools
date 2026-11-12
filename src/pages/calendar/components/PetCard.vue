@@ -23,7 +23,7 @@
       <SFHeading :id="nameId" level="3" type="inherit">{{ localize.global(`monsters.${props.index + 800}`) }}</SFHeading>
       <span>
         <SFIcon v-if="timeIcon" :name="timeIcon" class="mr-1 align-[-0.125em]" />
-        {{ localize.global(`pets.locations.${pet.location}`) }}
+        {{ localize.global(`general.location_${pet.location}`) }}
       </span>
     </div>
     <SFParagraph class="absolute inset-[7px] flex items-center justify-center opacity-0 transition-opacity duration-100 ease-linear group-hover:opacity-100 group-has-[:focus-visible]:opacity-100">
