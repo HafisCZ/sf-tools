@@ -323,7 +323,7 @@ export function getTimelineColumns(config: PlannerConfig) {
 }
 
 export function getDetailColumns(config: PlannerConfig) {
-  return `repeat(${config.resources.length}, 136px) 72px 84px`
+  return `repeat(${config.resources.length}, 136px) 72px 52px 16px`
 }
 
 export function formatBuildTime(milliseconds: number) {

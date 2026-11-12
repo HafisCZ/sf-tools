@@ -19,6 +19,7 @@
             <span v-for="resource in props.config.resources" :key="resource.key">{{ localize.global(`general.${resource.key}`) }}</span>
             <span>{{ localize('build') }}</span>
             <span>{{ localize('skip') }}</span>
+            <span />
           </div>
         </div>
       </div>

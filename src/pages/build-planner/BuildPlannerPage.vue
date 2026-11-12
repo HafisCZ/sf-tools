@@ -286,8 +286,8 @@ async function drawPlan() {
           row.duration > 0
             ? {
                 lines: [
-                  { height: 22, gap: 8, padding: 13, radius: 6, background: row.skipped ? '#ffa500' : undefined, items: [mushroom, { text: formatSpacedNumber(getSkipCost(row.duration)), font: 'bold 12px Lato', color: row.skipped ? '#000000' : text }] },
-                  { height: 16, gap: 8, padding: 13, items: [mushroom, { text: formatSpacedNumber(row.mushrooms), font: '12px Lato', color: muted }] }
+                  { height: 20, gap: 4, items: [mushroom, { text: formatSpacedNumber(getSkipCost(row.duration)), font: '13px Lato', color: text }] },
+                  { height: 16, gap: 4, items: [mushroom, { text: formatSpacedNumber(row.mushrooms), font: '12px Lato', color: muted }] }
                 ]
               }
             : null
