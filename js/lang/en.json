@@ -2355,6 +2355,7 @@
         "search_placeholder": "Search #{name}",
         "level": "Level #{level}",
         "health": "Health",
-        "weapon_range": "Weapon Range"
+        "weapon_range": "Weapon Range",
+        "footer#": "Special thanks to Milado"
     }
 }

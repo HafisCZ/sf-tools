@@ -48,6 +48,12 @@
       </div>
     </div>
 
+    <template #footer-left>
+      <SFParagraph>
+        <span v-html="localize('footer#')" />
+      </SFParagraph>
+    </template>
+
     <template #footer-right>
       <PageFooterLinks />
     </template>
