@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3.5">
-        <BestiaryEnemyCard v-for="enemy in enemies" :key="enemy.key" :background="background" :monster="enemy.monster" :name="enemy.name" :description="enemy.description" :boss="enemy.boss" :armor="enemy.armor" />
+        <BestiaryEnemyCard v-for="enemy in enemies" :key="enemy.key" :background="background" :monster="enemy.monster" :name="enemy.name" :description="enemy.description" :boss="enemy.boss" :armor="enemy.armor" @copy="copyEnemy" />
       </div>
     </div>
 
@@ -68,9 +68,11 @@ import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { hasTranslation, useLocalize } from '@utils/localization'
+import { copyJson } from '@utils/utils'
+import { PlayerModel } from '~/core/models/player'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
-import { CLASS_DUNGEONS, DUNGEON_DATA, getBossName, getDungeonName, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonClassBoss } from '~/sim/data/dungeons'
+import { CLASS_DUNGEONS, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonName, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonClassBoss } from '~/sim/data/dungeons'
 import { CONFIG } from '~/sim/workers/base'
 import BestiaryDungeonCard from './components/BestiaryDungeonCard.vue'
 import BestiaryEnemyCard from './components/BestiaryEnemyCard.vue'
@@ -220,4 +222,12 @@ const enemies = computed(() => {
 
   return list.filter((enemy) => !query || enemy.name.toLowerCase().includes(query) || enemy.description?.toLowerCase().includes(query))
 })
+
+function copyEnemy(boss: DungeonClassBoss) {
+  const current = dungeon.value
+
+  if (current) {
+    void copyJson(createSimulatorBoss({ dungeon: current, boss }, new PlayerModel()))
+  }
+}
 </script>

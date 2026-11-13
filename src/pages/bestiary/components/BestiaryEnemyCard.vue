@@ -4,6 +4,13 @@
       <div class="absolute inset-0 bg-line backdrop-blur-sm mask-exclude mask-center mask-no-repeat [mask-image:linear-gradient(#000_0_0),linear-gradient(#000_0_0)] [mask-size:100%_100%,calc(69%_-_4px)_calc(92%_-_4px)]" />
       <img :src="`/res/monsters/${props.monster}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 rounded-md border-2 border-line object-contain" />
       <span v-if="props.boss" class="absolute top-2 left-2 min-w-6 rounded bg-dialog/85 px-1.5 py-0.5 text-center text-[13px] font-bold">{{ props.boss.pos }}</span>
+      <div v-if="props.boss" class="absolute top-2 right-2 rounded bg-dialog/85">
+        <SFTooltip :content="localize('copy')">
+          <SFButton variant="ghost" size="sm" icon :aria-label="localize('copy')" @click="copy">
+            <SFIcon :name="copied ? 'check' : 'copy'" />
+          </SFButton>
+        </SFTooltip>
+      </div>
     </div>
     <div class="flex flex-1 flex-col gap-0.5 bg-dialog/85 px-3 pt-2 pb-2.5">
       <span class="text-base leading-5 font-bold text-white">{{ props.name }}</span>
@@ -28,7 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import SFButton from '@library/SFButton.vue'
+import SFIcon from '@library/SFIcon.vue'
+import SFTooltip from '@library/SFTooltip.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
@@ -66,7 +76,31 @@ const props = defineProps<{
   armor?: number
 }>()
 
+const emit = defineEmits<{
+  /**
+   * Copy button pressed, with the floor whose stats to copy
+   */
+  copy: [boss: DungeonClassBoss]
+}>()
+
 const localize = useLocalize('bestiary')
+
+const copied = ref(false)
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
+
+function copy() {
+  const boss = props.boss
+  if (boss === undefined) return
+
+  emit('copy', boss)
+
+  copied.value = true
+
+  clearTimeout(copiedTimer)
+  copiedTimer = setTimeout(() => {
+    copied.value = false
+  }, 1000)
+}
 
 const rows = computed(() => {
   const boss = props.boss

@@ -2356,6 +2356,7 @@
         "level": "Level #{level}",
         "health": "Health",
         "weapon_range": "Weapon Range",
+        "copy": "Copy for simulator",
         "footer#": "Special thanks to Milado"
     }
 }
