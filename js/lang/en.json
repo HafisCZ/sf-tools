@@ -944,7 +944,7 @@
             },
             "outcome": {
                 "title": "Outcome",
-                "description": "The levels and XP your mushrooms buy, and the order to fight the floors in."
+                "description": "Remaining counts every floor you have not beaten yet, Beatable only the ones won at or above the minimum chance and paid for by your mushrooms. Untick a world or dungeon to leave it out, open a world card to see its floors, and follow the fight order from the top for the most levels per mushroom."
             }
         },
         "cost": {
