@@ -7,7 +7,7 @@
       <IndexCredits v-if="showCredits" />
       <template v-else>
         <div class="grid grid-cols-1 gap-7 md:grid-cols-4">
-          <ToolCard v-for="tool in TOOLS" :key="tool.key" :href="tool.href" :title="localize(`${tool.key}.title`)" :description="localize(`${tool.key}.desc`)" :badge="tool.key === 'temp' ? localize('temp.temporary') : undefined" :author="tool.author" />
+          <ToolCard v-for="tool in TOOLS" :key="tool.key" :href="tool.href" :title="localize(`${tool.key}.title`)" :description="localize(`${tool.key}.desc`)" :badge="tool.key === 'temp' ? localize('temp.temporary') : undefined" :tag="tool.key === 'dungeon_break' ? localize('dungeon_break.wip') : undefined" :author="tool.author" />
         </div>
         <SFHeading level="2" type="accent" class="mt-[53px] mb-[27px] text-center">{{ localize('others') }}</SFHeading>
         <div class="grid grid-cols-1 gap-7 md:grid-cols-4">

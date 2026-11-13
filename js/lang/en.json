@@ -226,7 +226,8 @@
         },
         "dungeon_break": {
             "title": "Dungeon Break",
-            "desc": "See progress left in your dungeons"
+            "desc": "See progress left in your dungeons",
+            "wip": "WIP"
         },
         "build_planner": {
             "title": "Build Planner",
