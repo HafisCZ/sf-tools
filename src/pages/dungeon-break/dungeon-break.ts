@@ -1,11 +1,14 @@
 import { formatSpacedNumber } from '@utils/formatting'
 import { globalLocalize } from '@utils/localization'
-import { sum } from '@utils/utils'
-import { type PlayerModel } from '~/core/models/player'
-import { ModelUtils } from '~/core/models/utils'
+import { scaleValue, sum } from '@utils/utils'
+import { ItemModel } from '~/core/models/item'
+import { PlayerModel } from '~/core/models/player'
+import { ModelUtils, type SimulatorData } from '~/core/models/utils'
 import { Calculations } from '~/playa/calculations'
 import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_DATA, getDungeonExperience, getDungeonName, getDungeonTries, PREVIOUS_DUNGEONS, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
 import { preparePlayerData } from '~/sim/debug'
+import { applyEquipmentSwaps, EQUIPMENT_SLOTS, getArmorValue, LIFE_POTION_SIZE, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
+import { ASSASSIN, CONFIG } from '~/sim/workers/base'
 
 export type BreakGroup = 'light' | 'shadow' | 'idols' | 'twister' | 'sandstorm'
 
@@ -54,6 +57,19 @@ export type BreakOptions = {
   level: number
   xp: number
   progress: Map<number, number>
+}
+
+export type BreakModifiers = {
+  enchantmentsAndPotions: boolean
+  equipment: boolean
+  levels: number | null
+  attributes: (number | null)[]
+}
+
+export type BreakEquipment = {
+  source: PlayerModel
+  swaps: EquipmentSwaps[]
+  state: CharacterState
 }
 
 export const FIGHTER_NAME_KEYS = ['dungeons.player', 'general.companion1', 'general.companion2', 'general.companion3']
@@ -204,6 +220,137 @@ export function createBreakFighters(character: PlayerModel): (PlayerModel | null
 
 export function setFightersLevel(fighters: (PlayerModel | null)[], level: number) {
   return fighters.map((fighter) => fighter && Object.assign(structuredClone(fighter), { Level: level }))
+}
+
+export function applyBreakModifiers(fighters: (PlayerModel | null)[], equipment: BreakEquipment, modifiers: BreakModifiers) {
+  if (!modifiers.enchantmentsAndPotions && !modifiers.equipment && !modifiers.attributes.some(Boolean)) {
+    return fighters
+  }
+
+  const before = listFighterData(applyEquipmentSwaps(equipment.source, equipment.swaps, equipment.state))
+  const after = listFighterData(applyEquipmentSwaps(equipment.source, equipment.swaps, equipment.state, (player, characters) => modifyCharacters(player, characters, modifiers)))
+
+  return fighters.map((fighter, index) => (fighter && before[index] && after[index] ? changeFighter(fighter, before[index], after[index]) : fighter))
+}
+
+function listFighterData(player: PlayerModel) {
+  const data = ModelUtils.toSimulatorData(player, true)
+
+  return Array.isArray(data) ? data : [data]
+}
+
+function modifyCharacters(player: PlayerModel, characters: PlayerModel[], modifiers: BreakModifiers) {
+  if (modifiers.equipment) {
+    for (const companion of characters.slice(1)) {
+      giveEquipment(player, companion)
+    }
+  }
+
+  const mainType = PlayerModel.ATTRIBUTE_TO_TYPE[CONFIG.fromID(player.Class).Attribute]
+
+  for (const character of characters) {
+    if (modifiers.enchantmentsAndPotions) {
+      for (const item of Object.values(character.Items)) {
+        item.HasEnchantment = true
+        item.Enchantment = item.Enchantment || 1
+      }
+
+      character.Potions = Object.assign(
+        [mainType, PlayerModel.ATTRIBUTE_TO_TYPE.Constitution, LIFE_POTION_TYPE].map((type) => ({ Type: type, Size: LIFE_POTION_SIZE })),
+        { Life: LIFE_POTION_SIZE }
+      )
+    }
+
+    PlayerModel.ATTRIBUTES.forEach((attribute, index) => {
+      character[attribute].Base += modifiers.attributes[index] ?? 0
+    })
+  }
+}
+
+function giveEquipment(player: PlayerModel, companion: PlayerModel) {
+  const from = CONFIG.fromID(player.Class)
+  const to = CONFIG.fromID(companion.Class)
+  const fromType = PlayerModel.ATTRIBUTE_TO_TYPE[from.Attribute]
+  const toType = PlayerModel.ATTRIBUTE_TO_TYPE[to.Attribute]
+
+  let armor = 0
+
+  for (const slot of EQUIPMENT_SLOTS) {
+    const item = player.Items[slot]
+
+    if (!item || slot === 'Wpn2') continue
+
+    const copy = copyItemForAttribute(item, fromType, toType)
+
+    companion.Items[slot] = copy
+    armor += getArmorValue(copy)
+  }
+
+  const weapon = companion.Items.Wpn1
+
+  weapon.DamageMin = scaleValue(weapon.DamageMin, from.WeaponMultiplier, to.WeaponMultiplier)
+  weapon.DamageMax = scaleValue(weapon.DamageMax, from.WeaponMultiplier, to.WeaponMultiplier)
+
+  companion.Armor = scaleValue(armor, from.MaximumDamageReduction, to.MaximumDamageReduction)
+}
+
+function copyItemForAttribute(item: ItemModel, from: number, to: number) {
+  // clone() rebuilds the item from its raw data, which drops upgrades, runes and gems set in the Character tab
+  const copy: ItemModel = Object.assign(Object.create(ItemModel.prototype), item)
+
+  copy.Attributes = [...item.Attributes]
+  copy.AttributeTypes = item.AttributeTypes.map((type) => (type === from ? to : type === from + 20 ? to + 20 : type))
+
+  return copy
+}
+
+const RUNE_KEYS = ['Health', 'ResistanceFire', 'ResistanceCold', 'ResistanceLightning'] as const
+
+function changeFighter(fighter: PlayerModel, before: SimulatorData, after: SimulatorData) {
+  const result = structuredClone(fighter)
+
+  for (const attribute of PlayerModel.ATTRIBUTES) {
+    result[attribute].Total += after[attribute].Total - before[attribute].Total
+  }
+
+  result.Armor += after.Armor - before.Armor
+
+  for (const key of RUNE_KEYS) {
+    result.Runes[key] += after.Runes[key] - before.Runes[key]
+  }
+
+  if (after.Potions.Life !== before.Potions.Life) {
+    result.Potions.Life = after.Potions.Life
+  }
+
+  if (after.Items.Hand.HasEnchantment !== before.Items.Hand.HasEnchantment) {
+    result.Items.Hand.HasEnchantment = after.Items.Hand.HasEnchantment
+  }
+
+  // Every other class has an unused, emptied second weapon
+  const slots = result.Class === ASSASSIN ? (['Wpn1', 'Wpn2'] as const) : (['Wpn1'] as const)
+
+  for (const slot of slots) {
+    const weapon = result.Items[slot]
+    const was = before.Items[slot]
+    const now = after.Items[slot]
+
+    if (!weapon) continue
+
+    weapon.DamageMin += now.DamageMin - was.DamageMin
+    weapon.DamageMax += now.DamageMax - was.DamageMax
+
+    if (now.HasEnchantment !== was.HasEnchantment) {
+      weapon.HasEnchantment = now.HasEnchantment
+    }
+
+    if (now.AttributeTypes[2] !== was.AttributeTypes[2] || now.Attributes[2] !== was.Attributes[2]) {
+      weapon.AttributeTypes[2] = now.AttributeTypes[2]
+      weapon.Attributes[2] = now.Attributes[2]
+    }
+  }
+
+  return result
 }
 
 export function listRemainingDungeons(progress: Map<number, number>) {

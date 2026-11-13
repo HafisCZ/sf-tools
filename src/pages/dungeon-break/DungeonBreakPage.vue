@@ -8,8 +8,27 @@
       <section :aria-label="localize('setup')" class="grid items-start gap-7 md:grid-cols-2">
         <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" v-model:fighter="selectedFighter" :character="character" />
 
-        <div class="flex flex-col gap-5.5 self-stretch md:pt-10">
-          <section :aria-label="localize('steps.plan')" class="mt-auto">
+        <div class="flex flex-col gap-5.5 self-stretch">
+          <a href="https://sfsimulator.xyz/" target="_blank" class="flex items-center gap-3 rounded-md border border-line bg-surface p-3 transition hover:bg-surface-hover">
+            <SFIcon name="circle-info" class="text-accent" />
+            <span class="text-white/75">{{ localize('simulator_link') }} <span class="font-bold text-accent">SFSimulator</span></span>
+          </a>
+
+          <section :aria-label="localize('modifiers.label')" class="my-auto flex flex-col gap-3.5">
+            <SFCheckbox v-model="modifiers.enchantmentsAndPotions" :label="localize('modifiers.enchantments')" />
+            <SFCheckbox v-model="modifiers.equipment" :label="localize('modifiers.equipment')" />
+            <div class="grid grid-cols-2 gap-3.5">
+              <SFNumber ref="levels-ref" v-model="modifiers.levels" :label="localize('modifiers.levels')" :min="0" :step="1" placeholder="0" />
+            </div>
+            <div role="group" :aria-labelledby="attributesId" class="flex flex-col gap-1.5">
+              <span :id="attributesId" class="font-bold text-white">{{ localize('modifiers.attributes') }}</span>
+              <div class="grid grid-cols-3 gap-3.5 lg:grid-cols-5">
+                <SFNumber v-for="index in 5" ref="attributes-ref" :key="index" v-model="modifiers.attributes[index - 1]" :label="localize.global(`general.attribute${index}`)" :min="0" :step="1" placeholder="0" />
+              </div>
+            </div>
+          </section>
+
+          <section :aria-label="localize('steps.plan')">
             <div class="grid grid-cols-2 gap-3.5">
               <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
               <SFSelect ref="cost-ref" v-model="cost" :label="localize('cost.label')" :options="costOptions" />
@@ -134,9 +153,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { computed, ref, shallowRef, toRaw, useId, useTemplateRef, watch } from 'vue'
 import SFButton from '@library/SFButton.vue'
+import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
+import SFIcon from '@library/SFIcon.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import SFSelect from '@library/SFSelect.vue'
@@ -158,11 +179,12 @@ import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { createDungeonFight, getBossName, getDungeonName, getDungeonProgress, type DungeonResult } from '~/sim/data/dungeons'
 import { useDungeonSimulator } from '~/sim/dungeons'
+import { createCharacterState } from '~/sim/equipment'
 import DungeonBreakCard from './components/DungeonBreakCard.vue'
 import DungeonBreakChart from './components/DungeonBreakChart.vue'
 import DungeonBreakEditor from './components/DungeonBreakEditor.vue'
 import DungeonBreakTable from './components/DungeonBreakTable.vue'
-import { createBreakFighters, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type MushroomCost } from './dungeon-break'
+import { applyBreakModifiers, createBreakFighters, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type BreakModifiers, type MushroomCost } from './dungeon-break'
 
 defineOptions({
   name: 'DungeonBreakPage'
@@ -172,6 +194,7 @@ type DungeonBreakOptions = {
   mushrooms: number | null
   threshold: number
   cost: MushroomCost
+  modifiers: BreakModifiers
 }
 
 const GROUPS: BreakGroup[] = ['light', 'shadow', 'idols', 'twister', 'sandstorm']
@@ -180,11 +203,12 @@ const localize = useLocalize('dungeon_break')
 
 const dungeonSimulator = useDungeonSimulator()
 
-const options = new OptionsHandler<DungeonBreakOptions>('dungeon_break', { mushrooms: null, threshold: 5, cost: 'average' })
+const options = new OptionsHandler<DungeonBreakOptions>('dungeon_break', { mushrooms: null, threshold: 5, cost: 'average', modifiers: { enchantmentsAndPotions: false, equipment: false, levels: null, attributes: [null, null, null, null, null] } })
 
 const mushrooms = ref(options.mushrooms)
 const threshold = ref<number | null>(options.threshold)
 const cost = ref<MushroomCost>(options.cost)
+const modifiers = ref<BreakModifiers>(structuredClone(options.modifiers))
 
 const character = shallowRef<PlayerModel | null>(null)
 const fighters = shallowRef<(PlayerModel | null)[]>([])
@@ -196,12 +220,14 @@ const selectedFighter = ref(0)
 const selectionCount = ref(0)
 
 const simulationId = useId()
+const attributesId = useId()
 const chartTitleId = useId()
 const orderTitleId = useId()
 
 const settings = useTemplateRef('settings-ref')
+const editor = useTemplateRef('editor-ref')
 
-const isValid = useComponentValidation(settings, useTemplateRef('mushrooms-ref'), useTemplateRef('cost-ref'), useTemplateRef('threshold-ref'), useTemplateRef('editor-ref'))
+const isValid = useComponentValidation(settings, useTemplateRef('mushrooms-ref'), useTemplateRef('cost-ref'), useTemplateRef('threshold-ref'), editor, useTemplateRef('levels-ref'), useTemplateRef('attributes-ref'))
 
 const { submit: plan, isSubmitting: isPlanning } = useSubmit(runPlan)
 
@@ -212,7 +238,7 @@ const costOptions = computed<SelectOption<MushroomCost>[]>(() => [
 
 const isPlanned = computed(() => results.value !== null)
 
-const level = computed(() => fighters.value[0]?.Level ?? character.value?.Level ?? 1)
+const level = computed(() => (fighters.value[0]?.Level ?? character.value?.Level ?? 1) + (modifiers.value.levels ?? 0))
 
 const xp = computed(() => (character.value && level.value === character.value.Level ? character.value.XP : 0))
 
@@ -230,7 +256,7 @@ const canPlan = computed(() => {
   return !needsCompanions || fighters.value.every((fighter) => fighter !== null)
 })
 
-const runInputs = computed(() => JSON.stringify([threshold.value, [...excluded.value].sort((a, b) => a - b), fighters.value, settings.value?.threads, settings.value?.iterations]))
+const runInputs = computed(() => JSON.stringify([threshold.value, [...excluded.value].sort((a, b) => a - b), fighters.value, modifiers.value, settings.value?.threads, settings.value?.iterations]))
 
 const planOptions = computed(() => ({
   threshold: (threshold.value ?? 0) / 100,
@@ -352,6 +378,14 @@ watch(cost, (value) => {
   options.cost = value
 })
 
+watch(
+  modifiers,
+  (value) => {
+    options.modifiers = structuredClone(toRaw(value))
+  },
+  { deep: true }
+)
+
 function selectCharacter(entry: PlayerModel) {
   // The database lists lazy proxies, which can't be cloned into a worker
   const player = DatabaseManager.getPlayer(entry.LinkId, entry.Timestamp) ?? entry
@@ -415,7 +449,9 @@ function getGroupSubtitle(group: BreakGroup, list: BreakDungeon[]) {
 }
 
 async function runPlan() {
-  if (!canPlan.value) return
+  const player = character.value
+
+  if (!canPlan.value || !player) return
 
   const run = {
     instances: Math.max(1, settings.value?.threads || 4),
@@ -426,6 +462,7 @@ async function runPlan() {
   const simulated = new Set<number>()
   const roundOptions = planOptions.value
   const inputs = runInputs.value
+  const runFighters = applyBreakModifiers(fighters.value, editor.value?.equipment ?? { source: player, swaps: [], state: createCharacterState(player) }, modifiers.value)
 
   for (;;) {
     const plan = planBreak(remainingDungeons.value, collected, roundOptions)
@@ -434,7 +471,7 @@ async function runPlan() {
     if (round.length === 0) break
 
     const experience = sum(plan.filter(({ included }) => included).map(({ current }) => current))
-    const roundFighters = setFightersLevel(fighters.value, Math.floor(getLevelAfter(level.value, xp.value, experience)))
+    const roundFighters = setFightersLevel(runFighters, Math.floor(getLevelAfter(level.value, xp.value, experience)))
     const simulation = await dungeonSimulator.simulateUntilNotPossible(compact(round.flatMap(({ entries }) => entries).map((entry) => createDungeonFight(entry, roundFighters))), run)
 
     if (!simulation) return

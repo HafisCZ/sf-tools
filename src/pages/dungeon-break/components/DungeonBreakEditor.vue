@@ -14,7 +14,7 @@ import { copyJson } from '@utils/utils'
 import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
-import { FIGHTER_NAME_KEYS } from '~/pages/dungeon-break/dungeon-break'
+import { FIGHTER_NAME_KEYS, type BreakEquipment } from '~/pages/dungeon-break/dungeon-break'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import { copyDungeonSharedValues, DUNGEON_COMPANION_CLASSES, DUNGEON_SHARED_PATHS } from '~/sim/data/dungeons'
@@ -57,6 +57,11 @@ const editor = useTemplateRef('editor-ref')
 defineExpose({
   get isValid() {
     return editor.value?.isValid ?? true
+  },
+  get equipment(): BreakEquipment | null {
+    const player = source.value
+
+    return player ? { source: player, swaps: swaps.value, state: characterState.value } : null
   }
 })
 

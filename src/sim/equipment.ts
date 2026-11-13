@@ -150,7 +150,7 @@ export function listEquipmentCharacters(player: PlayerModel) {
   return companions ? [player, ...PlayerModel.COMPANIONS.map((key) => companions[key])] : [player]
 }
 
-export function applyEquipmentSwaps(source: PlayerModel, swaps: EquipmentSwaps[], character?: CharacterState) {
+export function applyEquipmentSwaps(source: PlayerModel, swaps: EquipmentSwaps[], character?: CharacterState, modify?: (player: PlayerModel, characters: PlayerModel[]) => void) {
   const player = new PlayerModel(source.Data)
   const characters = listEquipmentCharacters(player)
 
@@ -178,6 +178,8 @@ export function applyEquipmentSwaps(source: PlayerModel, swaps: EquipmentSwaps[]
       model.Items[slot] = replacement
     }
   })
+
+  modify?.(player, characters)
 
   evaluateCharacters(player, characters)
 
@@ -263,7 +265,7 @@ function findEquipmentCandidate(source: PlayerModel, id: string) {
   return LIST_POOLS[pool as 'backpack' | 'shop']?.(source.Inventory)[Number(key)]
 }
 
-function getArmorValue(item: ItemModel) {
+export function getArmorValue(item: ItemModel) {
   return item.Type > 1 && item.Type < 8 ? item.Armor : 0
 }
 

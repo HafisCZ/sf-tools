@@ -923,6 +923,14 @@
         "threshold": "Minimum chance",
         "simulation": "Threads & Iterations",
         "simulate": "Simulate",
+        "simulator_link": "Best used with",
+        "modifiers": {
+            "label": "Modifications",
+            "enchantments": "Apply enchantments & potions",
+            "equipment": "Apply your equipment to companions",
+            "levels": "Add levels",
+            "attributes": "Add base attributes"
+        },
         "steps": {
             "fighters": "Fighters",
             "plan": "Mushrooms and chances",
