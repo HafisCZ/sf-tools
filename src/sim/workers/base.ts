@@ -857,9 +857,7 @@ export class SimulatorModel {
     const snack = SNACKS[player.Snack as string] as SnackBonus | undefined
 
     this.Snack = { ...snack }
-    if (snack) {
-      this.Snack.DamageBonus = this.Player.SnackPotency
-    }
+    this.Snack.DamageBonus = this.Player.SnackPotency
 
     // Caching
     this.Data = null as unknown as SimulatorState
