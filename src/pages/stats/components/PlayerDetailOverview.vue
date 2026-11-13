@@ -75,8 +75,8 @@ const columns = computed(() => {
       player.Pets.TotalCount !== undefined && { title: localize('pets.title'), icon: '/res/player/pets.webp', rows: getPetRows() },
       !!player.Toilet.Aura && { title: localize('toilet.title'), icon: '/res/player/toilet.webp', rows: getToiletRows() }
     ]),
-    compact<DetailPanel | false | 0>([{ title: localize('bonuses'), rows: getBonusRows() }, runeRows.length && { title: localize('runes.title'), rows: runeRows }, underworldRows.length && { title: localize('underworld'), icon: '/res/player/underworld.webp', rows: underworldRows }]),
-    compact<DetailPanel | false | 0>([{ title: localize('fortress.title'), icon: '/res/player/fortress.webp', rows: getFortressRows() }, player.hasGuild() && { title: localize('guild'), icon: '/res/player/guild.webp', rows: getGuildRows() }, player.Own && { title: localize('extras.title'), rows: getExtraRows() }])
+    compact<DetailPanel | false | 0>([player.hasGuild() && { title: localize('guild'), icon: '/res/player/guild.webp', rows: getGuildRows() }, { title: localize('bonuses'), rows: getBonusRows() }, runeRows.length && { title: localize('runes.title'), rows: runeRows }, underworldRows.length && { title: localize('underworld'), icon: '/res/player/underworld.webp', rows: underworldRows }]),
+    compact<DetailPanel | false | 0>([{ title: localize('fortress.title'), icon: '/res/player/fortress.webp', rows: getFortressRows() }, player.Own && { title: localize('extras.title'), rows: getExtraRows() }])
   ]
 })
 
