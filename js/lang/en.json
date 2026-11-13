@@ -925,16 +925,28 @@
         "simulate": "Simulate",
         "simulator_link": "Best used with",
         "modifiers": {
-            "label": "Modifications",
             "enchantments": "Apply enchantments & potions",
             "equipment": "Apply your equipment to companions",
-            "levels": "Add levels",
-            "attributes": "Add base attributes"
+            "levels": "Level",
+            "attributes": "Base attributes"
         },
-        "steps": {
-            "fighters": "Fighters",
-            "plan": "Mushrooms and chances",
-            "simulate": "Simulate"
+        "zones": {
+            "current": {
+                "title": "Current",
+                "description": "Your character and companions as they are now. Edit any value or swap items in the Character tab."
+            },
+            "future": {
+                "title": "Future",
+                "description": "Changes added on top when you simulate, to see what more levels or gear would get you."
+            },
+            "budget": {
+                "title": "Budget",
+                "description": "How many mushrooms to spend and how likely a fight has to be won to count."
+            },
+            "outcome": {
+                "title": "Outcome",
+                "description": "The levels and XP your mushrooms buy, and the order to fight the floors in."
+            }
         },
         "cost": {
             "label": "Mushroom cost",

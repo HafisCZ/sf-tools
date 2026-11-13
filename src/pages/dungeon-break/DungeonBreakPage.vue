@@ -4,31 +4,29 @@
       <CharacterSwitcher :player="character" @select="selectCharacter" />
     </template>
 
-    <div v-if="character" class="flex flex-col gap-5">
+    <div v-if="character" class="flex flex-col gap-7">
       <section :aria-label="localize('setup')" class="grid items-start gap-7 md:grid-cols-2">
-        <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" v-model:fighter="selectedFighter" :character="character" />
+        <DungeonBreakZone :number="1" :title="localize('zones.current.title')" :description="localize('zones.current.description')">
+          <DungeonBreakEditor ref="editor-ref" :key="selectionCount" v-model:fighters="fighters" v-model:fighter="selectedFighter" :character="character" />
+        </DungeonBreakZone>
 
-        <div class="flex flex-col gap-5.5 self-stretch">
-          <a href="https://sfsimulator.xyz/" target="_blank" class="flex items-center gap-3 rounded-md border border-line bg-surface p-3 transition hover:bg-surface-hover">
-            <SFIcon name="circle-info" class="text-accent" />
-            <span class="text-white/75">{{ localize('simulator_link') }} <span class="font-bold text-accent">SFSimulator</span></span>
-          </a>
+        <div class="flex flex-col gap-7 self-stretch">
+          <DungeonBreakZone :number="2" :title="localize('zones.future.title')">
+            <template #description>
+              {{ localize('zones.future.description') }} {{ localize('simulator_link') }} <a href="https://sfsimulator.xyz/" target="_blank" class="text-accent hover:underline">SFSimulator</a>.
+            </template>
 
-          <section :aria-label="localize('modifiers.label')" class="my-auto flex flex-col gap-3.5">
-            <SFCheckbox v-model="modifiers.enchantmentsAndPotions" :label="localize('modifiers.enchantments')" />
-            <SFCheckbox v-model="modifiers.equipment" :label="localize('modifiers.equipment')" />
-            <div class="grid grid-cols-2 gap-3.5">
+            <div class="flex flex-col gap-3.5">
               <SFNumber ref="levels-ref" v-model="modifiers.levels" :label="localize('modifiers.levels')" :min="0" :step="1" placeholder="0" />
-            </div>
-            <div role="group" :aria-labelledby="attributesId" class="flex flex-col gap-1.5">
-              <span :id="attributesId" class="font-bold text-white">{{ localize('modifiers.attributes') }}</span>
-              <div class="grid grid-cols-3 gap-3.5 lg:grid-cols-5">
+              <div role="group" :aria-label="localize('modifiers.attributes')" class="grid grid-cols-3 gap-3.5 lg:grid-cols-5">
                 <SFNumber v-for="index in 5" ref="attributes-ref" :key="index" v-model="modifiers.attributes[index - 1]" :label="localize.global(`general.attribute${index}`)" :min="0" :step="1" placeholder="0" />
               </div>
+              <SFCheckbox v-model="modifiers.enchantmentsAndPotions" :label="localize('modifiers.enchantments')" />
+              <SFCheckbox v-model="modifiers.equipment" :label="localize('modifiers.equipment')" />
             </div>
-          </section>
+          </DungeonBreakZone>
 
-          <section :aria-label="localize('steps.plan')">
+          <DungeonBreakZone :number="3" :title="localize('zones.budget.title')" :description="localize('zones.budget.description')" class="mt-auto">
             <div class="grid grid-cols-2 gap-3.5">
               <SFNumber ref="mushrooms-ref" v-model="mushrooms" :label="localize('mushrooms')" :min="0" :step="1" :placeholder="localize('mushrooms_all')" />
               <SFSelect ref="cost-ref" v-model="cost" :label="localize('cost.label')" :options="costOptions" />
@@ -38,111 +36,113 @@
                 <SimulatorSettings ref="settings-ref" storage-key="dungeon_break_sim" :default-threads="4" :default-iterations="50000" />
               </div>
             </div>
-          </section>
 
-          <section :aria-label="localize('steps.simulate')">
             <SFButton variant="primary" block :disabled="isPlanning ? 'loading' : !canPlan || (isPlanned && runInputs === plannedInputs)" @click="plan">
               {{ localize('simulate') }}
             </SFButton>
+          </DungeonBreakZone>
+        </div>
+      </section>
+
+      <DungeonBreakZone :number="4" :title="localize('zones.outcome.title')" :description="localize('zones.outcome.description')">
+        <div class="flex flex-col gap-5">
+          <section :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
+            <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
+              <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
+                <span class="text-sm font-bold text-white/60">{{ tile.label }}</span>
+                <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">{{ tile.value }}</span>
+              </div>
+            </div>
+            <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-[999_1_560px] flex-col bg-surface">
+              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 px-4.5 pt-3">
+                <SFHeading :id="chartTitleId" level="6" type="muted">{{ localize('chart.title') }}</SFHeading>
+              </div>
+              <div class="relative px-4.5 pt-2 pb-3.5">
+                <DungeonBreakChart :curve="curve" :mushrooms="order.length > 0 ? mushrooms : null" :class="{ invisible: order.length === 0 }" />
+                <SFParagraph v-if="order.length === 0" type="muted" class="absolute inset-0 flex items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'chart.nothing' : 'chart.empty') }}</SFParagraph>
+              </div>
+            </section>
+          </section>
+
+          <section :aria-label="localize('groups_label')" class="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3.5">
+            <DungeonBreakCard
+              v-for="card in cards"
+              :key="card.group"
+              :group="card.group"
+              :title="localize(`groups.${card.group}`)"
+              :subtitle="card.subtitle"
+              :selected="card.selected"
+              :disabled="card.dungeons.length === 0"
+              :included="card.included"
+              @select="selectGroup(card.group)"
+              @include="includeGroup(card.group, $event)"
+            >
+              <template v-if="card.dungeons.length > 0" #default>
+                <span class="grid grid-cols-2 gap-2">
+                  <span class="flex min-w-0 flex-col">
+                    <span class="text-xs font-bold text-white/60">{{ localize('card.remaining') }}</span>
+                    <span class="flex items-baseline gap-1">
+                      <span class="text-xl leading-tight font-bold text-white">{{ card.remaining }}</span>
+                      <span class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
+                    </span>
+                  </span>
+                  <span class="flex min-w-0 flex-col">
+                    <span class="text-xs font-bold text-white/60">{{ localize('card.beatable') }}</span>
+                    <span class="flex items-baseline gap-1">
+                      <span class="text-xl leading-tight font-bold" :class="isPlanned ? 'text-white' : 'text-white/35'">{{ isPlanned ? card.beatable : '-' }}</span>
+                      <span v-if="isPlanned" class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
+                    </span>
+                  </span>
+                </span>
+                <span class="flex flex-col text-[12.5px] leading-snug text-white/60">
+                  <template v-if="isPlanned">
+                    <span class="flex items-center gap-1">
+                      <strong class="text-white/90">{{ card.mushrooms }}</strong>
+                      <img src="/res/mushroom.png" :alt="localize('card.mushrooms')" class="size-[15px]" />
+                    </span>
+                    <span>{{ localize('card.for', { won: card.won, total: card.total }) }}</span>
+                  </template>
+                  <span v-else>{{ localize('card.left', { count: card.total }) }}</span>
+                </span>
+              </template>
+            </DungeonBreakCard>
+          </section>
+
+          <DungeonBreakTable v-if="selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" :bought="boughtKeys" @toggle="toggleDungeon" />
+
+          <section :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
+            <div class="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5 border-b border-line px-4 py-3">
+              <SFHeading :id="orderTitleId" level="6">{{ localize('order.title') }}</SFHeading>
+              <span v-if="order.length > 0" class="text-xs text-white/60">{{ localize('order.subtitle', { count: order.length }) }}</span>
+            </div>
+            <template v-if="order.length > 0">
+              <div class="max-h-[480px] overflow-y-auto">
+                <SFTable dense>
+                  <template #header>
+                    <SFTableRow>
+                      <SFTableHeader class="w-14">{{ localize('order.number') }}</SFTableHeader>
+                      <SFTableHeader>{{ localize('table.dungeon') }}</SFTableHeader>
+                      <SFTableHeader>{{ localize('order.floor') }}</SFTableHeader>
+                      <SFTableHeader align="right">{{ localize('floors.chance') }}</SFTableHeader>
+                      <SFTableHeader align="right">{{ localize('floors.experience') }}</SFTableHeader>
+                      <SFTableHeader align="right" class="pr-4">{{ localize('order.spent') }}</SFTableHeader>
+                    </SFTableRow>
+                  </template>
+                  <SFTableRow v-for="fight in fights" :key="fight.key" class="h-12 whitespace-nowrap" :class="{ 'opacity-45': !fight.bought }">
+                    <SFTableCell class="text-white/60">{{ fight.number }}</SFTableCell>
+                    <SFTableCell>{{ fight.dungeon }}</SFTableCell>
+                    <SFTableCell>{{ fight.boss }}</SFTableCell>
+                    <SFTableCell align="right">{{ fight.chance }}</SFTableCell>
+                    <SFTableCell align="right">{{ fight.experience }}</SFTableCell>
+                    <SFTableCell align="right" class="pr-4 font-bold">{{ fight.spent }}</SFTableCell>
+                  </SFTableRow>
+                </SFTable>
+              </div>
+            </template>
+            <SFParagraph v-else type="muted" class="flex min-h-40 items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'order.nothing' : 'order.empty') }}</SFParagraph>
           </section>
         </div>
-      </section>
-
-      <section :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
-        <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
-          <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
-            <span class="text-sm font-bold text-white/60">{{ tile.label }}</span>
-            <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">{{ tile.value }}</span>
-          </div>
-        </div>
-        <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-[999_1_560px] flex-col bg-surface">
-          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 px-4.5 pt-3">
-            <SFHeading :id="chartTitleId" level="6" type="muted">{{ localize('chart.title') }}</SFHeading>
-          </div>
-          <div class="relative px-4.5 pt-2 pb-3.5">
-            <DungeonBreakChart :curve="curve" :mushrooms="order.length > 0 ? mushrooms : null" :class="{ invisible: order.length === 0 }" />
-            <SFParagraph v-if="order.length === 0" type="muted" class="absolute inset-0 flex items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'chart.nothing' : 'chart.empty') }}</SFParagraph>
-          </div>
-        </section>
-      </section>
-
-      <section :aria-label="localize('groups_label')" class="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3.5">
-        <DungeonBreakCard
-          v-for="card in cards"
-          :key="card.group"
-          :group="card.group"
-          :title="localize(`groups.${card.group}`)"
-          :subtitle="card.subtitle"
-          :selected="card.selected"
-          :disabled="card.dungeons.length === 0"
-          :included="card.included"
-          @select="selectGroup(card.group)"
-          @include="includeGroup(card.group, $event)"
-        >
-          <template v-if="card.dungeons.length > 0" #default>
-            <span class="grid grid-cols-2 gap-2">
-              <span class="flex min-w-0 flex-col">
-                <span class="text-xs font-bold text-white/60">{{ localize('card.remaining') }}</span>
-                <span class="flex items-baseline gap-1">
-                  <span class="text-xl leading-tight font-bold text-white">{{ card.remaining }}</span>
-                  <span class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
-                </span>
-              </span>
-              <span class="flex min-w-0 flex-col">
-                <span class="text-xs font-bold text-white/60">{{ localize('card.beatable') }}</span>
-                <span class="flex items-baseline gap-1">
-                  <span class="text-xl leading-tight font-bold" :class="isPlanned ? 'text-white' : 'text-white/35'">{{ isPlanned ? card.beatable : '-' }}</span>
-                  <span v-if="isPlanned" class="text-xs font-bold text-white/60">{{ localize('card.levels') }}</span>
-                </span>
-              </span>
-            </span>
-            <span class="flex flex-col text-[12.5px] leading-snug text-white/60">
-              <template v-if="isPlanned">
-                <span class="flex items-center gap-1">
-                  <strong class="text-white/90">{{ card.mushrooms }}</strong>
-                  <img src="/res/mushroom.png" :alt="localize('card.mushrooms')" class="size-[15px]" />
-                </span>
-                <span>{{ localize('card.for', { won: card.won, total: card.total }) }}</span>
-              </template>
-              <span v-else>{{ localize('card.left', { count: card.total }) }}</span>
-            </span>
-          </template>
-        </DungeonBreakCard>
-      </section>
-
-      <DungeonBreakTable v-if="selectedGroup && selectedDungeons.length > 0" :key="selectedGroup" :group="selectedGroup" :dungeons="selectedDungeons" :planned="isPlanned" :level="level" :xp="xp" :bought="boughtKeys" @toggle="toggleDungeon" />
-
-      <section :aria-labelledby="orderTitleId" class="flex min-w-0 flex-col rounded-md border border-line bg-surface">
-        <div class="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5 border-b border-line px-4 py-3">
-          <SFHeading :id="orderTitleId" level="6">{{ localize('order.title') }}</SFHeading>
-          <span v-if="order.length > 0" class="text-xs text-white/60">{{ localize('order.subtitle', { count: order.length }) }}</span>
-        </div>
-        <template v-if="order.length > 0">
-          <div class="max-h-[480px] overflow-y-auto">
-            <SFTable dense>
-              <template #header>
-                <SFTableRow>
-                  <SFTableHeader class="w-14">{{ localize('order.number') }}</SFTableHeader>
-                  <SFTableHeader>{{ localize('table.dungeon') }}</SFTableHeader>
-                  <SFTableHeader>{{ localize('order.floor') }}</SFTableHeader>
-                  <SFTableHeader align="right">{{ localize('floors.chance') }}</SFTableHeader>
-                  <SFTableHeader align="right">{{ localize('floors.experience') }}</SFTableHeader>
-                  <SFTableHeader align="right" class="pr-4">{{ localize('order.spent') }}</SFTableHeader>
-                </SFTableRow>
-              </template>
-              <SFTableRow v-for="fight in fights" :key="fight.key" class="h-12 whitespace-nowrap" :class="{ 'opacity-45': !fight.bought }">
-                <SFTableCell class="text-white/60">{{ fight.number }}</SFTableCell>
-                <SFTableCell>{{ fight.dungeon }}</SFTableCell>
-                <SFTableCell>{{ fight.boss }}</SFTableCell>
-                <SFTableCell align="right">{{ fight.chance }}</SFTableCell>
-                <SFTableCell align="right">{{ fight.experience }}</SFTableCell>
-                <SFTableCell align="right" class="pr-4 font-bold">{{ fight.spent }}</SFTableCell>
-              </SFTableRow>
-            </SFTable>
-          </div>
-        </template>
-        <SFParagraph v-else type="muted" class="flex min-h-40 items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'order.nothing' : 'order.empty') }}</SFParagraph>
-      </section>
+      </DungeonBreakZone>
     </div>
     <InlineSelector v-else @select="selectCharacter" />
 
@@ -157,7 +157,6 @@ import { computed, ref, shallowRef, toRaw, useId, useTemplateRef, watch } from '
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
-import SFIcon from '@library/SFIcon.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import SFSelect from '@library/SFSelect.vue'
@@ -184,6 +183,7 @@ import DungeonBreakCard from './components/DungeonBreakCard.vue'
 import DungeonBreakChart from './components/DungeonBreakChart.vue'
 import DungeonBreakEditor from './components/DungeonBreakEditor.vue'
 import DungeonBreakTable from './components/DungeonBreakTable.vue'
+import DungeonBreakZone from './components/DungeonBreakZone.vue'
 import { applyBreakModifiers, createBreakFighters, formatChance, formatExperience, formatMushrooms, getFightKey, getLevelAfter, getUnlockText, listRemainingDungeons, orderFights, planBreak, setFightersLevel, spendMushrooms, type BreakDungeon, type BreakGroup, type BreakModifiers, type MushroomCost } from './dungeon-break'
 
 defineOptions({
@@ -220,7 +220,6 @@ const selectedFighter = ref(0)
 const selectionCount = ref(0)
 
 const simulationId = useId()
-const attributesId = useId()
 const chartTitleId = useId()
 const orderTitleId = useId()
 
