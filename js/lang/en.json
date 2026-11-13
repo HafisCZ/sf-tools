@@ -937,7 +937,7 @@
             },
             "future": {
                 "title": "Future",
-                "description": "Changes added on top when you simulate, to see what more levels or gear would get you."
+                "description": "Changes added on top when you simulate, to see what more levels or gear would get you. Leave as is if you are planning to stop your dungeon pause now."
             },
             "budget": {
                 "title": "Budget",
