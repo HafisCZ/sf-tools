@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3.5">
-        <BestiaryEnemyCard v-for="enemy in enemies" :key="enemy.key" :background="background" :monster="enemy.monster" :name="enemy.name" :description="enemy.description" :boss="enemy.boss" />
+        <BestiaryEnemyCard v-for="enemy in enemies" :key="enemy.key" :background="background" :monster="enemy.monster" :name="enemy.name" :description="enemy.description" :boss="enemy.boss" :armor="enemy.armor" />
       </div>
     </div>
 
@@ -71,6 +71,7 @@ import { hasTranslation, useLocalize } from '@utils/localization'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { CLASS_DUNGEONS, DUNGEON_DATA, getBossName, getDungeonName, SANDSTORM, TOWER, TWISTER, YOUTUBE, type Dungeon, type DungeonClassBoss } from '~/sim/data/dungeons'
+import { CONFIG } from '~/sim/workers/base'
 import BestiaryDungeonCard from './components/BestiaryDungeonCard.vue'
 import BestiaryEnemyCard from './components/BestiaryEnemyCard.vue'
 
@@ -206,13 +207,14 @@ const enemies = computed(() => {
   const current = dungeon.value
   const query = search.value.trim().toLowerCase()
 
-  const list: { key: number; monster: number; name: string; description?: string; boss?: DungeonClassBoss }[] = current
+  const list: { key: number; monster: number; name: string; description?: string; boss?: DungeonClassBoss; armor?: number }[] = current
     ? Object.values(current.floors)
         .filter((boss): boss is DungeonClassBoss => boss.id !== undefined)
         .map((boss) => {
           const key = `dungeons.${current.intl}.floors.${boss.pos}`
+          const armor = boss.armor || (current.armor_multiplier || 1) * (boss.level * CONFIG.fromID(boss.class).MaximumDamageReduction)
 
-          return { key: boss.pos, monster: boss.id, name: getBossName({ dungeon: current, boss }), description: hasTranslation(key) ? localize.global(key) : undefined, boss }
+          return { key: boss.pos, monster: boss.id, name: getBossName({ dungeon: current, boss }), description: hasTranslation(key) ? localize.global(key) : undefined, boss, armor }
         })
     : (expedition.value?.monsters ?? []).map((monster) => ({ key: monster, monster, name: localize.global(`monsters.${monster}`) }))
 

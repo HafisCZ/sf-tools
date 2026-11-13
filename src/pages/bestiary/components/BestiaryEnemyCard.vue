@@ -60,6 +60,10 @@ const props = defineProps<{
    * Floor whose number and stats the card shows, without it the card is only the picture and name
    */
   boss?: DungeonClassBoss
+  /**
+   * Floor armor, the stored value or the one the sim generates from class and level
+   */
+  armor?: number
 }>()
 
 const localize = useLocalize('bestiary')
@@ -81,8 +85,8 @@ const rows = computed(() => {
     { label: localize('weapon_range'), value: `${formatSpacedNumber(boss.min)}-${formatSpacedNumber(boss.max)}` }
   ]
 
-  if (boss.armor) {
-    list.push({ label: localize.global('general.item3'), value: formatSpacedNumber(boss.armor) })
+  if (props.armor) {
+    list.push({ label: localize.global('general.item3'), value: formatSpacedNumber(props.armor) })
   }
 
   if (boss.block) {
