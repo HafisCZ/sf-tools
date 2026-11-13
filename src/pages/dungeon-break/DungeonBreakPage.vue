@@ -46,18 +46,16 @@
 
       <DungeonBreakZone :number="4" :title="localize('zones.outcome.title')" :description="localize('zones.outcome.description')">
         <div class="flex flex-col gap-5">
-          <section :aria-label="localize('summary')" class="flex flex-wrap gap-px overflow-hidden rounded-md border border-line bg-line">
-            <div class="grid flex-[1_1_440px] grid-cols-2 grid-rows-3 gap-px">
-              <div v-for="tile in tiles" :key="tile.key" class="flex flex-col justify-center gap-0.5 bg-surface px-4.5 py-3" :class="{ 'col-span-2': tile.key === 'mushrooms' }">
+          <section :aria-label="localize('summary')" class="flex flex-col gap-6">
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-5 sm:gap-0">
+              <div v-for="tile in tiles" :key="tile.key" class="flex flex-col gap-0.5 sm:border-l sm:border-line sm:pl-5 sm:first:border-l-0 sm:first:pl-0" :class="{ 'max-sm:col-span-2': tile.key === 'mushrooms' }">
                 <span class="text-sm font-bold text-white/60">{{ tile.label }}</span>
                 <span class="text-[26px] leading-tight font-bold" :class="tile.accent ? 'text-accent' : tile.pending ? 'text-white/35' : 'text-white'">{{ tile.value }}</span>
               </div>
             </div>
-            <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-[999_1_560px] flex-col bg-surface">
-              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 px-4.5 pt-3">
-                <SFHeading :id="chartTitleId" level="6" type="muted">{{ localize('chart.title') }}</SFHeading>
-              </div>
-              <div class="relative px-4.5 pt-2 pb-3.5">
+            <section :aria-labelledby="chartTitleId" class="flex min-w-0 flex-col">
+              <SFHeading :id="chartTitleId" level="6" type="muted">{{ localize('chart.title') }}</SFHeading>
+              <div class="relative pt-2">
                 <DungeonBreakChart :curve="curve" :mushrooms="order.length > 0 ? mushrooms : null" :class="{ invisible: order.length === 0 }" />
                 <SFParagraph v-if="order.length === 0" type="muted" class="absolute inset-0 flex items-center justify-center p-4 text-center">{{ localize(isPlanned ? 'chart.nothing' : 'chart.empty') }}</SFParagraph>
               </div>

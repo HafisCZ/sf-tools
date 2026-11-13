@@ -52,7 +52,7 @@ type CurvePoint = {
 }
 
 const WIDTH = 1060
-const HEIGHT = 260
+const HEIGHT = 170
 const LEFT = 44
 const RIGHT = 18
 const TOP = 18
