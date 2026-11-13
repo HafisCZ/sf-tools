@@ -923,7 +923,6 @@
         "threshold": "Minimum chance",
         "simulation": "Threads & Iterations",
         "simulate": "Simulate",
-        "simulator_link": "Best used with",
         "modifiers": {
             "enchantments": "Apply enchantments & potions",
             "equipment": "Apply your equipment to companions",
@@ -937,7 +936,7 @@
             },
             "future": {
                 "title": "Future",
-                "description": "Changes added on top when you simulate, to see what more levels or gear would get you. Leave as is if you are planning to stop your dungeon pause now."
+                "description#": "Changes added on top when you simulate, to see what more levels or gear would get you. Leave as is if you are planning to stop your dungeon pause now. Best used with <a target=\"_blank\" class=\"text-accent hover:underline\" href=\"https://sfsimulator.xyz/\">SFSimulator</a>."
             },
             "budget": {
                 "title": "Budget",

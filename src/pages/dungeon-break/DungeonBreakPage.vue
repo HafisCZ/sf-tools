@@ -13,7 +13,7 @@
         <div class="flex flex-col gap-7 self-stretch">
           <DungeonBreakZone :number="2" :title="localize('zones.future.title')">
             <template #description>
-              {{ localize('zones.future.description') }} {{ localize('simulator_link') }} <a href="https://sfsimulator.xyz/" target="_blank" class="text-accent hover:underline">SFSimulator</a>.
+              <span v-html="localize('zones.future.description#')" />
             </template>
 
             <div class="flex flex-col gap-3.5">
