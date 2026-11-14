@@ -17,11 +17,29 @@ export function buildEngine() {
   fs.copyFileSync(path.join(ENGINE_DIRECTORY, 'target/wasm32-unknown-unknown/release/engine.wasm'), path.join(ENGINE_DIRECTORY, 'engine.wasm'))
 }
 
+export function canBuildEngine() {
+  try {
+    const directory = execFileSync('rustc', ['--print', 'target-libdir', '--target', 'wasm32-unknown-unknown'], { encoding: 'utf8', stdio: 'pipe' }).trim()
+
+    if (fs.existsSync(directory)) {
+      return true
+    }
+  } catch {
+    // Rust is not installed
+  }
+
+  console.warn('Rust with the wasm32-unknown-unknown target is not installed.')
+
+  return false
+}
+
 export function rustEngine(legacy: boolean): Plugin {
   return {
     name: 'rust-engine',
     buildStart() {
       if (legacy) {
+        console.warn('Falling back to TS simulator engine')
+
         // Empty wasm module, keeps the engine.wasm import working while the site runs the legacy engine
         fs.writeFileSync(path.join(ENGINE_DIRECTORY, 'engine.wasm'), new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]))
         return
