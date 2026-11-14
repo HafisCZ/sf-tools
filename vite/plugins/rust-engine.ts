@@ -17,13 +17,23 @@ export function buildEngine() {
   fs.copyFileSync(path.join(ENGINE_DIRECTORY, 'target/wasm32-unknown-unknown/release/engine.wasm'), path.join(ENGINE_DIRECTORY, 'engine.wasm'))
 }
 
-export function rustEngine(): Plugin {
+export function rustEngine(legacy: boolean): Plugin {
   return {
     name: 'rust-engine',
     buildStart() {
+      if (legacy) {
+        // Empty wasm module, keeps the engine.wasm import working while the site runs the legacy engine
+        fs.writeFileSync(path.join(ENGINE_DIRECTORY, 'engine.wasm'), new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]))
+        return
+      }
+
       buildEngine()
     },
     configureServer(server) {
+      if (legacy) {
+        return
+      }
+
       server.watcher.add(ENGINE_SOURCES)
       server.watcher.on('all', (_event, file) => {
         if (!ENGINE_SOURCES.some((source) => file.startsWith(source))) {

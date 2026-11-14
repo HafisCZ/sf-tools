@@ -120,13 +120,16 @@ function legacySite(): Plugin {
   }
 }
 
+const LEGACY_ENGINE = process.env.LEGACY_ENGINE === '1'
+
 export default defineConfig({
   appType: 'mpa',
-  plugins: [vue(), tailwindcss(), legacySite(), rustEngine()],
+  plugins: [vue(), tailwindcss(), legacySite(), rustEngine(LEGACY_ENGINE)],
   define: {
     __BUILD_INFO__: JSON.stringify(readBuildInfo()),
     __BUILD_ENVIRONMENT__: JSON.stringify(process.env.NETLIFY === 'true' ? 'beta' : 'production'),
-    __ITEM_PICTURES__: JSON.stringify(readItemPictures())
+    __ITEM_PICTURES__: JSON.stringify(readItemPictures()),
+    __LEGACY_ENGINE__: JSON.stringify(LEGACY_ENGINE)
   },
   resolve: {
     alias: {
