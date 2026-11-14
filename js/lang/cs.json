@@ -226,7 +226,8 @@
         },
         "dungeon_break": {
             "title": "Dungeon Break",
-            "desc": "See progress left in your dungeons"
+            "desc": "See progress left in your dungeons",
+            "wip": "WIP"
         },
         "build_planner": {
             "title": "Build Planner",
@@ -922,10 +923,29 @@
         "threshold": "Minimum chance",
         "simulation": "Threads & Iterations",
         "simulate": "Simulate",
-        "steps": {
-            "fighters": "Fighters",
-            "plan": "Mushrooms and chances",
-            "simulate": "Simulate"
+        "modifiers": {
+            "enchantments": "Apply enchantments & potions",
+            "equipment": "Apply your equipment to companions",
+            "levels": "Level",
+            "attributes": "Base attributes"
+        },
+        "zones": {
+            "current": {
+                "title": "Current",
+                "description": "Your character and companions as they are now. Edit any value or swap items in the Character tab."
+            },
+            "future": {
+                "title": "Future",
+                "description#": "Changes added on top when you simulate, to see what more levels or gear would get you. Leave as is if you are planning to stop your dungeon pause now. Best used with <a target=\"_blank\" class=\"text-accent hover:underline\" href=\"https://sfsimulator.xyz/\">SFSimulator</a>."
+            },
+            "budget": {
+                "title": "Budget",
+                "description": "How many mushrooms to spend and how likely a fight has to be won to count."
+            },
+            "outcome": {
+                "title": "Outcome",
+                "description": "Remaining counts every floor you have not beaten yet, Beatable only the ones won at or above the minimum chance and paid for by your mushrooms. Untick a world or dungeon to leave it out, open a world card to see its floors, and follow the fight order from the top for the most levels per mushroom."
+            }
         },
         "cost": {
             "label": "Mushroom cost",
@@ -2350,6 +2370,7 @@
         "level": "Level #{level}",
         "health": "Health",
         "weapon_range": "Weapon Range",
+        "copy": "Copy for simulator",
         "footer#": "Special thanks to Milado"
     }
 }
