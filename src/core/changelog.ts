@@ -61,7 +61,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
 ]
 
 export const CHANGELOG: Record<string, ChangelogRelease> = {
-  'v8.XXXX': {
+  'v8.5236': {
     'Build Planner': [
       'Added new tool for planning Fortress and Underworld building upgrades'
     ],
