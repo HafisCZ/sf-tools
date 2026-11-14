@@ -1,5 +1,5 @@
 <template>
-  <article class="flex flex-col overflow-hidden rounded-lg border border-line bg-surface [contain-intrinsic-size:auto_640px] [content-visibility:auto]">
+  <article class="row-span-4 grid grid-rows-subgrid gap-0 overflow-hidden rounded-lg border border-line bg-surface">
     <div class="relative aspect-[4/3] bg-dialog bg-cover bg-center" :style="{ backgroundImage: `url(${props.background})` }">
       <div class="absolute inset-0 bg-line backdrop-blur-sm mask-exclude mask-center mask-no-repeat [mask-image:linear-gradient(#000_0_0),linear-gradient(#000_0_0)] [mask-size:100%_100%,calc(69%_-_4px)_calc(92%_-_4px)]" />
       <img :src="`/res/monsters/${props.monster}.webp`" alt="" loading="lazy" class="absolute top-[4%] left-1/2 h-[92%] -translate-x-1/2 rounded-md border-2 border-line object-contain" />
@@ -12,11 +12,11 @@
         </SFTooltip>
       </div>
     </div>
-    <div class="flex flex-1 flex-col gap-0.5 bg-dialog/85 px-3 pt-2 pb-2.5">
+    <div class="flex flex-col gap-0.5 bg-dialog/85 px-3 pt-2 pb-2.5 [contain-intrinsic-size:auto_140px] [content-visibility:auto]">
       <span class="text-base leading-5 font-bold text-white">{{ props.name }}</span>
       <span v-if="props.description" class="text-[13px] leading-[1.35] text-white/75">{{ props.description }}</span>
     </div>
-    <div v-if="props.boss?.reward || props.experience" class="flex items-center gap-3 border-y border-white/5 bg-black/25 px-3.5 py-2">
+    <div v-if="props.boss?.reward || props.experience" class="row-start-3 flex items-center gap-3 border-y border-white/5 bg-black/25 px-3.5 py-2">
       <div v-if="props.boss?.reward" class="flex min-w-0 items-center gap-2">
         <img :src="`/res/rewards/${rewardIcon}.webp`" alt="" class="size-[22px] flex-none object-contain" />
         <div class="flex min-w-0 flex-col">
@@ -29,7 +29,7 @@
         <img src="/res/rewards/xp.webp" :alt="localize('experience')" class="h-[13px]" />
       </span>
     </div>
-    <div v-if="props.boss" class="flex flex-col gap-2.5 px-3.5 pt-3 pb-3.5">
+    <div v-if="props.boss" class="row-start-4 flex flex-col gap-2.5 px-3.5 pt-3 pb-3.5 [contain-intrinsic-size:auto_330px] [content-visibility:auto]">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <img :src="getClassImageUrl(props.boss.class)" alt="" class="size-[22px] object-contain" />
