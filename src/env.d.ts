@@ -15,3 +15,5 @@ declare const __BUILD_INFO__: {
 declare const __BUILD_ENVIRONMENT__: 'production' | 'beta'
 
 declare const __ITEM_PICTURES__: Record<string, number[]>
+
+declare const __LEGACY_ENGINE__: boolean

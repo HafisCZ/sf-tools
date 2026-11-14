@@ -1,3 +1,6 @@
 [test]
 root = "test"
 preload = ["./test/setup.ts"]
+
+[define]
+__LEGACY_ENGINE__ = "false"
