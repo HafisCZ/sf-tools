@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
-import { rustEngine } from './vite/plugins/rust-engine.ts'
+import { canBuildEngine, rustEngine } from './vite/plugins/rust-engine.ts'
 
 const VITE_PAGES = [
   'changelog',
@@ -120,7 +120,7 @@ function legacySite(): Plugin {
   }
 }
 
-const LEGACY_ENGINE = process.env.LEGACY_ENGINE === '1'
+const LEGACY_ENGINE = process.env.LEGACY_ENGINE === '1' || !canBuildEngine()
 
 export default defineConfig({
   appType: 'mpa',
