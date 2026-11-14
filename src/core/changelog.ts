@@ -91,7 +91,11 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Updated layout'
     ],
     'Fight Analyzer': [
-      'Added tracking of longest Berserker chain'
+      'Added tracking of longest Berserker chain',
+      'Added support for class dungeon fights'
+    ],
+    Scrapbook: [
+      'Updated to work without a loaded character'
     ],
     'All Simulators': [
       'Added support for Blood Weaver',
