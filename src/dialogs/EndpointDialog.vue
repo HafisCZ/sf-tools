@@ -37,9 +37,14 @@
       </template>
 
       <template v-else-if="step === 'character'">
-        <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
-        <ul class="-mr-5 grid max-h-[392px] grid-cols-[repeat(auto-fill,192px)] justify-center gap-2 overflow-y-auto pr-5">
-          <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
+        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line pb-2">
+          <SFHeading level="3">{{ localize('step7.title') }}</SFHeading>
+          <div class="min-w-0 flex-[1_1_240px] sm:max-w-75">
+            <SFInput v-model="search" type="search" :aria-label="localize('step7.search')" :placeholder="localize('step7.search')" />
+          </div>
+        </div>
+        <ul ref="list-ref" class="-mr-5 grid max-h-[392px] grid-cols-[repeat(auto-fill,192px)] justify-center gap-2 overflow-y-auto pr-5" :style="{ minHeight: listHeight }">
+          <li v-for="character in visibleCharacters" :key="`${character.server_id}-${character.id}`">
             <CharacterTile :name="character.name" :level="character.level" :character-class="character.char_class" :world="character.world" :portrait="character.portrait" :favorite="Boolean(character.is_favorite)" :selected="selectedCharacters.includes(character)" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)" />
           </li>
         </ul>
@@ -165,6 +170,17 @@ const warnings = ref<string[]>([])
 const characters = shallowRef<Character[]>([])
 const selectedCharacters = shallowRef<Character[]>([])
 
+const search = ref('')
+
+const listHeight = ref<string>()
+const listElement = useTemplateRef('list-ref')
+
+const visibleCharacters = computed(() => {
+  const query = search.value.trim().toLowerCase()
+
+  return characters.value.filter((character) => `${character.name} ${character.world} ${character.server}`.toLowerCase().includes(query))
+})
+
 const dialogElement = useTemplateRef('dialog-ref')
 const iframeElement = useTemplateRef('iframe-ref')
 
@@ -183,6 +199,14 @@ const modeOptions = computed<SelectOption<EndpointMode>[]>(() => MODES.map((valu
 watch(mode, (value) => {
   if (Store.isPermanent()) {
     Store.shared.set('endpoint_mode', value, true)
+  }
+})
+
+watch(search, (value, previous) => {
+  if (!value) {
+    listHeight.value = undefined
+  } else if (!previous && listElement.value) {
+    listHeight.value = `${listElement.value.offsetHeight}px`
   }
 })
 
@@ -302,6 +326,7 @@ function getCharacterPortrait(character: EndpointCharacter): Character['portrait
 function waitForCharacters(available: Character[]) {
   characters.value = available
   selectedCharacters.value = available.length === 1 ? [available[0]] : []
+  search.value = ''
   step.value = 'character'
 
   return new Promise<Character[] | null>((resolve) => {

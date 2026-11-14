@@ -1445,7 +1445,8 @@
             "message": "Fetching data"
         },
         "step7": {
-            "title": "Select your character"
+            "title": "Select your character",
+            "search": "Search by name or server"
         },
         "warnings": {
             "title": "Some characters could not be fully captured",
