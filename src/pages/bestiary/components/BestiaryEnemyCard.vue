@@ -16,6 +16,19 @@
       <span class="text-base leading-5 font-bold text-white">{{ props.name }}</span>
       <span v-if="props.description" class="text-[13px] leading-[1.35] text-white/75">{{ props.description }}</span>
     </div>
+    <div v-if="props.boss?.reward || props.experience" class="flex items-center gap-3 border-y border-white/5 bg-black/25 px-3.5 py-2">
+      <div v-if="props.boss?.reward" class="flex min-w-0 items-center gap-2">
+        <img :src="`/res/rewards/${rewardIcon}.webp`" alt="" class="size-[22px] flex-none object-contain" />
+        <div class="flex min-w-0 flex-col">
+          <span class="truncate leading-5 font-bold">{{ localize(`rewards.${props.boss.reward}`) }}</span>
+          <span v-if="props.boss.reward === REWARD_ITEM_EPIC_UNIVERSAL" class="text-[13px] leading-4 text-white/60">{{ localize('rewards.any_class') }}</span>
+        </div>
+      </div>
+      <span v-if="props.experience" class="ml-auto flex items-center gap-1.5 font-bold whitespace-nowrap">
+        {{ formatSpacedNumber(props.experience) }}
+        <img src="/res/rewards/xp.webp" :alt="localize('experience')" class="h-[13px]" />
+      </span>
+    </div>
     <div v-if="props.boss" class="flex flex-col gap-2.5 px-3.5 pt-3 pb-3.5">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
@@ -42,7 +55,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
-import { type DungeonClassBoss } from '~/sim/data/dungeons'
+import { REWARD_ITEM_EPIC, REWARD_ITEM_EPIC_UNIVERSAL, type DungeonClassBoss } from '~/sim/data/dungeons'
 import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
@@ -74,6 +87,10 @@ const props = defineProps<{
    * Floor armor, the stored value or the one the sim generates from class and level
    */
   armor?: number
+  /**
+   * XP the floor gives
+   */
+  experience?: number
 }>()
 
 const emit = defineEmits<{
@@ -101,6 +118,8 @@ function copy() {
     copied.value = false
   }, 1000)
 }
+
+const rewardIcon = computed(() => (props.boss?.reward === REWARD_ITEM_EPIC_UNIVERSAL ? REWARD_ITEM_EPIC : props.boss?.reward))
 
 const rows = computed(() => {
   const boss = props.boss

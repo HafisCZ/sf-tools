@@ -2377,6 +2377,14 @@
         "health": "Health",
         "weapon_range": "Weapon Range",
         "copy": "Copy for simulator",
+        "rewards": {
+            "gold": "Gold",
+            "item": "Item",
+            "item_epic": "Epic item",
+            "item_epic_universal": "Epic item",
+            "any_class": "Any class"
+        },
+        "experience": "XP",
         "footer#": "Special thanks to Milado"
     }
 }
