@@ -339,6 +339,7 @@ const FIGHT_TYPES = {
   GuildRaid: 20,
   TutorialDungeon: 21,
   DrivingDungeon: 22,
+  ClassDungeon: 28,
   FortRevenge: 109
 }
 
