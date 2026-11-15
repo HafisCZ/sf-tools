@@ -104,7 +104,7 @@ module Synchronize
     101 => 301,
     102 => 302,
     103 => 303,
-    104 => nil
+    104 => 304
   }.freeze
 
   LANGUAGE_LIST = {

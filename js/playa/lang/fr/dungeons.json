@@ -732,5 +732,9 @@
       "9": "Entre nécromancie de masse et rêve de conquête du monde, il est constamment à la recherche du chirurgien orthopédiste le plus proche, en vain jusqu'à présent. Avant de faire craquer ses os, il va lever la main sur toi !",
       "10": "Il se considère comme le gardien de l'équilibre, mais malheureusement, il fait plutôt pencher la balance en faveur de la mort. Ne t'en fais pas, après la mort, il te ressuscitera pour servir ses propres fins."
     }
+  },
+  "304": {
+    "name": "Portail de classe des aberrations",
+    "description": "Fiers, sages, agiles et ressuscités ? C'est un peu ça, mais aussi carrément corrompus..."
   }
 }

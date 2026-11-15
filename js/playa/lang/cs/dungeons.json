@@ -732,5 +732,9 @@
       "9": "Mezi masovou nekromancií a cílem dobýt svět neustále hledá nejbližšího ortopeda, zatím marně. Dřív než si sám poláme kosti, sáhne po tobě!",
       "10": "Považuje se za strážce rovnováhy, ale bohužel všechno váží ve prospěch smrti. Neboj se, po smrti tě vzkřísí pro své vlastní účely."
     }
+  },
+  "304": {
+    "name": "Třídní portál zrůdností",
+    "description": "Hrdí, moudří, hbití a vzkříšení? Svým způsobem ano, ale taky tak nějak dost zkažení..."
   }
 }

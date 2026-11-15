@@ -2384,6 +2384,11 @@
             "item": "Item",
             "item_epic": "Epic item",
             "item_epic_universal": "Epic item",
+            "wood": "Wood",
+            "stone": "Stone",
+            "metal": "Metal",
+            "arcane": "Arcane splinters",
+            "fruit_basket": "Fruit basket",
             "any_class": "Any class"
         },
         "experience": "XP",
