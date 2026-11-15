@@ -17,9 +17,9 @@
             </template>
 
             <div class="flex flex-col gap-3.5">
-              <SFNumber ref="levels-ref" v-model="modifiers.levels" :label="localize('modifiers.levels')" :min="0" :step="1" placeholder="0" />
+              <SFNumber ref="levels-ref" v-model="modifiers.levels" :label="localize('modifiers.levels')" :min="0" :step="1" placeholder="0" prefix="+" />
               <div role="group" :aria-label="localize('modifiers.attributes')" class="grid grid-cols-3 gap-3.5 lg:grid-cols-5">
-                <SFNumber v-for="index in 5" ref="attributes-ref" :key="index" v-model="modifiers.attributes[index - 1]" :label="localize.global(`general.attribute${index}`)" :min="0" :step="1" placeholder="0" />
+                <SFNumber v-for="index in 5" ref="attributes-ref" :key="index" v-model="modifiers.attributes[index - 1]" :label="localize.global(`general.attribute${index}`)" :min="0" :step="1" placeholder="0" prefix="+" />
               </div>
               <SFCheckbox v-model="modifiers.enchantmentsAndPotions" :label="localize('modifiers.enchantments')" />
               <SFCheckbox v-model="modifiers.equipment" :label="localize('modifiers.equipment')" />

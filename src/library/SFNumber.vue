@@ -4,6 +4,7 @@
       <slot name="label">{{ props.label }}</slot>
     </label>
     <span class="relative flex">
+      <span v-if="props.prefix" aria-hidden="true" class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-white/60">{{ props.prefix }}</span>
       <input
         :id="id"
         ref="input-ref"
@@ -13,7 +14,7 @@
         :inputmode="allowsDecimals ? 'decimal' : 'numeric'"
         :placeholder="props.placeholder"
         class="w-full rounded-md border bg-surface py-2 leading-5 text-white/90 outline-none read-only:text-white/60 read-only:caret-transparent placeholder:text-white/40"
-        :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.suffix ? 'pr-8 pl-3' : 'px-3', { 'text-center': props.centered }]"
+        :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.prefix ? 'pl-6' : 'pl-3', props.suffix ? 'pr-8' : 'pr-3', { 'text-center': props.centered }]"
         :aria-invalid="validationResult?.[0] === 'error'"
         :aria-describedby="descriptionId"
         @change="clampValue"
@@ -82,6 +83,10 @@ const props = defineProps<
      * Text shown inside the field on the right, like a unit
      */
     suffix?: string
+    /**
+     * Text shown inside the field on the left, like a sign
+     */
+    prefix?: string
     /**
      * Where the validation message shows: under the field, or over the page while the field has focus
      */
