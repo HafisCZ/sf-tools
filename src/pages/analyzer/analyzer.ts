@@ -216,6 +216,7 @@ export type FightRound = {
   attackTypeSecondary: boolean
   attackTypeCritical: boolean
   attackTypeSpecial: boolean
+  attackTerminated?: boolean
   attackerDeaths?: number
   targetDeaths?: number
   attackerTinctureThrow?: boolean
@@ -641,6 +642,11 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
 
     round.attackRage = 1 + (index + attackRageOffset) / 6
 
+    // The game kills the target on the 999th rage step, chained attacks included
+    if (index + attackRageOffset >= 998) {
+      round.attackTerminated = true
+    }
+
     if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
       // Increase rage if it's a chained attack
       attackRageOffset++
@@ -672,7 +678,8 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
     }
   })
 
-  return processedRounds
+  const terminatedIndex = processedRounds.findIndex((round) => round.attackTerminated)
+  return terminatedIndex === -1 ? processedRounds : processedRounds.slice(0, terminatedIndex + 1)
 }
 
 function readOwnPlayer(r: PlayaData, lastPlayer: DigestedPlayer | undefined): DigestedPlayer | null {
@@ -1150,8 +1157,8 @@ function decorateRound(round: FightRound) {
     round.targetSpecialDisplay = { type: 'bard_song', level: effect.tier, notes: effect.duration }
   }
 
-  // Skip if missed or special
-  if (round.attackTypeSpecial || (round.defenseType && round.defenseType !== DEFENSE_TYPE_BLOCK_HEAL)) {
+  // Skip if missed, special or terminated
+  if (round.attackTerminated || round.attackTypeSpecial || (round.defenseType && round.defenseType !== DEFENSE_TYPE_BLOCK_HEAL)) {
     return
   }
 
@@ -1502,7 +1509,8 @@ function analyzeChances(fights: GroupFight[], fighter: Fighter, model: Simulator
 
   const isSpecialBlocked = opponentModel.Config.BypassSpecial ?? false
 
-  for (const { rounds } of fights) {
+  for (const fight of fights) {
+    const rounds = fight.rounds.filter((round) => !round.attackTerminated)
     const turns = splitTurns(rounds)
 
     if (turns.length === 0) continue
@@ -1677,7 +1685,7 @@ function cleanCopy<TObject, TKey extends keyof TObject>(object: TObject, whiteli
 
 const FIGHTER_WHITELIST = ['ID', 'Name', 'Level', 'TotalHealth', 'Health', 'Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck', 'Class', 'Items'] as const
 
-const ROUND_WHITELIST = ['attackerId', 'targetId', 'attackerState', 'targetState', 'attackType', 'defenseType', 'attackerHealth', 'targetHealth', 'attackerEffects', 'targetEffects', 'attackDamage', 'attackRage', 'attackTypeSecondary', 'attackTypeCritical', 'attackTypeSpecial'] as const
+const ROUND_WHITELIST = ['attackerId', 'targetId', 'attackerState', 'targetState', 'attackType', 'defenseType', 'attackerHealth', 'targetHealth', 'attackerEffects', 'targetEffects', 'attackDamage', 'attackRage', 'attackTypeSecondary', 'attackTypeCritical', 'attackTypeSpecial', 'attackTerminated'] as const
 
 export function exportFights(fights: Pick<Fight, 'fighterA' | 'fighterB' | 'rounds'>[]) {
   // Collect all players and fights

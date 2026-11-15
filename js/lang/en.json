@@ -1090,7 +1090,8 @@
             "type": "Type",
             "health": "Health left",
             "damage": "Damage",
-            "damage_base": "Base damage"
+            "damage_base": "Base damage",
+            "terminated": "Fight terminated"
         },
         "toast_import_error": {
             "title": "Import failed",

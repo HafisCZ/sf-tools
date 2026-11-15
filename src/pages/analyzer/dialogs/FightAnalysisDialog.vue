@@ -114,7 +114,7 @@ const keywords = config.all('accessor')
 
 const rounds = props.fights.flatMap((fight) =>
   fight.rounds
-    .filter((round) => !round.attackTypeSpecial)
+    .filter((round) => !round.attackTypeSpecial && !round.attackTerminated)
     .map((round, index, array) => ({
       Attacker: round.attacker,
       Target: round.target,

@@ -169,7 +169,7 @@
                 <SFTableCell align="center" />
               </template>
               <template v-else>
-                <SFTableCell align="center">{{ RAGE_FORMATS[rageDisplayMode](round.attackRage) }}</SFTableCell>
+                <SFTableCell align="center">{{ round.attackTerminated ? '' : RAGE_FORMATS[rageDisplayMode](round.attackRage) }}</SFTableCell>
                 <SFTableCell align="center" class="truncate">{{ getFighterName(round.attacker) }}</SFTableCell>
                 <SFTableCell align="center">
                   <FighterState v-if="round.attackerSpecialDisplay" :state="round.attackerSpecialDisplay" :copy="isCopying" />
@@ -178,9 +178,12 @@
                 <SFTableCell align="center">
                   <FighterState v-if="round.targetSpecialDisplay" :state="round.targetSpecialDisplay" :copy="isCopying" />
                 </SFTableCell>
-                <SFTableCell align="center" :class="getAttackClass(round)">{{ formatAttackType(round.attackType) }}{{ round.defenseType ? ` - ${formatDefenseType(round.defenseType)}` : '' }}</SFTableCell>
+                <SFTableCell align="center" :class="getAttackClass(round)">
+                  <template v-if="round.attackTerminated">{{ localize('table.terminated') }}</template>
+                  <template v-else>{{ formatAttackType(round.attackType) }}{{ round.defenseType ? ` - ${formatDefenseType(round.defenseType)}` : '' }}</template>
+                </SFTableCell>
                 <SFTableCell align="center" :class="getAttackClass(round)">{{ round.hasDamage ? formatSpacedNumber(Math.abs(round.attackDamage), ' ') : '' }}</SFTableCell>
-                <SFTableCell align="center">{{ formatHealth(round.targetHealth, round.target) }}</SFTableCell>
+                <SFTableCell align="center">{{ round.attackTerminated ? '' : formatHealth(round.targetHealth, round.target) }}</SFTableCell>
                 <SFTableCell align="center">
                   {{ round.hasBase && round.attackBase !== undefined ? formatSpacedNumber(round.attackBase, ' ') : '' }}
                   <span v-if="round.hasError" class="text-[orangered]">!</span>
@@ -504,7 +507,9 @@ function isRevive(round: FightRound) {
 }
 
 function getAttackClass(round: FightRound) {
-  if (round.defenseType === DEFENSE_TYPE_BLOCK_HEAL) {
+  if (round.attackTerminated) {
+    return 'text-[violet]'
+  } else if (round.defenseType === DEFENSE_TYPE_BLOCK_HEAL) {
     return round.attackTypeCritical ? 'font-bold text-[green]' : 'text-[greenyellow]'
   } else if (round.attackTypeCritical) {
     return 'font-bold text-[orangered]'
