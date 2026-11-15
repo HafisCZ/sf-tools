@@ -96,6 +96,7 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import {
+  CLASS_DUNGEONS,
   copyDungeonSharedValues,
   createDungeonFight,
   createSimulatorBoss,
@@ -110,6 +111,7 @@ import {
   getRemainingBosses,
   PREVIOUS_DUNGEONS,
   SANDSTORM,
+  TOWER,
   TWISTER,
   type Dungeon,
   type DungeonEntry,
@@ -133,6 +135,8 @@ type DungeonsOptions = {
   threshold_max: number
   include_twister: boolean
   include_sandstorm: boolean
+  include_tower: boolean
+  include_class_dungeons: boolean
   twister_floors: number
   sandstorm_floors: number
   decimals: number
@@ -146,7 +150,7 @@ const localize = useLocalize('dungeons')
 
 const dungeonSimulator = useDungeonSimulator()
 
-const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2, show_mushrooms: false, image_background: 'dark' })
+const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, include_tower: true, include_class_dungeons: true, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2, show_mushrooms: false, image_background: 'dark' })
 
 const dungeonId = ref('1')
 const bossId = ref(getFirstBossId('1'))
@@ -582,7 +586,9 @@ async function runNext() {
   const thresholdMin = Math.min(Math.max(options.threshold_min, 0), 100)
   const thresholdMax = Math.min(Math.max(options.threshold_max, thresholdMin), 100)
 
-  const entries = openBosses.value.filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm)).flatMap(getLimitedRemainingBosses)
+  const entries = openBosses.value
+    .filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm) && (dungeon.id !== TOWER || options.include_tower) && (dungeon.id < CLASS_DUNGEONS || options.include_class_dungeons))
+    .flatMap(getLimitedRemainingBosses)
 
   const next = await dungeonSimulator.simulateNext(prepareFights(entries), { min: thresholdMin, max: thresholdMax }, { instances, iterations })
 
@@ -605,6 +611,8 @@ function openOptions() {
       thresholdMax: options.threshold_max,
       includeTwister: options.include_twister,
       includeSandstorm: options.include_sandstorm,
+      includeTower: options.include_tower,
+      includeClassDungeons: options.include_class_dungeons,
       twisterFloors: options.twister_floors,
       sandstormFloors: options.sandstorm_floors,
       decimals: options.decimals,
@@ -617,6 +625,8 @@ function openOptions() {
           options.threshold_max = values.thresholdMax
           options.include_twister = values.includeTwister
           options.include_sandstorm = values.includeSandstorm
+          options.include_tower = values.includeTower
+          options.include_class_dungeons = values.includeClassDungeons
           options.twister_floors = values.twisterFloors
           options.sandstorm_floors = values.sandstormFloors
           options.decimals = values.decimals

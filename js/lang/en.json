@@ -1537,9 +1537,11 @@
                 "description": "More only keeps floors with a win chance in this range. When a floor falls outside it, the rest of that dungeon is skipped.",
                 "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped",
                 "more": "Additional dungeons in More mode",
-                "more_description": "Include Twister or Sandstorm when using the More mode",
+                "more_description": "Include Twister, Sandstorm, Tower or Class dungeons when using the More mode",
                 "include_twister": "Include Twister",
-                "include_sandstorm": "Include Sandstorm"
+                "include_sandstorm": "Include Sandstorm",
+                "include_tower": "Include Tower",
+                "include_class_dungeons": "Include Class dungeons"
             },
             "limits": {
                 "title": "Simulation limits",

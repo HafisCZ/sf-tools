@@ -14,9 +14,11 @@
         <SFHeading level="6">{{ localize('threshold.more') }}</SFHeading>
         <SFParagraph type="muted" size="sm">{{ localize('threshold.more_description') }}</SFParagraph>
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="grid grid-cols-2 gap-x-[14px] gap-y-2">
         <SFCheckbox ref="twister-ref" v-model="includeTwister" :label="localize('threshold.include_twister')" />
         <SFCheckbox ref="sandstorm-ref" v-model="includeSandstorm" :label="localize('threshold.include_sandstorm')" />
+        <SFCheckbox ref="tower-ref" v-model="includeTower" :label="localize('threshold.include_tower')" />
+        <SFCheckbox ref="class-dungeons-ref" v-model="includeClassDungeons" :label="localize('threshold.include_class_dungeons')" />
       </div>
       <div class="flex flex-col gap-1 border-t border-line pt-4">
         <SFHeading level="6">{{ localize('limits.title') }}</SFHeading>
@@ -67,6 +69,8 @@ type DungeonOptions = {
   thresholdMax: number
   includeTwister: boolean
   includeSandstorm: boolean
+  includeTower: boolean
+  includeClassDungeons: boolean
   twisterFloors: number
   sandstormFloors: number
   decimals: number
@@ -90,6 +94,14 @@ const props = defineProps<{
    * Includes the Sandstorm in More
    */
   includeSandstorm: boolean
+  /**
+   * Includes the Tower in More
+   */
+  includeTower: boolean
+  /**
+   * Includes the class dungeons in More
+   */
+  includeClassDungeons: boolean
   /**
    * Most Twister floors simulated, counted from the starting floor
    */
@@ -122,6 +134,8 @@ const minimum = ref<number | null>(props.thresholdMin)
 const maximum = ref<number | null>(props.thresholdMax)
 const includeTwister = ref(props.includeTwister)
 const includeSandstorm = ref(props.includeSandstorm)
+const includeTower = ref(props.includeTower)
+const includeClassDungeons = ref(props.includeClassDungeons)
 const twisterFloors = ref<number | null>(props.twisterFloors)
 const sandstormFloors = ref<number | null>(props.sandstormFloors)
 const decimals = ref(props.decimals)
@@ -138,6 +152,8 @@ const isValid = useComponentValidation(
   useTemplateRef('maximum-ref'),
   useTemplateRef('twister-ref'),
   useTemplateRef('sandstorm-ref'),
+  useTemplateRef('tower-ref'),
+  useTemplateRef('class-dungeons-ref'),
   useTemplateRef('twister-floors-ref'),
   useTemplateRef('sandstorm-floors-ref'),
   useTemplateRef('precision-ref'),
@@ -152,6 +168,8 @@ function save() {
     thresholdMax: Math.round(maximum.value * 10) / 10,
     includeTwister: includeTwister.value,
     includeSandstorm: includeSandstorm.value,
+    includeTower: includeTower.value,
+    includeClassDungeons: includeClassDungeons.value,
     twisterFloors: twisterFloors.value,
     sandstormFloors: sandstormFloors.value,
     decimals: decimals.value,
