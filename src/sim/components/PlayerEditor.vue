@@ -1,18 +1,19 @@
 <template>
   <div class="flex flex-col">
-    <div v-if="props.fighters?.length" role="tablist" :aria-label="localize('fighters')" class="relative z-1 -mb-px grid auto-cols-fr grid-flow-col items-end gap-1">
+    <div v-if="props.fighters?.length" role="tablist" :aria-label="localize('fighters')" class="relative z-1 -mb-px grid grid-cols-4 gap-1 max-sm:gap-0.75">
       <button
         v-for="tab in props.fighters"
         :key="tab.index"
         type="button"
         role="tab"
         :aria-selected="tab.index === fighter"
-        class="flex min-w-0 cursor-pointer items-center gap-2.5 rounded-t-md border border-t-3 border-line pr-2.5 pl-1.5 text-left font-bold outline-none focus-visible:outline-2 focus-visible:outline-accent"
-        :class="[FIGHTER_TAB_CLASSES[tab.index].stripe, tab.index === fighter ? 'border-b-surface bg-surface pt-2.5 pb-2 text-white' : [FIGHTER_TAB_CLASSES[tab.index].tint, 'py-1.5 text-white/80 hover:text-white']]"
+        class="group relative h-18 min-w-0 cursor-pointer overflow-hidden rounded-t-md border border-b-0 border-line bg-dialog text-left outline-none focus-visible:outline-2 focus-visible:outline-accent max-sm:h-16"
         @click="fighter = tab.index"
       >
-        <img :src="`/res/portrait${tab.index || ''}.png`" alt="" class="size-7.5 shrink-0 rounded-md object-cover" />
-        <span class="truncate">{{ tab.name }}</span>
+        <img :src="`/res/portrait${tab.index || ''}.png`" alt="" class="absolute inset-0 size-full object-cover object-[50%_30%] transition" :class="{ 'brightness-50 grayscale-85 group-hover:brightness-80 group-hover:grayscale-25': tab.index !== fighter }" />
+        <span class="absolute inset-0 bg-linear-to-t from-dialog/92 via-dialog/45 via-32% to-transparent to-60%" />
+        <span class="absolute inset-x-2.5 bottom-2.25 truncate font-bold max-sm:inset-x-1.75 max-sm:bottom-1.75 max-sm:text-[13px]" :class="tab.index === fighter ? 'text-white' : 'text-white/80 group-hover:text-white'">{{ tab.name }}</span>
+        <span class="absolute inset-x-0 bottom-0 h-0.75 transition" :class="[FIGHTER_TAB_CLASSES[tab.index], { 'opacity-35': tab.index !== fighter }]" />
       </button>
     </div>
 
@@ -203,12 +204,7 @@ type WeaponFields = {
 const SNACK_POTENCY_OPTIONS: SelectOption[] = sequence(11).map((value) => ({ value: String(value * 2), label: `${value * 2} %` }))
 
 // Tab colors of the game's character screen, player first
-const FIGHTER_TAB_CLASSES = [
-  { stripe: 'border-t-[#fc9117]', tint: 'bg-[#fc9117]/12' },
-  { stripe: 'border-t-[#377ae4]', tint: 'bg-[#377ae4]/12' },
-  { stripe: 'border-t-[#40992d]', tint: 'bg-[#40992d]/12' },
-  { stripe: 'border-t-[#e8d208]', tint: 'bg-[#e8d208]/12' }
-]
+const FIGHTER_TAB_CLASSES = ['bg-[#fc9117]', 'bg-[#377ae4]', 'bg-[#40992d]', 'bg-[#e8d208]']
 
 const localize = useLocalize('editor')
 
