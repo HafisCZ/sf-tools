@@ -13,12 +13,12 @@
         <img
           :src="tab.index ? `/res/companions/${tab.index}.webp` : '/res/portrait.png'"
           alt=""
-          class="absolute transition"
-          :class="[tab.index ? 'inset-x-0 top-0 w-full' : 'inset-0 size-full object-cover object-[50%_30%]', { 'brightness-50 grayscale-85 group-hover:brightness-80 group-hover:grayscale-25': tab.index !== fighter }]"
+          class="absolute max-w-none transition"
+          :class="[FIGHTER_TAB_CLASSES[tab.index].picture, { 'brightness-50 grayscale-85 group-hover:brightness-80 group-hover:grayscale-25': tab.index !== fighter }]"
         />
         <span class="absolute inset-0 bg-linear-to-t from-dialog/92 via-dialog/45 via-32% to-transparent to-60%" />
         <span class="absolute inset-x-2.5 bottom-2.25 truncate font-bold max-sm:inset-x-1.75 max-sm:bottom-1.75 max-sm:text-[13px]" :class="tab.index === fighter ? 'text-white' : 'text-white/80 group-hover:text-white'">{{ tab.name }}</span>
-        <span class="absolute inset-x-0 bottom-0 h-0.75 transition" :class="[FIGHTER_TAB_CLASSES[tab.index], { 'opacity-35': tab.index !== fighter }]" />
+        <span class="absolute inset-x-0 bottom-0 h-0.75 transition" :class="[FIGHTER_TAB_CLASSES[tab.index].bar, { 'opacity-35': tab.index !== fighter }]" />
       </button>
     </div>
 
@@ -208,8 +208,13 @@ type WeaponFields = {
 
 const SNACK_POTENCY_OPTIONS: SelectOption[] = sequence(11).map((value) => ({ value: String(value * 2), label: `${value * 2} %` }))
 
-// Tab colors of the game's character screen, player first
-const FIGHTER_TAB_CLASSES = ['bg-[#fc9117]', 'bg-[#377ae4]', 'bg-[#40992d]', 'bg-[#e8d208]']
+// Tab colors of the game's character screen and the head and shoulders crop of each picture, player first
+const FIGHTER_TAB_CLASSES = [
+  { bar: 'bg-[#fc9117]', picture: 'inset-0 size-full object-cover object-[50%_30%]' },
+  { bar: 'bg-[#377ae4]', picture: 'top-0 left-0 w-[130%] -translate-x-[11.54%] -translate-y-[3.57%]' },
+  { bar: 'bg-[#40992d]', picture: 'top-0 left-0 w-[136.84%] -translate-x-[13.46%] -translate-y-[13.57%]' },
+  { bar: 'bg-[#e8d208]', picture: 'top-0 left-0 w-[173.33%] -translate-x-[19.23%] -translate-y-[4.29%]' }
+]
 
 const localize = useLocalize('editor')
 
