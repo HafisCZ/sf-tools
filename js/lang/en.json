@@ -1084,6 +1084,7 @@
         "simulate": "Open simulator with current data",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
+            "select_terminated": "Terminated",
             "rage": "Rage",
             "attacker": "Attacker",
             "target": "Target",

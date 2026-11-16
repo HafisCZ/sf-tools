@@ -319,7 +319,7 @@ const fightOptions = computed<SelectOption<GroupFight | null>[]>(() => {
 
   return group.fights.map((fight, index) => ({
     value: fight,
-    label: localize('table.select', { index: index + 1, rounds: fight.rounds.length, winner: getFighterName(fight.winner), nameA, nameB })
+    label: localize('table.select', { index: index + 1, rounds: fight.rounds.length, winner: fight.terminated ? localize('table.select_terminated') : getFighterName(fight.winner), nameA, nameB })
   }))
 })
 

@@ -244,6 +244,7 @@ export type GroupFight = {
   index: string
   rounds: FightRound[]
   winner: Fighter
+  terminated: boolean
 }
 
 export type FightGroup = {
@@ -451,7 +452,7 @@ export function getFighterName(fighter: Fighter) {
 }
 
 export function countWins(group: FightGroup, fighter: Fighter) {
-  return group.fights.filter((fight) => fight.winner.ID === fighter.ID).length
+  return group.fights.filter((fight) => !fight.terminated && fight.winner.ID === fighter.ID).length
 }
 
 // Decode attack type
@@ -926,7 +927,7 @@ export function groupFights(fights: Fight[], allPlayers: AnalyzerPlayer[], sort:
       groups.push(group)
     }
 
-    group.fights.push({ index: fight.index, rounds, winner: fight.winner })
+    group.fights.push({ index: fight.index, rounds, winner: fight.winner, terminated: rounds[rounds.length - 1].attackTerminated === true })
   })
 
   for (const player of allPlayers) {

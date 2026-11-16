@@ -22,9 +22,11 @@
     </span>
     <span class="flex h-2 overflow-hidden rounded-full bg-white/15">
       <span class="bg-accent" :style="{ width: `${rateA}%` }" />
+      <span v-if="terminated > 0" class="bg-[repeating-linear-gradient(-45deg,rgb(255_255_255/0.35)_0_3px,transparent_3px_6px)]" :style="{ width: `${rateTerminated}%` }" />
     </span>
     <span class="flex justify-between text-xs text-white/50">
       <span>{{ rateA.toFixed(1) }}%</span>
+      <span v-if="terminated > 0">{{ rateTerminated.toFixed(1) }}%</span>
       <span>{{ rateB.toFixed(1) }}%</span>
     </span>
   </span>
@@ -54,6 +56,9 @@ const winsB = computed(() => countWins(props.group, props.group.fighterB))
 
 const rateA = computed(() => (100 * winsA.value) / props.group.fights.length)
 const rateB = computed(() => (100 * winsB.value) / props.group.fights.length)
+
+const terminated = computed(() => props.group.fights.filter((fight) => fight.terminated).length)
+const rateTerminated = computed(() => (100 * terminated.value) / props.group.fights.length)
 
 const fightCount = computed(() => (props.group.fights.length === 1 ? localize('fight') : localize('fights', { count: props.group.fights.length })))
 </script>
