@@ -20,6 +20,23 @@ async function request<TResponse>(method: string, url: string, init?: RequestIni
   return data as TResponse
 }
 
+export async function fetchWithRetries<TResponse>(url: string) {
+  const attempts = 3
+  const delay = 500
+
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const response = await fetch(url)
+
+      return (await response.json()) as TResponse
+    } catch (error) {
+      if (attempt === attempts) throw error
+
+      await new Promise((resolve) => setTimeout(resolve, delay * attempt))
+    }
+  }
+}
+
 const BASE_URL = 'https://api.sftools.mar21.eu/api/'
 
 export class SiteAPI {

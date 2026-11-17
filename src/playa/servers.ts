@@ -1,3 +1,4 @@
+import { fetchWithRetries } from '~/core/api'
 import { Logger } from '~/core/logger'
 import { Store, StoreCache } from '~/core/store'
 
@@ -26,7 +27,7 @@ export class Playa {
   static async reload() {
     Logger.log('APPINFO', 'Fetching playa configuration because it is missing or expired')
 
-    const { servers: rawServers, recommended_app_version: rawClientVersion } = (await fetch('https://sfgame.net/config.json').then((response) => response.json())) as PlayaConfig
+    const { servers: rawServers, recommended_app_version: rawClientVersion } = await fetchWithRetries<PlayaConfig>('https://sfgame.net/config.json')
 
     const data = {
       servers: rawServers.reduce<Record<string, string>>(

@@ -1,4 +1,5 @@
 import { readonly, ref, shallowRef } from 'vue'
+import { fetchWithRetries } from '~/core/api'
 import { Logger } from '~/core/logger'
 import { Site } from '~/core/site'
 
@@ -53,8 +54,7 @@ async function fetchTranslation(value: string, url: string, ...path: string[]) {
     return {}
   }
 
-  const response = await fetch(url.replace('{{locale}}', value))
-  const tree: TranslationTree = await response.json()
+  const tree = await fetchWithRetries<TranslationTree>(url.replace('{{locale}}', value))
 
   return flatten({}, tree, ...path)
 }
