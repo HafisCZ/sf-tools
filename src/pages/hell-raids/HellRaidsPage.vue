@@ -295,7 +295,7 @@ function getRaidPicture(raid: number) {
 function getGroupStatus(group: PlannedGroup) {
   const floor = group.raid * HELL_RAID_FLOORS
 
-  if (group.beaten) {
+  if (group.members.length > 0) {
     return localize('status.beaten', { floor, members: formatMembers(group.members.length) })
   }
 
