@@ -32,6 +32,7 @@ const VITE_PAGES = [
   'dungeon-break',
   'build-planner',
   'bestiary',
+  'hell-raids',
   'privacy',
   'terms'
 ]

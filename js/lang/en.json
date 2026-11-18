@@ -237,6 +237,11 @@
             "title": "Bestiary",
             "desc": "All dungeon and expedition enemies in one place"
         },
+        "hell_raids": {
+            "title": "Hell Raid Planner",
+            "desc": "Split your guild to defeat as many Hellevator raids as possible",
+            "wip": "WIP"
+        },
         "idle": {
             "title": "Arena Manager",
             "desc": "Check the production of your Arena Manager"
@@ -2120,6 +2125,24 @@
             "hellevator_11": "HV 11: Limbo II",
             "hellevator_12": "HV 12: Highway to Hell II"
         }
+    },
+    "hell_raids": {
+        "plan": "Plan raids",
+        "raid_chance": "Minimum chance in raid",
+        "floor_chance": "Minimum chance in Hellevator",
+        "raids": "Raids to plan",
+        "raids_all": "All raids",
+        "top_floor": "Top floor",
+        "status": {
+            "beaten": "Floor #{floor}+, #{members}",
+            "lost": "Floor #{floor}+, not beatable, best try",
+            "locked": "Floor #{floor}+, nobody reached this floor"
+        },
+        "members": {
+            "one": "#{count} member",
+            "many": "#{count} members"
+        },
+        "unallocated": "Unallocated"
     },
     "idle": {
         "title": "Arena Manager",
