@@ -261,7 +261,7 @@ const sections = computed<Section[]>(() => {
       key: `raid_${group.raid}`,
       title: getRaidName(group.raid),
       status: getGroupStatus(group),
-      chance: group.chance === null ? undefined : `${formatChance(group.chance)}%`,
+      chance: group.chance === null ? '-' : `${formatChance(group.chance)}%`,
       picture: getRaidPicture(group.raid),
       beaten: group.beaten,
       members: listMembers(group.members)
