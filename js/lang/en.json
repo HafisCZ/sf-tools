@@ -2130,8 +2130,6 @@
         "plan": "Plan raids",
         "raid_chance": "Minimum chance in raid",
         "floor_chance": "Minimum chance in Hellevator",
-        "raids": "Raids to plan",
-        "raids_all": "All raids",
         "top_floor": "Top floor",
         "status": {
             "beaten": "Floor #{floor}+, #{members}",
