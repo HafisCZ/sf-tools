@@ -2133,7 +2133,7 @@
         "top_floor": "Top floor",
         "status": {
             "beaten": "Floor #{floor}+, #{members}",
-            "lost": "Floor #{floor}+, not beatable, best try",
+            "lost": "Floor #{floor}+",
             "locked": "Floor #{floor}+, nobody reached this floor"
         },
         "members": {
