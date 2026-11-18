@@ -1,4 +1,4 @@
-import { saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
+import { isLegacyEngine, saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
 import { type FightLog, type SimulatorPlayerInput, type SimulatorRun } from './types'
 import { WorkerBatch } from './workers'
 import type { HellevatorMessage, HellevatorResponse } from './workers/hellevator'
@@ -25,7 +25,8 @@ export function useHellevatorSimulator() {
           iterations,
           enemy,
           log: !!log,
-          config: simulatorConfig.value
+          config: simulatorConfig.value,
+          legacy: isLegacyEngine
         }
       )
     })

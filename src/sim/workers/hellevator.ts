@@ -1,5 +1,8 @@
+import { loadEngine } from '~/sim/engine/engine'
+import { runPlayers } from '~/sim/engine/players'
+import { runLegacyPlayers } from '~/sim/legacy/players'
 import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
-import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, resetState, SimulatorModel } from './base'
 
 export type HellevatorMessage = {
   config?: Record<string, unknown> | null
@@ -7,6 +10,7 @@ export type HellevatorMessage = {
   enemy: SimulatorPlayerInput
   iterations: number
   log?: boolean
+  legacy?: boolean
 }
 
 export type HellevatorResponse = {
@@ -15,49 +19,27 @@ export type HellevatorResponse = {
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-  self.addEventListener('message', function ({ data: { config, player, enemy, iterations, log } }: MessageEvent<HellevatorMessage>) {
-    resetState()
-
-    CONFIG.set(config)
-
-    FLAGS.log(!!log)
-
-    self.postMessage({
-      score: new HellevatorSimulator().simulate(player, enemy, iterations),
-      logs: FIGHT_LOG.dump()
-    } satisfies HellevatorResponse)
+  self.addEventListener('message', function ({ data }: MessageEvent<HellevatorMessage>) {
+    void respond(data)
   })
 }
 
-class HellevatorSimulator extends SimulatorBase {
-  declare ca: SimulatorModel
-  declare cb: SimulatorModel
+async function respond({ config, player, enemy, iterations, log, legacy }: HellevatorMessage) {
+  const engine = legacy ? null : await loadEngine()
 
-  simulate(player: SimulatorPlayerInput, enemy: SimulatorPlayerInput, iterations: number) {
-    this.cache(player, enemy)
+  resetState()
 
-    let score = 0
-    for (let i = 0; i < iterations; i++) {
-      score += this.fight() as unknown as number
-    }
+  CONFIG.set(config)
 
-    return score / iterations
-  }
+  const attacker = SimulatorModel.create(0, player)
+  const defender = SimulatorModel.create(1, enemy)
 
-  cache(source: SimulatorPlayerInput, target: SimulatorPlayerInput) {
-    this.ca = SimulatorModel.create(0, source)
-    this.cb = SimulatorModel.create(1, target)
+  const options = { iterations, log: !!log }
 
-    SimulatorModel.initializeFighters(this.ca, this.cb)
-  }
+  const result = engine ? runPlayers(engine, attacker, defender, options) : runLegacyPlayers(attacker, defender, options)
 
-  fight() {
-    this.a = this.ca
-    this.b = this.cb
-
-    this.a.resetHealth()
-    this.b.resetHealth()
-
-    return super.fight()
-  }
+  self.postMessage({
+    score: result.score / iterations,
+    logs: result.logs
+  } satisfies HellevatorResponse)
 }

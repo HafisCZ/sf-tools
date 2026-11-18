@@ -99,7 +99,7 @@ pub struct States {
 }
 
 impl States {
-    fn from_input(data: &StateInput) -> States {
+    pub fn from_input(data: &StateInput) -> States {
         let one = |state: &Option<Box<StateInput>>| {
             state.as_deref().map(State::from_input).unwrap_or_default()
         };
