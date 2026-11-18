@@ -159,19 +159,19 @@ type PlannedGroup = {
   beaten: boolean
   chance: number | null
   /**
-   * `index` of each member
+   * Index of each member
    */
   members: number[]
 }
 
 type Plan = {
   /**
-   * Top floor by member `index`
+   * Top floor by member index
    */
   floors: Map<number, number>
   groups: PlannedGroup[]
   /**
-   * `index` of each member no group needed
+   * Index of each member no group needed
    */
   overhead: number[]
 }

@@ -24,7 +24,7 @@ export type HellRaidGroup = {
   raid: number
   beaten: boolean
   /**
-   * Win chance in % of the group, of everyone who could attack when it has no members, `null` when nobody could
+   * Win chance in % of the group, of everyone who could attack when it has no members, null when nobody could
    */
   chance: number | null
   /**
@@ -53,6 +53,8 @@ export const HELL_RAID_FLOORS = 50
 type Player = PlayerModel | SimulatorData
 
 type ClimbMessage = HellevatorMessage & { member: number; floor: number }
+
+class PlanCancelled extends Error {}
 
 export function useHellRaidPlanner() {
   async function climb(players: Player[], floorChance: number, run: SimulatorRun) {
@@ -129,46 +131,43 @@ export function useHellRaidPlanner() {
     const floors = await climb(players, settings.floorChance, run)
     if (floors === null) return null
 
+    const weakestFirst = (a: number, b: number) => floors[a] - floors[b] || players[a].Level - players[b].Level
+
+    const canAttack = (member: number, raid: number) => floors[member] >= raid * HELL_RAID_FLOORS
+
     // Lowest top floor first, so the strong members stay free for the later raids
-    let free = players.map((_, member) => member).sort((a, b) => floors[a] - floors[b] || players[a].Level - players[b].Level)
+    let free = players.map((_, member) => member).sort(weakestFirst)
 
     const groups: HellRaidGroup[] = []
 
-    for (let raid = 1; raid <= HELL_RAIDS; raid++) {
-      const candidates = free.filter((member) => floors[member] >= raid * HELL_RAID_FLOORS)
-      if (candidates.length === 0) {
-        groups.push({ raid, beaten: false, chance: null, members: [] })
+    async function simulate(raid: number, members: number[]) {
+      const chance = await simulateRaid(
+        raid,
+        members.map((member) => players[member]),
+        run
+      )
 
-        continue
+      if (chance === null) {
+        throw new PlanCancelled()
       }
 
-      const simulateFirst = (count: number) =>
-        simulateRaid(
-          raid,
-          candidates.slice(0, count).map((member) => players[member]),
-          run
-        )
+      return chance
+    }
 
-      let chance = await simulateFirst(candidates.length)
-      if (chance === null) return null
+    // Fewest of the first pool members that reach the minimum chance together with the base members, all of them when not even they do
+    async function findCount(raid: number, base: number[], pool: number[]) {
+      let chance = await simulate(raid, [...base, ...pool])
       if (chance < settings.raidChance) {
-        const members = chance > 0 ? candidates : []
-
-        free = free.filter((member) => !members.includes(member))
-
-        groups.push({ raid, beaten: false, chance, members })
-
-        continue
+        return { beaten: false, count: pool.length, chance }
       }
 
-      let low = 1
-      let high = candidates.length
+      let low = base.length === 0 ? 1 : 0
+      let high = pool.length
 
       while (low < high) {
         const middle = Math.floor((low + high) / 2)
-        const result = await simulateFirst(middle)
+        const result = await simulate(raid, [...base, ...pool.slice(0, middle)])
 
-        if (result === null) return null
         if (result >= settings.raidChance) {
           high = middle
           chance = result
@@ -177,11 +176,122 @@ export function useHellRaidPlanner() {
         }
       }
 
-      const members = candidates.slice(0, high)
+      return { beaten: true, count: high, chance }
+    }
+
+    async function planRaid(raid: number) {
+      const candidates = free.filter((member) => canAttack(member, raid))
+      if (candidates.length === 0) {
+        groups.push({ raid, beaten: false, chance: null, members: [] })
+
+        return
+      }
+
+      const result = await findCount(raid, [], candidates)
+
+      // Everyone left attacks a raid they can still win, a raid at 0% takes nobody
+      let members = result.chance > 0 ? candidates.slice(0, result.count) : []
+      let chance = result.chance
+
+      if (result.beaten) {
+        // The weakest members the group wins without stay free, most of them it does not need at the low end
+        let low = 0
+        let high = members.length - 1
+
+        while (low < high) {
+          const middle = Math.ceil((low + high) / 2)
+          const trimmed = await simulate(raid, members.slice(middle))
+
+          if (trimmed >= settings.raidChance) {
+            low = middle
+            chance = trimmed
+          } else {
+            high = middle - 1
+          }
+        }
+
+        members = members.slice(low)
+      }
 
       free = free.filter((member) => !members.includes(member))
 
-      groups.push({ raid, beaten: true, chance, members })
+      groups.push({ raid, beaten: result.beaten, chance, members })
+    }
+
+    // Moves the strongest member of each earlier group up to the target raid, free members who cannot attack that raid take the place
+    async function reinforce(target: HellRaidGroup) {
+      let improved = false
+
+      const earlier = groups.filter((group) => group.beaten && group.raid < target.raid).reverse()
+
+      for (const group of earlier) {
+        const strongest = group.members.filter((member) => canAttack(member, target.raid)).at(-1)
+        if (strongest === undefined) continue
+
+        const rest = group.members.filter((member) => member !== strongest)
+
+        const pool = free.filter((member) => canAttack(member, group.raid))
+        if (pool.length === 0) continue
+
+        const refill = await findCount(group.raid, rest, pool)
+        if (!refill.beaten) continue
+
+        const moved = pool.slice(0, refill.count)
+
+        free = free.filter((member) => !moved.includes(member))
+
+        group.members = [...rest, ...moved].sort(weakestFirst)
+        group.chance = refill.chance
+
+        target.members = [...target.members, strongest].sort(weakestFirst)
+        target.chance = await simulate(target.raid, target.members)
+
+        improved = true
+
+        if (target.chance >= settings.raidChance) {
+          target.beaten = true
+
+          break
+        }
+      }
+
+      return improved
+    }
+
+    try {
+      for (let raid = 1; raid <= HELL_RAIDS; raid++) {
+        await planRaid(raid)
+      }
+
+      // Each round can win one more raid at most
+      for (let round = 0; round < HELL_RAIDS; round++) {
+        // First raid that has members but misses the minimum chance
+        const target = groups.find((group) => !group.beaten && group.members.length > 0)
+        if (!target) break
+
+        while (!target.beaten && (await reinforce(target))) {
+          // Moves members up until no earlier group can spare one
+        }
+
+        if (!target.beaten) break
+
+        // The raid can be beaten now, so it and the later raids are planned again from the members they had
+        for (const group of groups.splice(groups.indexOf(target))) {
+          free = [...free, ...group.members]
+        }
+
+        free.sort(weakestFirst)
+
+        for (let raid = target.raid; raid <= HELL_RAIDS; raid++) {
+          await planRaid(raid)
+        }
+      }
+    } catch (error) {
+      if (error instanceof PlanCancelled) {
+        return null
+      }
+
+      throw error
     }
 
     return { floors, groups, overhead: free, duration: Date.now() - timestamp }
