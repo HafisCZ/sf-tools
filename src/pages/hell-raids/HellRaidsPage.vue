@@ -53,13 +53,13 @@
         <PlayerEditor ref="editor-ref" snacks class="mt-[14px]" @copy="copyPlayer" />
       </div>
 
-      <SFTable dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto">
+      <SFTable dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto md:[scrollbar-gutter:stable]">
         <template #header>
           <SFTableRow>
-            <SFTableHeader align="center" class="w-12">#</SFTableHeader>
+            <SFTableHeader align="center" class="w-12 min-w-12">#</SFTableHeader>
             <SFTableHeader class="w-full">{{ localize.global('simulator.player') }}</SFTableHeader>
             <SFTableHeader align="right" class="whitespace-nowrap">{{ localize('top_floor') }}</SFTableHeader>
-            <SFTableHeader class="w-12" />
+            <SFTableHeader class="w-12 min-w-12" />
           </SFTableRow>
         </template>
         <template v-for="section in sections" :key="section.key">
@@ -299,7 +299,7 @@ function getGroupStatus(group: PlannedGroup) {
     return localize('status.beaten', { floor, members: formatMembers(group.members.length) })
   }
 
-  return localize(group.chance === null ? 'status.locked' : 'status.lost', { floor })
+  return localize('status.lost', { floor })
 }
 
 function formatMembers(count: number) {
