@@ -11,10 +11,6 @@ import type { RaidsMessage, RaidsResponse } from './workers/raids'
 
 export type HellRaidSettings = {
   /**
-   * Raids to plan, lowest first
-   */
-  raids: number[]
-  /**
    * Win chance in % a group needs against its raid
    */
   raidChance: number
@@ -138,9 +134,7 @@ export function useHellRaidPlanner() {
 
     const groups: HellRaidGroup[] = []
 
-    for (let position = 0; position < settings.raids.length; position++) {
-      const raid = settings.raids[position]
-
+    for (let raid = 1; raid <= HELL_RAIDS; raid++) {
       const candidates = free.filter((member) => floors[member] >= raid * HELL_RAID_FLOORS)
       if (candidates.length === 0) {
         groups.push({ raid, beaten: false, chance: null, members: [] })

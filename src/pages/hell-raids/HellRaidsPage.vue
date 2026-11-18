@@ -22,8 +22,6 @@
           <SFNumber ref="floor-chance-ref" v-model="floorChance" :label="localize('floor_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
         </div>
 
-        <SFMultiSelect v-model="selectedRaids" :label="localize('raids')" :options="raidOptions" :placeholder="localize('raids_all')" class="mt-[14px]" />
-
         <div class="mt-10 grid grid-cols-16 items-center gap-[14px]">
           <SFButton variant="outline" block class="col-span-5" :disabled="!isEditorValid" @click="addPlayer">
             {{ localize.global('simulator.add') }}
@@ -55,7 +53,7 @@
         <PlayerEditor ref="editor-ref" snacks class="mt-[14px]" @copy="copyPlayer" />
       </div>
 
-      <SFTable dense class="self-start">
+      <SFTable dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto">
         <template #header>
           <SFTableRow>
             <SFTableHeader align="center" class="w-12">#</SFTableHeader>
@@ -122,17 +120,15 @@
 import { computed, ref, shallowRef, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFIcon from '@library/SFIcon.vue'
-import SFMultiSelect from '@library/SFMultiSelect.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFTable from '@library/SFTable.vue'
 import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, useSubmit } from '@utils/utils'
+import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, setValueAtPath, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
 import { type PlayerModel } from '~/core/models/player'
@@ -147,7 +143,7 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { copySimulatorData, handleSimulatorPaste, isSimulatorDebug, preparePlayerData } from '~/sim/debug'
-import { HELL_RAID_FLOORS, HELL_RAIDS, useHellRaidPlanner } from '~/sim/hell-raids'
+import { HELL_RAID_FLOORS, useHellRaidPlanner } from '~/sim/hell-raids'
 
 defineOptions({
   name: 'HellRaidsPage'
@@ -197,10 +193,6 @@ const planner = useHellRaidPlanner()
 const raidChance = ref<number | null>(100)
 const floorChance = ref<number | null>(25)
 
-const selectedRaids = ref<number[]>([])
-
-const raidOptions = computed<SelectOption<number>[]>(() => sequence(HELL_RAIDS, 1).map((raid) => ({ value: raid, label: getRaidName(raid) })))
-
 const pasteMode = ref(false)
 
 const players = shallowRef<ListPlayer[]>([])
@@ -228,8 +220,6 @@ const planSubmit = useSubmit(async () => {
   const run = { instances: Math.max(1, settings.value.threads || 4), iterations: Math.max(1, settings.value.iterations || 25000) }
 
   const planSettings = {
-    // Nothing picked plans every raid
-    raids: sequence(HELL_RAIDS, 1).filter((raid) => selectedRaids.value.length === 0 || selectedRaids.value.includes(raid)),
     raidChance: raidChance.value ?? 100,
     floorChance: floorChance.value ?? 25
   }
