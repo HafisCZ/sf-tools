@@ -11,16 +11,18 @@ mod rng;
 mod simulators {
     pub mod dungeons;
     pub mod players;
+    pub mod raids;
 }
 
 use serde::Deserialize;
-use simulators::{dungeons, players};
+use simulators::{dungeons, players, raids};
 
 #[derive(Deserialize)]
 #[serde(tag = "mode", rename_all = "camelCase")]
 enum Request {
     Dungeons(dungeons::DungeonsRequest),
     Players(Box<players::PlayersRequest>),
+    Raids(raids::RaidsRequest),
 }
 
 static mut INPUT: Vec<u8> = Vec::new();
@@ -47,6 +49,8 @@ pub extern "C" fn run(length: u32) -> *const u8 {
         Ok(Request::Players(request)) => {
             serde_json::to_vec(&players::run(*request)).map_err(|error| error.to_string())
         }
+        Ok(Request::Raids(request)) => raids::run(request)
+            .and_then(|result| serde_json::to_vec(&result).map_err(|error| error.to_string())),
         Err(error) => Err(format!("Invalid engine request: {error}")),
     };
 

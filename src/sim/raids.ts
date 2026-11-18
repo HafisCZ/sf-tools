@@ -2,7 +2,7 @@ import { sequence, sum } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type SimulatorData } from '~/core/models/utils'
 import { getRaidEnemies, scaleRaidPlayers } from './data/raids'
-import { saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
+import { isLegacyEngine, saveSimulatorLog, simulatorConfig, type SimulatorLogTarget } from './debug'
 import { type FightLog, type SimulatorRun } from './types'
 import { WorkerBatch } from './workers'
 import type { RaidsMessage, RaidsResponse } from './workers/raids'
@@ -34,7 +34,8 @@ export function useRaidSimulator() {
           enemies,
           iterations,
           config: simulatorConfig.value,
-          log: !!log
+          log: !!log,
+          legacy: isLegacyEngine
         }
       )
     })

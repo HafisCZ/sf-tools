@@ -1,5 +1,8 @@
+import { loadEngine } from '~/sim/engine/engine'
+import { runRaids } from '~/sim/engine/raids'
+import { runLegacyRaids } from '~/sim/legacy/raids'
 import { type FightLog, type SimulatorPlayerInput } from '~/sim/types'
-import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FLAGS, resetState, SimulatorModel } from './base'
 
 type RaidEntity = {
   player: SimulatorPlayerInput
@@ -12,6 +15,7 @@ export type RaidsMessage = {
   enemies: RaidEntity[]
   iterations: number
   log?: boolean
+  legacy?: boolean
 }
 
 export type RaidsResponse = {
@@ -22,76 +26,32 @@ export type RaidsResponse = {
 }
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-  self.addEventListener('message', function ({ data: { config, flags, players, enemies, iterations, log } }: MessageEvent<RaidsMessage>) {
-    resetState()
-
-    CONFIG.set(config)
-
-    FLAGS.log(!!log)
-    FLAGS.set(flags)
-    FLAGS.set({
-      // Assuming true like with guild fights
-      NoGladiatorReduction: true
-    })
-
-    self.postMessage({
-      results: new RaidSimulator().simulate(players, enemies, iterations),
-      logs: FIGHT_LOG.dump()
-    } satisfies RaidsResponse)
+  self.addEventListener('message', function ({ data }: MessageEvent<RaidsMessage>) {
+    void respond(data)
   })
 }
 
-class RaidSimulator extends SimulatorBase {
-  declare cachedPlayers: SimulatorModel[]
-  declare cachedEnemies: SimulatorModel[]
-  declare currentPlayers: SimulatorModel[]
-  declare currentEnemies: SimulatorModel[]
+async function respond({ config, flags, players, enemies, iterations, log, legacy }: RaidsMessage) {
+  const engine = legacy ? null : await loadEngine()
 
-  simulate(players: RaidEntity[], enemies: RaidEntity[], iterations: number) {
-    let score = 0
+  resetState()
 
-    this.cachedPlayers = this.cache(players, 0)
-    this.cachedEnemies = this.cache(enemies, 1)
+  CONFIG.set(config)
 
-    for (let i = 0; i < iterations; i++) {
-      let { win } = this.battle()
+  FLAGS.set(flags)
+  FLAGS.set({
+    // Assuming true like with guild fights
+    NoGladiatorReduction: true
+  })
 
-      score += win as unknown as number
-    }
+  const playerModels = createModels(players, 0)
+  const enemyModels = createModels(enemies, 1)
 
-    return {
-      score
-    }
-  }
+  const options = { iterations, log: !!log }
 
-  cache(entities: RaidEntity[], index: number) {
-    return entities.map((entity) => SimulatorModel.create(index, entity.player)).sort((a, b) => a.Player.Level - b.Player.Level)
-  }
+  self.postMessage((engine ? runRaids(engine, playerModels, enemyModels, options) : runLegacyRaids(playerModels, enemyModels, options)) satisfies RaidsResponse)
+}
 
-  battle() {
-    this.currentPlayers = this.cachedPlayers.slice()
-    this.currentEnemies = this.cachedEnemies.slice()
-
-    for (const entity of this.currentPlayers) entity.resetHealth()
-    for (const entity of this.currentEnemies) entity.resetHealth()
-
-    while (this.currentPlayers.length > 0 && this.currentEnemies.length > 0) {
-      this.a = this.currentPlayers[0]
-      this.b = this.currentEnemies[0]
-
-      SimulatorModel.initializeFighters(this.a, this.b)
-
-      if ((this.fight() as unknown as number) == 0) {
-        this.currentPlayers.shift()
-      } else {
-        this.currentEnemies.shift()
-      }
-    }
-
-    return {
-      win: (this.currentPlayers.length > 0 ? this.currentPlayers[0].Index : this.currentEnemies[0].Index) == 0,
-      left1: this.currentPlayers.length,
-      left2: this.currentEnemies.length
-    }
-  }
+function createModels(entities: RaidEntity[], index: number) {
+  return entities.map((entity) => SimulatorModel.create(index, entity.player)).sort((a, b) => a.Player.Level - b.Player.Level)
 }
