@@ -24,7 +24,7 @@ export type HellRaidGroup = {
   raid: number
   beaten: boolean
   /**
-   * Win chance in % of the group, of everyone who could attack when not beaten, `null` when nobody could
+   * Win chance in % of the group, of everyone who could attack when it has no members, `null` when nobody could
    */
   chance: number | null
   /**
@@ -152,7 +152,11 @@ export function useHellRaidPlanner() {
       let chance = await simulateFirst(candidates.length)
       if (chance === null) return null
       if (chance < settings.raidChance) {
-        groups.push({ raid, beaten: false, chance, members: [] })
+        const members = chance > 0 ? candidates : []
+
+        free = free.filter((member) => !members.includes(member))
+
+        groups.push({ raid, beaten: false, chance, members })
 
         continue
       }
