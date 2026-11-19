@@ -2128,8 +2128,9 @@
     },
     "hell_raids": {
         "plan": "Plan raids",
-        "raid_chance": "Minimum chance in raid",
-        "floor_chance": "Minimum chance in Hellevator",
+        "raid_chance": "Min. chance in raid",
+        "floor_chance": "Min. chance in Hellevator",
+        "raid_limit": "Raids to clear",
         "top_floor": "Top floor",
         "item_level": "Items #{level}",
         "status": {

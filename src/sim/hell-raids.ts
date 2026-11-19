@@ -18,6 +18,10 @@ export type HellRaidSettings = {
    * Win chance in % at which a floor counts as defeated
    */
   floorChance: number
+  /**
+   * Raids planned, counted from HV 1
+   */
+  raidLimit: number
 }
 
 export type HellRaidGroup = {
@@ -57,8 +61,8 @@ type ClimbMessage = HellevatorMessage & { member: number; floor: number }
 class PlanCancelled extends Error {}
 
 export function useHellRaidPlanner() {
-  async function climb(players: Player[], floorChance: number, run: SimulatorRun) {
-    const enemies = getHellevatorEnemies(1, HELL_RAIDS * HELL_RAID_FLOORS)
+  async function climb(players: Player[], floorChance: number, raidLimit: number, run: SimulatorRun) {
+    const enemies = getHellevatorEnemies(1, raidLimit * HELL_RAID_FLOORS)
 
     const firstLost = players.map(() => enemies.length + 1)
 
@@ -128,7 +132,7 @@ export function useHellRaidPlanner() {
   async function plan(players: Player[], settings: HellRaidSettings, run: SimulatorRun): Promise<HellRaidPlan | null> {
     const timestamp = Date.now()
 
-    const floors = await climb(players, settings.floorChance, run)
+    const floors = await climb(players, settings.floorChance, settings.raidLimit, run)
     if (floors === null) return null
 
     const weakestFirst = (a: number, b: number) => floors[a] - floors[b] || players[a].Level - players[b].Level
@@ -259,12 +263,12 @@ export function useHellRaidPlanner() {
     }
 
     try {
-      for (let raid = 1; raid <= HELL_RAIDS; raid++) {
+      for (let raid = 1; raid <= settings.raidLimit; raid++) {
         await planRaid(raid)
       }
 
       // Each round can win one more raid at most
-      for (let round = 0; round < HELL_RAIDS; round++) {
+      for (let round = 0; round < settings.raidLimit; round++) {
         // First raid that has members but misses the minimum chance
         const target = groups.find((group) => !group.beaten && group.members.length > 0)
         if (!target) break
@@ -282,7 +286,7 @@ export function useHellRaidPlanner() {
 
         free.sort(weakestFirst)
 
-        for (let raid = target.raid; raid <= HELL_RAIDS; raid++) {
+        for (let raid = target.raid; raid <= settings.raidLimit; raid++) {
           await planRaid(raid)
         }
       }
