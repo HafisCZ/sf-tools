@@ -93,7 +93,10 @@
                   <SFTooltip :content="entry.player.Name">
                     <div class="truncate font-bold">{{ entry.player.Name }}</div>
                   </SFTooltip>
-                  <div class="truncate text-xs text-white/60">{{ localize.global('simulator.player_level', { level: entry.player.Level }) }}</div>
+                  <div class="grid w-40 max-w-full grid-cols-2 gap-x-2 text-xs text-white/60">
+                    <span class="truncate">{{ localize.global('simulator.player_level', { level: entry.player.Level }) }}</span>
+                    <span class="truncate">{{ localize('item_level', { level: entry.itemLevel ?? '-' }) }}</span>
+                  </div>
                 </div>
               </div>
             </SFTableCell>
@@ -131,10 +134,12 @@ import { useToast } from '@utils/toasts'
 import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, setValueAtPath, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
-import { type PlayerModel } from '~/core/models/player'
+import { ItemModel } from '~/core/models/item'
+import { PlayerModel } from '~/core/models/player'
 import { ModelUtils, type SimulatorData } from '~/core/models/utils'
 import { HYDRA_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
+import { type RawPlayer } from '~/data/types'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
@@ -142,8 +147,10 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { copySimulatorData, handleSimulatorPaste, isSimulatorDebug, preparePlayerData } from '~/sim/debug'
+import { copySimulatorData, handleSimulatorPaste, hasClass, isSimulatorDebug, preparePlayerData } from '~/sim/debug'
+import { EQUIPMENT_SLOTS } from '~/sim/equipment'
 import { HELL_RAID_FLOORS, useHellRaidPlanner } from '~/sim/hell-raids'
+import { ASSASSIN, WARRIOR } from '~/sim/workers/base'
 
 defineOptions({
   name: 'HellRaidsPage'
@@ -151,6 +158,7 @@ defineOptions({
 
 type ListPlayer = {
   player: PlayerModel | SimulatorData
+  itemLevel: number | null
   index: number
 }
 
@@ -341,7 +349,7 @@ function addPlayer() {
     player.Name = `Player ${players.value.length + 1}`
   }
 
-  setPlayers([{ player, index: nextIndex++ }, ...players.value])
+  setPlayers([{ player, itemLevel: null, index: nextIndex++ }, ...players.value])
 
   clearEditor()
 }
@@ -395,10 +403,19 @@ function applySnackToAll() {
   useToast({ title: localize.global('simulator.snack_apply_all_toast_title'), message: localize.global('simulator.snack_apply_all_toast_message') })
 }
 
+function getItemLevel(player: PlayerModel) {
+  if (player.Items.Wpn1?.Version !== ItemModel.MODERN) return null
+
+  const slots = EQUIPMENT_SLOTS.filter((slot) => slot !== 'Wpn2' || player.Class === WARRIOR || player.Class === ASSASSIN)
+  const total = slots.reduce((sum, slot) => sum + (player.Items[slot]?.ItemLevel ?? 0), 0)
+
+  return Math.round(total / slots.length)
+}
+
 function insertGroup(group: GroupModel) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
-  setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), index: nextIndex++ })))
+  setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), itemLevel: getItemLevel(data), index: nextIndex++ })))
 
   clearEditor()
 }
@@ -414,7 +431,11 @@ function handlePaste(value: unknown) {
     const data = handleSimulatorPaste(value)
 
     if (Array.isArray(data)) {
-      const entries = data.map((item: unknown) => ({ player: preparePlayerData(item), index: nextIndex++ }))
+      const entries = data.map((item: unknown) => {
+        const model = hasClass(item) ? item : new PlayerModel(item as RawPlayer)
+
+        return { player: preparePlayerData(model), itemLevel: getItemLevel(model), index: nextIndex++ }
+      })
 
       if (pasteMode.value) {
         setPlayers([...players.value, ...entries])

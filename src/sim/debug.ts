@@ -128,7 +128,7 @@ export function preparePlayerData(data: unknown) {
   return player
 }
 
-function hasClass(value: unknown): value is PlayerModel {
+export function hasClass(value: unknown): value is PlayerModel {
   return typeof value === 'object' && value !== null && 'Class' in value && Boolean(value.Class)
 }
 
