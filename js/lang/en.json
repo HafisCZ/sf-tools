@@ -2141,7 +2141,13 @@
             "one": "#{count} member",
             "many": "#{count} members"
         },
-        "unallocated": "Unallocated"
+        "unallocated": "Unallocated",
+        "results": {
+            "copy": "Copy plan",
+            "raid": "Raid #{raid} (#{chance}%): #{members}",
+            "rest": "Raid #{raid} (#{chance}%): Rest",
+            "unallocated": "Unallocated: #{members}"
+        }
     },
     "idle": {
         "title": "Arena Manager",
