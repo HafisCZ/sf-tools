@@ -199,7 +199,7 @@ const localize = useLocalize('hell_raids')
 const planner = useHellRaidPlanner()
 
 const raidChance = ref<number | null>(100)
-const floorChance = ref<number | null>(25)
+const floorChance = ref<number | null>(10)
 
 const pasteMode = ref(false)
 
@@ -229,7 +229,7 @@ const planSubmit = useSubmit(async () => {
 
   const planSettings = {
     raidChance: raidChance.value ?? 100,
-    floorChance: floorChance.value ?? 25
+    floorChance: floorChance.value ?? 10
   }
 
   const result = await planner.plan(
