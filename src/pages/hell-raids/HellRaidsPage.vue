@@ -17,9 +17,10 @@
           </SFButton>
         </div>
 
-        <div class="mt-[14px] grid grid-cols-2 gap-[14px]">
+        <div class="mt-[14px] grid grid-cols-3 items-end gap-[14px]">
           <SFNumber ref="raid-chance-ref" v-model="raidChance" :label="localize('raid_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
           <SFNumber ref="floor-chance-ref" v-model="floorChance" :label="localize('floor_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
+          <SFSelect v-model="raidLimit" :label="localize('raid_limit')" :options="RAID_LIMIT_OPTIONS" />
         </div>
 
         <div class="mt-10 grid grid-cols-16 items-center gap-[14px]">
@@ -124,14 +125,16 @@ import { computed, ref, shallowRef, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFNumber from '@library/SFNumber.vue'
+import SFSelect from '@library/SFSelect.vue'
 import SFTable from '@library/SFTable.vue'
 import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTooltip from '@library/SFTooltip.vue'
+import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, setValueAtPath, useSubmit } from '@utils/utils'
+import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
 import { ItemModel } from '~/core/models/item'
@@ -149,7 +152,7 @@ import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { copySimulatorData, handleSimulatorPaste, hasClass, isSimulatorDebug, preparePlayerData } from '~/sim/debug'
 import { EQUIPMENT_SLOTS } from '~/sim/equipment'
-import { HELL_RAID_FLOORS, useHellRaidPlanner } from '~/sim/hell-raids'
+import { HELL_RAID_FLOORS, HELL_RAIDS, useHellRaidPlanner } from '~/sim/hell-raids'
 import { ASSASSIN, WARRIOR } from '~/sim/workers/base'
 
 defineOptions({
@@ -201,6 +204,10 @@ const planner = useHellRaidPlanner()
 const raidChance = ref<number | null>(100)
 const floorChance = ref<number | null>(10)
 
+const RAID_LIMIT_OPTIONS: SelectOption<number>[] = sequence(HELL_RAIDS, 1).map((raid) => ({ value: raid, label: String(raid) }))
+
+const raidLimit = ref(HELL_RAIDS)
+
 const pasteMode = ref(false)
 
 const players = shallowRef<ListPlayer[]>([])
@@ -229,7 +236,8 @@ const planSubmit = useSubmit(async () => {
 
   const planSettings = {
     raidChance: raidChance.value ?? 100,
-    floorChance: floorChance.value ?? 10
+    floorChance: floorChance.value ?? 10,
+    raidLimit: raidLimit.value
   }
 
   const result = await planner.plan(
