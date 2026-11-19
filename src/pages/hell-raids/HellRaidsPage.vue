@@ -442,7 +442,8 @@ function handlePaste(value: unknown) {
       const entries = data.map((item: unknown) => {
         const model = hasClass(item) ? item : new PlayerModel(item as RawPlayer)
 
-        return { player: preparePlayerData(model), itemLevel: getItemLevel(model), index: nextIndex++ }
+        // Item level first, preparePlayerData empties the shield of a warrior
+        return { itemLevel: getItemLevel(model), player: preparePlayerData(model), index: nextIndex++ }
       })
 
       if (pasteMode.value) {
