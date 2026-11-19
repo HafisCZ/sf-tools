@@ -2131,6 +2131,7 @@
         "raid_chance": "Minimum chance in raid",
         "floor_chance": "Minimum chance in Hellevator",
         "top_floor": "Top floor",
+        "item_level": "Items #{level}",
         "status": {
             "beaten": "Floor #{floor}+, #{members}",
             "lost": "Floor #{floor}+"
