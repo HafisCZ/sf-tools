@@ -1,7 +1,7 @@
 <template>
   <Page>
     <template #nav-left>
-      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listOwnPlayers" cheats @select="fillPlayer" />
+      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listOwnPlayers" cheats @select="insertPlayer" />
       <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug logs @log="runLogged" />
     </template>
@@ -9,7 +9,11 @@
     <SimulatorPasteTarget @paste="fillFromPaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
-      <PlayerEditor ref="editor-ref" snacks name-readonly @copy="copyPlayer" />
+      <PlayerEditor ref="editor-ref" snacks name-readonly :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
+        <template #equipment>
+          <EquipmentEditor v-if="source" :source="source" :index="0" :swaps="swaps" :character="characterState" @change="applySwaps" />
+        </template>
+      </PlayerEditor>
 
       <div>
         <div class="grid grid-cols-3 gap-[14px]">
@@ -83,15 +87,18 @@ import { useComponentValidation } from '@utils/validations'
 import { PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
+import { type Cheats } from '~/integration/cheats'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
+import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
 import { isSimulatorDebug, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'
+import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 import { useHellevatorSimulator } from '~/sim/hellevator'
 import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
@@ -125,6 +132,10 @@ const rangeEnd = ref<number | null>(600)
 
 const enemies = shallowRef<HellevatorEnemy[]>([])
 const scores = shallowRef<number[]>([])
+
+const source = shallowRef<PlayerModel | null>(null)
+const swaps = shallowRef<EquipmentSwaps>({})
+const characterState = shallowRef<CharacterState>(createCharacterState(new PlayerModel()))
 
 const editor = useTemplateRef('editor-ref')
 const settings = useTemplateRef('settings-ref')
@@ -209,7 +220,19 @@ function listOwnPlayers() {
   return DatabaseManager.getLatestPlayers(true)
 }
 
+function insertPlayer(entry: PlayerModel, cheats?: Cheats) {
+  fillPlayer(entry)
+
+  // Cheats are applied on top of the raw data the swap rebuilds from, so the two can not be combined
+  source.value = cheats || !entry.Inventory ? null : entry
+
+  characterState.value = createCharacterState(entry)
+}
+
 function fillPlayer(data: unknown) {
+  source.value = null
+  swaps.value = {}
+
   rangeStart.value = readRangeValue(data, 'GroupTournament.Floor', 1)
   rangeEnd.value = readRangeValue(data, 'RangeEnd', 600)
 
@@ -249,6 +272,41 @@ function fillFromPaste(value: unknown) {
   } catch (e) {
     console.info(e)
   }
+}
+
+function changeItemView(open: boolean) {
+  if (open && editor.value) {
+    applySwaps(swaps.value, withLifePotion(characterState.value, editor.value.read()))
+  }
+}
+
+function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
+  const size = fighter?.Potions?.Life ?? 0
+  const free = state.potions.findIndex((potion) => potion.type === 0)
+
+  if (!size || free === -1 || state.potions.some((potion) => potion.type === LIFE_POTION_TYPE)) return state
+
+  return { ...state, potions: state.potions.map((potion, index) => (index === free ? { type: LIFE_POTION_TYPE, size } : potion)) }
+}
+
+const REBUILD_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Snack', 'SnackPotency']
+
+function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
+  const player = source.value
+
+  if (!player || !editor.value) return
+
+  swaps.value = entries
+  characterState.value = character
+
+  const current = editor.value.read()
+  const rebuilt = applyEquipmentSwaps(player, [entries], character)
+
+  for (const path of REBUILD_PATHS) {
+    setValueAtPath(rebuilt, path, getValueAtPath(current, path))
+  }
+
+  editor.value.fill(rebuilt)
 }
 
 async function runSimulation(instances: number, iterations: number, log?: SimulatorLogTarget) {
