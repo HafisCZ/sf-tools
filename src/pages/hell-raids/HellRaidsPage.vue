@@ -60,7 +60,13 @@
             <SFTableHeader align="center" class="w-12 min-w-12">#</SFTableHeader>
             <SFTableHeader class="w-full">{{ localize.global('simulator.player') }}</SFTableHeader>
             <SFTableHeader align="right" class="whitespace-nowrap">{{ localize('top_floor') }}</SFTableHeader>
-            <SFTableHeader class="w-12 min-w-12" />
+            <SFTableHeader align="center" class="w-12 min-w-12">
+              <SFTooltip v-if="plan" :content="localize('results.copy')">
+                <SFButton variant="ghost" size="sm" icon :aria-label="localize('results.copy')" @click="copyResults">
+                  <SFIcon name="copy" />
+                </SFButton>
+              </SFTooltip>
+            </SFTableHeader>
           </SFTableRow>
         </template>
         <template v-for="section in sections" :key="section.key">
@@ -134,7 +140,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, useSubmit } from '@utils/utils'
+import { compact, copyJson, copyText, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type GroupModel } from '~/core/models/group'
 import { ItemModel } from '~/core/models/item'
@@ -467,6 +473,32 @@ function copyPlayer(player: PlayerModel) {
 
 function copyAll() {
   void copyJson(players.value.map((entry) => ModelUtils.toSimulatorData(entry.player)))
+}
+
+function copyResults() {
+  if (!plan.value) return
+
+  const lines: string[] = []
+
+  for (const group of plan.value.groups) {
+    const members = listMembers(group.members)
+    if (members.length === 0 || group.chance === null) continue
+
+    const chance = formatChance(group.chance)
+
+    if (group.beaten) {
+      lines.push(localize('results.raid', { raid: group.raid, members: members.map((entry) => entry.player.Name).join(' + '), chance }))
+    } else {
+      lines.push(localize('results.rest', { raid: group.raid, chance }))
+    }
+  }
+
+  const overhead = listMembers(plan.value.overhead)
+  if (overhead.length > 0) {
+    lines.push(localize('results.unallocated', { members: overhead.map((entry) => entry.player.Name).join(' + ') }))
+  }
+
+  void copyText(lines.join('\n'))
 }
 
 function copyWithConfig() {
