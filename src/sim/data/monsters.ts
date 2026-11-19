@@ -233,8 +233,8 @@ export class MonsterGenerator {
     const con = (resetCon + deltaCon * delta) * multipliers.Default
     const luck = (resetLuck + deltaLuck * delta) * multipliers.Default
     const health = (resetHealth + deltaHealth * delta) * multipliers.Health
-    const min = Math.round(resetMin + deltaMin * delta) * multipliers.Default
-    const max = Math.round(resetMax + deltaMax * delta) * multipliers.Default
+    const min = Math.round((resetMin + deltaMin * delta) * multipliers.Default)
+    const max = Math.round((resetMax + deltaMax * delta) * multipliers.Default)
     const armor = resetArmor + deltaArmor * delta
 
     const model = {
