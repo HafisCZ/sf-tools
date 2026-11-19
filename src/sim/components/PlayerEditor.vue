@@ -52,8 +52,8 @@
           <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
         </div>
         <template v-if="props.snacks">
-          <SFSelect v-show="!isCharacterMode" ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" class="col-span-3" />
-          <SFSelect v-show="!isCharacterMode" ref="snack-potency-ref" v-model="snackPotency" :label="localize('snack_potency')" :options="SNACK_POTENCY_OPTIONS" class="col-span-2" />
+          <SFSelect ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" class="col-span-3" />
+          <SFSelect ref="snack-potency-ref" v-model="snackPotency" :label="localize('snack_potency')" :options="SNACK_POTENCY_OPTIONS" class="col-span-2" />
         </template>
         <div v-show="!isCharacterMode" class="contents">
           <SFNumber ref="strength-ref" v-model="strength" :label="localize.global('general.attribute1')" required :min="1" :step="1" centered />
