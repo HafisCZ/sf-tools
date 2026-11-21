@@ -92,6 +92,7 @@ const COMMUNITY_TOOLS = [
   { title: 'Hellevator', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte' },
   { title: 'Smith Simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte' },
   { title: 'Portrait Maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte' },
+  { title: 'Top List', href: 'https://nachbarsf.github.io/Top-List/', author: 'Deinnachbar' },
   // Non-breaking space
   { title: 'SF Poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG' },
   { title: 'Rune Bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago' },
