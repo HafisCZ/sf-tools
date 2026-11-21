@@ -38,16 +38,16 @@ export type HellRaidGroup = {
 }
 
 export type HellRaidPlan = {
-  /**
-   * Top floor per player
-   */
-  floors: number[]
   groups: HellRaidGroup[]
   /**
    * Players no group needed
    */
   overhead: number[]
-  duration: number
+}
+
+export type HellRaidTeam = {
+  raid: number
+  players: Player[]
 }
 
 export const HELL_RAIDS = 12
@@ -99,42 +99,45 @@ export function useHellRaidPlanner() {
     return firstLost.map((floor) => floor - 1)
   }
 
-  async function simulateRaid(raid: number, group: Player[], run: SimulatorRun) {
-    const enemies = getRaidEnemies(`hellevator_${raid}`).map((player) => ({ player }))
-    const players = group.map((player) => ({ player }))
-
-    let score = 0
+  async function simulateGroups(teams: HellRaidTeam[], run: SimulatorRun) {
+    const scores = teams.map(() => 0)
 
     const batch = new WorkerBatch<RaidsResponse, RaidsMessage>('raids')
 
-    sequence(run.instances).forEach(() => {
-      batch.add(
-        (data) => {
-          score += data.results.score
-        },
-        {
-          flags: { Gladiator15: false },
-          players,
-          enemies,
-          iterations: run.iterations,
-          config: simulatorConfig.value,
-          legacy: isLegacyEngine
-        }
-      )
+    teams.forEach((team, position) => {
+      const enemies = getRaidEnemies(`hellevator_${team.raid}`).map((player) => ({ player }))
+      const players = team.players.map((player) => ({ player }))
+
+      sequence(run.instances).forEach(() => {
+        batch.add(
+          (data) => {
+            scores[position] += data.results.score
+          },
+          {
+            flags: { Gladiator15: false },
+            players,
+            enemies,
+            iterations: run.iterations,
+            config: simulatorConfig.value,
+            legacy: isLegacyEngine
+          }
+        )
+      })
     })
 
     const duration = await batch.run(run.instances)
     if (duration === null) return null
 
-    return (100 * score) / (run.instances * run.iterations)
+    return scores.map((score) => (100 * score) / (run.instances * run.iterations))
   }
 
-  async function plan(players: Player[], settings: HellRaidSettings, run: SimulatorRun): Promise<HellRaidPlan | null> {
-    const timestamp = Date.now()
+  async function simulateRaid(raid: number, group: Player[], run: SimulatorRun) {
+    const chances = await simulateGroups([{ raid, players: group }], run)
 
-    const floors = await climb(players, settings.floorChance, settings.raidLimit, run)
-    if (floors === null) return null
+    return chances === null ? null : chances[0]
+  }
 
+  async function organize(players: Player[], floors: number[], settings: HellRaidSettings, run: SimulatorRun): Promise<HellRaidPlan | null> {
     const weakestFirst = (a: number, b: number) => floors[a] - floors[b] || players[a].Level - players[b].Level
 
     const canAttack = (member: number, raid: number) => floors[member] >= raid * HELL_RAID_FLOORS
@@ -298,8 +301,8 @@ export function useHellRaidPlanner() {
       throw error
     }
 
-    return { floors, groups, overhead: free, duration: Date.now() - timestamp }
+    return { groups, overhead: free }
   }
 
-  return { plan }
+  return { climb, organize, simulateGroups }
 }

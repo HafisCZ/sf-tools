@@ -2127,7 +2127,10 @@
         }
     },
     "hell_raids": {
-        "plan": "Plan raids",
+        "simulate_floors": "Simulate top floors",
+        "organize": "Auto organize",
+        "simulate_raids": "Simulate raids",
+        "drop": "Drag members here",
         "raid_chance": "Min. chance in raid",
         "floor_chance": "Min. chance in Hellevator",
         "raid_limit": "Raids to clear",
@@ -2145,6 +2148,7 @@
         "results": {
             "copy": "Copy plan",
             "raid": "Raid #{raid} (#{chance}%): #{members}",
+            "members": "Raid #{raid}: #{members}",
             "rest": "Raid #{raid} (#{chance}%): Rest",
             "unallocated": "Unallocated: #{members}"
         }

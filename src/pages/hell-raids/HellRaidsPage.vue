@@ -1,26 +1,47 @@
 <template>
-  <Page>
+  <Page width="1703px">
     <template #nav-left>
       <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
       <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug copy @copy="copyWithConfig" />
     </template>
 
-    <SimulatorPasteTarget use-drag-drop @paste="handlePaste" />
+    <SimulatorPasteTarget use-drag-drop class="invisible" @paste="handlePaste" />
 
-    <div class="grid gap-7 md:grid-cols-2">
-      <div>
-        <div class="grid grid-cols-3 gap-[14px]">
-          <SimulatorSettings ref="settings-ref" storage-key="hell_raids" :default-threads="4" :default-iterations="25000" class="col-span-2" />
-          <SFButton variant="outline" block :disabled="isPlanning ? 'loading' : !canPlan" @click="planRaids">
-            {{ localize('plan') }}
-          </SFButton>
+    <div ref="ghost-ref" class="pointer-events-none fixed top-0 -left-[1000px]">
+      <div v-if="draggedEntry" class="flex w-[360px] items-center gap-2.5 rounded-[4px] border border-line bg-surface-hover px-3 py-1.5">
+        <img :src="getClassImageUrl(draggedEntry.player.Class)" alt="" class="size-8 shrink-0" />
+        <div class="min-w-0 flex-1">
+          <div class="truncate font-bold">{{ draggedEntry.player.Name }}</div>
+          <div class="grid w-40 max-w-full grid-cols-2 gap-x-2 text-xs text-white/60">
+            <span class="truncate">{{ localize.global('simulator.player_level', { level: draggedEntry.player.Level }) }}</span>
+            <span class="truncate">{{ localize('item_level', { level: draggedEntry.itemLevel ?? '-' }) }}</span>
+          </div>
         </div>
+        <div class="text-[15px] leading-5 font-bold" :class="{ 'text-white/60': !floors.has(draggedEntry.index) }">{{ floors.get(draggedEntry.index) ?? '-' }}</div>
+      </div>
+    </div>
+
+    <div class="grid gap-7 md:grid-cols-2 xl:grid-cols-3" @dragover="clearDropTarget">
+      <div>
+        <SimulatorSettings ref="settings-ref" storage-key="hell_raids" :default-threads="4" :default-iterations="25000" />
 
         <div class="mt-[14px] grid grid-cols-3 items-end gap-[14px]">
-          <SFNumber ref="raid-chance-ref" v-model="raidChance" :label="localize('raid_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
           <SFNumber ref="floor-chance-ref" v-model="floorChance" :label="localize('floor_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
+          <SFNumber ref="raid-chance-ref" v-model="raidChance" :label="localize('raid_chance')" suffix="%" required :min="1" :max="100" :step="1" centered />
           <SFSelect v-model="raidLimit" :label="localize('raid_limit')" :options="RAID_LIMIT_OPTIONS" />
+        </div>
+
+        <div class="mt-[14px] grid grid-cols-3 gap-[14px]">
+          <SFButton variant="outline" block :disabled="isClimbing ? 'loading' : !canSimulate || isBusy" @click="simulateFloors">
+            {{ localize('simulate_floors') }}
+          </SFButton>
+          <SFButton variant="outline" block :disabled="isOrganizing ? 'loading' : !canSimulate || isBusy" @click="organizeRaids">
+            {{ localize('organize') }}
+          </SFButton>
+          <SFButton variant="outline" block :disabled="isSimulatingRaids ? 'loading' : !canSimulateRaids || isBusy" @click="simulateRaids">
+            {{ localize('simulate_raids') }}
+          </SFButton>
         </div>
 
         <div class="mt-10 grid grid-cols-16 items-center gap-[14px]">
@@ -54,43 +75,53 @@
         <PlayerEditor ref="editor-ref" snacks class="mt-[14px]" @copy="copyPlayer" />
       </div>
 
-      <SFTable dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto md:[scrollbar-gutter:stable]">
+      <SFTable v-for="table in tables" :key="table.key" dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto md:[scrollbar-gutter:stable]">
         <template #header>
           <SFTableRow>
             <SFTableHeader align="center" class="w-12 min-w-12">#</SFTableHeader>
-            <SFTableHeader class="w-full">{{ localize.global('simulator.player') }}</SFTableHeader>
+            <SFTableHeader v-if="table.key === 'groups'" class="w-full">{{ localize.global('simulator.player') }}</SFTableHeader>
+            <SFTableHeader v-else class="w-full">
+              {{ localize('unallocated') }}
+              <span class="ml-1 font-normal text-white/60">{{ formatMembers(unallocated.length) }}</span>
+            </SFTableHeader>
             <SFTableHeader align="right" class="whitespace-nowrap">{{ localize('top_floor') }}</SFTableHeader>
             <SFTableHeader align="center" class="w-12 min-w-12">
-              <SFTooltip v-if="plan" :content="localize('results.copy')">
-                <SFButton variant="ghost" size="sm" icon :aria-label="localize('results.copy')" @click="copyResults">
+              <SFTooltip v-if="table.key === 'groups'" :content="localize('results.copy')">
+                <SFButton variant="ghost" size="sm" icon :aria-label="localize('results.copy')" :class="{ invisible: !hasGroups }" @click="copyResults">
                   <SFIcon name="copy" />
                 </SFButton>
               </SFTooltip>
             </SFTableHeader>
           </SFTableRow>
         </template>
-        <template v-for="section in sections" :key="section.key">
-          <SFTableRow v-if="section.title">
+        <template v-for="section in table.sections" :key="section.target">
+          <SFTableRow v-if="section.group" @dragover="(event: DragEvent) => overDrag(event, section.target)" @drop="(event: DragEvent) => dropMember(event, section.target)">
             <SFTableCell colspan="4">
               <div class="relative -mx-[8.4px] -my-[5.6px] flex h-[52px] items-center gap-2.5 overflow-hidden px-3">
-                <img v-if="section.picture" :src="section.picture" alt="" class="absolute inset-0 size-full object-cover" :class="{ 'brightness-50 grayscale': !section.beaten || isPlanOutdated }" />
-                <span v-if="section.picture" class="absolute inset-0 bg-linear-to-r from-dialog/90 via-dialog/55 to-dialog/85" />
+                <img :src="getRaidPicture(section.group.raid)" alt="" class="absolute inset-0 size-full object-cover" :class="{ 'brightness-50 grayscale': !section.group.beaten && dropTarget !== section.target }" />
+                <span class="absolute inset-0 bg-linear-to-r from-dialog/90 via-dialog/55 to-dialog/85" />
                 <span class="relative min-w-0 flex-1 text-shadow-[0_1px_2px_rgb(0_0_0/0.8)]">
-                  <span class="block truncate text-[15px] font-bold" :class="isPlanOutdated ? 'text-white/60' : 'text-white'">{{ section.title }}</span>
-                  <span class="block truncate text-xs text-white/80">{{ section.status }}</span>
+                  <span class="block truncate text-[15px] font-bold" :class="section.group.result?.outdated ? 'text-white/60' : 'text-white'">{{ getRaidName(section.group.raid) }}</span>
+                  <span class="block truncate text-xs text-white/80">{{ getGroupStatus(section.group.raid, section.members.length) }}</span>
                 </span>
-                <span v-if="section.chance" class="relative text-lg font-bold" :class="section.beaten && !isPlanOutdated ? 'text-accent' : 'text-white/70'">{{ section.chance }}</span>
+                <span class="relative text-lg font-bold" :class="section.group.beaten ? 'text-accent' : 'text-white/70'">{{ section.group.result ? `${formatChance(section.group.result.chance)}%` : '-' }}</span>
+                <span v-if="dropTarget === section.target" class="pointer-events-none absolute inset-0 ring-2 ring-accent ring-inset" />
               </div>
             </SFTableCell>
           </SFTableRow>
           <SFTableRow
             v-for="(entry, position) in section.members"
             :key="entry.index"
+            draggable="true"
             tabindex="0"
             class="cursor-pointer outline-none"
-            :class="entry.index === selectedIndex ? 'bg-white/10' : 'hover:bg-white/5 focus-visible:bg-white/5'"
+            :class="getRowClass(entry, section.target)"
             @click="(event: MouseEvent) => handleRowClick(event, entry)"
             @keydown="(event: KeyboardEvent) => handleRowKeydown(event, entry)"
+            @dragstart="(event: DragEvent) => startDrag(event, entry)"
+            @dragend="endDrag"
+            @dragover="(event: DragEvent) => overDrag(event, section.target)"
+            @drop="(event: DragEvent) => dropMember(event, section.target)"
           >
             <SFTableCell align="center">{{ position + 1 }}</SFTableCell>
             <SFTableCell class="w-full max-w-0">
@@ -108,12 +139,22 @@
               </div>
             </SFTableCell>
             <SFTableCell align="right" class="whitespace-nowrap">
-              <div class="text-[15px] leading-5 font-bold" :class="{ 'text-white/60': !plan?.floors.has(entry.index) }">{{ plan?.floors.get(entry.index) ?? '-' }}</div>
+              <div class="text-[15px] leading-5 font-bold" :class="{ 'text-white/60': !floors.has(entry.index) }">{{ floors.get(entry.index) ?? '-' }}</div>
             </SFTableCell>
             <SFTableCell align="center">
-              <SFButton variant="ghost" size="sm" icon class="hover:text-red-400 focus-visible:text-red-400" @click="removePlayer(entry)">
+              <SFButton v-if="section.target === UNALLOCATED" variant="ghost" size="sm" icon class="hover:text-red-400 focus-visible:text-red-400" @click="removePlayer(entry)">
                 <SFIcon name="trash-can" />
               </SFButton>
+              <SFButton v-else variant="ghost" size="sm" icon @click="moveMember(entry.index, UNALLOCATED)">
+                <SFIcon name="xmark" />
+              </SFButton>
+            </SFTableCell>
+          </SFTableRow>
+          <SFTableRow v-if="section.members.length === 0" @dragover="(event: DragEvent) => overDrag(event, section.target)" @drop="(event: DragEvent) => dropMember(event, section.target)">
+            <SFTableCell colspan="4">
+              <div class="flex h-9 items-center justify-center rounded-[4px] border border-dashed text-[13px]" :class="dropTarget === section.target ? 'border-accent text-accent' : 'border-white/20 text-white/50'">
+                {{ localize('drop') }}
+              </div>
             </SFTableCell>
           </SFTableRow>
         </template>
@@ -171,37 +212,25 @@ type ListPlayer = {
   index: number
 }
 
-type PlannedGroup = {
-  raid: number
-  beaten: boolean
-  chance: number | null
-  /**
-   * Index of each member
-   */
-  members: number[]
+type RaidResult = {
+  chance: number
+  outdated: boolean
 }
 
-type Plan = {
-  /**
-   * Top floor by member index
-   */
-  floors: Map<number, number>
-  groups: PlannedGroup[]
-  /**
-   * Index of each member no group needed
-   */
-  overhead: number[]
+type RaidGroup = {
+  raid: number
+  members: ListPlayer[]
+  result: RaidResult | undefined
+  beaten: boolean
 }
 
 type Section = {
-  key: string
-  title?: string
-  status?: string
-  chance?: string
-  picture?: string
-  beaten?: boolean
+  target: number
+  group?: RaidGroup
   members: ListPlayer[]
 }
+
+const UNALLOCATED = 0
 
 const localize = useLocalize('hell_raids')
 
@@ -219,89 +248,254 @@ const pasteMode = ref(false)
 const players = shallowRef<ListPlayer[]>([])
 const selectedIndex = ref(-1)
 
-const plan = shallowRef<Plan | null>(null)
-const isPlanOutdated = ref(false)
+const floors = shallowRef(new Map<number, number>())
+const assignments = shallowRef(new Map<number, number>())
+const results = shallowRef(new Map<number, RaidResult>())
+
+// Raids to clear of the last climb, top floors stop at its last floor
+let floorLimit = 0
+
+const dragIndex = shallowRef<number | null>(null)
+const dropTarget = shallowRef<number | null>(null)
+
+const draggedEntry = computed(() => players.value.find((entry) => entry.index === dragIndex.value))
 
 let nextIndex = 0
 
 const editor = useTemplateRef('editor-ref')
 const settings = useTemplateRef('settings-ref')
+const ghost = useTemplateRef('ghost-ref')
 
 const isEditorValid = useComponentValidation(editor)
 
 const isPlanValid = useComponentValidation(settings, useTemplateRef('raid-chance-ref'), useTemplateRef('floor-chance-ref'))
 
-const canPlan = computed(() => isPlanValid.value && players.value.length > 0)
+const raidGroups = computed<RaidGroup[]>(() =>
+  sequence(raidLimit.value, 1).map((raid) => {
+    const result = results.value.get(raid)
 
-const planSubmit = useSubmit(async () => {
-  if (!settings.value || !canPlan.value) return
+    return {
+      raid,
+      members: listMembers(players.value.filter((entry) => getRaid(entry.index) === raid)),
+      result,
+      beaten: result !== undefined && !result.outdated && result.chance >= (raidChance.value ?? 100)
+    }
+  })
+)
 
-  const planned = players.value
+const unallocated = computed(() => listMembers(players.value.filter((entry) => getRaid(entry.index) === UNALLOCATED)))
 
-  const run = { instances: Math.max(1, settings.value.threads || 4), iterations: Math.max(1, settings.value.iterations || 25000) }
+const tables = computed<{ key: string; sections: Section[] }[]>(() => [
+  { key: 'groups', sections: raidGroups.value.map((group) => ({ target: group.raid, group, members: group.members })) },
+  { key: 'unallocated', sections: [{ target: UNALLOCATED, members: unallocated.value }] }
+])
 
-  const planSettings = {
-    raidChance: raidChance.value ?? 100,
-    floorChance: floorChance.value ?? 10,
-    raidLimit: raidLimit.value
+const hasGroups = computed(() => raidGroups.value.some((group) => group.members.length > 0))
+
+const canSimulate = computed(() => isPlanValid.value && players.value.length > 0)
+const canSimulateRaids = computed(() => isPlanValid.value && hasGroups.value)
+
+const climbSubmit = useSubmit(async () => {
+  if (!canSimulate.value) return
+
+  const timestamp = Date.now()
+
+  if (!(await climbMembers(players.value))) return
+
+  floorLimit = raidLimit.value
+
+  notifyFinished(timestamp)
+})
+
+const organizeSubmit = useSubmit(async () => {
+  if (!canSimulate.value) return
+
+  const timestamp = Date.now()
+
+  const entries = players.value
+
+  // A higher Raids to clear than the last climb needs everyone climbed again
+  const climbing = raidLimit.value > floorLimit ? entries : entries.filter((entry) => !floors.value.has(entry.index))
+
+  if (climbing.length > 0) {
+    if (!(await climbMembers(climbing))) return
+
+    floorLimit = climbing === entries ? raidLimit.value : Math.min(floorLimit, raidLimit.value)
   }
 
-  const result = await planner.plan(
-    planned.map((entry) => entry.player),
-    planSettings,
-    run
+  const result = await planner.organize(
+    entries.map((entry) => entry.player),
+    entries.map((entry) => floors.value.get(entry.index) ?? 0),
+    { raidChance: raidChance.value ?? 100, floorChance: floorChance.value ?? 10, raidLimit: raidLimit.value },
+    getRun()
   )
 
   if (!result) return
 
-  plan.value = {
-    floors: new Map(planned.map((entry, position) => [entry.index, result.floors[position]])),
-    groups: result.groups.map((group) => ({ ...group, members: group.members.map((position) => planned[position].index) })),
-    overhead: result.overhead.map((position) => planned[position].index)
+  const nextAssignments = new Map<number, number>()
+  const nextResults = new Map<number, RaidResult>()
+
+  for (const group of result.groups) {
+    for (const position of group.members) {
+      nextAssignments.set(entries[position].index, group.raid)
+    }
+
+    if (group.chance !== null) {
+      nextResults.set(group.raid, { chance: group.chance, outdated: false })
+    }
   }
 
-  isPlanOutdated.value = false
+  assignments.value = nextAssignments
+  results.value = nextResults
 
-  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(result.duration) }) })
+  notifyFinished(timestamp)
 })
 
-const planRaids = planSubmit.submit
-const isPlanning = planSubmit.isSubmitting
+const raidSubmit = useSubmit(async () => {
+  if (!canSimulateRaids.value) return
 
-const sections = computed<Section[]>(() => {
-  if (!plan.value) {
-    return [{ key: 'members', members: players.value }]
-  }
+  const timestamp = Date.now()
 
-  const floors = plan.value.floors
+  const groups = raidGroups.value.filter((group) => group.members.length > 0)
 
-  // Members added after the plan, they are in no group yet
-  const list: Section[] = [{ key: 'members', members: players.value.filter((entry) => !floors.has(entry.index)) }]
+  const chances = await planner.simulateGroups(
+    groups.map((group) => ({ raid: group.raid, players: group.members.map((entry) => entry.player) })),
+    getRun()
+  )
 
-  for (const group of plan.value.groups) {
-    list.push({
-      key: `raid_${group.raid}`,
-      title: getRaidName(group.raid),
-      status: getGroupStatus(group),
-      chance: group.chance === null ? '-' : `${formatChance(group.chance)}%`,
-      picture: getRaidPicture(group.raid),
-      beaten: group.beaten,
-      members: listMembers(group.members)
-    })
-  }
+  if (!chances) return
 
-  if (plan.value.overhead.length > 0) {
-    list.push({ key: 'overhead', title: localize('unallocated'), status: formatMembers(plan.value.overhead.length), members: listMembers(plan.value.overhead) })
-  }
+  results.value = new Map<number, RaidResult>(groups.map((group, position) => [group.raid, { chance: chances[position], outdated: false }]))
 
-  return list
+  notifyFinished(timestamp)
 })
 
-// Members still in the list, lowest top floor first
-function listMembers(members: number[]) {
-  const floors = plan.value?.floors
+const simulateFloors = climbSubmit.submit
+const organizeRaids = organizeSubmit.submit
+const simulateRaids = raidSubmit.submit
 
-  return players.value.filter((entry) => members.includes(entry.index)).sort((a, b) => (floors?.get(a.index) ?? 0) - (floors?.get(b.index) ?? 0) || a.player.Level - b.player.Level)
+const isClimbing = climbSubmit.isSubmitting
+const isOrganizing = organizeSubmit.isSubmitting
+const isSimulatingRaids = raidSubmit.isSubmitting
+
+const isBusy = computed(() => isClimbing.value || isOrganizing.value || isSimulatingRaids.value)
+
+function getRun() {
+  return { instances: Math.max(1, settings.value?.threads || 4), iterations: Math.max(1, settings.value?.iterations || 25000) }
+}
+
+// False when cancelled
+async function climbMembers(entries: ListPlayer[]) {
+  const climbed = await planner.climb(
+    entries.map((entry) => entry.player),
+    floorChance.value ?? 10,
+    raidLimit.value,
+    getRun()
+  )
+
+  if (climbed === null) return false
+
+  const next = new Map(floors.value)
+
+  entries.forEach((entry, position) => next.set(entry.index, climbed[position]))
+
+  floors.value = next
+
+  return true
+}
+
+function notifyFinished(timestamp: number) {
+  useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(Date.now() - timestamp) }) })
+}
+
+// Members of a raid above Raids to clear count as unallocated
+function getRaid(index: number) {
+  const raid = assignments.value.get(index) ?? UNALLOCATED
+
+  return raid <= raidLimit.value ? raid : UNALLOCATED
+}
+
+// Lowest top floor first
+function listMembers(entries: ListPlayer[]) {
+  return entries.sort((a, b) => (floors.value.get(a.index) ?? 0) - (floors.value.get(b.index) ?? 0) || a.player.Level - b.player.Level)
+}
+
+function getRowClass(entry: ListPlayer, target: number) {
+  if (entry.index === dragIndex.value) return 'opacity-35'
+  if (dropTarget.value === target) return 'bg-accent/7'
+  if (entry.index === selectedIndex.value) return 'bg-white/10'
+
+  return 'hover:bg-white/5 focus-visible:bg-white/5'
+}
+
+function markOutdated(raids: number[]) {
+  const next = new Map<number, RaidResult>()
+
+  results.value.forEach((result, raid) => next.set(raid, raids.includes(raid) ? { ...result, outdated: true } : result))
+
+  results.value = next
+}
+
+function startDrag(event: DragEvent, entry: ListPlayer) {
+  dragIndex.value = entry.index
+
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move'
+    event.dataTransfer.setData('text/plain', entry.player.Name)
+
+    // The card renders before the browser takes its picture
+    if (ghost.value) {
+      event.dataTransfer.setDragImage(ghost.value, 16, 22)
+    }
+  }
+}
+
+function overDrag(event: DragEvent, target: number) {
+  // Leaving the default in place shows the drop as not allowed
+  if (dragIndex.value === null || getRaid(dragIndex.value) === target) return
+
+  event.preventDefault()
+
+  dropTarget.value = target
+}
+
+function clearDropTarget(event: DragEvent) {
+  if (!event.defaultPrevented) {
+    dropTarget.value = null
+  }
+}
+
+function dropMember(event: DragEvent, target: number) {
+  event.preventDefault()
+
+  const index = dragIndex.value
+
+  if (index !== null && getRaid(index) !== target) {
+    moveMember(index, target)
+  }
+
+  endDrag()
+}
+
+function endDrag() {
+  dragIndex.value = null
+  dropTarget.value = null
+}
+
+function moveMember(index: number, target: number) {
+  const source = getRaid(index)
+
+  const next = new Map(assignments.value)
+
+  if (target === UNALLOCATED) {
+    next.delete(index)
+  } else {
+    next.set(index, target)
+  }
+
+  assignments.value = next
+
+  markOutdated([source, target])
 }
 
 function getRaidName(raid: number) {
@@ -314,11 +508,11 @@ function getRaidPicture(raid: number) {
   return `/res/hellevator/${RAID_PICTURES[raid - 1]}.webp`
 }
 
-function getGroupStatus(group: PlannedGroup) {
-  const floor = group.raid * HELL_RAID_FLOORS
+function getGroupStatus(raid: number, count: number) {
+  const floor = raid * HELL_RAID_FLOORS
 
-  if (group.members.length > 0) {
-    return localize('status.beaten', { floor, members: formatMembers(group.members.length) })
+  if (count > 0) {
+    return localize('status.beaten', { floor, members: formatMembers(count) })
   }
 
   return localize('status.lost', { floor })
@@ -329,7 +523,10 @@ function formatMembers(count: number) {
 }
 
 function formatChance(chance: number) {
-  return Number.isInteger(chance) ? String(chance) : chance.toFixed(2)
+  // Rounding up would show 100% for a raid that lost a fight
+  const shown = Math.floor(chance * 100 + 1e-6) / 100
+
+  return Number.isInteger(shown) ? String(shown) : shown.toFixed(2)
 }
 
 function listCompleteGroups() {
@@ -339,12 +536,12 @@ function listCompleteGroups() {
 function setPlayers(list: ListPlayer[]) {
   players.value = [...list].sort((a, b) => a.player.Level - b.player.Level)
 
-  const floors = plan.value?.floors
-
-  if (floors && players.value.some((entry) => floors.has(entry.index))) {
-    isPlanOutdated.value = true
+  if (players.value.some((entry) => floors.value.has(entry.index) || assignments.value.has(entry.index))) {
+    markOutdated([...results.value.keys()])
   } else {
-    plan.value = null
+    floors.value = new Map()
+    assignments.value = new Map()
+    results.value = new Map()
   }
 }
 
@@ -372,6 +569,12 @@ function savePlayer() {
   if (!editor.value) return
 
   const player = editor.value.read()
+
+  const next = new Map(floors.value)
+
+  next.delete(selectedIndex.value)
+
+  floors.value = next
 
   setPlayers(players.value.map((entry) => (entry.index === selectedIndex.value ? { ...entry, player } : entry)))
 }
@@ -476,26 +679,24 @@ function copyAll() {
 }
 
 function copyResults() {
-  if (!plan.value) return
-
   const lines: string[] = []
 
-  for (const group of plan.value.groups) {
-    const members = listMembers(group.members)
-    if (members.length === 0 || group.chance === null) continue
+  for (const group of raidGroups.value) {
+    if (group.members.length === 0) continue
 
-    const chance = formatChance(group.chance)
+    const names = group.members.map((entry) => entry.player.Name).join(' + ')
 
-    if (group.beaten) {
-      lines.push(localize('results.raid', { raid: group.raid, members: members.map((entry) => entry.player.Name).join(' + '), chance }))
+    if (!group.result || group.result.outdated) {
+      lines.push(localize('results.members', { raid: group.raid, members: names }))
+    } else if (group.beaten) {
+      lines.push(localize('results.raid', { raid: group.raid, members: names, chance: formatChance(group.result.chance) }))
     } else {
-      lines.push(localize('results.rest', { raid: group.raid, chance }))
+      lines.push(localize('results.rest', { raid: group.raid, chance: formatChance(group.result.chance) }))
     }
   }
 
-  const overhead = listMembers(plan.value.overhead)
-  if (overhead.length > 0) {
-    lines.push(localize('results.unallocated', { members: overhead.map((entry) => entry.player.Name).join(' + ') }))
+  if (unallocated.value.length > 0) {
+    lines.push(localize('results.unallocated', { members: unallocated.value.map((entry) => entry.player.Name).join(' + ') }))
   }
 
   void copyText(lines.join('\n'))
