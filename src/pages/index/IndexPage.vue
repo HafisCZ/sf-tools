@@ -11,28 +11,29 @@
       </template>
 
       <IndexCredits v-if="showCredits" />
-      <div v-else class="flex flex-col gap-8">
-        <section v-for="section in sections" :key="section.key" class="flex flex-col gap-3">
-          <SFHeading level="2" type="accent" class="text-[15px]! font-black! tracking-[0.08em] uppercase">{{ localize(`groups.${section.key}`) }}</SFHeading>
-          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ToolCard
-              v-for="tool in section.tools"
-              :key="tool.href"
-              :href="tool.href"
-              :title="tool.title"
-              :author="tool.author"
-              :description="tool.description"
-              :picture="tool.picture"
-              :icon="tool.icon"
-              :tag="tool.tag"
-              :external="tool.external"
-              :favorite="favorites.includes(tool.href)"
-              :managing="managing"
-              @favorite="toggleFavorite(tool.href)"
-            />
-          </div>
-        </section>
-      </div>
+      <TransitionGroup v-else tag="div" move-class="transition-[transform] duration-300 ease-out" enter-from-class="opacity-0" enter-active-class="transition-opacity duration-200" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <template v-for="entry in entries" :key="entry.key">
+          <ToolCard
+            v-if="entry.tool"
+            :href="entry.tool.href"
+            :title="entry.tool.title"
+            :author="entry.tool.author"
+            :description="entry.tool.description"
+            :picture="entry.tool.picture"
+            :icon="entry.tool.icon"
+            :tag="entry.tool.tag"
+            :external="entry.tool.external"
+            :favorite="favorites.includes(entry.tool.href)"
+            :managing="managing"
+            :movable="entry.top"
+            :dragging="dragged === entry.key"
+            @favorite="toggleFavorite(entry.tool.href)"
+            @pointerdown="startDrag($event, entry)"
+            @keydown="moveFavorite($event, entry)"
+          />
+          <SFHeading v-else level="2" type="accent" class="col-span-full mt-5 text-[15px]! font-black! tracking-[0.08em] uppercase first:mt-0">{{ localize(`groups.${entry.group}`) }}</SFHeading>
+        </template>
+      </TransitionGroup>
 
       <template #footer-left>
         <SFParagraph v-if="BUILD_INFO">
@@ -66,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
@@ -93,6 +94,13 @@ type IndexTool = {
   tag?: string
   group: string
   external: boolean
+}
+
+type IndexEntry = {
+  key: string
+  group?: string
+  tool?: IndexTool
+  top?: boolean
 }
 
 const TOOLS = [
@@ -174,17 +182,120 @@ const tools = computed<IndexTool[]>(() =>
   })
 )
 
+const favoriteTools = computed(() => favorites.value.map((href) => tools.value.find((tool) => tool.href === href)).filter((tool) => tool !== undefined))
+
 const GROUPS = ['simulators', 'planning', 'community', 'info']
 
-const sections = computed(() => {
-  const favoriteTools = favorites.value.map((href) => tools.value.find((tool) => tool.href === href)).filter((tool) => tool !== undefined)
-
-  return [{ key: 'favorites', tools: favoriteTools }, ...GROUPS.map((group) => ({ key: group, tools: tools.value.filter((tool) => tool.group === group) }))].filter((section) => section.tools.length > 0)
-})
+const entries = computed<IndexEntry[]>(() => [...favoriteTools.value.map((tool) => ({ key: `favorite-${tool.href}`, tool, top: true })), ...GROUPS.flatMap((group) => [{ key: `heading-${group}`, group }, ...tools.value.filter((tool) => tool.group === group).map((tool) => ({ key: tool.href, tool }))])])
 
 function toggleFavorite(href: string) {
   favorites.value = favorites.value.includes(href) ? favorites.value.filter((entry) => entry !== href) : [...favorites.value, href]
   Site.options.favorite_tools = favorites.value
+}
+
+const dragged = ref<string>()
+
+function startDrag(event: PointerEvent, entry: IndexEntry) {
+  if (!managing.value || !entry.top || entry.tool === undefined || event.button !== 0) {
+    return
+  }
+
+  const href = entry.tool.href
+  const element = event.currentTarget as HTMLElement
+  const order = favoriteTools.value.map((tool) => tool.href)
+  const slots = Array.from(element.parentElement?.children ?? [])
+    .slice(0, order.length)
+    .map((child) => {
+      const rect = child.getBoundingClientRect()
+
+      return { left: rect.left + window.scrollX, top: rect.top + window.scrollY, right: rect.right + window.scrollX, bottom: rect.bottom + window.scrollY }
+    })
+
+  let index = order.indexOf(href)
+  let pointerX = event.pageX
+  let pointerY = event.pageY
+
+  const grabX = pointerX - slots[index].left
+  const grabY = pointerY - slots[index].top
+
+  function place() {
+    element.style.translate = `${pointerX - grabX - slots[index].left}px ${pointerY - grabY - slots[index].top}px`
+  }
+
+  function blockClick(clickEvent: MouseEvent) {
+    clickEvent.stopPropagation()
+    clickEvent.preventDefault()
+  }
+
+  function move(moveEvent: PointerEvent) {
+    pointerX = moveEvent.pageX
+    pointerY = moveEvent.pageY
+
+    if (dragged.value === undefined) {
+      if (Math.hypot(pointerX - event.pageX, pointerY - event.pageY) < 6) {
+        return
+      }
+
+      dragged.value = entry.key
+      element.style.transition = ''
+    }
+
+    const target = slots.findIndex((slot) => pointerX >= slot.left && pointerX <= slot.right && pointerY >= slot.top && pointerY <= slot.bottom)
+
+    if (target === -1 || target === index) {
+      place()
+    } else {
+      order.splice(index, 1)
+      order.splice(target, 0, href)
+      index = target
+      favorites.value = [...order]
+      void nextTick(place)
+    }
+  }
+
+  function stop() {
+    window.removeEventListener('pointermove', move)
+    window.removeEventListener('pointerup', stop)
+    window.removeEventListener('pointercancel', stop)
+
+    if (dragged.value !== undefined) {
+      window.addEventListener('click', blockClick, true)
+      setTimeout(() => window.removeEventListener('click', blockClick, true))
+
+      element.style.transition = 'translate 200ms ease-out'
+      element.style.translate = ''
+      setTimeout(() => (element.style.transition = ''), 200)
+
+      dragged.value = undefined
+      Site.options.favorite_tools = favorites.value
+    }
+  }
+
+  window.addEventListener('pointermove', move)
+  window.addEventListener('pointerup', stop)
+  window.addEventListener('pointercancel', stop)
+}
+
+function moveFavorite(event: KeyboardEvent, entry: IndexEntry) {
+  if (!managing.value || !entry.top || entry.tool === undefined || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+    return
+  }
+
+  const href = entry.tool.href
+  const order = favoriteTools.value.map((tool) => tool.href)
+  const index = order.indexOf(href)
+  const target = index + (event.key === 'ArrowLeft' ? -1 : 1)
+
+  if (target >= 0 && target < order.length) {
+    const button = event.target as HTMLElement
+
+    event.preventDefault()
+    order.splice(index, 1)
+    order.splice(target, 0, href)
+    favorites.value = order
+    Site.options.favorite_tools = order
+    void nextTick(() => button.focus())
+  }
 }
 
 function toggleCredits() {

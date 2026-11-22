@@ -186,11 +186,8 @@
         "others": "Other community tools",
         "manage": "Manage favorites",
         "manage_done": "Done managing favorites",
-        "favorite_add": "Add to favorites",
-        "favorite_remove": "Remove from favorites",
         "author": "#{author}'s",
         "groups": {
-            "favorites": "Favorites",
             "simulators": "Game simulators",
             "planning": "Planning & management",
             "community": "Community tools",
