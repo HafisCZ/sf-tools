@@ -48,7 +48,8 @@ const SITE_OPTIONS = {
   backup_reminder_frequency: 1,
   backup_reminder_timestamp: Date.now() + 2592000000,
   announcement_accepted: 0,
-  announcements_viewed: [] as string[]
+  announcements_viewed: [] as string[],
+  favorite_tools: [] as string[]
 }
 
 export type SiteOptions = typeof SITE_OPTIONS

@@ -184,6 +184,10 @@
     "index": {
         "toggle": "Toggle credits",
         "others": "Other community tools",
+        "manage": "Manage favorites",
+        "manage_done": "Done managing favorites",
+        "favorite_add": "Add to favorites",
+        "favorite_remove": "Remove from favorites",
         "roles": {
             "admin": "Someone with a lot of free time",
             "helper": "Helpers - Research, Testing, Feedback, etc.",
