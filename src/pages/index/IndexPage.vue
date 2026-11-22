@@ -11,8 +11,27 @@
       </template>
 
       <IndexCredits v-if="showCredits" />
-      <div v-else class="grid auto-rows-fr grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 lg:grid-cols-6">
-        <ToolCard v-for="tool in orderedTools" :key="tool.href" v-bind="tool" :favorite="favorites.includes(tool.href)" :managing="managing" @favorite="toggleFavorite(tool.href)" />
+      <div v-else class="flex flex-col gap-8">
+        <section v-for="section in sections" :key="section.key" class="flex flex-col gap-3">
+          <SFHeading level="2" type="accent" class="text-[15px]! font-black! tracking-[0.08em] uppercase">{{ localize(`groups.${section.key}`) }}</SFHeading>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ToolCard
+              v-for="tool in section.tools"
+              :key="tool.href"
+              :href="tool.href"
+              :title="tool.title"
+              :author="tool.author"
+              :description="tool.description"
+              :picture="tool.picture"
+              :icon="tool.icon"
+              :tag="tool.tag"
+              :external="tool.external"
+              :favorite="favorites.includes(tool.href)"
+              :managing="managing"
+              @favorite="toggleFavorite(tool.href)"
+            />
+          </div>
+        </section>
       </div>
 
       <template #footer-left>
@@ -49,6 +68,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import SFButton from '@library/SFButton.vue'
+import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
@@ -66,50 +86,51 @@ defineOptions({
 type IndexTool = {
   href: string
   title: string
+  author?: string
   description?: string
-  subtitle?: string
   picture?: string
   icon?: string
   tag?: string
+  group: string
   external: boolean
 }
 
 const TOOLS = [
-  { key: 'stats', href: 'stats.html' },
-  { key: 'dungeons', href: 'dungeons.html' },
-  { key: 'pets', href: 'pets.html' },
-  { key: 'hellevator', href: 'hellevator.html' },
-  { key: 'scrapbook', href: 'scrapbook.html' },
-  { key: 'simulator', href: 'simulator.html' },
-  { key: 'inventory', href: 'inventory.html' },
-  { key: 'guilds', href: 'guilds.html' },
-  { key: 'hydra', href: 'hydra.html' },
-  { key: 'underworld', href: 'underworld.html' },
-  { key: 'blacksmith', href: 'blacksmith.html' },
-  { key: 'attributes', href: 'attributes.html' },
-  { key: 'fortress', href: 'fortress.html' },
-  { key: 'raids', href: 'raids.html' },
-  { key: 'idle', href: 'idle.html' },
-  { key: 'calendar', href: 'calendar.html' },
-  { key: 'bestiary', href: 'bestiary.html' },
-  { key: 'build_planner', href: 'build-planner.html' },
-  { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro' },
-  { key: 'hell_raids', href: 'hell-raids.html' },
-  { title: 'Hellevator', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/hellevator-rewards.webp' },
-  { title: 'Smith Simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/smith-simulator.webp' },
-  { title: 'Portrait Maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/portrait-maker.webp' },
-  { title: 'Top List', href: 'https://nachbarsf.github.io/Top-List/', author: 'Deinnachbar' },
+  { key: 'stats', href: 'stats.html', group: 'planning' },
+  { key: 'dungeons', href: 'dungeons.html', group: 'simulators' },
+  { key: 'pets', href: 'pets.html', group: 'simulators' },
+  { key: 'hellevator', href: 'hellevator.html', group: 'simulators' },
+  { key: 'scrapbook', href: 'scrapbook.html', group: 'planning' },
+  { key: 'simulator', href: 'simulator.html', group: 'simulators' },
+  { key: 'inventory', href: 'inventory.html', group: 'planning' },
+  { key: 'guilds', href: 'guilds.html', group: 'simulators' },
+  { key: 'hydra', href: 'hydra.html', group: 'simulators' },
+  { key: 'underworld', href: 'underworld.html', group: 'simulators' },
+  { key: 'blacksmith', href: 'blacksmith.html', group: 'planning' },
+  { key: 'attributes', href: 'attributes.html', group: 'planning' },
+  { key: 'fortress', href: 'fortress.html', group: 'simulators' },
+  { key: 'raids', href: 'raids.html', group: 'simulators' },
+  { key: 'idle', href: 'idle.html', group: 'planning' },
+  { key: 'calendar', href: 'calendar.html', group: 'planning' },
+  { key: 'bestiary', href: 'bestiary.html', group: 'planning' },
+  { key: 'build_planner', href: 'build-planner.html', group: 'planning' },
+  { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro', group: 'planning' },
+  { key: 'hell_raids', href: 'hell-raids.html', group: 'planning' },
+  { title: 'Hellevator', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/hellevator-rewards.webp', group: 'community' },
+  { title: 'Smith Simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/smith-simulator.webp', group: 'community' },
+  { title: 'Portrait Maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/portrait-maker.webp', group: 'community' },
+  { title: 'Top List', href: 'https://nachbarsf.github.io/Top-List/', author: 'Deinnachbar', group: 'community' },
   // Non-breaking space
-  { title: 'SF Poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG', icon: '/res/tools/sf-poradnik.webp' },
-  { title: 'Rune Bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago', icon: '/res/tools/rune-bonuses.webp' },
-  { title: 'Gold Pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r', icon: '/res/tools/gold-pit.webp' },
-  { title: 'LD Gadget', href: 'https://ldgadget.12hp.de/', author: 'ÐonMuErte & KaYa43v3r & AyWolf', icon: '/res/tools/ld-gadget.webp' },
-  { title: 'Enfants du Chaos', href: 'https://www.enfantsduchaos.fr/', author: 'Demetra', icon: '/res/tools/enfants-du-chaos.webp' },
-  { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r', icon: '/res/tools/sfsimulator.webp' },
-  { title: 'Aura Calculator', href: 'https://nachbarsf.github.io/Aura-Calculator/', author: 'Deinnachbar', icon: '/res/tools/aura-calculator.webp' },
-  { key: 'wiki', href: 'https://github.com/HafisCZ/sf-tools/wiki' },
-  { key: 'analyzer', href: 'analyzer.html' },
-  { key: 'changelog', href: 'changelog.html' }
+  { title: 'SF Poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG', icon: '/res/tools/sf-poradnik.webp', group: 'community' },
+  { title: 'Rune Bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago', icon: '/res/tools/rune-bonuses.webp', group: 'community' },
+  { title: 'Gold Pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r', icon: '/res/tools/gold-pit.webp', group: 'community' },
+  { title: 'LD Gadget', href: 'https://ldgadget.12hp.de/', author: 'ÐonMuErte & KaYa43v3r & AyWolf', icon: '/res/tools/ld-gadget.webp', group: 'community' },
+  { title: 'Enfants du Chaos', href: 'https://www.enfantsduchaos.fr/', author: 'Demetra', icon: '/res/tools/enfants-du-chaos.webp', group: 'community' },
+  { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r', icon: '/res/tools/sfsimulator.webp', group: 'community' },
+  { title: 'Aura Calculator', href: 'https://nachbarsf.github.io/Aura-Calculator/', author: 'Deinnachbar', icon: '/res/tools/aura-calculator.webp', group: 'community' },
+  { key: 'wiki', href: 'https://github.com/HafisCZ/sf-tools/wiki', group: 'info' },
+  { key: 'analyzer', href: 'analyzer.html', group: 'planning' },
+  { key: 'changelog', href: 'changelog.html', group: 'info' }
 ]
 
 const IMAGE = (() => {
@@ -137,25 +158,28 @@ const favorites = ref(Site.options.favorite_tools)
 const tools = computed<IndexTool[]>(() =>
   TOOLS.map((tool) => {
     if (tool.key === undefined) {
-      return { href: tool.href, title: tool.title, subtitle: tool.author, icon: tool.icon, external: true }
+      return { href: tool.href, title: tool.title, description: tool.author, icon: tool.icon, group: tool.group, external: true }
     } else {
       return {
         href: tool.href,
         title: localize(`${tool.key}.title`),
+        author: tool.author,
         description: localize(`${tool.key}.desc`),
         picture: `/res/tools/${tool.key}.webp`,
         tag: tool.key === 'dungeon_break' || tool.key === 'hell_raids' ? localize(`${tool.key}.wip`) : undefined,
-        subtitle: tool.author,
+        group: tool.group,
         external: false
       }
     }
   })
 )
 
-const orderedTools = computed(() => {
+const GROUPS = ['simulators', 'planning', 'community', 'info']
+
+const sections = computed(() => {
   const favoriteTools = favorites.value.map((href) => tools.value.find((tool) => tool.href === href)).filter((tool) => tool !== undefined)
 
-  return [...favoriteTools, ...tools.value.filter((tool) => !favorites.value.includes(tool.href))]
+  return [{ key: 'favorites', tools: favoriteTools }, ...GROUPS.map((group) => ({ key: group, tools: tools.value.filter((tool) => tool.group === group) }))].filter((section) => section.tools.length > 0)
 })
 
 function toggleFavorite(href: string) {
