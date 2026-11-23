@@ -1,6 +1,9 @@
 <template>
-  <SFButton ref="trigger-ref" variant="ghost" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
-    <img src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+  <SFButton ref="trigger-ref" variant="ghost" class="aria-expanded:bg-surface-hover" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
+    <span class="flex h-5 w-[21px] items-center justify-center">
+      <SFIcon v-if="open" name="xmark" class="text-lg" />
+      <img v-else src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+    </span>
     {{ title }}
   </SFButton>
   <Teleport to="body">

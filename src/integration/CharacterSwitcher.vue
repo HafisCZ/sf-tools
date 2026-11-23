@@ -1,14 +1,20 @@
 <template>
-  <SFButton ref="trigger-ref" variant="ghost" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
+  <SFButton ref="trigger-ref" variant="ghost" class="aria-expanded:bg-surface-hover" aria-haspopup="dialog" :aria-expanded="open" @click="toggle">
     <template v-if="props.player">
-      <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
+      <span v-if="open" class="flex size-[29px] shrink-0 items-center justify-center">
+        <SFIcon name="xmark" class="text-lg" />
+      </span>
+      <span v-show="!open" class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
         <CharacterRenderer :data="props.player" />
       </span>
       <span class="max-w-40 truncate">{{ props.player.Name }}</span>
       <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(props.player.Data.prefix) }}</span>
     </template>
     <template v-else>
-      <img src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+      <span class="flex h-5 w-[21px] items-center justify-center">
+        <SFIcon v-if="open" name="xmark" class="text-lg" />
+        <img v-else src="/res/endpoint/account.webp" alt="" class="h-5 opacity-90" />
+      </span>
       {{ localize('load.character') }}
     </template>
   </SFButton>
