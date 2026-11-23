@@ -183,10 +183,10 @@
     },
     "index": {
         "toggle": "Toggle credits",
-        "others": "Other community tools",
         "manage": "Manage favorites",
         "manage_done": "Done managing favorites",
         "author": "#{author}'s",
+        "wip": "WIP",
         "groups": {
             "simulators": "Game simulators",
             "planning": "Planning & management",
@@ -210,114 +210,139 @@
         },
         "stats": {
             "title": "Statistics",
-            "desc": "Track progress of yourself and your guild"
-        },
-        "temp": {
-            "title": "Statistics",
-            "desc": "Create temporary instance of Statistics",
-            "temporary": "Temporary"
+            "desc": "Track and visualise progress through your character scans"
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "How to do magic with tables and much more"
-        },
-        "runes": {
-            "title": "Rune Bonuses",
-            "desc": "Zorago's rune bonus table"
+            "desc": "Learn how to build your own Statistics tables and more"
         },
         "inventory": {
             "title": "Inventory Manager",
-            "desc": "Compare items, calculate upgrades & more"
+            "desc": "Compare items from your backpack and the shops with your gear"
         },
         "scrapbook": {
             "title": "Scrapbook",
-            "desc": "Find the items missing from your scrapbook"
+            "desc": "See what is missing from your Scrapbook"
         },
         "dungeon_break": {
             "title": "Dungeon Break",
-            "desc": "See progress left in your dungeons",
-            "wip": "WIP"
+            "desc": "See what you can reach after ending your dungeon pause"
         },
         "build_planner": {
             "title": "Build Planner",
-            "desc": "Plan your building upgrades step by step"
+            "desc": "Plan your Fortress and Underworld builds step by step"
         },
         "bestiary": {
             "title": "Bestiary",
-            "desc": "All dungeon and expedition enemies in one place"
+            "desc": "Browse through all dungeon and expedition enemies"
         },
         "hell_raids": {
             "title": "Hell Raid Planner",
-            "desc": "Split your guild to defeat as many Hellevator raids as possible",
-            "wip": "WIP"
+            "desc": "Split your guild to defeat as many Hellevator raids as possible"
         },
         "idle": {
             "title": "Arena Manager",
-            "desc": "Check the production of your Arena Manager"
+            "desc": "See how to optimize your Arena Manager progress"
         },
         "calendar": {
             "title": "Pet Calendar",
-            "desc": "Look at when you can catch pets"
+            "desc": "See which pets you can catch and on which days"
         },
         "simulator": {
             "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "desc": "See what chances players have against each other"
         },
         "guilds": {
             "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "desc": "Simulate attacks between two guilds"
         },
         "pets": {
             "title": "Pet Simulator",
-            "desc": "Simulate the probable outcome of a pet battle"
+            "desc": "See what chances your pets have against habitats"
         },
         "dungeons": {
             "title": "Dungeon Simulator",
-            "desc": "Simulate the probable outcome of a dungeon battle"
+            "desc": "See what your chances are to defeat dungeons"
         },
         "underworld": {
             "title": "Underworld Simulator",
-            "desc": "Simulate the probable outcome of an underworld battle"
+            "desc": "See chances of your Underworld units against another player"
         },
         "analyzer": {
             "title": "Fight Analyzer",
-            "desc": "Display all fights within a file for detailed analysis"
-        },
-        "fights": {
-            "title": "Fight viewer",
-            "desc": "Display all PVP fights stored within archive file"
-        },
-        "digest": {
-            "title": "Boss viewer",
-            "desc": "Display all PVE fights stored within archive file"
+            "desc": "Load fights from a file and see every hit in detail"
         },
         "attributes": {
             "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "desc": "Look up gold and XP rewards and costs at any level"
         },
         "blacksmith": {
             "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "desc": "Find out what upgrading an item costs and what you get back"
         },
         "hydra": {
             "title": "Hydra Simulator",
-            "desc": "Simulate which guild pet class is best against current hydra"
+            "desc": "Find the best guild pet class against Hydra"
         },
         "fortress": {
             "title": "Fortress Simulator",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "desc": "See what chances units have to raid a fortress"
         },
         "changelog": {
             "title": "Changelog",
-            "desc": "View all notable changes"
+            "desc": "See what changed in each SFTools update"
         },
         "hellevator": {
             "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "desc": "Check how many Hellevator floors you can beat"
         },
         "raids": {
             "title": "Raid Simulator",
-            "desc": "Simulate the probable outcome of guild raids"
+            "desc": "Simulate your guild's chance to beat a raid"
+        },
+        "hellevator_rewards": {
+            "title": "Hellevator",
+            "desc": "See the rewards and enemy stats of every Hellevator floor"
+        },
+        "smith_simulator": {
+            "title": "Smith Simulator",
+            "desc": "Simulate dismantling and upgrading items at the Blacksmith"
+        },
+        "portrait_maker": {
+            "title": "Portrait Maker",
+            "desc": "Design a custom portrait for your character"
+        },
+        "top_list": {
+            "title": "Top List",
+            "desc": "Browse Hall of Fame scans and compare players over time"
+        },
+        "sf_poradnik": {
+            "title": "SF Poradnik",
+            "desc": "Read guides and tips for every part of the game"
+        },
+        "rune_bonuses": {
+            "title": "Rune Bonuses",
+            "desc": "See how many runes you need for each rune bonus"
+        },
+        "gold_pit": {
+            "title": "Gold Pit",
+            "desc": "Calculate Gold Pit production and plan for the gold event"
+        },
+        "ld_gadget": {
+            "title": "LD Gadget",
+            "desc": "Calculate the damage you can take in the Legendary Dungeon"
+        },
+        "enfants_du_chaos": {
+            "title": "Enfants du Chaos",
+            "desc": "Read French guides, enemy sheets and item lists"
+        },
+        "sfsimulator": {
+            "title": "SFSimulator",
+            "desc": "Simulate how your character progresses over time"
+        },
+        "aura_calculator": {
+            "title": "Aura Calculator",
+            "desc": "Calculate the mana and days you need to reach Aura 400"
         }
     },
     "404": {

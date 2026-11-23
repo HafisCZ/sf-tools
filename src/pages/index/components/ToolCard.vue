@@ -16,13 +16,13 @@
           v-if="props.managing"
           type="button"
           :aria-pressed="!!props.favorite"
-          class="min-w-0 truncate text-left text-[15px] leading-tight font-bold text-white outline-none transition-colors group-hover:text-accent after:absolute after:inset-0"
+          class="min-w-0 text-left text-[15px] leading-tight font-bold text-white outline-none transition-colors group-hover:text-accent after:absolute after:inset-0"
           :class="props.dragging ? 'cursor-grabbing' : props.movable ? 'cursor-grab' : 'cursor-pointer'"
           @click="emit('favorite')"
         >
           <span v-if="props.author" class="text-accent">{{ localize('author', { author: props.author }) }}</span> {{ props.title }}
         </button>
-        <a v-else :href="props.href" :target="props.external ? '_blank' : undefined" class="min-w-0 truncate text-[15px] leading-tight font-bold text-white outline-none transition-colors group-hover:text-accent after:absolute after:inset-0">
+        <a v-else :href="props.href" :target="props.external ? '_blank' : undefined" class="min-w-0 text-[15px] leading-tight font-bold text-white outline-none transition-colors group-hover:text-accent after:absolute after:inset-0">
           <span v-if="props.author" class="text-accent">{{ localize('author', { author: props.author }) }}</span> {{ props.title }}
         </a>
         <span v-if="props.tag" class="shrink-0 rounded bg-accent px-1.5 text-[11px] leading-4 font-bold tracking-wider text-black uppercase text-shadow-none">{{ props.tag }}</span>

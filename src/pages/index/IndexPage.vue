@@ -120,22 +120,21 @@ const TOOLS = [
   { key: 'raids', href: 'raids.html', group: 'simulators' },
   { key: 'idle', href: 'idle.html', group: 'planning' },
   { key: 'calendar', href: 'calendar.html', group: 'planning' },
-  { key: 'bestiary', href: 'bestiary.html', group: 'planning' },
   { key: 'build_planner', href: 'build-planner.html', group: 'planning' },
   { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro', group: 'planning' },
   { key: 'hell_raids', href: 'hell-raids.html', group: 'planning' },
-  { title: 'Hellevator', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/hellevator-rewards.webp', group: 'community' },
-  { title: 'Smith Simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/smith-simulator.webp', group: 'community' },
-  { title: 'Portrait Maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/portrait-maker.webp', group: 'community' },
-  { title: 'Top List', href: 'https://nachbarsf.github.io/Top-List/', author: 'Deinnachbar', group: 'community' },
-  // Non-breaking space
-  { title: 'SF Poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG', icon: '/res/tools/sf-poradnik.webp', group: 'community' },
-  { title: 'Rune Bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago', icon: '/res/tools/rune-bonuses.webp', group: 'community' },
-  { title: 'Gold Pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r', icon: '/res/tools/gold-pit.webp', group: 'community' },
-  { title: 'LD Gadget', href: 'https://ldgadget.12hp.de/', author: 'ÐonMuErte & KaYa43v3r & AyWolf', icon: '/res/tools/ld-gadget.webp', group: 'community' },
-  { title: 'Enfants du Chaos', href: 'https://www.enfantsduchaos.fr/', author: 'Demetra', icon: '/res/tools/enfants-du-chaos.webp', group: 'community' },
-  { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r', icon: '/res/tools/sfsimulator.webp', group: 'community' },
-  { title: 'Aura Calculator', href: 'https://nachbarsf.github.io/Aura-Calculator/', author: 'Deinnachbar', icon: '/res/tools/aura-calculator.webp', group: 'community' },
+  { key: 'hellevator_rewards', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/hellevator-rewards.webp', group: 'community' },
+  { key: 'smith_simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/smith-simulator.webp', group: 'community' },
+  { key: 'portrait_maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/portrait-maker.webp', group: 'community' },
+  { key: 'top_list', href: 'https://nachbarsf.github.io/Top-List/', author: 'Deinnachbar', group: 'community' },
+  { key: 'sf_poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG', icon: '/res/tools/sf-poradnik.webp', group: 'community' },
+  { key: 'rune_bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago', icon: '/res/tools/rune-bonuses.webp', group: 'community' },
+  { key: 'gold_pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r', icon: '/res/tools/gold-pit.webp', group: 'community' },
+  { key: 'ld_gadget', href: 'https://ldgadget.12hp.de/', author: 'ÐonMuErte & KaYa43v3r & AyWolf', icon: '/res/tools/ld-gadget.webp', group: 'community' },
+  { key: 'enfants_du_chaos', href: 'https://www.enfantsduchaos.fr/', author: 'Demetra', icon: '/res/tools/enfants-du-chaos.webp', group: 'community' },
+  { key: 'sfsimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r', icon: '/res/tools/sfsimulator.webp', group: 'community' },
+  { key: 'aura_calculator', href: 'https://nachbarsf.github.io/Aura-Calculator/', author: 'Deinnachbar', icon: '/res/tools/aura-calculator.webp', group: 'community' },
+  { key: 'bestiary', href: 'bestiary.html', group: 'info' },
   { key: 'wiki', href: 'https://github.com/HafisCZ/sf-tools/wiki', group: 'info' },
   { key: 'analyzer', href: 'analyzer.html', group: 'planning' },
   { key: 'changelog', href: 'changelog.html', group: 'info' }
@@ -165,8 +164,8 @@ const favorites = ref(Site.options.favorite_tools)
 
 const tools = computed<IndexTool[]>(() =>
   TOOLS.map((tool) => {
-    if (tool.key === undefined) {
-      return { href: tool.href, title: tool.title, description: tool.author, icon: tool.icon, group: tool.group, external: true }
+    if (tool.group === 'community') {
+      return { href: tool.href, title: localize(`${tool.key}.title`), author: tool.author, description: localize(`${tool.key}.desc`), icon: tool.icon, group: tool.group, external: true }
     } else {
       return {
         href: tool.href,
@@ -174,7 +173,7 @@ const tools = computed<IndexTool[]>(() =>
         author: tool.author,
         description: localize(`${tool.key}.desc`),
         picture: `/res/tools/${tool.key}.webp`,
-        tag: tool.key === 'dungeon_break' || tool.key === 'hell_raids' ? localize(`${tool.key}.wip`) : undefined,
+        tag: tool.key === 'dungeon_break' || tool.key === 'hell_raids' ? localize('wip') : undefined,
         group: tool.group,
         external: false
       }
