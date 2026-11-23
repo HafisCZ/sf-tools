@@ -1,5 +1,5 @@
 <template>
-  <SFDialog :title="localize('results')" size="sm" :width="showMushrooms ? '660px' : undefined" height="80vh" column gap="14px" close-via-button buttons-bar @close="emit('close')">
+  <SFDialog :title="localize('results')" size="sm" :width="showMushrooms ? '660px' : undefined" height="80vh" column gap="14px" close-via-button :dismissible="!pinned" buttons-bar @close="emit('close')">
     <template #actions>
       <SFTooltip :content="localize('copy_image')">
         <SFButton variant="ghost" icon :aria-label="localize('copy_image')" :disabled="isCopying && 'loading'" @click="copy">
@@ -14,6 +14,11 @@
       <SFTooltip :content="localize.global('stats.copy.csv')">
         <SFButton variant="ghost" icon :aria-label="localize.global('stats.copy.csv')" @click="saveCSV">
           <SFIcon name="file-excel" />
+        </SFButton>
+      </SFTooltip>
+      <SFTooltip :content="localize.global(pinned ? 'dialog.shared.unpin' : 'dialog.shared.pin')">
+        <SFButton variant="ghost" icon :aria-label="localize.global(pinned ? 'dialog.shared.unpin' : 'dialog.shared.pin')" class="ml-3" @click="togglePinned">
+          <SFIcon name="thumbtack" :class="{ 'text-white/50': !pinned }" />
         </SFButton>
       </SFTooltip>
     </template>
@@ -72,6 +77,7 @@ import { useLocalize } from '@utils/localization'
 import { useSuccessToast } from '@utils/toasts'
 import { getClassImageUrl, useSubmit } from '@utils/utils'
 import { Exporter } from '~/core/exporter'
+import { Site } from '~/core/site'
 import { formatMushrooms } from '~/pages/dungeon-break/dungeon-break'
 import { formatRunes, getBossName, getDungeonExperience, getDungeonName, getDungeonTries, type DungeonResult } from '~/sim/data/dungeons'
 import DungeonChart from '../components/DungeonChart.vue'
@@ -117,6 +123,8 @@ const localize = useLocalize('dungeons')
 const activeIndex = ref(0)
 
 const showMushrooms = ref(props.showMushrooms)
+
+const pinned = ref(Site.options.results_pinned)
 
 const listElement = useTemplateRef('list-ref')
 
@@ -205,6 +213,11 @@ function toggleMushrooms(shown: boolean) {
   showMushrooms.value = shown
 
   emit('toggleMushrooms', shown)
+}
+
+function togglePinned() {
+  pinned.value = !pinned.value
+  Site.options.results_pinned = pinned.value
 }
 
 // Fire, cold and lightning resistance, in the order of DungeonRunes.res

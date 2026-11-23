@@ -1,5 +1,5 @@
 <template>
-  <SFDialog :title="localize('results')" size="md" close-via-button @close="emit('close')">
+  <SFDialog :title="localize('results')" size="md" close-via-button :dismissible="!pinned" @close="emit('close')">
     <template #actions>
       <SFTooltip :content="localize('copy_image')">
         <SFButton variant="ghost" icon :aria-label="localize('copy_image')" :disabled="isCopying && 'loading'" @click="copy">
@@ -14,6 +14,11 @@
       <SFTooltip :content="localize.global('stats.copy.csv')">
         <SFButton variant="ghost" icon :aria-label="localize.global('stats.copy.csv')" @click="saveCSV">
           <SFIcon name="file-excel" />
+        </SFButton>
+      </SFTooltip>
+      <SFTooltip :content="localize.global(pinned ? 'dialog.shared.unpin' : 'dialog.shared.pin')">
+        <SFButton variant="ghost" icon :aria-label="localize.global(pinned ? 'dialog.shared.unpin' : 'dialog.shared.pin')" class="ml-3" @click="togglePinned">
+          <SFIcon name="thumbtack" :class="{ 'text-white/50': !pinned }" />
         </SFButton>
       </SFTooltip>
     </template>
@@ -44,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFIcon from '@library/SFIcon.vue'
@@ -54,6 +59,7 @@ import { useLocalize } from '@utils/localization'
 import { useSuccessToast } from '@utils/toasts'
 import { useSubmit } from '@utils/utils'
 import { Exporter } from '~/core/exporter'
+import { Site } from '~/core/site'
 import { type SimulatorPet } from '~/sim/workers/pets'
 import { formatPetChance, getMonsterId, getPetImageUrl, PET_ELEMENTS } from '../pets'
 
@@ -79,6 +85,8 @@ const emit = defineEmits<{
 const localize = useLocalize('pets')
 
 const listElement = useTemplateRef('list-ref')
+
+const pinned = ref(Site.options.results_pinned)
 
 const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
   if (!listElement.value) return
@@ -161,6 +169,11 @@ function getPetName(pet: SimulatorPet) {
 
 function formatResult(chance: number) {
   return chance === 0 ? localize('bulk.not_possible') : formatPetChance(chance)
+}
+
+function togglePinned() {
+  pinned.value = !pinned.value
+  Site.options.results_pinned = pinned.value
 }
 
 function saveCSV() {

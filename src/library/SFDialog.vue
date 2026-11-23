@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4">
+  <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4" @pointerdown="onBackdropPointerDown" @click="onBackdropClick">
     <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1" class="flex max-h-full w-full flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl outline-none" :class="SIZE_CLASSES[props.size]" :style="{ maxWidth: props.width }">
       <div class="flex items-center gap-3">
         <SFHeading :id="titleId" level="5" class="flex-1">{{ props.title }}</SFHeading>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, useId, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, useId, useTemplateRef } from 'vue'
 import { useLocalize } from '@utils/localization'
 import SFButton from './SFButton.vue'
 import SFHeading from './SFHeading.vue'
@@ -62,6 +62,10 @@ const props = withDefaults(
      */
     closeViaButton?: boolean
     /**
+     * Closes the dialog on a click outside of it or on Escape
+     */
+    dismissible?: boolean
+    /**
      * Puts the buttons on a full-width bar with its own background, set apart from the content
      */
     buttonsBar?: boolean
@@ -72,6 +76,7 @@ const props = withDefaults(
     column: false,
     gap: '1rem',
     closeViaButton: false,
+    dismissible: false,
     buttonsBar: false
   }
 )
@@ -102,7 +107,34 @@ const titleId = useId()
 
 const dialogElement = useTemplateRef('dialog-ref')
 
+// A press that starts inside the dialog and ends outside, like selecting text, does not close it
+let pressedBackdrop = false
+
+function onBackdropPointerDown(event: PointerEvent) {
+  pressedBackdrop = event.target === event.currentTarget
+}
+
+function onBackdropClick(event: MouseEvent) {
+  if (props.dismissible && pressedBackdrop && event.target === event.currentTarget) {
+    emit('close')
+  }
+}
+
 onMounted(() => {
   dialogElement.value?.focus()
+
+  // Registered before any menu inside the dialog, so it runs while that menu is still open
+  window.addEventListener('keydown', closeOnEscape, true)
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', closeOnEscape, true)
+})
+
+function closeOnEscape(event: KeyboardEvent) {
+  // An open menu or a dialog on top hides this one, that Escape belongs to them
+  if (props.dismissible && event.key === 'Escape' && dialogElement.value?.closest('[data-content-container]')?.getAttribute('aria-hidden') !== 'true') {
+    emit('close')
+  }
+}
 </script>
