@@ -186,7 +186,6 @@
         "manage": "Manage favorites",
         "manage_done": "Done managing favorites",
         "author": "#{author}'s",
-        "wip": "WIP",
         "groups": {
             "simulators": "Game simulators",
             "planning": "Planning & management",

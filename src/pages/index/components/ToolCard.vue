@@ -25,9 +25,11 @@
         <a v-else :href="props.href" :target="props.external ? '_blank' : undefined" class="min-w-0 text-[15px] leading-tight font-bold text-white outline-none transition-colors group-hover:text-accent after:absolute after:inset-0">
           <span v-if="props.author" class="text-accent">{{ localize('author', { author: props.author }) }}</span> {{ props.title }}
         </a>
-        <span v-if="props.tag" class="shrink-0 rounded bg-accent px-1.5 text-[11px] leading-4 font-bold tracking-wider text-black uppercase text-shadow-none">{{ props.tag }}</span>
       </span>
       <span v-if="props.description" class="line-clamp-2 text-[13px] leading-snug text-white/70">{{ props.description }}</span>
+    </span>
+    <span v-if="props.wip" class="pointer-events-none absolute inset-0 overflow-hidden rounded-[10px]">
+      <img src="/res/beta_banner.webp" alt="BETA" width="151" height="117" class="absolute top-0 left-0 w-20" />
     </span>
     <span v-if="props.managing" aria-hidden="true" class="pointer-events-none absolute -top-2 -right-2 z-10 flex size-6 items-center justify-center rounded-full text-xs text-shadow-none" :class="props.favorite ? 'bg-accent text-black' : 'border border-line bg-surface text-white/60'">
       <SFIcon :name="props.favorite ? 'star-solid' : 'star'" />
@@ -69,9 +71,9 @@ const props = defineProps<{
    */
   icon?: string
   /**
-   * Small pill after the title
+   * Shows the BETA ribbon in the top left corner
    */
-  tag?: string
+  wip?: boolean
   /**
    * Opens the link in a new tab
    */

@@ -21,7 +21,7 @@
             :description="entry.tool.description"
             :picture="entry.tool.picture"
             :icon="entry.tool.icon"
-            :tag="entry.tool.tag"
+            :wip="entry.tool.wip"
             :external="entry.tool.external"
             :favorite="favorites.includes(entry.tool.href)"
             :managing="managing"
@@ -91,7 +91,7 @@ type IndexTool = {
   description?: string
   picture?: string
   icon?: string
-  tag?: string
+  wip?: boolean
   group: string
   external: boolean
 }
@@ -121,8 +121,8 @@ const TOOLS = [
   { key: 'idle', href: 'idle.html', group: 'planning' },
   { key: 'calendar', href: 'calendar.html', group: 'planning' },
   { key: 'build_planner', href: 'build-planner.html', group: 'planning' },
-  { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro', group: 'planning' },
-  { key: 'hell_raids', href: 'hell-raids.html', group: 'planning' },
+  { key: 'dungeon_break', href: 'dungeon-break.html', author: 'Borro', group: 'planning', wip: true },
+  { key: 'hell_raids', href: 'hell-raids.html', group: 'planning', wip: true },
   { key: 'hellevator_rewards', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/hellevator-rewards.webp', group: 'community' },
   { key: 'smith_simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/smith-simulator.webp', group: 'community' },
   { key: 'portrait_maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte', icon: '/res/tools/portrait-maker.webp', group: 'community' },
@@ -173,7 +173,7 @@ const tools = computed<IndexTool[]>(() =>
         author: tool.author,
         description: localize(`${tool.key}.desc`),
         picture: `/res/tools/${tool.key}.webp`,
-        tag: tool.key === 'dungeon_break' || tool.key === 'hell_raids' ? localize('wip') : undefined,
+        wip: tool.wip,
         group: tool.group,
         external: false
       }
