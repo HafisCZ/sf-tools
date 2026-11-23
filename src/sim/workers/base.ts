@@ -990,17 +990,18 @@ export class SimulatorModel {
 
     let rd = weapon.Attributes[2] // Rune damage
     let rr = 0 // Rune resistance
+    const runeType = weapon.AttributeTypes[2] === RUNE_AUTO_DAMAGE ? RUNE_AUTO_DAMAGE : this.Snack.RuneDamageType ?? weapon.AttributeTypes[2]
 
-    if (weapon.AttributeTypes[2] === RUNE_AUTO_DAMAGE) {
+    if (runeType === RUNE_AUTO_DAMAGE) {
       rd += this.Snack.RuneDamageBonus ?? 0
       rr = Math.min(rf, rc, rl)
-    } else if (weapon.AttributeTypes[2] === RUNE_FIRE_DAMAGE || this.Snack.RuneDamageType === RUNE_FIRE_DAMAGE) {
+    } else if (runeType === RUNE_FIRE_DAMAGE) {
       rd += this.Snack.RuneDamageBonus ?? 0
       rr = rf
-    } else if (weapon.AttributeTypes[2] === RUNE_COLD_DAMAGE || this.Snack.RuneDamageType === RUNE_COLD_DAMAGE) {
+    } else if (runeType === RUNE_COLD_DAMAGE) {
       rd += this.Snack.RuneDamageBonus ?? 0
       rr = rc
-    } else if (weapon.AttributeTypes[2] === RUNE_LIGHTNING_DAMAGE || this.Snack.RuneDamageType === RUNE_LIGHTNING_DAMAGE) {
+    } else if (runeType === RUNE_LIGHTNING_DAMAGE) {
       rd += this.Snack.RuneDamageBonus ?? 0
       rr = rl
     } else {
