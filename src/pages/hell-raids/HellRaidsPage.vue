@@ -75,7 +75,7 @@
         <PlayerEditor ref="editor-ref" snacks class="mt-[14px]" @copy="copyPlayer" />
       </div>
 
-      <SFTable v-for="table in tables" :key="table.key" dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto md:[scrollbar-gutter:stable]">
+      <SFTable v-for="table in tables" :key="table.key" v-model:sorting="sorting" dense class="self-start md:max-h-[calc(100dvh-134px)] md:overflow-y-auto md:[scrollbar-gutter:stable]">
         <template #header>
           <SFTableRow>
             <SFTableHeader align="center" class="w-12 min-w-12">#</SFTableHeader>
@@ -84,7 +84,9 @@
               {{ localize('unallocated') }}
               <span class="ml-1 font-normal text-white/60">{{ formatMembers(unallocated.length) }}</span>
             </SFTableHeader>
-            <SFTableHeader align="right" class="whitespace-nowrap">{{ localize('top_floor') }}</SFTableHeader>
+            <SFTableHeader align="right" class="whitespace-nowrap">
+              <SFTableSort column="floor" arrow-side="left">{{ localize('top_floor') }}</SFTableSort>
+            </SFTableHeader>
             <SFTableHeader align="center" class="w-12 min-w-12">
               <SFTooltip v-if="table.key === 'groups'" :content="localize('results.copy')">
                 <SFButton variant="ghost" size="sm" icon :aria-label="localize('results.copy')" :class="{ invisible: !hasGroups }" @click="copyResults">
@@ -177,8 +179,9 @@ import SFTable from '@library/SFTable.vue'
 import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
+import SFTableSort from '@library/SFTableSort.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { type SelectOption } from '@utils/components'
+import { type SelectOption, type TableSorting } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { compact, copyJson, copyText, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, useSubmit } from '@utils/utils'
@@ -247,6 +250,16 @@ const pasteMode = ref(false)
 
 const players = shallowRef<ListPlayer[]>([])
 const selectedIndex = ref(-1)
+
+const descending = ref(false)
+
+// SFTable clears the sorting on a third click, which falls back to weakest first
+const sorting = computed<TableSorting | undefined>({
+  get: (): TableSorting => ({ column: 'floor', direction: descending.value ? 'desc' : 'asc' }),
+  set: (value) => {
+    descending.value = value?.direction === 'desc'
+  }
+})
 
 const floors = shallowRef(new Map<number, number>())
 const assignments = shallowRef(new Map<number, number>())
@@ -415,9 +428,11 @@ function getRaid(index: number) {
   return raid <= raidLimit.value ? raid : UNALLOCATED
 }
 
-// Lowest top floor first
+// Lowest top floor first, highest first when the Top floor header is flipped
 function listMembers(entries: ListPlayer[]) {
-  return entries.sort((a, b) => (floors.value.get(a.index) ?? 0) - (floors.value.get(b.index) ?? 0) || a.player.Level - b.player.Level)
+  const direction = descending.value ? -1 : 1
+
+  return entries.sort((a, b) => direction * ((floors.value.get(a.index) ?? 0) - (floors.value.get(b.index) ?? 0) || a.player.Level - b.player.Level))
 }
 
 function getRowClass(entry: ListPlayer, target: number) {
