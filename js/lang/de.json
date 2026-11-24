@@ -183,7 +183,15 @@
     },
     "index": {
         "toggle": "Credits umschalten",
-        "others": "Andere Community-Werkzeuge",
+        "manage": "Manage favorites",
+        "manage_done": "Done managing favorites",
+        "author": "#{author}'s",
+        "groups": {
+            "simulators": "Game simulators",
+            "planning": "Planning & management",
+            "community": "Community tools",
+            "info": "Info"
+        },
         "roles": {
             "admin": "Jemand mit viel Freizeit",
             "helper": "Helfer - Recherche, Testen, Feedback, etc.",
@@ -201,109 +209,139 @@
         },
         "stats": {
             "title": "Statistik",
-            "desc": "Verfolge den Fortschritt von dir und deiner Gilde"
-        },
-        "temp": {
-            "title": "Statistik",
-            "desc": "Erstelle eine temporäre Version der Statistik",
-            "temporary": "Temporäre"
+            "desc": "Track and visualise progress through your character scans"
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "Wie man die Tabellen bedient und vieles mehr"
-        },
-        "runes": {
-            "title": "Runen Boni",
-            "desc": "Zorago's Runen Boni Tabelle"
+            "desc": "Learn how to build your own Statistics tables and more"
         },
         "inventory": {
             "title": "Inventar Manager",
-            "desc": "Vergleiche Items, berechne Upgrades & mehr"
+            "desc": "Compare items from your backpack and the shops with your gear"
         },
         "scrapbook": {
             "title": "Scrapbook",
-            "desc": "Find the items missing from your scrapbook"
+            "desc": "See what is missing from your Scrapbook"
         },
         "dungeon_break": {
             "title": "Dungeon Break",
-            "desc": "See progress left in your dungeons",
-            "wip": "WIP"
+            "desc": "See what you can reach after ending your dungeon pause"
         },
         "build_planner": {
             "title": "Build Planner",
-            "desc": "Plan your building upgrades step by step"
+            "desc": "Plan your Fortress and Underworld builds step by step"
         },
         "bestiary": {
             "title": "Bestiary",
-            "desc": "All dungeon and expedition enemies in one place"
+            "desc": "Browse through all dungeon and expedition enemies"
+        },
+        "hell_raids": {
+            "title": "Hell Raid Planner",
+            "desc": "Split your guild to defeat as many Hellevator raids as possible"
         },
         "idle": {
             "title": "Arena Manager",
-            "desc": "Überprüfe die Produktion deines Arena Manager"
+            "desc": "See how to optimize your Arena Manager progress"
         },
         "calendar": {
             "title": "Pet Kalender",
-            "desc": "Schau wann du welche Pets finden kannst"
+            "desc": "See which pets you can catch and on which days"
         },
         "simulator": {
             "title": "Kampf Simulator",
-            "desc": "Simuliere die Wahrscheinlichkeit eines PvP Kampfes"
+            "desc": "See what chances players have against each other"
         },
         "guilds": {
             "title": "Gilden Simulator",
-            "desc": "Simuliere die Wahrscheinlichkeit eines Gilden Kampfes"
+            "desc": "Simulate attacks between two guilds"
         },
         "pets": {
             "title": "Pet Simulator",
-            "desc": "Simuliere den wahrscheinlichen Ausgang eines Petkampfes"
+            "desc": "See what chances your pets have against habitats"
         },
         "dungeons": {
             "title": "Dungeon Simulator",
-            "desc": "Simuliere den wahrscheinlichen Ausgang eines Dungeonkampfes"
+            "desc": "See what your chances are to defeat dungeons"
         },
         "underworld": {
             "title": "Unterwelt Simulator",
-            "desc": "Simuliere den wahrscheinlichen Ausgang eines Unterweltkampfes"
+            "desc": "See chances of your Underworld units against another player"
         },
         "analyzer": {
             "title": "Kampfanalyse",
-            "desc": "Zeige alle Kämpfe innerhalb einer Datei zur detaillierten Analyse an"
-        },
-        "fights": {
-            "title": "Kampf Betrachter",
-            "desc": "Zeigt alle PvP-Kämpfe an die in einer Archivdatei gespeichert sind."
-        },
-        "digest": {
-            "title": "Boss Betrachter",
-            "desc": "Zeigt alle PvE-Kämpfe an die in einer Archivdatei gespeichert sind."
+            "desc": "Load fights from a file and see every hit in detail"
         },
         "attributes": {
             "title": "Gold & Erfahrung",
-            "desc": "Kurven & Rechner"
+            "desc": "Look up gold and XP rewards and costs at any level"
         },
         "blacksmith": {
             "title": "Schmied Verbesserungen",
-            "desc": "Was es kostet und was verloren geht"
+            "desc": "Find out what upgrading an item costs and what you get back"
         },
         "hydra": {
             "title": "Hydra Simulator",
-            "desc": "Simulate which guild pet class is best against current hydra"
+            "desc": "Find the best guild pet class against Hydra"
         },
         "fortress": {
             "title": "Festungs Simulator",
-            "desc": "Simuliere den wahrscheinlichen Ausgang eines Festungskampfes"
+            "desc": "See what chances units have to raid a fortress"
         },
         "changelog": {
             "title": "Änderungsprotokoll",
-            "desc": "Alle bemerkenswerten Änderungen ansehen"
+            "desc": "See what changed in each SFTools update"
         },
         "hellevator": {
             "title": "Hellevator Simulator",
-            "desc": "Simuliere den wahrscheinlichen Ausgang eines Hellevatorkämpfes"
+            "desc": "Check how many Hellevator floors you can beat"
         },
         "raids": {
             "title": "Raid Simulator",
-            "desc": "Simulate the probable outcome of guild raids"
+            "desc": "Simulate your guild's chance to beat a raid"
+        },
+        "hellevator_rewards": {
+            "title": "Hellevator",
+            "desc": "See the rewards and enemy stats of every Hellevator floor"
+        },
+        "smith_simulator": {
+            "title": "Smith Simulator",
+            "desc": "Simulate dismantling and upgrading items at the Blacksmith"
+        },
+        "portrait_maker": {
+            "title": "Portrait Maker",
+            "desc": "Design a custom portrait for your character"
+        },
+        "top_list": {
+            "title": "Top List",
+            "desc": "Browse Hall of Fame scans and compare players over time"
+        },
+        "sf_poradnik": {
+            "title": "SF Poradnik",
+            "desc": "Read guides and tips for every part of the game"
+        },
+        "rune_bonuses": {
+            "title": "Rune Bonuses",
+            "desc": "See how many runes you need for each rune bonus"
+        },
+        "gold_pit": {
+            "title": "Gold Pit",
+            "desc": "Calculate Gold Pit production and plan for the gold event"
+        },
+        "ld_gadget": {
+            "title": "LD Gadget",
+            "desc": "Calculate the damage you can take in the Legendary Dungeon"
+        },
+        "enfants_du_chaos": {
+            "title": "Enfants du Chaos",
+            "desc": "Read French guides, enemy sheets and item lists"
+        },
+        "sfsimulator": {
+            "title": "SFSimulator",
+            "desc": "Simulate how your character progresses over time"
+        },
+        "aura_calculator": {
+            "title": "Aura Calculator",
+            "desc": "Calculate the mana and days you need to reach Aura 400"
         }
     },
     "404": {
@@ -1084,13 +1122,15 @@
         "simulate": "Simulator mit aktuellen Daten öffnen",
         "table": {
             "select": "#{index} - #{rounds} Runden - #{nameA} - #{nameB} - Gewinner: #{winner}",
+            "select_terminated": "Terminated",
             "rage": "Kampfrausch",
             "attacker": "Angreifer",
             "target": "Ziel",
             "type": "Typ",
             "health": "Verbleibende Lebenspunkte",
             "damage": "Schaden",
-            "damage_base": "Basisschaden"
+            "damage_base": "Basisschaden",
+            "terminated": "Fight terminated"
         },
         "toast_import_error": {
             "title": "Importieren fehlgeschlagen",
@@ -1445,7 +1485,8 @@
             "message": "Abrufen von Daten"
         },
         "step7": {
-            "title": "Wähle deinen Charakter aus"
+            "title": "Wähle deinen Charakter aus",
+            "search": "Search by name or server"
         },
         "warnings": {
             "title": "Some characters could not be fully captured",
@@ -1507,7 +1548,9 @@
             "close": "Schließen",
             "ok": "Ok",
             "apply": "Anwenden",
-            "submit": "Submit"
+            "submit": "Submit",
+            "pin": "Disable closing by outside click",
+            "unpin": "Enable closing by outside click"
         },
         "backup_reminder": {
             "title": "Backup Reminder",
@@ -1535,9 +1578,11 @@
                 "description": "More only keeps floors with a win chance in this range. When a floor falls outside it, the rest of that dungeon is skipped.",
                 "label": "Schwellenwert % - Jeder Dungeon-Gegner außerhalb dieses Schwellenwerts wird übersprungen",
                 "more": "Additional dungeons in More mode",
-                "more_description": "Include Twister or Sandstorm when using the More mode",
+                "more_description": "Include Twister, Sandstorm, Tower or Class dungeons when using the More mode",
                 "include_twister": "Include Twister",
-                "include_sandstorm": "Include Sandstorm"
+                "include_sandstorm": "Include Sandstorm",
+                "include_tower": "Include Tower",
+                "include_class_dungeons": "Include Class dungeons"
             },
             "limits": {
                 "title": "Simulation limits",
@@ -2110,6 +2155,33 @@
             "hellevator_12": "HV 12: Highway to Hell II"
         }
     },
+    "hell_raids": {
+        "simulate_floors": "Simulate top floors",
+        "organize": "Auto organize",
+        "simulate_raids": "Simulate raids",
+        "drop": "Drag members here",
+        "raid_chance": "Min. chance in raid",
+        "floor_chance": "Min. chance in Hellevator",
+        "raid_limit": "Raids to clear",
+        "top_floor": "Top floor",
+        "item_level": "Items #{level}",
+        "status": {
+            "beaten": "Floor #{floor}+, #{members}",
+            "lost": "Floor #{floor}+"
+        },
+        "members": {
+            "one": "#{count} member",
+            "many": "#{count} members"
+        },
+        "unallocated": "Unallocated",
+        "results": {
+            "copy": "Copy plan",
+            "raid": "Raid #{raid} (#{chance}%): #{members}",
+            "members": "Raid #{raid}: #{members}",
+            "rest": "Raid #{raid} (#{chance}%): Rest",
+            "unallocated": "Unallocated: #{members}"
+        }
+    },
     "idle": {
         "title": "Arena Manager",
         "topbar": {
@@ -2371,6 +2443,19 @@
         "health": "Health",
         "weapon_range": "Weapon Range",
         "copy": "Copy for simulator",
+        "rewards": {
+            "gold": "Gold",
+            "item": "Item",
+            "item_epic": "Epic item",
+            "item_epic_universal": "Epic item",
+            "wood": "Wood",
+            "stone": "Stone",
+            "metal": "Metal",
+            "arcane": "Arcane splinters",
+            "fruit_basket": "Fruit basket",
+            "any_class": "Any class"
+        },
+        "experience": "XP",
         "footer#": "Special thanks to Milado"
     }
 }
