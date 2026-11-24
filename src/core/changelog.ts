@@ -61,6 +61,44 @@ export const ANNOUNCEMENTS: Announcement[] = [
 ]
 
 export const CHANGELOG: Record<string, ChangelogRelease> = {
+  'v8.XXXX': {
+    'Hell Raid Planner': [
+      'Added new tool that allows you to efficiently allocate your guild members to different Hell Attacks'
+    ],
+    Bestiary: [
+      'Added dungeon rewards',
+      'Added class portal enemies'
+    ],
+    'Dungeon Simulator': [
+      'Added option to include Tower and Class dungeons in More mode',
+      'Added option to close results dialog by clicking outside or pressing Escape'
+    ],
+    'Hellevator Simulator': [
+      'Added character view for editing equipment',
+      'Added support for new simulator engine to improve performance',
+      'Updated enemies',
+      'Fixed enemy damage rounding',
+      'Fixed rune snacks not applying their rune type'
+    ],
+    'Raid Simulator': [
+      'Added support for new simulator engine to improve performance',
+      'Fixed enemy damage rounding',
+      'Fixed rune snacks not applying their rune type'
+    ],
+    'Pet Simulator': [
+      'Added option to close results dialog by clicking outside or pressing Escape'
+    ],
+    'Fight Analyzer': [
+      'Added proper support for fights terminated by the game'
+    ],
+    'Log in to the game': [
+      'Added character search by name or server'
+    ],
+    'All Tools': [
+      'Added favorite tools to the main page',
+      'Updated main page layout and tool descriptions'
+    ]
+  },
   'v8.5236': {
     'Build Planner': [
       'Added new tool for planning Fortress and Underworld building upgrades'
