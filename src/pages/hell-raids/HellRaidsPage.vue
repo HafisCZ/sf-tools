@@ -703,10 +703,8 @@ function copyResults() {
 
     if (!group.result || group.result.outdated) {
       lines.push(localize('results.members', { raid: group.raid, members: names }))
-    } else if (group.beaten) {
-      lines.push(localize('results.raid', { raid: group.raid, members: names, chance: formatChance(group.result.chance) }))
     } else {
-      lines.push(localize('results.rest', { raid: group.raid, chance: formatChance(group.result.chance) }))
+      lines.push(localize('results.raid', { raid: group.raid, members: names, chance: formatChance(group.result.chance) }))
     }
   }
 
