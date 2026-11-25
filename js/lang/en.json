@@ -2169,7 +2169,7 @@
         "raid_chance": "Min. chance in raid",
         "floor_chance": "Min. chance in Hellevator",
         "raid_limit": "Raids to clear",
-        "top_floor": "Top floor",
+        "top_floor": "Top floor / Level",
         "item_level": "Items #{level}",
         "status": {
             "beaten": "Floor #{floor}+, #{members}",
