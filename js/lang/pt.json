@@ -2178,7 +2178,6 @@
             "copy": "Copy plan",
             "raid": "Raid #{raid} (#{chance}%): #{members}",
             "members": "Raid #{raid}: #{members}",
-            "rest": "Raid #{raid} (#{chance}%): Rest",
             "unallocated": "Unallocated: #{members}"
         }
     },
