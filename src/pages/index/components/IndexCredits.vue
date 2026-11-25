@@ -90,6 +90,7 @@ const SECTIONS: { role: string; contributors: Contributor[] }[] = [
       { name: 'Wärkki', locale: 'es' },
       { name: 'Necio', locale: 'es' },
       { name: 'DrKuulJulian', locale: 'ch' },
+      { name: 'Demetra', locale: 'fr' },
       { name: 'MaxiYann', locale: 'fr' },
       { name: 'KaYa 43v3r', locale: 'fr' },
       { name: 'Balogh Roland', locale: 'hu' },
