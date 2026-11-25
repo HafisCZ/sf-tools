@@ -17,8 +17,8 @@ export type TableOptions = {
   dense: boolean
   plain: boolean
   sort: {
-    isSortedBy: (column: string) => 'asc' | 'desc' | false
-    sortBy: (column: string, first?: 'asc' | 'desc') => void
+    isSortedBy: (column: string | undefined) => 'asc' | 'desc' | false
+    sortBy: (column: string | undefined, first?: 'asc' | 'desc') => void
   }
 }
 

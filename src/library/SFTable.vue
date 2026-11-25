@@ -52,14 +52,18 @@ provide(TABLE_OPTIONS_KEY, {
     return props.plain
   },
   sort: {
-    isSortedBy: (column) => (sorting.value?.column === column ? sorting.value.direction : false),
+    isSortedBy: (column) => {
+      if (!sorting.value) return column === undefined ? 'asc' : false
+
+      return sorting.value.column === column ? sorting.value.direction : false
+    },
     sortBy: (column, first = 'asc') => {
-      if (sorting.value?.column !== column) {
-        sorting.value = { column, direction: first }
-      } else if (sorting.value.direction === first) {
-        sorting.value = { column, direction: first === 'asc' ? 'desc' : 'asc' }
-      } else {
+      if (column === undefined) {
         sorting.value = undefined
+      } else if (sorting.value?.column !== column) {
+        sorting.value = { column, direction: first }
+      } else {
+        sorting.value = { column, direction: sorting.value.direction === 'asc' ? 'desc' : 'asc' }
       }
     }
   }

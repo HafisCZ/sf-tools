@@ -67,21 +67,25 @@
           </SFButton>
         </div>
 
-        <div ref="table-ref" :class="{ 'bg-white text-black [&_*]:!border-[rgba(0,0,0,0.2)] [&_*]:!bg-transparent [&_*]:!text-black [&_*]:!outline-none': screenshot }">
+        <div ref="table-ref" :class="{ 'bg-white text-black [&_*]:!border-[rgba(0,0,0,0.2)] [&_*]:!bg-transparent [&_*]:!text-black [&_*]:!outline-none [&_span:has(>svg)]:!hidden': screenshot }">
           <SFTable v-model:sorting="sorting" dense class="mt-[14px]">
             <template #header>
               <SFTableRow>
-                <SFTableHeader align="center" class="w-12">#</SFTableHeader>
+                <SFTableHeader align="center" class="w-12">
+                  <SFTableSort>#</SFTableSort>
+                </SFTableHeader>
                 <SFTableHeader class="w-full">
                   <SFTableSort column="name">{{ localize('player') }}</SFTableSort>
-                  <div class="text-xs font-normal text-white/60">
-                    <SFTableSort column="class" arrow-side="left">{{ localize.global('editor.class') }}</SFTableSort> · <SFTableSort column="level" descending>{{ localize.global('editor.level') }}</SFTableSort>
+                  <div class="mt-1 flex gap-3.5 text-xs font-normal text-white/60">
+                    <SFTableSort column="class">{{ localize.global('editor.class') }}</SFTableSort>
+                    <SFTableSort column="level" descending>{{ localize.global('editor.level') }}</SFTableSort>
                   </div>
                 </SFTableHeader>
                 <SFTableHeader align="right">
                   <SFTableSort column="avg" descending>{{ localize('win_chance') }}</SFTableSort>
-                  <div v-if="showRange" class="text-xs font-normal text-white/60">
-                    <SFTableSort column="min" descending arrow-side="left">{{ localize.global('general.min') }}</SFTableSort> - <SFTableSort column="max" descending>{{ localize.global('general.max') }}</SFTableSort>
+                  <div v-if="showRange" class="mt-1 flex justify-end gap-3.5 text-xs font-normal text-white/60">
+                    <SFTableSort column="min" descending>{{ localize.global('general.min') }}</SFTableSort>
+                    <SFTableSort column="max" descending>{{ localize.global('general.max') }}</SFTableSort>
                   </div>
                   <span aria-hidden="true" class="invisible block h-0 overflow-hidden whitespace-nowrap" :class="showRange ? 'text-xs font-normal' : 'text-[15px]'">{{ widestChance }}</span>
                 </SFTableHeader>

@@ -85,7 +85,7 @@
               <span class="ml-1 font-normal text-white/60">{{ formatMembers(unallocated.length) }}</span>
             </SFTableHeader>
             <SFTableHeader align="right" class="whitespace-nowrap">
-              <SFTableSort column="floor" arrow-side="left">{{ localize('top_floor') }}</SFTableSort>
+              <SFTableSort column="floor">{{ localize('top_floor') }}</SFTableSort>
             </SFTableHeader>
             <SFTableHeader align="center" class="w-12 min-w-12">
               <SFTooltip v-if="table.key === 'groups'" :content="localize('results.copy')">
@@ -253,7 +253,6 @@ const selectedIndex = ref(-1)
 
 const descending = ref(false)
 
-// SFTable clears the sorting on a third click, which falls back to weakest first
 const sorting = computed<TableSorting | undefined>({
   get: (): TableSorting => ({ column: 'floor', direction: descending.value ? 'desc' : 'asc' }),
   set: (value) => {

@@ -1,14 +1,21 @@
 <template>
-  <button type="button" class="relative inline-flex cursor-pointer items-center outline-none" @click="table.sort.sortBy(props.column, props.descending ? 'desc' : 'asc')">
+  <button
+    type="button"
+    class="group/sort -mx-1.5 -my-0.5 inline-flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 outline-none hover:bg-white/7 focus-visible:bg-white/7"
+    :class="direction ? 'text-accent' : 'hover:text-white focus-visible:text-white'"
+    @click="table.sort.sortBy(props.column, props.descending ? 'desc' : 'asc')"
+  >
     <slot />
-    <SFIcon v-if="sortIcon" :name="sortIcon" class="absolute top-1/2 -translate-y-1/2 text-[0.6em] text-white/60" :class="props.arrowSide === 'left' ? 'right-full mr-[3px]' : 'left-full ml-[3px]'" />
+    <span class="relative inline-flex text-[0.7em]">
+      <SFIcon name="sort-up" :class="getArrowClass('asc')" />
+      <SFIcon name="sort-down" class="absolute inset-0" :class="getArrowClass('desc')" />
+    </span>
   </button>
 </template>
 
 <script setup lang="ts">
 import { computed, inject } from 'vue'
 import { DEFAULT_TABLE_OPTIONS, TABLE_OPTIONS_KEY } from '@utils/components'
-import { type IconName } from '@utils/icons'
 import SFIcon from './SFIcon.vue'
 
 defineOptions({
@@ -17,29 +24,22 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Key the rows are sorted by when clicked
+   * Key the rows are sorted by when clicked, without it the click puts the rows back in their own order
    */
-  column: string
+  column?: string
   /**
    * Sorts the column from its largest value on the first click
    */
   descending?: boolean
-  /**
-   * Side the sort arrow is drawn on, outside the label so it never moves it
-   */
-  arrowSide?: 'left' | 'right'
 }>()
 
 const table = inject(TABLE_OPTIONS_KEY, DEFAULT_TABLE_OPTIONS)
 
-const sortIcon = computed<IconName | false>(() => {
-  switch (table.sort.isSortedBy(props.column)) {
-    case 'asc':
-      return 'sort-up'
-    case 'desc':
-      return 'sort-down'
-    default:
-      return false
-  }
-})
+const direction = computed(() => table.sort.isSortedBy(props.column))
+
+function getArrowClass(arrow: 'asc' | 'desc') {
+  if (direction.value === arrow) return 'text-accent'
+
+  return direction.value ? 'text-white/15' : 'text-white/30 group-hover/sort:text-white/60 group-focus-visible/sort:text-white/60'
+}
 </script>
