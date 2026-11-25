@@ -2180,6 +2180,11 @@
             "many": "#{count} members"
         },
         "unallocated": "Unallocated",
+        "setup": {
+            "save": "Save setup",
+            "load": "Load setup",
+            "clear": "Clear setup"
+        },
         "results": {
             "copy": "Copy plan",
             "raid": "Raid #{raid} (#{chance}%): #{members}",

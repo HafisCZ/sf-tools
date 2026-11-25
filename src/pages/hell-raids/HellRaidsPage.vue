@@ -2,6 +2,21 @@
   <Page width="1703px">
     <template #nav-left>
       <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
+      <template v-if="guild">
+        <span class="mx-1.5 h-5 w-px bg-white/12" />
+        <SFButton variant="ghost" :disabled="isSetupSaved" @click="saveSetup">
+          <SFIcon name="floppy-disk" />
+          {{ localize('setup.save') }}
+        </SFButton>
+        <SFButton variant="ghost" :disabled="!storedSetup || isSetupSaved || isBusy" @click="loadSetup">
+          <SFIcon name="rotate-left" />
+          {{ localize('setup.load') }}
+        </SFButton>
+        <SFButton variant="ghost" :disabled="!storedSetup" @click="clearSetup">
+          <SFIcon name="trash-can" />
+          {{ localize('setup.clear') }}
+        </SFButton>
+      </template>
       <span v-if="isSimulatorDebug" class="mx-1.5 h-5 w-px bg-white/12" />
       <SimulatorDebug copy @copy="copyWithConfig" />
     </template>
@@ -191,6 +206,7 @@ import { ItemModel } from '~/core/models/item'
 import { PlayerModel } from '~/core/models/player'
 import { ModelUtils, type SimulatorData } from '~/core/models/utils'
 import { HYDRA_PROFILE } from '~/core/profiles'
+import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
 import { type RawPlayer } from '~/data/types'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
@@ -213,6 +229,14 @@ type ListPlayer = {
   player: PlayerModel | SimulatorData
   itemLevel: number | null
   index: number
+  identifier: string | null
+}
+
+type HellRaidSetup = {
+  floorChance: number | null
+  raidChance: number | null
+  raidLimit: number
+  assignments: Record<string, number>
 }
 
 type RaidResult = {
@@ -247,6 +271,11 @@ const RAID_LIMIT_OPTIONS: SelectOption<number>[] = sequence(HELL_RAIDS, 1).map((
 const raidLimit = ref(HELL_RAIDS)
 
 const pasteMode = ref(false)
+
+const SETUPS_KEY = 'hell_raids/setups'
+
+const setups = shallowRef(Store.shared.get<Record<string, HellRaidSetup>>(SETUPS_KEY, {}))
+const guild = ref<string | null>(null)
 
 const players = shallowRef<ListPlayer[]>([])
 const selectedIndex = ref(-1)
@@ -391,6 +420,31 @@ const isOrganizing = organizeSubmit.isSubmitting
 const isSimulatingRaids = raidSubmit.isSubmitting
 
 const isBusy = computed(() => isClimbing.value || isOrganizing.value || isSimulatingRaids.value)
+
+const currentSetup = computed<HellRaidSetup>(() => {
+  const setupAssignments: Record<string, number> = {}
+
+  for (const entry of players.value) {
+    const raid = assignments.value.get(entry.index)
+
+    if (entry.identifier && raid !== undefined) {
+      setupAssignments[entry.identifier] = raid
+    }
+  }
+
+  return { floorChance: floorChance.value, raidChance: raidChance.value, raidLimit: raidLimit.value, assignments: setupAssignments }
+})
+
+const storedSetup = computed(() => (guild.value ? setups.value[guild.value] : undefined))
+
+const isSetupSaved = computed(() => {
+  const stored = storedSetup.value
+  const current = currentSetup.value
+
+  if (!stored || stored.floorChance !== current.floorChance || stored.raidChance !== current.raidChance || stored.raidLimit !== current.raidLimit) return false
+
+  return players.value.every((entry) => !entry.identifier || stored.assignments[entry.identifier] === current.assignments[entry.identifier])
+})
 
 function getRun() {
   return { instances: Math.max(1, settings.value?.threads || 4), iterations: Math.max(1, settings.value?.iterations || 25000) }
@@ -574,7 +628,7 @@ function addPlayer() {
     player.Name = `Player ${players.value.length + 1}`
   }
 
-  setPlayers([{ player, itemLevel: null, index: nextIndex++ }, ...players.value])
+  setPlayers([{ player, itemLevel: null, index: nextIndex++, identifier: null }, ...players.value])
 
   clearEditor()
 }
@@ -646,9 +700,71 @@ function getItemLevel(player: PlayerModel) {
 function insertGroup(group: GroupModel) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
-  setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), itemLevel: getItemLevel(data), index: nextIndex++ })))
+  setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), itemLevel: getItemLevel(data), index: nextIndex++, identifier: data.Identifier })))
 
   clearEditor()
+
+  guild.value = group.Identifier
+
+  if (storedSetup.value) {
+    applySetup(storedSetup.value)
+  }
+}
+
+function applySetup(setup: HellRaidSetup) {
+  floorChance.value = setup.floorChance
+  raidChance.value = setup.raidChance
+  raidLimit.value = setup.raidLimit
+
+  const next = new Map<number, number>()
+  const changed: number[] = []
+
+  for (const entry of players.value) {
+    const current = assignments.value.get(entry.index)
+    const raid = entry.identifier ? setup.assignments[entry.identifier] : current
+
+    if (raid !== undefined) {
+      next.set(entry.index, raid)
+    }
+
+    if (raid !== current) {
+      changed.push(current ?? UNALLOCATED, raid ?? UNALLOCATED)
+    }
+  }
+
+  assignments.value = next
+
+  markOutdated(changed)
+}
+
+function saveSetup() {
+  if (!guild.value) return
+
+  setups.value = { ...setups.value, [guild.value]: currentSetup.value }
+
+  Store.shared.set(SETUPS_KEY, setups.value)
+}
+
+function loadSetup() {
+  if (storedSetup.value) {
+    applySetup(storedSetup.value)
+  }
+}
+
+function clearSetup() {
+  if (!guild.value) return
+
+  const next = { ...setups.value }
+
+  delete next[guild.value]
+
+  setups.value = next
+
+  Store.shared.set(SETUPS_KEY, setups.value)
+
+  markOutdated([...assignments.value.values()])
+
+  assignments.value = new Map()
 }
 
 function isPlayer(value: unknown) {
@@ -666,7 +782,7 @@ function handlePaste(value: unknown) {
         const model = hasClass(item) ? item : new PlayerModel(item as RawPlayer)
 
         // Item level first, preparePlayerData empties the shield of a warrior
-        return { itemLevel: getItemLevel(model), player: preparePlayerData(model), index: nextIndex++ }
+        return { itemLevel: getItemLevel(model), player: preparePlayerData(model), index: nextIndex++, identifier: null }
       })
 
       if (pasteMode.value) {
@@ -675,6 +791,8 @@ function handlePaste(value: unknown) {
         setPlayers(entries)
 
         clearEditor()
+
+        guild.value = null
       }
     } else if (isPlayer(data)) {
       editor.value?.fill(preparePlayerData(data))
