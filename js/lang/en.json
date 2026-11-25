@@ -291,6 +291,14 @@
             "title": "Changelog",
             "desc": "See what changed in each SFTools update"
         },
+        "sf_discord": {
+            "title": "Official Discord",
+            "desc": "Join the official Shakes & Fidget Discord server"
+        },
+        "sf_tavern": {
+            "title": "S&F's Tavern",
+            "desc": "See a huge library of guides and chat with other players"
+        },
         "hellevator": {
             "title": "Hellevator Simulator",
             "desc": "Check how many Hellevator floors you can beat"

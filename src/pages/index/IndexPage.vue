@@ -137,7 +137,9 @@ const TOOLS = [
   { key: 'bestiary', href: 'bestiary.html', group: 'info' },
   { key: 'wiki', href: 'https://github.com/HafisCZ/sf-tools/wiki', group: 'info' },
   { key: 'analyzer', href: 'analyzer.html', group: 'planning' },
-  { key: 'changelog', href: 'changelog.html', group: 'info' }
+  { key: 'changelog', href: 'changelog.html', group: 'info' },
+  { key: 'sf_tavern', href: 'https://discord.gg/sftavern', icon: '/res/tools/sf-tavern.webp', group: 'info', external: true },
+  { key: 'sf_discord', href: 'https://discord.gg/shakesandfidget', icon: '/res/tools/sf-discord.webp', group: 'info', external: true }
 ]
 
 const IMAGE = (() => {
@@ -172,10 +174,11 @@ const tools = computed<IndexTool[]>(() =>
         title: localize(`${tool.key}.title`),
         author: tool.author,
         description: localize(`${tool.key}.desc`),
-        picture: `/res/tools/${tool.key}.webp`,
+        picture: tool.icon ? undefined : `/res/tools/${tool.key}.webp`,
+        icon: tool.icon,
         wip: tool.wip,
         group: tool.group,
-        external: false
+        external: tool.external === true
       }
     }
   })

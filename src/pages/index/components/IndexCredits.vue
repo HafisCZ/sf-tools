@@ -1,9 +1,5 @@
 <template>
   <div class="md:ml-[2.5em]">
-    <a href="https://discord.gg/XWfSwe3" target="_blank" class="flex items-center justify-center gap-[0.25em] pt-[1em] text-[2em] leading-5 text-accent hover:underline">
-      <SFIcon name="discord" />
-      Shakes &amp; Fidget Tavern
-    </a>
     <section v-for="section in SECTIONS" :key="section.role">
       <SFHeading level="3" class="mt-[1.5em] mb-3.5 leading-[1.28571429em] underline decoration-accent">{{ localize(`roles.${section.role}`) }}</SFHeading>
       <div class="flex flex-wrap gap-[1em] text-lg leading-5 font-bold text-white/75">
@@ -23,7 +19,6 @@
 
 <script setup lang="ts">
 import SFHeading from '@library/SFHeading.vue'
-import SFIcon from '@library/SFIcon.vue'
 import { useLocalize } from '@utils/localization'
 
 defineOptions({
