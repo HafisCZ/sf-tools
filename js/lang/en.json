@@ -1356,6 +1356,8 @@
         "configure_log": "Run simulation with logging enabled",
         "configure_log_file": "Save to file",
         "configure_log_broadcast": "Open with analyzer",
+        "debug_enable": "Enable debug mode",
+        "debug_disable": "Disable debug mode",
         "clipboard": {
             "copy_all": "Copy everyone",
             "paste_mode": "Toggle Add/Replace insertion mode"

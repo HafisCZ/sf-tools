@@ -24,6 +24,7 @@ import { faBone } from '@fortawesome/free-solid-svg-icons/faBone'
 import { faBook } from '@fortawesome/free-solid-svg-icons/faBook'
 import { faBoxArchive } from '@fortawesome/free-solid-svg-icons/faBoxArchive'
 import { faBoxOpen } from '@fortawesome/free-solid-svg-icons/faBoxOpen'
+import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import { faChalkboard } from '@fortawesome/free-solid-svg-icons/faChalkboard'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
@@ -134,6 +135,7 @@ export const ICONS = {
   book: faBook,
   'box-archive': faBoxArchive,
   'box-open': faBoxOpen,
+  bug: faBug,
   'calendar-xmark': faCalendarXmark,
   chalkboard: faChalkboard,
   check: faCheck,

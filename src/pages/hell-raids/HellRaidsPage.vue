@@ -178,6 +178,10 @@
       </SFTable>
     </div>
 
+    <template #footer-left>
+      <SimulatorDebugLink />
+    </template>
+
     <template #footer-right>
       <PageFooterLinks />
     </template>
@@ -214,6 +218,7 @@ import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
+import SimulatorDebugLink from '~/sim/components/SimulatorDebugLink.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { copySimulatorData, handleSimulatorPaste, hasClass, isSimulatorDebug, preparePlayerData } from '~/sim/debug'

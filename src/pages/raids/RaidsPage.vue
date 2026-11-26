@@ -97,6 +97,7 @@
     </div>
 
     <template #footer-left>
+      <SimulatorDebugLink />
       <SFParagraph>
         <span v-html="localize('footer#')" />
       </SFParagraph>
@@ -136,6 +137,7 @@ import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
+import SimulatorDebugLink from '~/sim/components/SimulatorDebugLink.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { copySimulatorData, handleSimulatorPaste, isSimulatorDebug, preparePlayerData, type SimulatorLogTarget } from '~/sim/debug'

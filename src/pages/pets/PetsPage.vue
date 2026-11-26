@@ -46,6 +46,10 @@
       <PetEditor ref="editor-b-ref" :pet="picks[1]" :model="models[1]" :fight-stats="models[0] !== null" />
     </div>
 
+    <template #footer-left>
+      <SimulatorDebugLink />
+    </template>
+
     <template #footer-right>
       <PageFooterLinks />
     </template>
@@ -75,6 +79,7 @@ import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
+import SimulatorDebugLink from '~/sim/components/SimulatorDebugLink.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { isSimulatorDebug, simulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { usePetSimulator } from '~/sim/pets'

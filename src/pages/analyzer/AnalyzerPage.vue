@@ -194,6 +194,14 @@
         </SFTable>
       </div>
     </div>
+
+    <template #footer-left>
+      <SimulatorDebugLink />
+    </template>
+
+    <template #footer-right>
+      <PageFooterLinks />
+    </template>
   </Page>
 </template>
 
@@ -220,8 +228,10 @@ import { Broadcast } from '~/core/broadcast'
 import { ModelUtils } from '~/core/models/utils'
 import { OptionsHandler } from '~/core/options'
 import { Site } from '~/core/site'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
+import SimulatorDebugLink from '~/sim/components/SimulatorDebugLink.vue'
 import { receiveSimulatorBroadcast, simulatorConfig, type SimulatorConfig } from '~/sim/debug'
 import { ATTACK_TYPE_FIREBALL, ATTACK_TYPES_REVIVE, CONFIG, DEFENSE_TYPE_BLOCK_HEAL, FLAGS } from '~/sim/workers/base'
 import {
