@@ -16,7 +16,7 @@ PORTRAITS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'portraits')
 MONSTERS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'monsters')
 SHARED_ASSETS_PATH = os.path.join(os.path.dirname(STREAMING_ASSETS_PATH), 'sharedassets1.assets')
 
-ROOT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+ROOT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
 SIZE = 125
 

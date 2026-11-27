@@ -14,7 +14,9 @@
     "format:check": "oxfmt --check src test vite vite.config.ts",
     "translations:pull": "ruby scripts/translations.rb pull",
     "translations:push": "ruby scripts/translations.rb push",
-    "translations:sync": "ruby scripts/translations.rb sync"
+    "translations:sync": "ruby scripts/translations.rb sync",
+    "game:translations": "ruby scripts/game_translations.rb",
+    "game:assets": "python3 scripts/game_assets.py"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",

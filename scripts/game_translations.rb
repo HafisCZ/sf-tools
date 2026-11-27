@@ -120,6 +120,8 @@ module Synchronize
     'ch' => 'de'
   }
 
+  LANG_DIR = File.expand_path('../js/playa/lang', __dir__)
+
   def call(argv:)
     config = JSON.parse(HTTParty.get(PLAYA_CONFIG_URL).body)
 
@@ -127,7 +129,7 @@ module Synchronize
 
     # Save translations
     LANGUAGE_LIST.each do |sftools_language, playa_language|
-      FileUtils.mkdir_p("lang/#{sftools_language}")
+      FileUtils.mkdir_p("#{LANG_DIR}/#{sftools_language}")
 
       response = HTTParty.get(format(PLAYA_TRANSLATION_URL, prefix: config['language_path'], version:, language: playa_language))
       unless response.success?
@@ -147,7 +149,7 @@ module Synchronize
         ]
       end.to_h
 
-      File.write("lang/#{sftools_language}/monsters.json", JSON.pretty_generate(monsters))
+      File.write("#{LANG_DIR}/#{sftools_language}/monsters.json", JSON.pretty_generate(monsters))
 
       items = strings.select { |key, _| key.match?(REGEXP_ITEM) }
       items = items.map do |key, text|
@@ -157,7 +159,7 @@ module Synchronize
         ]
       end.to_h
 
-      File.write("lang/#{sftools_language}/items.json", JSON.pretty_generate(items))
+      File.write("#{LANG_DIR}/#{sftools_language}/items.json", JSON.pretty_generate(items))
 
       general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME, REGEXP_ACHIEVEMENT, REGEXP_DEED_NAME, REGEXP_DEED_DESCRIPTION, REGEXP_HERO_TITLE, REGEXP_DEED_SHELF, REGEXP_TROPHY_TIER, REGEXP_LOCATION].any? { key.match?(_1) } }
       general = general.map do |key, text|
@@ -184,7 +186,7 @@ module Synchronize
 
       LOCATION_NAMES.each { |id, key| general["location_#{id}"] = strings[key] }
 
-      File.write("lang/#{sftools_language}/general.json", JSON.pretty_generate(general))
+      File.write("#{LANG_DIR}/#{sftools_language}/general.json", JSON.pretty_generate(general))
 
       dungeons = {}
 
@@ -221,7 +223,7 @@ module Synchronize
 
       dungeons.each_value { |dungeon| dungeon[:floors] = dungeon[:floors].sort.to_h if dungeon[:floors] }
 
-      File.write("lang/#{sftools_language}/dungeons.json", JSON.pretty_generate(dungeons.sort.to_h))
+      File.write("#{LANG_DIR}/#{sftools_language}/dungeons.json", JSON.pretty_generate(dungeons.sort.to_h))
     end
   end
 
