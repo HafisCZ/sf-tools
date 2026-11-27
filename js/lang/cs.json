@@ -291,6 +291,14 @@
             "title": "Seznam změn",
             "desc": "See what changed in each SFTools update"
         },
+        "sf_discord": {
+            "title": "Official Discord",
+            "desc": "Join the official Shakes & Fidget Discord server"
+        },
+        "sf_tavern": {
+            "title": "S&F's Tavern",
+            "desc": "See a huge library of guides and chat with other players"
+        },
         "hellevator": {
             "title": "Simulátor Hellevatoru",
             "desc": "Check how many Hellevator floors you can beat"
@@ -1348,6 +1356,8 @@
         "configure_log": "Spustit simulaci se zapnutým logováním",
         "configure_log_file": "Uložit do souboru",
         "configure_log_broadcast": "Otevřít pomocí analyzátoru",
+        "debug_enable": "Enable debug mode",
+        "debug_disable": "Disable debug mode",
         "clipboard": {
             "copy_all": "Kopírovat vše",
             "paste_mode": "Přepnout režim vložení přidání/nahrazení"
@@ -2163,7 +2173,7 @@
         "raid_chance": "Min. chance in raid",
         "floor_chance": "Min. chance in Hellevator",
         "raid_limit": "Raids to clear",
-        "top_floor": "Top floor",
+        "top_floor": "Top floor / Level",
         "item_level": "Items #{level}",
         "status": {
             "beaten": "Floor #{floor}+, #{members}",
@@ -2174,6 +2184,11 @@
             "many": "#{count} members"
         },
         "unallocated": "Unallocated",
+        "setup": {
+            "save": "Save setup",
+            "load": "Load setup",
+            "clear": "Clear setup"
+        },
         "results": {
             "copy": "Copy plan",
             "raid": "Raid #{raid} (#{chance}%): #{members}",

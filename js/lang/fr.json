@@ -291,6 +291,14 @@
             "title": "Journal des modifications",
             "desc": "Consultez les changements dans chaque mise à jour de SFTools"
         },
+        "sf_discord": {
+            "title": "Official Discord",
+            "desc": "Join the official Shakes & Fidget Discord server"
+        },
+        "sf_tavern": {
+            "title": "S&F's Tavern",
+            "desc": "See a huge library of guides and chat with other players"
+        },
         "hellevator": {
             "title": "Simulateur d'Hellevator",
             "desc": "Vérifiez combien de niveaux d'Hellevator vous pouvez battre"
@@ -1348,6 +1356,8 @@
         "configure_log": "Lancer la simulation avec journal actif",
         "configure_log_file": "Enregistrer dans un fichier",
         "configure_log_broadcast": "Ouvrir avec l'analyseur",
+        "debug_enable": "Enable debug mode",
+        "debug_disable": "Disable debug mode",
         "clipboard": {
             "copy_all": "Copier tout",
             "paste_mode": "Basculer entre les modes d'insertion Ajouter/Remplacer"
@@ -2163,7 +2173,7 @@
         "raid_chance": "Chance min. en raid",
         "floor_chance": "Chance min. dans l'Hellevator",
         "raid_limit": "Raids à terminer",
-        "top_floor": "Étage supérieur",
+        "top_floor": "Top floor / Level",
         "item_level": "Objets #{level}",
         "status": {
             "beaten": "Étage #{floor}+, #{members}",
@@ -2174,6 +2184,11 @@
             "many": "#{count} membres"
         },
         "unallocated": "Non alloués",
+        "setup": {
+            "save": "Save setup",
+            "load": "Load setup",
+            "clear": "Clear setup"
+        },
         "results": {
             "copy": "Copier le plan",
             "raid": "Raid #{raid} (#{chance}%) : #{members}",
