@@ -6,6 +6,7 @@
     "dev": "vite",
     "dev:wsl": "WATCH_POLLING=1 vite",
     "build": "vue-tsc -b && vite build",
+    "build:extension": "bun run extension/build.ts",
     "preview": "vite preview",
     "typecheck": "vue-tsc -b",
     "test": "bun test --tsconfig-override=tsconfig.test.json",

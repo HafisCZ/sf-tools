@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "SFTools",
+  "version": "1.0.0",
+  "description": "Keeps the SFTools dungeon simulator in sync with your character in the game",
+  "icons": {
+    "128": "icon.png"
+  },
+  "action": {
+    "default_title": "SFTools",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://sftools.mar21.eu/*", "https://beta.sftools.mar21.eu/*", "http://localhost/*"],
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sfgame.net/*"],
+      "js": ["hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://sfgame.net/*"],
+      "js": ["game.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://sftools.mar21.eu/dungeons.html*", "https://beta.sftools.mar21.eu/dungeons.html*", "http://localhost/dungeons.html*"],
+      "js": ["sync.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon.png"],
+      "matches": ["https://sfgame.net/*"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "dungeons@sftools.mar21.eu",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

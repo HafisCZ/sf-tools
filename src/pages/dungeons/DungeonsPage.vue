@@ -1,8 +1,20 @@
 <template>
   <Page>
     <template #nav-left>
-      <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
-      <span class="mx-1.5 h-5 w-px bg-white/12" />
+      <template v-if="isSync && syncedPlayer">
+        <span class="inline-flex min-h-9.5 items-center gap-2 rounded-md border border-transparent px-4 py-2 leading-5 font-bold text-white/90">
+          <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
+            <CharacterRenderer :data="syncedPlayer" />
+          </span>
+          <span class="max-w-40 truncate">{{ syncedPlayer.Name }}</span>
+          <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(syncedPlayer.Data.prefix) }}</span>
+        </span>
+        <span class="mx-1.5 h-5 w-px bg-white/12" />
+      </template>
+      <template v-else-if="!isSync">
+        <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
+        <span class="mx-1.5 h-5 w-px bg-white/12" />
+      </template>
       <SFButton variant="ghost" @click="openOptions">
         <SFIcon name="gear" />
         {{ localize.global('analyzer.topbar.options') }}
@@ -80,16 +92,20 @@ import SFIcon from '@library/SFIcon.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
+import { useWindowMessage, type GameData } from '@utils/extension'
+import { formatWorldName } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { compact, copyJson, getClassImageUrl, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
+import CharacterRenderer from '~/components/CharacterRenderer.vue'
 import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { OptionsHandler } from '~/core/options'
 import { SELF_PROFILE } from '~/core/profiles'
 import { Site } from '~/core/site'
 import { DatabaseManager } from '~/data/database-manager'
+import { PlayaResponse } from '~/data/playa-response'
 import { type Cheats } from '~/integration/cheats'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
@@ -149,6 +165,13 @@ type DungeonsOptions = {
   image_background: 'dark' | 'white'
 }
 
+type ResultsMode = 'remaining' | 'all' | 'next'
+
+type ResultsDialog = {
+  mode: ResultsMode
+  update: (values: ReturnType<typeof getResultsProps>) => void
+}
+
 const SHADOW_COLOR = '#dec0ff'
 
 const localize = useLocalize('dungeons')
@@ -177,6 +200,15 @@ const decimals = ref(options.decimals)
 
 let filledSnapshot = ''
 let isFillPending = false
+
+const isSync = new URLSearchParams(window.location.search).has('sync')
+const syncedPlayer = shallowRef<PlayerModel | null>(null)
+
+let syncedSnapshot = ''
+
+let resultsDialog: ResultsDialog | null = null
+let isRerunPending = false
+let rerunTimer: ReturnType<typeof setTimeout> | undefined
 
 const editor = useTemplateRef('editor-ref')
 const settings = useTemplateRef('settings-ref')
@@ -215,7 +247,17 @@ const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: 
   await runBoss(1, 50, target)
 })
 
-const isRunning = computed(() => isSimulating.value || isSimulatingRemaining.value || isSimulatingAll.value || isSimulatingNext.value || isLogging.value)
+const { submit: rerun, isSubmitting: isRerunning } = useSubmit(rerunResults)
+
+const isRunning = computed(() => isSimulating.value || isSimulatingRemaining.value || isSimulatingAll.value || isSimulatingNext.value || isLogging.value || isRerunning.value)
+
+watch(isRunning, (running) => {
+  if (running || !isRerunPending) return
+
+  isRerunPending = false
+
+  void requestRerun()
+})
 
 const DUNGEONS = Object.values(DUNGEON_DATA)
   .filter((dungeon) => Object.keys(dungeon.floors).length > 0)
@@ -243,8 +285,16 @@ watch(editedPlayer, (player) => {
   isChartOutdated.value = true
 })
 
+if (isSync) {
+  useWindowMessage('sftools-extension').receive(readSyncMessage)
+}
+
 onMounted(() => {
   fillEditor()
+
+  if (isSync) {
+    useWindowMessage('sftools-dungeons').send()
+  }
 })
 
 Site.data = {
@@ -409,6 +459,49 @@ function insertPlayer(entry: PlayerModel, cheats?: Cheats) {
   openIndex.value = ''
 }
 
+function readSyncMessage(game: GameData) {
+  const data = PlayaResponse.importData({ log: { entries: [{ startedDateTime: new Date().toISOString(), request: { url: game.url }, response: { content: { text: game.text } } }] } })
+
+  const raw = data.players.find((player) => player.own)
+  if (!raw) return
+
+  const player = new PlayerModel(raw)
+
+  // Most responses change nothing the simulator reads and would only reset the editor
+  const snapshot = JSON.stringify([ModelUtils.toSimulatorData(player, true), player.Dungeons, player.Inventory])
+
+  if (snapshot === syncedSnapshot) return
+
+  syncedSnapshot = snapshot
+  syncedPlayer.value = player
+
+  insertPlayer(player)
+
+  clearTimeout(rerunTimer)
+  rerunTimer = setTimeout(() => {
+    void requestRerun()
+  }, 1000)
+}
+
+async function requestRerun() {
+  if (isRunning.value) {
+    isRerunPending = true
+  } else if (resultsDialog) {
+    await nextTick()
+    await rerun()
+  }
+}
+
+async function rerunResults() {
+  const dialog = resultsDialog
+  if (!dialog) return
+
+  const results = await findResults(dialog.mode)
+  if (!results || resultsDialog !== dialog) return
+
+  dialog.update(getResultsProps(results))
+}
+
 function changeItemView(open: boolean) {
   isItemView.value = open
 
@@ -419,8 +512,8 @@ function changeItemView(open: boolean) {
 
 function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
   const size = fighter?.Potions?.Life ?? 0
-  const free = state.potions.findIndex((potion) => potion.type === 0)
 
+  const free = state.potions.findIndex((potion) => potion.type === 0)
   if (!size || free === -1 || state.potions.some((potion) => potion.type === LIFE_POTION_TYPE)) return state
 
   return { ...state, potions: state.potions.map((potion, index) => (index === free ? { type: LIFE_POTION_TYPE, size } : potion)) }
@@ -430,7 +523,6 @@ const REBUILD_PATHS = DUNGEON_SHARED_PATHS.filter((path) => path !== 'Potions.Li
 
 function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
   const player = source.value
-
   if (!player) return
 
   const index = selectedIndex.value
@@ -514,27 +606,41 @@ function sortByDungeonOrder(results: DungeonResult[]) {
   return sorted
 }
 
-function showResults(results: DungeonResult[]) {
-  useDialog(DungeonResultsDialog, {
+function getResultsProps(results: DungeonResult[]) {
+  return {
     results,
     experience: sum(results.map(getDungeonExperience)),
-    playerClass: players.value[0]?.Class ?? WARRIOR,
-    decimals: decimals.value,
-    showMushrooms: options.show_mushrooms,
-    imageBackground: options.image_background,
-    onToggleMushrooms: (shown) => {
-      options.show_mushrooms = shown
+    playerClass: players.value[0]?.Class ?? WARRIOR
+  }
+}
+
+function showResults(results: DungeonResult[], mode: ResultsMode) {
+  const dialog = useDialog(
+    DungeonResultsDialog,
+    {
+      ...getResultsProps(results),
+      decimals: decimals.value,
+      showMushrooms: options.show_mushrooms,
+      imageBackground: options.image_background,
+      onToggleMushrooms: (shown) => {
+        options.show_mushrooms = shown
+      }
+    },
+    {
+      callback: () => {
+        resultsDialog = null
+      }
     }
-  })
+  )
+
+  resultsDialog = { mode, update: dialog.update }
 }
 
 async function runBoss(instances: number, iterations: number, log?: SimulatorLogTarget) {
   const fight = createDungeonFight(selectedEntry.value, players.value)
-
   if (!canSimulateSelected.value || !fight) return
 
   const boss = await dungeonSimulator.simulateBoss(fight, { instances, iterations }, log)
-
   if (!boss) return
 
   chartResult.value = boss.result
@@ -563,48 +669,69 @@ async function runSelected() {
   await runBoss(instances, iterations)
 }
 
-async function runRemaining() {
-  if (!canSimulateSelected.value) return
+function getThreshold() {
+  const min = Math.min(Math.max(options.threshold_min, 0), 100)
+  const max = Math.min(Math.max(options.threshold_max, min), 100)
 
-  const results = await runBosses(getLimitedRemainingBosses(selectedEntry.value))
-
-  if (!results) return
-
-  showResults(results)
+  return { min, max }
 }
 
-async function runAll() {
-  if (!canSimulateOpen.value) return
+async function findRemainingResults() {
+  if (!canSimulateSelected.value) return null
+
+  return runBosses(getLimitedRemainingBosses(selectedEntry.value))
+}
+
+async function findAllResults() {
+  if (!canSimulateOpen.value) return null
 
   const results = await runBosses(openBosses.value)
-
-  if (!results) return
-
-  showResults(results.sort((a, b) => b.score - a.score))
+  return results ? results.sort((a, b) => b.score - a.score) : null
 }
 
-async function runNext() {
-  if (!canSimulateOpen.value) return
-
-  const { instances, iterations } = readSettings()
-
-  const thresholdMin = Math.min(Math.max(options.threshold_min, 0), 100)
-  const thresholdMax = Math.min(Math.max(options.threshold_max, thresholdMin), 100)
+async function findNextResults() {
+  if (!canSimulateOpen.value) return null
 
   const entries = openBosses.value
     .filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm) && (dungeon.id !== TOWER || options.include_tower) && (dungeon.id < CLASS_DUNGEONS || options.include_class_dungeons))
     .flatMap(getLimitedRemainingBosses)
 
-  const next = await dungeonSimulator.simulateNext(prepareFights(entries), { min: thresholdMin, max: thresholdMax }, { instances, iterations })
+  const next = await dungeonSimulator.simulateNext(prepareFights(entries), getThreshold(), readSettings())
+  return next ? sortByDungeonOrder(next.results) : null
+}
 
-  if (!next) return
+function findResults(mode: ResultsMode) {
+  if (mode === 'remaining') return findRemainingResults()
+  if (mode === 'all') return findAllResults()
 
-  const found = next.results
+  return findNextResults()
+}
 
-  if (found.length > 0) {
-    showResults(sortByDungeonOrder(found))
+async function runRemaining() {
+  const results = await findRemainingResults()
+  if (!results) return
+
+  showResults(results, 'remaining')
+}
+
+async function runAll() {
+  const results = await findAllResults()
+  if (!results) return
+
+  showResults(results, 'all')
+}
+
+async function runNext() {
+  const results = await findNextResults()
+
+  if (!results) return
+
+  if (results.length > 0) {
+    showResults(results, 'next')
   } else {
-    useToast({ title: localize('simulate_next_info.title', { threshold_min: thresholdMin, threshold_max: thresholdMax }), message: localize('simulate_next_info.message#').replace(/<[^>]+>/g, '') })
+    const threshold = getThreshold()
+
+    useToast({ title: localize('simulate_next_info.title', { threshold_min: threshold.min, threshold_max: threshold.max }), message: localize('simulate_next_info.message#').replace(/<[^>]+>/g, '') })
   }
 }
 

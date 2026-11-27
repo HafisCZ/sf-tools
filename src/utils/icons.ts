@@ -87,6 +87,7 @@ import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare'
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons/faPowerOff'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { faRecycle } from '@fortawesome/free-solid-svg-icons/faRecycle'
 import { faReply } from '@fortawesome/free-solid-svg-icons/faReply'
@@ -207,6 +208,7 @@ export const ICONS = {
   'pen-to-square': faPenToSquare,
   play: faPlay,
   plus: faPlus,
+  'power-off': faPowerOff,
   question: faQuestion,
   recycle: faRecycle,
   reply: faReply,

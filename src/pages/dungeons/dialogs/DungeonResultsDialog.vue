@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFDialog from '@library/SFDialog.vue'
@@ -129,6 +129,16 @@ const pinned = ref(Site.options.results_pinned)
 const listElement = useTemplateRef('list-ref')
 
 const activeResult = computed(() => props.results.at(activeIndex.value) ?? null)
+
+watch(
+  () => props.results,
+  (results, previous) => {
+    const active = previous.at(activeIndex.value)
+    const index = results.findIndex((result) => result.dungeon.id === active?.dungeon.id && result.boss.pos === active?.boss.pos)
+
+    activeIndex.value = Math.max(0, index)
+  }
+)
 
 const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
   if (!listElement.value) return

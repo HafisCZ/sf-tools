@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.extension.tsbuildinfo",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "types": ["bun", "vite/client"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "paths": {
+      "@library/*": ["./src/library/*"],
+      "@utils/*": ["./src/utils/*"],
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": ["extension/build.ts", "extension/vite.config.ts", "extension/src/**/*.ts", "extension/popup/**/*.ts", "extension/popup/**/*.vue", "src/types/globals.d.ts"]
+}

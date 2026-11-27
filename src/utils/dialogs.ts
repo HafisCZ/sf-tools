@@ -1,4 +1,4 @@
-import { type Component } from 'vue'
+import { h, shallowReactive, type Component } from 'vue'
 import SFSimpleDialog from '@library/SFSimpleDialog.vue'
 import { setCoveredElementsAsInert, unsetCoveredElementsAsInert } from './interactions'
 import { createVueApp } from './vue'
@@ -21,6 +21,8 @@ export function useDialog<TComponent extends Component>(
     immediate?: boolean
   } = {}
 ) {
+  const state = shallowReactive({ ...props })
+
   function open() {
     return new Promise<void>((resolve) => {
       const element = document.createElement('div')
@@ -32,18 +34,19 @@ export function useDialog<TComponent extends Component>(
       // Appended before mounting, so the dialog can take focus
       document.body.append(element)
 
-      const app = createVueApp(component, {
-        ...props,
-        onClose: (...params: CloseParameters<TComponent>) => {
-          app.unmount()
-          element.remove()
+      const onClose = (...params: CloseParameters<TComponent>) => {
+        app.unmount()
+        element.remove()
 
-          unsetCoveredElementsAsInert()
+        unsetCoveredElementsAsInert()
 
-          options.callback?.(...params)
+        options.callback?.(...params)
 
-          resolve()
-        }
+        resolve()
+      }
+
+      const app = createVueApp({
+        render: () => h(component, { ...state, onClose })
       })
 
       app.mount(element)
@@ -54,6 +57,12 @@ export function useDialog<TComponent extends Component>(
     void open()
   } else {
     queue = queue.then(open)
+  }
+
+  return {
+    update(values: Partial<Omit<ComponentProps<TComponent>, 'onClose'>>) {
+      Object.assign(state, values)
+    }
   }
 }
 
