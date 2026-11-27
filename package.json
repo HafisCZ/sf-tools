@@ -11,7 +11,10 @@
     "test": "bun test --tsconfig-override=tsconfig.test.json",
     "lint": "oxlint --type-aware src test vite vite.config.ts",
     "format": "oxfmt src test vite vite.config.ts",
-    "format:check": "oxfmt --check src test vite vite.config.ts"
+    "format:check": "oxfmt --check src test vite vite.config.ts",
+    "translations:pull": "ruby scripts/translations.rb pull",
+    "translations:push": "ruby scripts/translations.rb push",
+    "translations:sync": "ruby scripts/translations.rb sync"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
