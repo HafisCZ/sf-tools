@@ -1,17 +1,25 @@
 <template>
   <Page>
     <template #nav-left>
-      <template v-if="isSync && syncedPlayer">
+      <template v-if="isSync">
         <span class="inline-flex min-h-9.5 items-center gap-2 rounded-md border border-transparent px-4 py-2 leading-5 font-bold text-white/90">
-          <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
-            <CharacterRenderer :data="syncedPlayer" />
-          </span>
-          <span class="max-w-40 truncate">{{ syncedPlayer.Name }}</span>
-          <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(syncedPlayer.Data.prefix) }}</span>
+          <template v-if="syncedPlayer">
+            <span class="size-[29px] shrink-0 overflow-hidden rounded bg-[#0c1a20] bg-[radial-gradient(closest-side,rgb(5_121_160/0.9),rgb(5_121_160/0))]">
+              <CharacterRenderer :data="syncedPlayer" />
+            </span>
+            <span class="max-w-40 truncate">{{ syncedPlayer.Name }}</span>
+            <span class="text-xs text-[#7fc8e0] uppercase">{{ formatWorldName(syncedPlayer.Data.prefix) }}</span>
+          </template>
+          <template v-else>
+            <span class="flex size-[29px] shrink-0 items-center justify-center">
+              <SFIcon name="spinner" class="animate-spin text-lg" />
+            </span>
+            <span class="text-white/50">{{ localize('sync_waiting') }}</span>
+          </template>
         </span>
         <span class="mx-1.5 h-5 w-px bg-white/12" />
       </template>
-      <template v-else-if="!isSync">
+      <template v-else>
         <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
         <span class="mx-1.5 h-5 w-px bg-white/12" />
       </template>

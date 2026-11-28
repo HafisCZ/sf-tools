@@ -907,6 +907,7 @@
         "find_boss_search": "Search by boss or dungeon",
         "find_boss_empty": "No boss matches the search",
         "open": "Currently open dungeons",
+        "sync_waiting": "Waiting",
         "graph": {
             "y": "HP Left",
             "x": "- Distribution for selected amount of tries -",
